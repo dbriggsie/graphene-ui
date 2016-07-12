@@ -78,7 +78,7 @@ class AccountLeftPanel extends React.Component {
 
         let settings = counterpart.translate("header.settings");
 
-        let caret = this.state.showAdvanced ? <span>&#9660;</span> : <span>&#9650;</span>;
+        let caret = this.state.showAdvanced ? <span>&#9650;</span> : <span>&#9660;</span>;
 
         return (
             <div className="grid-block vertical account-left-panel no-padding no-overflow">
