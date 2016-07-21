@@ -343,7 +343,8 @@ class PriceChart extends React.Component {
                     color: colors[theme].volumeColor,
                     yAxis: 1
                 },
-                {   type: 'line',
+                {   
+                    //type: "candlestick",
                     id: "primary",
                     name: "Price",
                     data: priceSeriesData
@@ -384,7 +385,7 @@ class PriceChart extends React.Component {
                     lineColor: "#0ff",
                     lineDashStyle: "Solid",
                     lineOpacity: 0.8,
-                    enabled: true,
+                    enabled: priceSeriesData.length > 0 && marketReady,
                     style: {
                         color: "#ffffff",
                         fontSize: "10px"
@@ -451,7 +452,7 @@ class PriceChart extends React.Component {
                     text: null
                 },
                 plotLines: [],
-                min: this.props.zoom === "all" ? null : new Date().getTime() - 5000 * this.props.zoom
+                min: this.props.zoom === "all" ? null : new Date().getTime() - 1000 * this.props.zoom
 
             }
         };

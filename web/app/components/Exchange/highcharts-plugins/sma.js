@@ -120,7 +120,7 @@ import Highcharts from "highcharts/highstock";
                              
                      options.styles = attrs = merge({
                              'stroke-width': 2,
-                             stroke: 'red',
+                             stroke: '#263e5a',
                              dashstyle: 'ShortDash'
                      },  options.styles);    
                      

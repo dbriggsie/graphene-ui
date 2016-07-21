@@ -147,9 +147,9 @@ class Exchange extends React.Component {
             buyDiff: false,
             sellDiff: false,
             indicators: ws.get("indicators", {
-                rsi: false,
-                sma: false,
-                atr: false,
+                //rsi: false,
+                sma: true,
+                //atr: false,
                 ema: false
             }),
             buyFeeAssetIdx: ws.get("buyFeeAssetIdx", 0),
@@ -174,7 +174,7 @@ class Exchange extends React.Component {
             height: window.innerHeight,
             width: window.innerWidth,
             chartHeight: ws.get("chartHeight", 425),
-            currentPeriod: ws.get("currentPeriod", 24 * 3600 * 1000)
+            currentPeriod: 'all'
         };
     }
 
