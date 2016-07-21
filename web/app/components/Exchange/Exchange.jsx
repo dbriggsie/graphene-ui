@@ -1491,7 +1491,7 @@ class Exchange extends React.Component {
                         {!this.state.showDepthChart ? (
                             <div className="grid-block shrink" id="market-charts" >
                                     <div className="grid-block wrap">
-                                        <ul className="market-stats stats bottom-stats" style={{width: "70%"}}>
+                                        <ul className="market-stats stats bottom-stats stats-left">
                                             {!this.state.showDepthChart ? (
                                                 <li className="stat">
                                                     <span>
