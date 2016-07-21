@@ -245,36 +245,17 @@ class PriceChart extends React.Component {
             negativeColor = "black";
         }
 
-        // Find max volume
-        // let maxVolume = 0;
         let volumeColors = [], colorByPoint = false;
-
-        // if (volumeData.length === priceSeriesData.length) {
-        //     colorByPoint = true;
-        // }
-        // for (var i = 0; i < volumeData.length; i++) {
-        //     maxVolume = Math.max(maxVolume, volumeData[i][1]);
-            // if (colorByPoint) {
-            //     volumeColors.push(priceSeriesData[i][1] <= priceSeriesData[i][4] ? positiveColor : negativeColor);
-            // }
-        // }
-
-        // Find highest price
-        // let maxPrice = 0;
-        // if (priceSeriesData.length) {
-        //     for (var i = 0; i < priceSeriesData.length; i++) {
-        //         maxPrice = Math.max(maxPrice, priceSeriesData[i][2]);
-        //     }
-        // }
 
         let config = {
             chart: {
+                type: 'line',
+                zoomType: 'x',
+                ignoreHiddenSeries: true,
                 backgroundColor: "rgba(255, 0, 0, 0)",
                 dataGrouping: {
                     enabled: false
                 },
-                pinchType: "x",
-                spacing: [20, 10, 5, 10],
                 alignTicks: false
             },
 
@@ -307,7 +288,7 @@ class PriceChart extends React.Component {
                     lineColor: negativeColor,
                     upColor: positiveColor,
                     upLineColor: positiveColor,
-                    lineWidth: 2
+                    lineWidth: 1
                 },
                 column: {
                     animation: false,
@@ -315,7 +296,8 @@ class PriceChart extends React.Component {
                 },
                 series: {
                     marker: {
-                        enabled: false
+                        enabled: true,
+                        radius : 3
                     },
                     enableMouseTracking: true
                 }
@@ -351,22 +333,18 @@ class PriceChart extends React.Component {
                              "<b>&nbsp;&nbsp;&nbsp;Vol:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>" + Highcharts.numberFormat(this.points[1] ? this.points[0].point.y : 0, vol_dec, ".", ",") + "&nbsp;&nbsp;" + quoteSymbol + "<br/>"
                              + TA + "</span>");
 
-                },
-                positioner: function () {
-                    return { x: 50, y: -5 };
                 }
             },
             series: [
                 {
-                    type: "column",
                     name: "Volume",
+                    type: 'column',
                     data: volumeData,
                     color: colors[theme].volumeColor,
                     yAxis: 1
                 },
-                {
+                {   type: 'line',
                     id: "primary",
-                    type: "candlestick",
                     name: "Price",
                     data: priceSeriesData
                 }
@@ -389,7 +367,7 @@ class PriceChart extends React.Component {
                 },
                 offset: 5,
                 lineWidth: 1,
-                lineColor: "rgba(183, 183, 183, 0.29)",
+                lineColor: "rgba(183, 183, 183, 0.2)",
                 gridLineWidth: 0,
                 plotLines: [],
                 crosshair: {
@@ -401,12 +379,12 @@ class PriceChart extends React.Component {
                 maxPadding: 0,
                 currentPriceIndicator: {
                     precision: base.get("precision"),
-                    backgroundColor: "#C38B8B",
+                    backgroundColor: "#0ff",
                     borderColor: "#000000",
-                    lineColor: "#C38B8B",
+                    lineColor: "#0ff",
                     lineDashStyle: "Solid",
                     lineOpacity: 0.8,
-                    enabled: priceSeriesData.length > 0 && marketReady,
+                    enabled: true,
                     style: {
                         color: "#ffffff",
                         fontSize: "10px"
@@ -443,7 +421,7 @@ class PriceChart extends React.Component {
                     offset: 5,
                     gridLineWidth: 0,
                     lineWidth: 1,
-                    lineColor: "rgba(183, 183, 183, 0.29)",
+                    lineColor: "rgba(183, 183, 183, 0.2)",
                     endOnTick: true,
                     showLastLabel: true,
                     title: {
@@ -473,7 +451,7 @@ class PriceChart extends React.Component {
                     text: null
                 },
                 plotLines: [],
-                min: this.props.zoom === "all" ? null : new Date().getTime() - 1000 * this.props.zoom
+                min: this.props.zoom === "all" ? null : new Date().getTime() - 5000 * this.props.zoom
 
             }
         };
@@ -514,16 +492,9 @@ class PriceChart extends React.Component {
 
         return (
             <div className="grid-content no-padding no-margin no-overflow middle-content">
-                <div className="exchange-bordered" style={{margin: 10}}>
-                    <div className="exchange-content-header">
-                        <Translate content="exchange.price_history" />
-                        <div className="float-right">
-                            <div style={{display: "inline-block", marginBottom: -3, marginTop: -6, padding: "3px 8px"}} className="button outline clickable" onClick={this.props.onChangeSize.bind(this, false)}>-</div>
-                            <div style={{display: "inline-block", marginBottom: -3, marginTop: -6, padding: "3px 8px"}} className="button outline clickable" onClick={this.props.onChangeSize.bind(this, true)}>+</div>
-                        </div>
-                    </div>
+                <div className="exchange-bordered" >
                     {!priceSeriesData.length ? <span className="no-data"><Translate content="exchange.no_data" /></span> : null}
-                    <div style={{paddingTop: 0, paddingBottom: "0.5rem"}}>
+                    <div >
                         {priceSeriesData && volumeData ? <ReactHighstock ref="chart" config={config}/> : null}
                     </div>
                 </div>
