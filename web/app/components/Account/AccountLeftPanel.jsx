@@ -83,32 +83,28 @@ class AccountLeftPanel extends React.Component {
         return (
             <div className="grid-block vertical account-left-panel no-padding no-overflow">
                 <div className="grid-block">
-                    <div className="grid-content no-padding" style={{overflowX: "hidden"}}>
+                    <div className="grid-content no-padding">
 
-                        <div className="regular-padding">
+                        <div className="left_panel">
                             <AccountInfo account={account.get("id")} image_size={{height: 90, width: 90}} my_account={isMyAccount}/>
-                            <div className="grid-container no-margin">
-                                { linkBtn }
-                                <Link className="button outline block-button" to={`/transfer/?to=${account_name}`}><Translate content="account.pay"/></Link>
-                            </div>
+                            { linkBtn }
+                            <Link className="button outline block-button" to={`/transfer/?to=${account_name}`}><Translate content="account.pay"/></Link>
                         </div>
                         <section className="block-list">
-                            <ul className="account-left-menu" style={{marginBottom: 0}}>
+                            <ul className="account-left-menu" >
                                 <li><Link to={`/account/${account_name}/overview/`} activeClassName="active"><Translate content="account.overview"/></Link></li>
                                 <li><Link to={`/account/${account_name}/member-stats/`} activeClassName="active"><Translate content="account.member.stats"/></Link></li>
                                 <li><Link to={`/account/${account_name}/orders/`} activeClassName="active"><Translate content="account.open_orders"/></Link></li>
                                 <li><Link to={`/account/${account_name}/voting/`} activeClassName="active"><Translate content="account.voting"/></Link></li>
                                 {isMyAccount ? <li><Link to={`/account/${account_name}/deposit-withdraw/`} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
-
-                                {/* Advanced features*/}
-                                <li className="menu-subheader" onClick={this._toggleAdvanced.bind(this)}>
-                                    <span className="button outline">
-                                        <Translate content="account.user_issued_assets.advanced" />
-                                        <span>  {caret}</span>
-                                    </span>
-                                </li>
                             </ul>
-                            {this.state.showAdvanced ? (<ul className="account-left-menu">
+                            {/* Advanced features*/}
+                            <span className="button outline" onClick={this._toggleAdvanced.bind(this)} >
+                                <Translate content="account.user_issued_assets.advanced" />
+                                <span>{caret}</span>
+                            </span>
+                            {this.state.showAdvanced ? (
+                            <ul className="account-left-menu">
                                 <li><Link to={`/account/${account_name}/assets/`} activeClassName="active"><Translate content="explorer.assets.title"/></Link></li>
                                 <li><Link to={`/account/${account_name}/permissions/`} activeClassName="active"><Translate content="account.permissions"/></Link></li>
                                 <li><Link to={`/account/${account_name}/whitelist/`} activeClassName="active"><Translate content="account.whitelist.title"/></Link></li>
@@ -118,10 +114,8 @@ class AccountLeftPanel extends React.Component {
                     </div>
                 </div>
                 {isMyAccount ?
-                <div className="grid-block shrink bottom">
-                    <div className="center">
-                        <a href data-tip={counterpart.translate("account.create_new")} data-place="top" onClick={this.onCreateAccountClick.bind(this)}><Icon name="plus-circle"/></a>
-                    </div>
+                <div className="bottom_plus">                    
+                    <a href data-tip={counterpart.translate("account.create_new")} data-place="top" onClick={this.onCreateAccountClick.bind(this)}><Icon name="plus-circle"/></a>
                 </div> : null}
             </div>
         );

@@ -226,7 +226,7 @@ class CreateAccount extends React.Component {
                     {Object.keys(config).map(key =>
                     {
                         let style = config[key];
-                        return <div key={key} style={{position: "absolute", left: 0, right: 0, ...style}}>
+                        return <div key={key} >
                             <div className="center-content">{header_items[key]}</div>
                         </div>;
                     })

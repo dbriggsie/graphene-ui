@@ -23,7 +23,7 @@ class Explorer extends React.Component {
 
         return (
             <div className="grid-block page-layout flex-start">
-                <div className="grid-block regular-padding small-up-1 medium-up-2 large-up-3">
+                <div className="grid-block small-up-1 medium-up-2 large-up-3">
                         <ExplorerCard>
                             <Link to="explorer/blocks">
                                 <div>
