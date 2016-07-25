@@ -778,7 +778,7 @@
     "asks": "Sell orders",
     "bids": "Buy orders",
     "no_data": "No data",
-    "time": "Candlesticks",
+    "time": "Time interval",
     "zoom": "Zoom",
     "borrow": "Borrow",
     "no_balance": "Insufficient balance",
