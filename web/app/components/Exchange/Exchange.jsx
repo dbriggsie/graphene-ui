@@ -759,7 +759,7 @@ class Exchange extends React.Component {
         if (value.indexOf(".") !== value.length - 1) {
             value = market_utils.limitByPrecision(order.amount, quote);
         }
-        console.log("type:", type, "order:", order);
+
         if (type === "bid") {
 
             let displaySellPrice = this._getDisplayPrice("ask", order.sell_price);
@@ -773,7 +773,7 @@ class Exchange extends React.Component {
                 displaySellPrice: displaySellPrice,
                 sellPrice: order.sell_price,
                 sellAmount: utils.get_asset_amount(sellAmount, quote),
-                sellTotal:  market_utils.limitByPrecision(sellTotal, base),
+                sellTotal: market_utils.limitByPrecision(sellTotal, base),
                 displayBuyPrice: displaySellPrice,
                 buyPrice: {
                     quote: order.sell_price.base,
