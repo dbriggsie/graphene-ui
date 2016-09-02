@@ -47,8 +47,6 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
             url: props.url || urls[props.gateway]
         };
 
-        this._copy = this._copy.bind(this);
-        document.addEventListener("copy", this._copy);
     }
 
     _copy(e) {

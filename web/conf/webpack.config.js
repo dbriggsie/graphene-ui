@@ -3,21 +3,20 @@ var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var Clean = require("clean-webpack-plugin");
 var git = require('git-rev-sync');
-require('es6-promise').polyfill();
 
 // BASE APP DIR
 var root_dir = path.resolve(__dirname, "..");
 
 // FUNCTION TO EXTRACT CSS FOR PRODUCTION
 function extractForProduction(loaders) {
-  return ExtractTextPlugin.extract("style", loaders.substr(loaders.indexOf("!")));
+    return ExtractTextPlugin.extract("style", loaders.substr(loaders.indexOf("!")));
 }
 
 module.exports = function(options) {
     // console.log(options.prod ? "Using PRODUCTION options\n" : "Using DEV options\n");
     // STYLE LOADERS
     var cssLoaders = "style-loader!css-loader!postcss-loader",
-      scssLoaders = "style!css!postcss-loader!sass?outputStyle=expanded";
+        scssLoaders = "style!css!postcss-loader!sass?outputStyle=expanded";
 
     // DIRECTORY CLEANER
     var cleanDirectories = ["dist"];
@@ -41,8 +40,8 @@ module.exports = function(options) {
         scssLoaders = extractForProduction(scssLoaders);
 
         // PROD PLUGINS
-        plugins.push(new Clean(cleanDirectories, {root: root_dir}));
-        plugins.push(new webpack.DefinePlugin({'process.env': {NODE_ENV: JSON.stringify('production')}}));
+        plugins.push(new Clean(cleanDirectories, { root: root_dir }));
+        plugins.push(new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }));
         plugins.push(new ExtractTextPlugin("app.css"));
         if (!options.noUgly) {
             plugins.push(new webpack.optimize.UglifyJsPlugin({
@@ -65,19 +64,18 @@ module.exports = function(options) {
         // PROD OUTPUT PATH
         outputPath = path.join(root_dir, "dist");
     } else {
-        plugins.push(new webpack.DefinePlugin({'process.env': {NODE_ENV: JSON.stringify('development')}})),
-        plugins.push(new webpack.HotModuleReplacementPlugin());
+        plugins.push(new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('development') } })),
+            plugins.push(new webpack.HotModuleReplacementPlugin());
     }
 
     var config = {
         entry: {
             app: options.prod ?
-            path.resolve(root_dir, "app/Main.js") :
-            [
-                "webpack-dev-server/client?http://localhost:8080",
-                "webpack/hot/only-dev-server",
-                path.resolve(root_dir, "app/Main-dev.js")
-            ]
+                path.resolve(root_dir, "app/Main.js") : [
+                    "webpack-dev-server/client?http://localhost:8080",
+                    "webpack/hot/only-dev-server",
+                    path.resolve(root_dir, "app/Main-dev.js")
+                ]
         },
         output: {
             path: outputPath,
@@ -88,20 +86,18 @@ module.exports = function(options) {
         devtool: options.prod ? "cheap-module-source-map" : "eval",
         debug: options.prod ? false : true,
         module: {
-            loaders: [
-                {
+            loaders: [{
                     test: /\.jsx$/,
                     include: [path.join(root_dir, "app"), path.join(root_dir, "node_modules/react-foundation-apps"), "/home/sigve/Dev/graphene/react-foundation-apps"],
                     loaders: options.prod ? ["babel-loader"] : ["babel-loader?cacheDirectory"]
-                },
-                {
+                }, {
                     test: /\.js$/,
                     exclude: [/node_modules/, path.resolve(root_dir, "../dl/node_modules")],
                     loader: "babel-loader",
-                    query: {compact: false, cacheDirectory: true}
-                },
-                {
-                    test: /\.json/, loader: "json",
+                    query: { compact: false, cacheDirectory: true }
+                }, {
+                    test: /\.json/,
+                    loader: "json",
                     exclude: [
                         path.resolve(root_dir, "../dl/src/common"),
                         path.resolve(root_dir, "app/assets/locales")
@@ -109,15 +105,21 @@ module.exports = function(options) {
                 },
                 { test: /\.coffee$/, loader: "coffee-loader" },
                 { test: /\.(coffee\.md|litcoffee)$/, loader: "coffee-loader?literate" },
-                { test: /\.css$/, loader: cssLoaders },
-                { test: /\.png$/, loader: "url-loader?limit=100000", exclude:[
-                    path.resolve(root_dir, "app/assets/asset-symbols")
-                ] },
+                { test: /\.css$/, loader: cssLoaders }, {
+                    test: /\.png$/,
+                    loader: "url-loader?limit=100000",
+                    exclude: [
+                        path.resolve(root_dir, "app/assets/asset-symbols")
+                    ]
+                }, {
+                    test: /\.(jpe?g)$/i,
+                    loader: 'file?name=[name].[ext]'
+                },
                 { test: /\.woff$/, loader: "url-loader?limit=100000&mimetype=application/font-woff" },
                 { test: /.*\.svg$/, loaders: ["svg-inline-loader", "svgo-loader"] },
                 { test: /\.md/, loader: 'html?removeAttributeQuotes=false!remarkable' }
             ],
-            postcss: function () {
+            postcss: function() {
                 return [precss, autoprefixer];
             }
         },

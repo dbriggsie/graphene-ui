@@ -296,7 +296,7 @@ class PriceChart extends React.Component {
                 },
                 series: {
                     marker: {
-                        enabled: true,
+                        enabled: false,
                         radius : 3
                     },
                     enableMouseTracking: true
