@@ -1646,24 +1646,25 @@ class Exchange extends React.Component {
                                     flipMyOrders={this.props.viewSettings.get("flipMyOrders")}
                                 />) : null}
 
-                                {/* Settle Orders */}
-                                <div className="grid-block no-overflow shrink no-padding">
-
-                                    {settle_orders.size > 0 && base && quote &&
-                                    (base.get("id") === "1.3.0" || quote.get("id") === "1.3.0") ? (
-                                        <OpenSettleOrders
-                                            key="settle_orders"
-                                            orders={settle_orders}
-                                            currentAccount={currentAccount.get("id")}
-                                            base={base}
-                                            quote={quote}
-                                            baseSymbol={baseSymbol}
-                                            quoteSymbol={quoteSymbol}
-                                            settlementPrice={settlementPrice}
-                                        />) : null}
-                                </div>
-
+                                {/* Settle Orders */}                          
+                                
+                                {(base.get("id") === "1.3.0" || quote.get("id") === "1.3.0") ? (
+                                <OpenSettleOrders
+                                    key="settle_orders"
+                                    className={cnames(!smallScreen && !leftOrderBook ? "medium-6 xlarge-4 order-7" : "",
+                                        `small-12 medium-6 no-padding align-spaced ps-container middle-content order-7`
+                                    )}
+                                    orders={settle_orders}
+                                    currentAccount={currentAccount.get("id")}
+                                    base={base}
+                                    quote={quote}
+                                    baseSymbol={baseSymbol}
+                                    quoteSymbol={quoteSymbol}
+                                    settlementPrice={settlementPrice}
+                                />) : null}
+                                
                             </div>
+                           
                         </div>{ /* end CenterContent */}           
 
                         

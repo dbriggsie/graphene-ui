@@ -114,11 +114,7 @@ class OpenSettleOrders extends React.Component {
         }
 
         return (
-            <div                
-                key="open_orders"
-                className="grid-block no-overflow small-12 no-padding vertical medium-horizontal middle-content"                
-            >
-                <div className="small-6 order-1" style={{paddingBottom: "1rem"}}>
+                <div className={this.props.className}>
                     <div className="exchange-bordered">
                         <div className="exchange-content-header">
                             <Translate content="exchange.settle_orders" />
@@ -134,7 +130,6 @@ class OpenSettleOrders extends React.Component {
                         </div>
                     </div>
                 </div>
-            </div>
         );
     }
 }
