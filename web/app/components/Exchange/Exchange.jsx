@@ -1648,7 +1648,7 @@ class Exchange extends React.Component {
 
                                 {/* Settle Orders */}                          
                                 
-                                {(base.get("id") === "1.3.0" || quote.get("id") === "1.3.0") ? (
+                                {(base.get("id") === "1.3.0" || quote.get("id") === "1.3.0") ? null/*(
                                 <OpenSettleOrders
                                     key="settle_orders"
                                     className={cnames(!smallScreen && !leftOrderBook ? "medium-6 xlarge-4 order-7" : "",
@@ -1661,7 +1661,7 @@ class Exchange extends React.Component {
                                     baseSymbol={baseSymbol}
                                     quoteSymbol={quoteSymbol}
                                     settlementPrice={settlementPrice}
-                                />) : null}
+                                />)*/ : null}
                                 
                             </div>
                            
