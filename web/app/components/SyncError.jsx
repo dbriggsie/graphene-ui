@@ -60,7 +60,7 @@ class InitError extends React.Component {
 
         return (
 
-            <div className="grid-frame vertical">
+            <div className="vertical">
 
                 <div className="grid-container text-center" style={{paddingTop: "5rem", maxWidth: "40rem"}}>
 
