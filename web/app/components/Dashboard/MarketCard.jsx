@@ -80,6 +80,10 @@ class MarketCard extends React.Component {
             imgName = "bts";
         }
 
+        let short_name =desc.short_name;
+        short_name==='ICO OpenLedger'?short_name='ICOO':1;
+        short_name==='BitTeaser'?short_name='BTSR':1;
+
         return (
             <div className={cnames("grid-block no-overflow fm-container", this.props.className)} onClick={this.goToMarket.bind(this)}>
                 <div className="grid-block vertical shrink">
@@ -87,7 +91,7 @@ class MarketCard extends React.Component {
                 </div>
                 <div className="grid-block vertical no-overflow">
                     <div className="fm-title" style={{visibility: this.props.new ? "visible" : "hidden"}}><Translate content="exchange.new" /></div>
-                    <div className="fm-name">{desc.short_name ? <span>{desc.short_name}</span> : <AssetName name={base.get("symbol")} />}</div>
+                    <div className="fm-name">{desc.short_name ? <span>{short_name}</span> : <AssetName name={base.get("symbol")} />}</div>
                     <div className="fm-volume">{(!stats || !stats.close) ? null : utils.format_price(
                         stats.close.quote.amount,
                         base,
