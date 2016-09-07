@@ -61,6 +61,7 @@ class MarketCard extends React.Component {
         let {base, quote, marketStats} = this.props;
 
         let desc = assetUtils.parseDescription(base.getIn(["options", "description"]));
+        console.log(desc)
         let name = <AssetName name={base.get("symbol")} />;
         let imgName = base.get("symbol").split(".");
         imgName = imgName.length === 2 ? imgName[1] : imgName[0];

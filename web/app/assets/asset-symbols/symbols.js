@@ -22,3 +22,4 @@ require("file?name=asset-symbols/[name].png!./peerplays.png");
 require("file?name=asset-symbols/[name].png!./eurt.png");
 require("file?name=asset-symbols/[name].png!./usdt.png");
 require("file?name=asset-symbols/[name].png!./icoo.png");
+require("file?name=asset-symbols/[name].png!./dash.png");

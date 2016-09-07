@@ -147,9 +147,9 @@ class Exchange extends React.Component {
             buyDiff: false,
             sellDiff: false,
             indicators: ws.get("indicators", {
-                //rsi: false,
+                rsi: false,
                 sma: true,
-                //atr: false,
+                atr: false,
                 ema: false
             }),
             buySellTop: ws.get("buySellTop", true),

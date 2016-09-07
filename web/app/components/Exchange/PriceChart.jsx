@@ -344,7 +344,7 @@ class PriceChart extends React.Component {
                     yAxis: 1
                 },
                 {   
-                    //type: "candlestick",
+                    type: "candlestick",
                     id: "primary",
                     name: "Price",
                     data: priceSeriesData
@@ -380,9 +380,9 @@ class PriceChart extends React.Component {
                 maxPadding: 0,
                 currentPriceIndicator: {
                     precision: base.get("precision"),
-                    backgroundColor: "#0ff",
+                    backgroundColor: "#bb2a2a",
                     borderColor: "#000000",
-                    lineColor: "#0ff",
+                    lineColor: "#bb2a2a",
                     lineDashStyle: "Solid",
                     lineOpacity: 0.8,
                     enabled: priceSeriesData.length > 0 && marketReady,
