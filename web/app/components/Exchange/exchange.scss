@@ -220,6 +220,11 @@ a.order-cancel {
     text-align: left;
     font-size: 1rem;
     margin: 0 0 0 4px;
+    span{
+      span{
+        font-weight: bold;
+      }
+    }
 }
 
 .market-stats .stat .value {

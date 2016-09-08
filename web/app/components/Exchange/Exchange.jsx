@@ -175,7 +175,7 @@ class Exchange extends React.Component {
             height: window.innerHeight,
             width: window.innerWidth,
             chartHeight: ws.get("chartHeight", 425),
-            currentPeriod: 'all'
+            currentPeriod: 3600* 24 * 30
         };
     }
 
@@ -1387,7 +1387,7 @@ class Exchange extends React.Component {
                 moveOrderBook={this._moveOrderBook.bind(this)}
                 flipOrderBook={this.props.viewSettings.get("flipOrderBook")}
                 marketReady={marketReady}
-                wrapperClass={`order-${buySellTop ? 3 : 1} xlarge-order-${buySellTop ? 4 : 1}`}
+                className={`order-1`}
             />
         );
 
@@ -1436,7 +1436,7 @@ class Exchange extends React.Component {
                                                     </span>
                                                 </li>) : null}
                                             {squeezePrice && showCallLimit ?
-                                                (<li className="stat">
+                                                (<li className="stat" >
                                                     <span>
                                                         <Translate component="span" content="exchange.squeeze" />
                                                         {utils.price_text(squeezePrice, quote, base)}
@@ -1444,24 +1444,30 @@ class Exchange extends React.Component {
                                                     </span>
                                                 </li>) : null}
                                             {latestPrice ?
-                                                <li className="stat">
+                                                <li className="stat" style={{margin:"0 0 0 30px"}}>
                                                     <span>
-                                                        <Translate component="span" content="exchange.latest" />&nbsp;
-                                                        {utils.price_text(!marketReady ? 0 : latestPrice.full, quote, base)}<span className={changeClass}>&nbsp;{changeClass === "change-up" ? <span>&#8593;</span> : <span>&#8595;</span>}</span>
+                                                        <Translate component="span" content="exchange.latest" />:&nbsp;
+                                                        {utils.price_text(!marketReady ? 0 : latestPrice.full, quote, base)}<span className={changeClass}>&nbsp;{changeClass === "change-up" ? <span >{/*&#8593;*/}</span> : <span>{/*&#8595;*/}</span>}</span>
                                                         <span><AssetName name={baseSymbol} />/<AssetName name={quoteSymbol} /></span>
                                                     </span>
                                                 </li> : null}
-                                            &nbsp; <Translate component="span" content={"exchange.volume_24"} /> (
-                                            {volumeBase >= 0 ?  <PriceStat ready={marketReady} decimals={0} volume={true} price={volumeBase} base={base} /> : null}
-                                            {volumeQuote >= 0 ? <PriceStat ready={marketReady} decimals={0} volume={true} price={volumeQuote} base={quote} /> : null}
-                                            &nbsp;)
-                                            <li className="stat">
-                                                <span>
-                                                    <Translate component="span" content="account.hour_24" />&nbsp;
-                                                    {marketReady ? dayChange : 0}<span className={dayChangeArrow}>&nbsp;{dayChangeArrow === "" ? null : dayChangeArrow === "change-up" ? <span>&#8593;</span> : <span>&#8595;</span>}</span>
-                                                    <span>%</span>
-                                                </span>
-                                            </li>
+                                                <li className="stat" style={{margin:"0 0 0 40px"}} >
+                                                    <span>
+                                                        <Translate component="span" content="account.hour_24" />:&nbsp;
+                                                        {marketReady ? dayChange : 0}%<span className={dayChangeArrow}> {dayChangeArrow === "" ? null : dayChangeArrow === "change-up" ?<span>&#8593;</span> : <span>&#8595;</span>}</span>
+                                                        
+                                                    </span>
+                                                </li>
+
+                                                <li className="stat" style={{margin:"0 0 0 40px"}}>
+                                                    <span>
+                                                        <Translate component="span" content="exchange.volume_24" />:&nbsp;
+                                                         <span>
+                                                        </span>
+                                                    </span>
+                                                </li>
+                                                {/*volumeBase >= 0 ?  <PriceStat ready={marketReady} decimals={0} volume={true} price={volumeBase} base={base} /> : null*/}
+                                                {volumeQuote >= 0 ? <PriceStat ready={marketReady} decimals={0} volume={true} price={volumeQuote} base={quote} /> : null}   
 
                                         </ul>
                                     </div>
@@ -1596,7 +1602,6 @@ class Exchange extends React.Component {
                                 {hasPrediction ? <div className="grid-content no-overflow" style={{lineHeight: "1.2rem", paddingTop: 10}}>{description}</div> : null}
 
                                 {buyForm}
-
                                 {sellForm}
 
                                 <MarketHistory
