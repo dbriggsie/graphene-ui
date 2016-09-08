@@ -77,13 +77,13 @@ class Dashboard extends React.Component {
 
         let featuredMarkets = [
             ["OPEN.BTC", "BTS", false],
+            ["OPEN.BTC", "OPEN.ETH"],
+            ["OPEN.BTC", "OPEN.STEEM"],
+            ["OPEN.BTC", "OPEN.DGD"],
+            ["OPEN.BTC", "BLOCKPAY"],
             ["OPEN.BTC", "ICOO"],
             ["BTS", "OBITS"],
             ["BTS", "BTSR"],
-            ["OPEN.BTC", "OPEN.ETH"],
-            ["OPEN.BTC", "OPEN.DGD"],
-            ["OPEN.BTC", "OPEN.LISK"],
-            ["OPEN.BTC", "OPEN.STEEM"],
             ["BTS", "PEERPLAYS"],
             ["OPEN.BTC", "OPEN.DASH"],
             ["OPEN.BTC", "OPEN.EURT"],

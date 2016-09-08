@@ -106,13 +106,6 @@ export default class BlockTradesGateway extends React.Component {
             }
         });
 
-
-        console.log(filteredCoins);
-
-       console.log(filteredCoins2);
-
-
-
         let coinOptions = filteredCoins2.map( coin => {
             return <option value={coin} key={coin}> {coin} </option>
         })
