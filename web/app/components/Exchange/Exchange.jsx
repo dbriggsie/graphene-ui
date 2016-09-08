@@ -175,7 +175,7 @@ class Exchange extends React.Component {
             height: window.innerHeight,
             width: window.innerWidth,
             chartHeight: ws.get("chartHeight", 425),
-            currentPeriod: 3600* 24 * 30
+            currentPeriod: 3600* 24 * 30 
         };
     }
 
@@ -1426,8 +1426,8 @@ class Exchange extends React.Component {
                                 <div className="grid-block vertical">
                                     <div className="grid-block show-for-medium wrap" >
                                         <ul className="market-stats stats top-stats">
-                                            {settlementPrice ? <PriceStat ready={marketReady} price={settlementPrice} quote={quote} base={base} content="exchange.settle"/> : null}
-                                            {lowestCallPrice && showCallLimit ?
+                                            {settlementPrice &&false ? <PriceStat ready={marketReady} price={settlementPrice} quote={quote} base={base} content="exchange.settle"/> : null}
+                                            {lowestCallPrice &&false&& showCallLimit ?
                                                 (<li className="stat">
                                                     <span>
                                                         <Translate component="span" content="explorer.block.call_limit" />
@@ -1435,7 +1435,7 @@ class Exchange extends React.Component {
                                                         <span>{baseSymbol}/{quoteSymbol}</span>
                                                     </span>
                                                 </li>) : null}
-                                            {squeezePrice && showCallLimit ?
+                                            {squeezePrice &&false&& showCallLimit ?
                                                 (<li className="stat" >
                                                     <span>
                                                         <Translate component="span" content="exchange.squeeze" />
