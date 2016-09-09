@@ -52,6 +52,12 @@ class InitError extends React.Component {
 
     render() {
         console.log("-- InitError.render -->", this.props);
+        if(this.props.rpc_connection_status=='open'){
+            setTimeout(function(){
+                window.open("/","_self");
+            },1000);
+        }
+
 
         let options = this.props.apis.map(entry => {
             return <option key={entry} value={entry}>{entry}</option>;
