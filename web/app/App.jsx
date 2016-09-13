@@ -100,32 +100,28 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+
         NotificationStore.listen(this._onNotificationChange.bind(this));
         SettingsStore.listen(this._onSettingsChange.bind(this));
 
-        function ChainStoreReconnect(that){
-            ChainStore.init().then(() => {
-                that.setState({ synced: true });
-                return Promise.all([
-                    AccountStore.loadDbData(Apis.instance().chainId)
-                ]);
-            }).then(() => {
-                //let acc = AccountStore.tryToSetCurrentAccount();
-                //console.log("acc ok",SettingsStore.getSetting("connection"));
-                that.setState({ loading: false, syncFail: false });
-                //window.open("/","_self");
+        ChainStore.init().then(() => {
+            this.setState({ synced: true });
+
+            Promise.all([
+                AccountStore.loadDbData(Apis.instance().chainId)
+            ]).then(() => {
+                AccountStore.tryToSetCurrentAccount();
+                this.setState({ loading: false, syncFail: false });
             }).catch(error => {
-                console.log("acc err",SettingsStore.getSetting("connection"));
-                //console.log("[App.jsx] ----- ChainStore.init error ----->", error);
-                let syncFail = error.message === "ChainStore sync error, please check your system clock" ? true : false;
-                that.setState({ loading: false, syncFail });
+                console.log("[App.jsx] ----- ERROR ----->", error);
+                this.setState({ loading: false });
             });
+        }).catch(error => {
+            console.warn("[App.jsx] ----- ChainStore.init error ----->", error);
+            let syncFail = error.message === "ChainStore sync error, please check your system clock" ? true : false;
+            this.setState({ loading: false, syncFail });
+        });
 
-
-            setTimeout(ChainStoreReconnect,3000,that);
-        }
-
-        ChainStoreReconnect(this);
 
         const user_agent = navigator.userAgent.toLowerCase();
         if (!(window.electron || user_agent.indexOf("firefox") > -1 || user_agent.indexOf("chrome") > -1 || user_agent.indexOf("edge") > -1)) {
@@ -286,7 +282,7 @@ class Auth extends React.Component {
 
 let willTransitionTo = (nextState, replaceState, callback) => {
 
-    let connectionString = SettingsStore.getSetting("connection");
+    let connectionString = SettingsStore.getSetting("apiServer");
 
     if (nextState.location.pathname === "/init-error") {
 

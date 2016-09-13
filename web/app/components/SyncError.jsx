@@ -19,20 +19,20 @@ class InitError extends React.Component {
     static getPropsFromStores() {
         return {
             rpc_connection_status: BlockchainStore.getState().rpc_connection_status,
-            apis: SettingsStore.getState().defaults.connection,
-            connection: SettingsStore.getState().settings.get("connection"),
-            defaultConnection: SettingsStore.getState().defaultSettings.get("connection"),
+            apis: SettingsStore.getState().defaults.apiServer,
+            apiServer: SettingsStore.getState().settings.get("apiServer"),
+            defaultConnection: SettingsStore.getState().defaultSettings.get("apiServer"),
         }
-    }
-
-    onChangeWS(e) {
-        SettingsActions.changeSetting({setting: "connection", value: e.target.value });
-        Apis.reset(e.target.value, true);
     }
 
     triggerModal(e) {
         console.log("triggerModal:");
         this.refs.ws_modal.show(e);
+    }
+
+    onChangeWS(e) {
+        SettingsActions.changeSetting({setting: "apiServer", value: e.target.value });
+        Apis.reset(e.target.value, true);
     }
 
     onReloadClick(e) {
@@ -47,29 +47,20 @@ class InitError extends React.Component {
     }
 
     onReset() {
-        SettingsActions.changeSetting({setting: "connection", value: this.props.defaultConnection });
+        SettingsActions.changeSetting({setting: "apiServer", value: this.props.defaultConnection });
         SettingsActions.clearSettings();
     }
 
     render() {
-        console.log("-- InitError.render -->", this.props);
-        if(this.props.rpc_connection_status=='open'){
-        	setTimeout(function(){
-        		window.open("/","_self");
-        	},1000);
-        }
-
         let options = this.props.apis.map(entry => {
-            return <option key={entry} value={entry}>{entry}</option>;
+            return <option key={entry.url} value={entry.url}>{entry.location || entry.url} {entry.location ? `(${entry.url})` : null}</option>;
         });
 
         return (
 
-            <div className="grid-frame">
-                <div className="grid-block vertical">
+            <div className="grid-frame vertical">
 
-
-                <div className="grid-container text-center" style={{ maxWidth: "40rem"}}>
+                <div className="grid-container text-center" style={{paddingTop: "5rem", maxWidth: "40rem"}}>
 
                     <h2><Translate content="sync_fail.title" /></h2>
                     <br />
@@ -78,13 +69,13 @@ class InitError extends React.Component {
 
                     <p><Translate content="sync_fail.sub_text_2" /></p>
                 </div>
-                <div className="grid-container text-center" style={{ maxWidth: "40rem"}}>
+                <div className="grid-container text-center" style={{paddingTop: "1rem", maxWidth: "40rem"}}>
                 <section className="block-list">
                     <header><Translate component="span" content={`settings.connection`} /></header>
                     <ul>
                         <li className="with-dropdown">
 
-                            <select onChange={this.onChangeWS.bind(this)} value={this.props.connection}>
+                            <select onChange={this.onChangeWS.bind(this)} value={this.props.apiServer}>
                                 {options}
                             </select>
 
@@ -116,7 +107,6 @@ class InitError extends React.Component {
                 </div>
 
                 <WebsocketAddModal ref="ws_modal" apis={this.props.apis} />
-                </div>
                 </div>
             </div>
         );

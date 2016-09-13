@@ -71,7 +71,7 @@ export default class BlockTradesGateway extends React.Component {
     }
 
     changeAction(type) {
-		
+        
         let activeCoin = this._getActiveCoin(this.props, {action: type});
 
         this.setState({
@@ -96,26 +96,12 @@ export default class BlockTradesGateway extends React.Component {
             }
         });
 
-        let toplist = ["BTC", "ETH", "LTC", "DAO", "STEEM", "DASH", "MAID", "DOGE", "DGD", "EMC", "AMP", "PPC", "USDT", "AGRS", "OMNI", "BKS", "MUSE", "NSR", "EURT", "LISK", "MKR", "NBT", "SBD"];
-        
-        let filteredCoins2 =[];
-
-        toplist.map((e)=>{
-            for(let i in filteredCoins){
-                filteredCoins[i].backingCoinType ===e?filteredCoins2.push(e):1;
-            }
-        });
-
-        let coinOptions = filteredCoins2.map( coin => {
-            return <option value={coin} key={coin}> {coin} </option>
-        })
-
-        /*let coinOptions = filteredCoins.map(coin => {
+        let coinOptions = filteredCoins.map(coin => {
             let option = action === "deposit" ? coin.backingCoinType.toUpperCase() : coin.symbol;
             return <option value={option} key={coin.symbol}>{option}</option>;
         }).filter(a => {
             return a !== null;
-        });*/
+        });
 
         let coin = filteredCoins.filter(coin => {
             return (action === "deposit" ? coin.backingCoinType.toUpperCase() === activeCoin : coin.symbol === activeCoin);

@@ -18,9 +18,9 @@ class InitError extends React.Component {
     static getPropsFromStores() {
         return {
             rpc_connection_status: BlockchainStore.getState().rpc_connection_status,
-            apis: SettingsStore.getState().defaults.connection,
-            connection: SettingsStore.getState().settings.get("connection"),
-            defaultConnection: SettingsStore.getState().defaultSettings.get("connection"),
+            apis: SettingsStore.getState().defaults.apiServer,
+            apiServer: SettingsStore.getState().settings.get("apiServer"),
+            defaultConnection: SettingsStore.getState().defaultSettings.get("apiServer"),
         }
     }
 
@@ -30,7 +30,7 @@ class InitError extends React.Component {
     }
 
     onChangeWS(e) {
-        SettingsActions.changeSetting({setting: "connection", value: e.target.value });
+        SettingsActions.changeSetting({setting: "apiServer", value: e.target.value });
         Apis.reset(e.target.value, true);
     }
 
@@ -46,21 +46,13 @@ class InitError extends React.Component {
     }
 
     onReset() {
-        SettingsActions.changeSetting({setting: "connection", value: this.props.defaultConnection });
+        SettingsActions.changeSetting({setting: "apiServer", value: this.props.defaultConnection });
         SettingsActions.clearSettings();
     }
 
     render() {
-        console.log("-- InitError.render -->", this.props);
-        if(this.props.rpc_connection_status=='open'){
-            setTimeout(function(){
-                window.open("/","_self");
-            },1000);
-        }
-
-
         let options = this.props.apis.map(entry => {
-            return <option key={entry} value={entry}>{entry}</option>;
+            return <option key={entry.url} value={entry.url}>{entry.location || entry.url} {entry.location ? `(${entry.url})` : null}</option>;
         });
 
         return (
@@ -75,7 +67,7 @@ class InitError extends React.Component {
                             <ul>
                                 <li className="with-dropdown">
 
-                                    <select onChange={this.onChangeWS.bind(this)} value={this.props.connection}>
+                                    <select onChange={this.onChangeWS.bind(this)} value={this.props.apiServer}>
                                         {options}
                                     </select>
 
