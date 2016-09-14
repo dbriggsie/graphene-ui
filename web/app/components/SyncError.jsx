@@ -58,9 +58,11 @@ class InitError extends React.Component {
 
         return (
 
-            <div className="grid-frame vertical">
+            <div className="grid-frame">
+                <div className="grid-block vertical">
 
-                <div className="grid-container text-center" style={{paddingTop: "5rem", maxWidth: "40rem"}}>
+
+                <div className="grid-container text-center" style={{ maxWidth: "40rem"}}>
 
                     <h2><Translate content="sync_fail.title" /></h2>
                     <br />
@@ -69,13 +71,13 @@ class InitError extends React.Component {
 
                     <p><Translate content="sync_fail.sub_text_2" /></p>
                 </div>
-                <div className="grid-container text-center" style={{paddingTop: "1rem", maxWidth: "40rem"}}>
+                <div className="grid-container text-center" style={{ maxWidth: "40rem"}}>
                 <section className="block-list">
                     <header><Translate component="span" content={`settings.connection`} /></header>
                     <ul>
                         <li className="with-dropdown">
 
-                            <select onChange={this.onChangeWS.bind(this)} value={this.props.apiServer}>
+                            <select onChange={this.onChangeWS.bind(this)} value={this.props.connection}>
                                 {options}
                             </select>
 
@@ -108,8 +110,9 @@ class InitError extends React.Component {
 
                 <WebsocketAddModal ref="ws_modal" apis={this.props.apis} />
                 </div>
+                </div>
             </div>
-        );
+            );
     }
 }
 
