@@ -96,6 +96,24 @@ export default class BlockTradesGateway extends React.Component {
             }
         });
 
+        let filteredCoins2 =[];
+        let lastCoin =[];
+        let relative = ["BTC", "ETH", "LTC", "DAO", "STEEM", "DASH", "MAID", "DOGE", "DGD", "EMC", "AMP", "PPC", "USDT", "AGRS", "OMNI", "BKS", "MUSE", "NSR", "EURT", "LISK", "MKR", "NBT", "SBD"];
+        
+        relative.map((e1=>{
+            filteredCoins.map(e2=>{
+                e2.backingCoinType===e1?filteredCoins2.push(e2):1;
+            });
+        }));
+
+        filteredCoins.map((e1=>{
+            if(filteredCoins2.indexOf(e1)==-1){
+                lastCoin.push(e1);
+            }         
+        }));
+
+        filteredCoins=filteredCoins2.concat(lastCoin);
+
         let coinOptions = filteredCoins.map(coin => {
             let option = action === "deposit" ? coin.backingCoinType.toUpperCase() : coin.symbol;
             return <option value={option} key={coin.symbol}>{option}</option>;
