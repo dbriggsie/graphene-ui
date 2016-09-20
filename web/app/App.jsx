@@ -106,7 +106,7 @@ class App extends React.Component {
         let connectionString = SettingsStore.getSetting("apiServer");
         ChainStore.init().then(() => {
             this.setState({ synced: true });
-            Apis.instance().ws_rpc.ws.debug = true;
+            //Apis.instance().ws_rpc.ws.debug = true;
             let _focusTimerInterval;
             window.onblur = function () {
                 //console.log('focus gone',window._focusTimer);
