@@ -103,9 +103,39 @@ class App extends React.Component {
 
         NotificationStore.listen(this._onNotificationChange.bind(this));
         SettingsStore.listen(this._onSettingsChange.bind(this));
-
+        let connectionString = SettingsStore.getSetting("apiServer");
         ChainStore.init().then(() => {
             this.setState({ synced: true });
+            Apis.instance().ws_rpc.ws.debug = true;
+            let _focusTimerInterval;
+            window.onblur = function () {
+                //console.log('focus gone',window._focusTimer);
+                window._focusTimer = 0;
+                _focusTimerInterval = setInterval(()=>{
+                    //console.log("Apis.close")
+                    if(window._focusTimer>1*60*10 ){
+                    //if(window._focusTimer>10 ){
+                        Apis.close();
+                    }
+                    window._focusTimer+=1;
+                },1000);
+            }
+
+            window.onfocus = function () {
+                _focusTimerInterval?clearInterval(_focusTimerInterval):1;
+                console.log('focus on',window._focusTimer);
+                window._focusTimer = 0;
+                console.log('ws_rpc',Apis.instance().ws_rpc,connectionString);
+
+                if(!Apis.instance().ws_rpc){
+                    Apis.instance(connectionString,true).init_promise.then((res) => {
+                        console.log("connected to:", res[0].network);
+                    });
+                }
+            }
+
+            
+
 
             Promise.all([
                 AccountStore.loadDbData(Apis.instance().chainId)
