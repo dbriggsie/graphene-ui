@@ -182,7 +182,11 @@ class MarketRow extends React.Component {
         });
 
         let className = "clickable";
-        if (this.props.current) {
+
+        let check = ~['ICOO', 'BTSR', 'OBITS'].indexOf(quote.get("symbol"));
+        className+=check?' marketColorize':'';
+
+        if (this.props.current) {            
             className += " activeMarket";
         }
 

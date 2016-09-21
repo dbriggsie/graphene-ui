@@ -142,7 +142,7 @@ class MarketGroup extends React.Component {
                 return (
                     <MarketRow
                         key={market.id}
-                        name={base === "others" ? <span><AssetName name={market.quote} />:<AssetName name={market.base} /></span> : <AssetName name={market.quote} />}
+                        name={base === "others" ? <span>1<AssetName name={market.quote} />:2<AssetName name={market.base} /></span> : <AssetName name={market.quote} />}
                         quote={market.quote}
                         base={market.base}
                         columns={columns}

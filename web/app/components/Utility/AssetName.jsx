@@ -34,6 +34,8 @@ class AssetName extends React.Component {
 		// let prefix = isBitAsset && !isPredMarket ? <span>bit</span> :
 		// 			 replacedName !== this.props.name ? <span>{replacedPrefix}</span> : null;
 
+		prefix=prefix=='open.'?'':prefix;
+
 		if (replace && replacedName !== this.props.name) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
 			let tooltip = `<div><strong>${this.props.name}</strong><br />${desc.short ? desc.short : desc.main}</div>`;
