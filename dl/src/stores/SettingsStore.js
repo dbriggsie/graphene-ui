@@ -30,7 +30,7 @@ class SettingsStore {
         let topMarkets = [
             "MKR", "OPEN.MKR", "BTS", "OPEN.ETH","BLOCKPAY", "ICOO", "BTC", "OPEN.LISK",
             "OPEN.STEEM", "OPEN.DAO", "PEERPLAYS", "USD", "CNY", "BTSR", "OBITS",
-            "OPEN.DGD", "EUR", "TRADE.BTC", "CASH.BTC", "GOLD", "SILVER",
+            "OPEN.DGD", "EUR", "TRADE.BTC", "GOLD", "SILVER",
             "OPEN.USDT", "OPEN.EURT", "OPEN.BTC", "CADASTRAL"
         ];
 

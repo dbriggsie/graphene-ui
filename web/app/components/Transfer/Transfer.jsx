@@ -267,6 +267,7 @@ class Transfer extends React.Component {
                         {/*  A M O U N T   */}
                         <div className="content-block transfer-input">
                             <AmountSelector label="transfer.amount"
+                                            type="number"
                                             amount={amount}
                                             onChange={this.onAmountChanged.bind(this)}
                                             asset={asset_types.length > 0 && asset ? asset.get("id") : ( asset_id ? asset_id : asset_types[0])}

@@ -123,10 +123,8 @@ class App extends React.Component {
 
             window.onfocus = function () {
                 _focusTimerInterval?clearInterval(_focusTimerInterval):1;
-                console.log('focus on',window._focusTimer);
                 window._focusTimer = 0;
-                console.log('ws_rpc',Apis.instance().ws_rpc,connectionString);
-
+                console.log('ws_rpc',window._focusTimer, Apis.instance().ws_rpc,connectionString);
                 if(!Apis.instance().ws_rpc){
                     Apis.instance(connectionString,true).init_promise.then((res) => {
                         console.log("connected to:", res[0].network);
