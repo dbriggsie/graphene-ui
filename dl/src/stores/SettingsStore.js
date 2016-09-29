@@ -55,6 +55,7 @@ class SettingsStore {
         // and use an object {translate: key} in the defaults array
         let apiServer = [
             {url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany"},
+            {url: "wss://eu.openledger.info/ws", location: "Berlin, Germany"},
             {url: "wss://openledger.hk/ws", location: "Hong Kong"},
             {url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)"}
         ];
