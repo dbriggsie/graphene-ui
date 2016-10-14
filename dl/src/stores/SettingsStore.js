@@ -28,10 +28,10 @@ class SettingsStore {
 
         // Default markets setup
         let topMarkets = [
-            "MKR", "OPEN.MKR", "BTS", "OPEN.ETH","BLOCKPAY", "ICOO", "BTC", "OPEN.LISK",
+            "OPEN.MKR", "BTS", "OPEN.ETH","BLOCKPAY", "ICOO", "BTC", "OPEN.LISK",
             "OPEN.STEEM", "OPEN.DAO", "PEERPLAYS", "USD", "CNY", "BTSR", "OBITS",
-            "OPEN.DGD", "EUR", "TRADE.BTC", "GOLD", "SILVER",
-            "OPEN.USDT", "OPEN.EURT", "OPEN.BTC", "CADASTRAL"
+            "OPEN.DGD", "EUR", "GOLD", "SILVER", "SHAREBITS","BROWNIE.PTS",
+            "OPEN.USDT", "OPEN.EURT", "OPEN.BTC", "CADASTRAL","SOLCERT"
         ];
 
         // this.preferredBases = Immutable.List([CORE_ASSET, "OPEN.BTC", "USD", "CNY", "BTC"]);
