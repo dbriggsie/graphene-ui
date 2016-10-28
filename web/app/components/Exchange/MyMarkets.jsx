@@ -142,7 +142,7 @@ class MarketGroup extends React.Component {
                 return (
                     <MarketRow
                         key={market.id}
-                        name={base === "others" ? <span>1<AssetName name={market.quote} />:2<AssetName name={market.base} /></span> : <AssetName name={market.quote} />}
+                        name={base === "others" ? <span> <AssetName name={market.quote} /> : <AssetName name={market.base} /></span> : <AssetName name={market.quote} />}
                         quote={market.quote}
                         base={market.base}
                         columns={columns}
@@ -569,9 +569,13 @@ class MyMarkets extends React.Component {
                 </div>
 
                 {activeTab === "all" || this.props.controls ? (
-                    <div className="small-12 medium-6" style={{padding: "1rem 0"}}>
+                    <div style={{padding: "1rem 0"}}>
                         {this.props.controls ? <div style={{paddingBottom: "0.5rem"}}>{this.props.controls}</div> : null}
-                        {activeTab === "all" ? <input type="text" value={this.state.inputValue} onChange={this._lookupAssets.bind(this)} placeholder="SYMBOL:SYMBOL" /> : null}
+                        {activeTab === "all" ? <div className="symbols_input" >
+                            <input type="text" value={this.state.inputValue} onChange={this._lookupAssets.bind(this)} placeholder="SYMBOL:SYMBOL" />
+                            <input type="text" value={this.state.inputValue2} onChange={this._lookupAssets.bind(this)} placeholder="SYMBOL:SYMBOL" />
+                        </div>
+                        : null}
                     </div> ) : null}
 
                 <ul className="mymarkets-tabs">
