@@ -568,14 +568,11 @@ class MyMarkets extends React.Component {
                     </div>
                 </div>
 
+
                 {activeTab === "all" || this.props.controls ? (
-                    <div style={{padding: "1rem 0"}}>
+                    <div className="small-12 medium-6" style={{padding: "1rem 0"}}>
                         {this.props.controls ? <div style={{paddingBottom: "0.5rem"}}>{this.props.controls}</div> : null}
-                        {activeTab === "all" ? <div className="symbols_input" >
-                            <input type="text" value={this.state.inputValue} onChange={this._lookupAssets.bind(this)} placeholder="SYMBOL:SYMBOL" />
-                            <input type="text" value={this.state.inputValue2} onChange={this._lookupAssets.bind(this)} placeholder="SYMBOL:SYMBOL" />
-                        </div>
-                        : null}
+                        {activeTab === "all" ? <input type="text" value={this.state.inputValue} onChange={this._lookupAssets.bind(this)} placeholder="SYMBOL:SYMBOL" /> : null}
                     </div> ) : null}
 
                 <ul className="mymarkets-tabs">
