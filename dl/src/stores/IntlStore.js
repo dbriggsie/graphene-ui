@@ -1,6 +1,7 @@
 var alt = require("../alt-instance");
 var IntlActions = require("../actions/IntlActions");
 var SettingsActions = require("../actions/SettingsActions");
+var SettingsStore = require("./SettingsStore");
 var BaseStore = require("./BaseStore");
 var counterpart = require("counterpart-instance");
 var locale_en = require("json!assets/locales/locale-en");
@@ -31,8 +32,7 @@ addLocaleData(tr);
 class IntlStore extends BaseStore {
     constructor() {
         super();
-        this.currentLocale = ss.has("settings_v3") ? ss.get("settings_v3").locale : "en";
-
+        this.currentLocale = ss.has("viewSettings_v1") ? ss.get("viewSettings_v1").locale : SettingsStore.getSetting('locale');
         this.locales = ["en"];
         this.localesObject = {en: locale_en};
 
