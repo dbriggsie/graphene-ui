@@ -25,20 +25,23 @@ class AssetName extends React.Component {
 	}
 
 	render() {
-		let {name, replace, asset} = this.props;
+		let {name, replace, asset,isprefix} = this.props;
+		//console.log("name>",name)
+		//console.log("this.props.prefix@>",this.props.prefix)
 
 		let isBitAsset = asset.has("bitasset");
 		let isPredMarket = isBitAsset && asset.getIn(["bitasset", "is_prediction_market"]);
+
 
 		let {name: replacedName, prefix} = utils.replaceName(name, isBitAsset && !isPredMarket && asset.get("issuer") === "1.2.0");
 		// let prefix = isBitAsset && !isPredMarket ? <span>bit</span> :
 		// 			 replacedName !== this.props.name ? <span>{replacedPrefix}</span> : null;
 
-		prefix=prefix=='open.'?'':prefix;
+		(typeof isprefix==='boolean'&&!isprefix)?prefix='':1;
 
 		if (replace && replacedName !== this.props.name) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
-			let tooltip = `<div><strong>${this.props.name}</strong><br />${desc.short ? desc.short : desc.main}</div>`;
+			let tooltip = `<div><strong>${prefix}</strong><br />${desc.short ? desc.short : desc.main}</div>`;
 			return (
 				<span
 					className="tooltip"
@@ -51,7 +54,7 @@ class AssetName extends React.Component {
 				</span>
 			);
 		} else {
-			return <span>{prefix}<span>{name}</span></span>
+			return <span>{prefix}<span>{replacedName}</span></span>
 		}
 
 	}

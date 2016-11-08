@@ -255,11 +255,12 @@ class MyMarkets extends React.Component {
             lookupQuote: quote,
             lookupBase: base,
             inputValue: inputValue,
-            minWidth: "100%"
+            minWidth: "100%",
+            showBaseTab: props.viewSettings.get("activeMarketTab", 0)==5?true:false,
         };
 
         this._setMinWidth = this._setMinWidth.bind(this);
-        this.getAssetList = debounce(AssetActions.getAssetList, 150);
+        this.getAssetList = AssetActions.getAssetList;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -367,33 +368,53 @@ class MyMarkets extends React.Component {
 
     _lookupAssets(e, force = false) {
         console.log("lookup assets");
-        if (!e.target.value && e.target.value !== "") {
-            return;
-        }
+
         let now = new Date();
 
-        let symbols = e.target.value.toUpperCase().split(":");
+        let symbol_one=this.refs.symbol_one ||{value:''};
+        let symbol_two=this.refs.symbol_two ||{value:''};
+  
+        let input_value = symbol_one.value.toUpperCase()+':'+symbol_two.value.toUpperCase();
+        let symbols = [symbol_one.value.toUpperCase(), symbol_two.value.toUpperCase()];
         let quote = symbols[0];
-        let base = symbols.length === 2 ? symbols[1] : null;
+        let base = symbols[1];
 
         this.setState({
             lookupQuote: quote,
             lookupBase: base,
-            inputValue: e.target.value.toUpperCase()
+            inputValue: input_value
         });
 
         SettingsActions.changeViewSetting({
-            marketLookupInput: e.target.value.toUpperCase()
+            marketLookupInput: input_value
         });
 
+        
+        if(e.target.id&&e.target.value){
+            let res = [];
+            let input_value = e.target.value.toLowerCase();
+            this.props.searchAssets.map(el=>{
+                if(el.symbol.toLowerCase().indexOf(input_value)===0){
+                    if(input_value.length<el.symbol.length){
+                        res.push(el.symbol);                        
+                    }
+                }
+            });
+
+            this.refs[e.target.id].value = res[0]||"";
+        }else if(e.target.id){
+            this.refs[e.target.id].value = ' ';
+        }
+
+
         if (this.state.lookupQuote !== quote || force) {
-            if (quote.length < 2 || now - lastLookup <= 250) {
+            if ( now - lastLookup <= 250) {
                 return false;
             }
             this.getAssetList(quote, 50);
         } else {
             if (base && this.state.lookupBase !== base) {
-                if (base.length < 2 || now - lastLookup <= 250) {
+                if ( now - lastLookup <= 250) {
                     return false;
                 }
                 this.getAssetList(base, 50);
@@ -401,14 +422,34 @@ class MyMarkets extends React.Component {
         }
     }
 
+    add_symbols_tooltip(e){
+        if(this.refs[e.target.id].value&&(e.key === 'Tab'||e.key === 'ArrowRight')){
+            if(e.target.id==='symols_tooltip1'){
+                this.setState({
+                    lookupQuote: this.refs[e.target.id].value
+                });
+            }else if(e.target.id==='symols_tooltip2'){
+                this.setState({
+                    lookupBase: this.refs[e.target.id].value
+                });
+            }
+        }   
+
+    }
+
     toggleActiveMarketTab(index) {
         SettingsActions.changeViewSetting({
             activeMarketTab: index
         });
 
-        this.setState({
-            activeMarketTab: index
-        });
+        let newState = {
+            activeMarketTab: index,
+            showBaseTab: index==5?true:false,
+        }
+
+        index!==5?newState.lookupBase='':1;
+
+        this.setState(newState);
     }
 
     render() {
@@ -525,7 +566,13 @@ class MyMarkets extends React.Component {
                             base: market.base
                         }
                     );
-                    return null;
+                    return (
+                        {
+                            id: marketID,
+                            quote: market.quote,
+                            base: market.base
+                        }
+                    );
                 } else {
                     return (
                         {
@@ -568,11 +615,20 @@ class MyMarkets extends React.Component {
                     </div>
                 </div>
 
-
                 {activeTab === "all" || this.props.controls ? (
-                    <div className="small-12 medium-6" style={{padding: "1rem 0"}}>
-                        {this.props.controls ? <div style={{paddingBottom: "0.5rem"}}>{this.props.controls}</div> : null}
-                        {activeTab === "all" ? <input type="text" value={this.state.inputValue} onChange={this._lookupAssets.bind(this)} placeholder="SYMBOL:SYMBOL" /> : null}
+                    <div>
+                        {this.props.controls ? <div > {this.props.controls} </div> : null}
+                        {activeTab === "all" ? <div className="symbols_input" >
+                            <div>
+                            <input ref="symols_tooltip1" className="hide_tooltip" type="text" onChange={(e)=>{}} disabled={true} />
+                            <input ref="symbol_one" id ="symols_tooltip1" type="text" value={this.state.lookupQuote||''} onChange={this._lookupAssets.bind(this)} onKeyDown={this.add_symbols_tooltip.bind(this)} placeholder="CURRENCY 1" />
+                            </div>
+                            {this.state.showBaseTab?<div>
+                                <input ref="symols_tooltip2" className="hide_tooltip" type="text" onChange={(e)=>{}} disabled={true} />
+                                <input ref="symbol_two" id="symols_tooltip2" type="text" value={this.state.lookupBase||''} onChange={this._lookupAssets.bind(this)} onKeyDown={this.add_symbols_tooltip.bind(this)} placeholder="CURRENCY 2" />
+                            </div>:null}
+                        </div>
+                        : null}
                     </div> ) : null}
 
                 <ul className="mymarkets-tabs">
@@ -583,7 +639,7 @@ class MyMarkets extends React.Component {
                                 onClick={this.toggleActiveMarketTab.bind(this, index)}
                                 className={cnames("mymarkets-tab", {active: this.state.activeMarketTab === index})}
                             >
-                                <AssetName name={base} />
+                                <AssetName name={base} isprefix={false} />
                             </li>
                         );
                     })}

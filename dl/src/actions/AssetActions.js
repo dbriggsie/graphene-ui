@@ -258,7 +258,7 @@ class AssetActions {
     //     });
     // }
 
-    getAssetList(start, count) {
+    getAssetList(start, count) {        
 
         let id = start + "_" + count;
         if (!inProgress[id]) {

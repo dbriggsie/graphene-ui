@@ -25,13 +25,38 @@ class SettingsStore {
             themes: "olDarkTheme",
             disableChat: false
         });
-
         // Default markets setup
         let topMarkets = [
-            "OPEN.MKR", "BTS", "OPEN.ETH","BLOCKPAY", "ICOO", "BTC", "OPEN.LISK",
-            "OPEN.STEEM", "OPEN.DAO", "PEERPLAYS", "USD", "CNY", "BTSR", "OBITS",
-            "OPEN.DGD", "EUR", "GOLD", "SILVER", "SHAREBITS","BROWNIE.PTS",
-            "OPEN.USDT", "OPEN.EURT", "OPEN.BTC", "CADASTRAL","SOLCERT"
+          'BLOCKPAY',
+          'BROWNIE.PTS',
+          'BTS',
+          'BTSR',
+          'GRIDCOIN',
+          'ICOO',
+          'OBITS',
+          'OPEN.ARDR',
+          'OPEN.BTC',
+          'OPEN.DAO',
+          'OPEN.DASH',
+          'OPEN.DGD',
+          'OPEN.DOGE',
+          'OPEN.ETH',
+          'OPEN.EUR',
+          'OPEN.EURT',
+          'OPEN.GAME',
+          'OPEN.GRC',
+          'OPEN.HEAT',
+          'OPEN.LISK',
+          'OPEN.LTC',
+          'OPEN.MAID',
+          'OPEN.MUSE',
+          'OPEN.OMNI',
+          'OPEN.STEEM',
+          'OPEN.USD',
+          'OPEN.USDT',
+          'PEERPLAYS',
+          'SHAREBITS',
+          'SOLCERT'
         ];
 
         // this.preferredBases = Immutable.List([CORE_ASSET, "OPEN.BTC", "USD", "CNY", "BTC"]);

@@ -477,7 +477,7 @@ var Utils = {
     },
 
     replaceName(name, isBitAsset = false) {
-        let toReplace = ["TRADE.", "OPEN.", "METAEX."];
+        /*let toReplace = ["TRADE.", "OPEN.", "METAEX."];
         let suffix = "";
         let i;
         for (i = 0; i < toReplace.length; i++) {
@@ -485,12 +485,30 @@ var Utils = {
                 name = name.replace(toReplace[i], "") + suffix;
                 break;
             }
+        }*/
+
+        let replacedName ='';
+        let prefix ='';
+        let partNames = name.split('.');
+
+        if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){            
+            replacedName = partNames[1]
+            prefix = (partNames[0]+'.').toLowerCase();            
+        }else{
+            replacedName = name;
+            prefix = '';
         }
 
         return {
+            name:replacedName,
+            prefix: prefix
+        };
+
+
+        /*return {
             name,
             prefix: isBitAsset ? "bit" : toReplace[i] ? toReplace[i].toLowerCase() : null
-        };
+        };*/
     }
 };
 

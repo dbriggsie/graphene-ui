@@ -800,10 +800,28 @@
         border-bottom: 1px solid #444;
     }
     .symbols_input {
-        &>input[type='text'] {
-            display: inline;
-            width: 42%;
-            margin: 0 4%;
+        text-align: center;
+        position: relative;
+        input[type='text'] {
+            text-align: left;
+            display: block;
+            background: none;
+            z-index: 10;
+            color: #000;
+            position: relative;
+        }
+        div {
+            position: relative;
+            display: inline-block;
+            width: 130px;
+            margin: 10px 10px;
+            &> .hide_tooltip {
+                background: rgba(2, 0, 0, 0.1);
+                z-index: 0;
+                background: #fff;
+                position: absolute;
+                color: #aaa;
+            }
         }
     }
 }
