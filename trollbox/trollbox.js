@@ -24,5 +24,9 @@ server.on('disconnect', function(id) {
     console.log("disconnect from:", id);
 });
 
+server.on('error', function(error) { 
+    console.log("error:", error);
+});
+
 console.log("Trollbox listening at port", config.port);
 

@@ -94,6 +94,12 @@ class CreateAccount extends React.Component {
         let refcode = this.refs.refcode ? this.refs.refcode.value() : null;
         WalletUnlockActions.unlock().then(() => {
             this.setState({loading: true});
+
+                try{
+                    metrika.reachGoal('reg_account');
+                    ga('send', 'event', 'Registration', 'CreateAccount');
+                }catch(err){console.log('metrik trouble',err);}
+
             AccountActions.createAccount(name, this.state.registrar_account, this.state.registrar_account, 0, refcode).then(() => {
                 // User registering his own account
                 if(this.state.registrar_account) {
@@ -119,6 +125,7 @@ class CreateAccount extends React.Component {
                 });
                 this.setState({loading: false});
             });
+
         });
     }
 
