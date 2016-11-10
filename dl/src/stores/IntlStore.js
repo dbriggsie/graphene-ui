@@ -32,7 +32,9 @@ addLocaleData(tr);
 class IntlStore extends BaseStore {
     constructor() {
         super();
-        this.currentLocale = ss.has("viewSettings_v1") ? ss.get("viewSettings_v1").locale : SettingsStore.getSetting('locale');
+
+        //this.currentLocale = ss.has("viewSettings_v1") ? ss.get("viewSettings_v1").locale : SettingsStore.getSetting('locale');
+        this.currentLocale = ss.has("settings_v3") ? ss.get("settings_v3").locale : SettingsStore.lang.locale;
         this.locales = ["en"];
         this.localesObject = {en: locale_en};
 

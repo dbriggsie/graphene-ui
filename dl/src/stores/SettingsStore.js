@@ -10,12 +10,16 @@ const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when 
 const STORAGE_KEY = "__graphene__";
 let ss = new ls(STORAGE_KEY);
 
+let lang = {
+    locale: "en"
+};
+
 class SettingsStore {
     constructor() {
         this.exportPublicMethods({getSetting: this.getSetting.bind(this)});
 
         this.defaultSettings = Immutable.Map({
-            locale: "en",
+            locale: lang.locale,
             apiServer: "wss://bitshares.openledger.info/ws",
             faucet_address: "https://bitshares.openledger.info",
             unit: CORE_ASSET,
@@ -318,4 +322,8 @@ class SettingsStore {
     }
 }
 
-module.exports = alt.createStore(SettingsStore, "SettingsStore");
+let set_obj = alt.createStore(SettingsStore, "SettingsStore");
+
+set_obj.lang = lang;
+
+module.exports = set_obj;
