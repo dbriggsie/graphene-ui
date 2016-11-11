@@ -98,6 +98,7 @@ class CreateAccount extends React.Component {
                 try{
                     metrika.reachGoal('reg_account');
                     ga('send', 'event', 'Registration', 'CreateAccount');
+                    console.log('metrika');
                 }catch(err){console.log('metrik trouble',err);}
 
             AccountActions.createAccount(name, this.state.registrar_account, this.state.registrar_account, 0, refcode).then(() => {

@@ -1137,7 +1137,7 @@ class Exchange extends React.Component {
     render() {
 
         let { currentAccount, linkedAccounts, limit_orders, call_orders, totalCalls, activeMarketHistory,
-            totalBids, flat_asks, flat_bids, flat_calls, invertedCalls, bids, asks, starredMarkets,
+            totalBids, flat_asks, flat_bids, flat_calls, invertedCalls, bids, asks, starredMarkets, staticDefaultMarkets,
             calls, quoteAsset, baseAsset, transaction, broadcast, lowestCallPrice, buckets, marketStats,
             marketReady, settle_orders, bucketSize } = this.props;
 

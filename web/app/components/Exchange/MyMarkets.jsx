@@ -102,7 +102,7 @@ class MarketGroup extends React.Component {
     }
 
     render() {
-        let {columns, markets, base, marketStats, starredMarkets,
+        let {columns, markets, base, marketStats, starredMarkets, staticDefaultMarkets,
             current, maxRows} = this.props;
         let {sortBy, inverseSort, open} = this.state;
 
@@ -137,8 +137,39 @@ class MarketGroup extends React.Component {
 
         let index = 0;
 
+
+
+        /*
+
+        {
+            base:"OBITS"
+            id:"BTSGAME.USD_OBITS"
+            quote:"BTSGAME.USD"
+        }
+
+        */
+
+        if(staticDefaultMarkets){
+            console.log("\n markets",markets);
+            markets = [];
+            let count = 0;
+            staticDefaultMarkets.map((el,ind)=>{
+                if(el.base===base){
+                    markets.push({
+                        base:base,
+                        id:ind,
+                        quote:el.quote
+                    });
+                    //console.log(count+=1,"@>el",ind,el);                    
+                }
+            });
+        }
+
+
+
         let marketRows = markets
             .map(market => {
+
                 return (
                     <MarketRow
                         key={market.id}
@@ -273,6 +304,7 @@ class MyMarkets extends React.Component {
             !Immutable.is(nextProps.searchAssets, this.props.searchAssets) ||
             !Immutable.is(nextProps.markets, this.props.markets) ||
             !Immutable.is(nextProps.starredMarkets, this.props.starredMarkets) ||
+            !Immutable.is(nextProps.staticDefaultMarkets, this.props.staticDefaultMarkets) ||
             !Immutable.is(nextProps.marketStats, this.props.marketStats) ||
             nextState.activeMarketTab !== this.state.activeMarketTab ||
             nextState.inverseSort !== this.state.inverseSort ||
@@ -453,7 +485,7 @@ class MyMarkets extends React.Component {
     }
 
     render() {
-        let {starredMarkets, marketStats, columns, searchAssets,
+        let {starredMarkets,staticDefaultMarkets, marketStats, columns, searchAssets,
             preferredBases, core, current, viewSettings, listHeight} = this.props;
         let {inverseSort, activeTab, sortBy, lookupQuote, lookupBase} = this.state;
         let otherMarkets = <tr></tr>;
@@ -648,23 +680,26 @@ class MyMarkets extends React.Component {
                         onClick={this.toggleActiveMarketTab.bind(this, preferredBases.size + 1)}
                         className={cnames("mymarkets-tab", {active: this.state.activeMarketTab === (preferredBases.size + 1)})}
                     >
-                        <Translate content="exchange.others" />
+                        {activeTab==="starred"?<span style={{"color":"#cc9f00","fontSize":"16px","lineHeight":"1rem"}}>&#9733;</span>:null}
+                        {activeTab==="starred"?<Translate content="exchange.favorites" />:<Translate content="exchange.others" />}
                     </li>
                 </ul>
-
+            {/*
+     
+            */}
                 <div
                     style={listStyle}
                     className="table-container grid-block vertical mymarkets-list"
                     ref="favorites"
                 >
-
-                    {preferredBases.filter(a => {return a === preferredBases.get(this.state.activeMarketTab);}).map((base, index) => {
+                    {preferredBases.filter(a => {return a === preferredBases.get(this.state.activeMarketTab);}).map((base, index) => {        
                         return <MarketGroup
                             index={index}
                             allowChange={false}
                             key={base}
                             current={current}
                             starredMarkets={starredMarkets}
+                            staticDefaultMarkets={staticDefaultMarkets}
                             marketStats={marketStats}
                             viewSettings={viewSettings}
                             columns={columns}
@@ -702,6 +737,7 @@ class MyMarketsWrapper extends React.Component {
     static getPropsFromStores() {
         return {
             starredMarkets: SettingsStore.getState().starredMarkets,
+            staticDefaultMarkets: SettingsStore.getState().staticDefaultMarkets,
             viewSettings: SettingsStore.getState().viewSettings,
             preferredBases: SettingsStore.getState().preferredBases,
             marketStats: MarketsStore.getState().allMarketStats,
