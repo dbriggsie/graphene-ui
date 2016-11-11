@@ -52,7 +52,6 @@ class MarketRow extends React.Component {
     }
 
     _onStar(quote, base, e) {
-        console.log("_onStar @>",quote, base, '\n @@>this.props.starred',this.props.starred);
         e.preventDefault();
         if (!this.props.starred) {
             SettingsActions.addStarMarket(quote, base);

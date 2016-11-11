@@ -106,8 +106,10 @@ class MarketGroup extends React.Component {
             current, maxRows} = this.props;
         let {sortBy, inverseSort, open} = this.state;
 
-        if (!markets || !markets.length) {
-            return null;
+        if(!staticDefaultMarkets){
+            if (!markets || !markets.length) {
+                return null;
+            }
         }
 
         let headers = columns.map(header => {
@@ -138,19 +140,7 @@ class MarketGroup extends React.Component {
         let index = 0;
 
 
-
-        /*
-
-        {
-            base:"OBITS"
-            id:"BTSGAME.USD_OBITS"
-            quote:"BTSGAME.USD"
-        }
-
-        */
-
         if(staticDefaultMarkets){
-            console.log("\n markets",markets);
             markets = [];
             let count = 0;
             staticDefaultMarkets.map((el,ind)=>{
@@ -159,8 +149,7 @@ class MarketGroup extends React.Component {
                         base:base,
                         id:ind,
                         quote:el.quote
-                    });
-                    //console.log(count+=1,"@>el",ind,el);                    
+                    });           
                 }
             });
         }
