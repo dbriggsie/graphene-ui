@@ -26,8 +26,6 @@ class AssetName extends React.Component {
 
 	render() {
 		let {name, replace, asset,isprefix} = this.props;
-		//console.log("name>",name)
-		//console.log("this.props.prefix@>",this.props.prefix)
 
 		let isBitAsset = asset.has("bitasset");
 		let isPredMarket = isBitAsset && asset.getIn(["bitasset", "is_prediction_market"]);

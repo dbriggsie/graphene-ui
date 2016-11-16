@@ -493,7 +493,8 @@ var Utils = {
 
         if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){            
             replacedName = partNames[1]
-            prefix = (partNames[0]+'.').toLowerCase();            
+            prefix = (partNames[0]+'.').toLowerCase();
+            prefix = ''; //hard remove prefix        
         }else{
             replacedName = name;
             prefix = '';
@@ -503,12 +504,6 @@ var Utils = {
             name:replacedName,
             prefix: prefix
         };
-
-
-        /*return {
-            name,
-            prefix: isBitAsset ? "bit" : toReplace[i] ? toReplace[i].toLowerCase() : null
-        };*/
     }
 };
 
