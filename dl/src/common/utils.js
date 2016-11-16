@@ -500,6 +500,11 @@ var Utils = {
             prefix = '';
         }
 
+        //bitUSD bitEUR bit bitGOLD bitBTC
+        if(name==='USD'||name==='CNY'||name==='GOLD'||name==='BTC'){
+            prefix='bit';
+        }
+
         return {
             name:replacedName,
             prefix: prefix
