@@ -501,7 +501,7 @@ var Utils = {
         }
 
         //bitUSD bitEUR bit bitGOLD bitBTC
-        if(name==='USD'||name==='CNY'||name==='GOLD'||name==='BTC'){
+        if(name==='USD'||name==='EUR'||name==='CNY'||name==='GOLD'||name==='BTC'){
             prefix='bit';
         }
 

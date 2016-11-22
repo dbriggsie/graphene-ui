@@ -125,7 +125,7 @@
         .table {
             > thead > tr > th,
             > tbody > tr > td {
-                border-bottom-color: darken($secondary-text-color, 10%);
+                border-bottom-color: darken($secondary-text-color, 10%);                
             }
         }
     }
@@ -275,6 +275,18 @@
         }
         > tbody > tr > td {
             border-bottom-color: $dark-text-color;
+            .receive_address{
+                background: transparent;
+                border: none;
+                color: $secondary-text-color;
+                text-indent: 0;
+                padding: 0;
+                &::selection {
+                    background: transparent; 
+                }
+            }
+
+
         }
         &.table-hover > tbody > tr:hover > td,
         .table-hover > tbody > tr:hover > th {

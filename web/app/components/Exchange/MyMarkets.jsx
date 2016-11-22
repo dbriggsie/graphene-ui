@@ -102,15 +102,15 @@ class MarketGroup extends React.Component {
     }
 
     render() {
-        let {columns, markets, base, marketStats, starredMarkets, staticDefaultMarkets,
+        let {columns, markets, base, marketStats, starredMarkets,
             current, maxRows} = this.props;
         let {sortBy, inverseSort, open} = this.state;
 
-        if(!staticDefaultMarkets){
-            if (!markets || !markets.length) {
-                return null;
-            }
+
+        if (!markets || !markets.length) {
+            return null;
         }
+ 
 
         let headers = columns.map(header => {
             switch (header.name) {
@@ -137,28 +137,8 @@ class MarketGroup extends React.Component {
             }
         });
 
-        let index = 0;
-
-
-        if(staticDefaultMarkets){
-            markets = [];
-            let count = 0;
-            staticDefaultMarkets.map((el,ind)=>{
-                if(el.base===base){
-                    markets.push({
-                        base:base,
-                        id:ind,
-                        quote:el.quote
-                    });           
-                }
-            });
-        }
-
-
-
         let marketRows = markets
             .map(market => {
-
                 return (
                     <MarketRow
                         key={market.id}
@@ -394,7 +374,7 @@ class MyMarkets extends React.Component {
 
         let symbol_one=this.refs.symbol_one ||{value:''};
         let symbol_two=this.refs.symbol_two ||{value:''};
-  
+
         let input_value = symbol_one.value.toUpperCase()+':'+symbol_two.value.toUpperCase();
         let symbols = [symbol_one.value.toUpperCase(), symbol_two.value.toUpperCase()];
         let quote = symbols[0];
@@ -432,6 +412,7 @@ class MyMarkets extends React.Component {
             if ( now - lastLookup <= 250) {
                 return false;
             }
+
             this.getAssetList(quote, 50);
         } else {
             if (base && this.state.lookupBase !== base) {
@@ -477,139 +458,7 @@ class MyMarkets extends React.Component {
         let {starredMarkets,staticDefaultMarkets, marketStats, columns, searchAssets,
             preferredBases, core, current, viewSettings, listHeight} = this.props;
         let {inverseSort, activeTab, sortBy, lookupQuote, lookupBase} = this.state;
-        let otherMarkets = <tr></tr>;
-
-        let coreSymbol = core.get("symbol");
-        // Add some default base options
-        // let preferredBases = [coreSymbol, "BTC", "USD", "CNY"];
-        let baseGroups = {};
-
-        let bases = [
-            // coreSymbol, "BTC", "CNY", "USD"
-        ];
-
-        searchAssets
-        .filter(a => {
-            // Always keep core asset as an option
-            // if (preferredBases.indexOf(a.symbol) === 0) {
-            //     return true;
-            // }
-            if (lookupBase && lookupBase.length) {
-                return a.symbol.indexOf(lookupBase) === 0;
-            }
-            return a.symbol.indexOf(lookupQuote) !== -1;
-        })
-        .forEach(asset => {
-            if (lookupBase && lookupBase.length) {
-                if (asset.symbol.indexOf(lookupBase) === 0) {
-                    bases.push(asset.symbol);
-                }
-            } else if (preferredBases.includes(asset.symbol)) {
-                if (asset.symbol.length >= lookupQuote.length && asset.symbol.length < lookupQuote.length + 3) {
-                    bases.push(asset.symbol);
-                }
-            }
-        });
-
-        bases = bases.concat(preferredBases.filter(a => {
-            if (!lookupBase || !lookupBase.length) {
-                return true;
-            }
-            return a.indexOf(lookupBase) === 0;
-        }).toArray());
-
-        bases = bases
-        .filter(base => {
-            // Always keep core asset as an option
-            // if (preferredBases.indexOf(base) !== -1) {
-            //     return true;
-            // }
-            if (lookupBase && lookupBase.length > 1) {
-                return base.indexOf(lookupBase) === 0;
-            } else {
-                return true;
-            }
-        });
-
-        let allMarkets = [];
-
-        if (searchAssets.size) {
-            searchAssets
-            .filter(a => {
-                return (
-                    a.symbol.indexOf(lookupQuote) !== -1 &&
-                    a.symbol.length >= lookupQuote.length
-                );
-            })
-            .forEach(asset => {
-                bases.forEach(base => {
-                    let marketID = asset.symbol + "_" + base;
-
-                    if (base !== asset.symbol) {
-                        allMarkets.push([marketID, {quote: asset.symbol, base: base}]);
-                    }
-                });
-            });
-        }
-
-        allMarkets = allMarkets
-        .filter(a => {
-            // If a base asset is specified, limit the quote asset to the exact search term
-            if (lookupBase) {
-                return a[1].quote === lookupQuote;
-            }
-            return true;
-        });
-
-        allMarkets = Immutable.Map(allMarkets);
-        let activeMarkets = activeTab === "starred" ? starredMarkets : allMarkets;
-
-        if (activeMarkets.size > 0) {
-            otherMarkets = activeMarkets
-            .filter(a => {
-                if (activeTab === "all") {
-                    if (lookupQuote.length < 2) {return false; }
-                    return a.quote.indexOf(lookupQuote) !== -1;
-                } else {
-                    return true;
-                }
-            })
-            .map(market => {
-                let marketID = market.quote + "_" + market.base;
-                if (preferredBases.includes(market.base)) {
-                    if (!baseGroups[market.base]) {
-                        baseGroups[market.base] = [];
-                    }
-                    baseGroups[market.base].push(
-                        {
-                            id: marketID,
-                            quote: market.quote,
-                            base: market.base
-                        }
-                    );
-                    return (
-                        {
-                            id: marketID,
-                            quote: market.quote,
-                            base: market.base
-                        }
-                    );
-                } else {
-                    return (
-                        {
-                            id: marketID,
-                            quote: market.quote,
-                            base: market.base
-                        }
-                    );
-                }
-
-            }).filter(a => {
-                return a !== null;
-            })
-            .take(activeTab === "starred" ? 100 : 20)
-            .toArray();
-        }
+        
 
         let hc = "mymarkets-header clickable";
         let starClass = cnames(hc, {inactive: activeTab === "all"});
@@ -618,8 +467,124 @@ class MyMarkets extends React.Component {
         let listStyle = {
             minWidth: this.state.minWidth
         };
+
+
         if (listHeight) {
             listStyle.height = listHeight;
+        }
+
+        ///### 
+        let obj_search = {};
+        function fix_prefix(pr){
+            if(~SettingsStore.marketsOpenList.indexOf(pr)){
+                pr = "OPEN."+pr;
+            }
+
+            if(SettingsStore.checkBit(pr)){
+                return pr.split('BIT').join('');
+            } 
+
+            return pr;
+        }    
+ 
+        // Add some default base options
+        let baseGroups = {};
+        let bases = [];
+        let allMarkets = [];
+        let otherMarkets = [];
+
+        let activeMarkets = activeTab === "starred" ? starredMarkets : allMarkets;        
+
+        let market_tab = preferredBases.toArray()[this.state.activeMarketTab];
+        let fix_lookupQuote = fix_prefix(lookupQuote);
+        let fix_lookupBase = fix_prefix(lookupBase);
+        //console.log("@>market_tab", market_tab);
+        console.log(`activeTab = ${activeTab}, activeMarketTab = ${this.state.activeMarketTab}`);
+        console.log(`lookupBase =${lookupBase}, lookupQuote = ${lookupQuote}`);
+        console.log(`fixed base = ${fix_lookupBase} quote=${fix_lookupQuote}`);
+        //console.log("preferredBases", preferredBases.toArray());
+       // console.log("starredMarkets", starredMarkets.toArray());        
+        //console.log("staticDefaultMarkets", SettingsStore.marketsList);
+
+        preferredBases.map(e=>{
+            baseGroups[e] = [];
+        });  
+
+        if(activeTab == 'starred' && this.state.activeMarketTab < 5){
+            SettingsStore.marketsList.map(e=>{
+                e!==market_tab?baseGroups[market_tab].push({
+                    id:  e+ '_' + market_tab,
+                    base: market_tab,
+                    quote: e
+                }):1;
+            });  
+        }else if(activeTab == 'starred'&& this.state.activeMarketTab === 5){
+            starredMarkets.map((e,index)=>{
+                otherMarkets.push({
+                    id:  index,
+                    base: e.base,
+                    quote: e.quote 
+                });
+            });
+        }else if(activeTab == 'all' && this.state.activeMarketTab < 5 && fix_lookupQuote){
+            if(fix_lookupQuote.length>1){
+                searchAssets.filter(asset => {
+
+                    let flag = false;
+                    if(asset.symbol == market_tab ||asset.symbol.indexOf(fix_lookupQuote)==0){                
+                        flag = true;
+                    }
+
+                    if(SettingsStore.checkBit(lookupQuote)){
+                        flag =  asset.symbol === fix_lookupQuote;
+                    }
+
+                    return flag;
+
+                }).map(e=>{
+                    e.symbol!==market_tab?baseGroups[market_tab].push({
+                        id:  e.symbol+ '_' + market_tab,
+                        base: market_tab,
+                        quote: e.symbol
+                    }):1;
+                });                
+            }
+        }else if(activeTab == 'all' && this.state.activeMarketTab === 5 &&fix_lookupQuote&&fix_lookupBase){
+
+            if(fix_lookupQuote.length>1&&fix_lookupBase.length>1){
+                let left_arr = [];
+                let right_arr = [];
+
+                searchAssets.map(asset => {
+                    if(asset.symbol.indexOf(fix_lookupQuote)==0){
+                        left_arr.push(asset.symbol);
+                    }else if(asset.symbol.indexOf(fix_lookupBase)==0){                       
+                        right_arr.push(asset.symbol);                        
+                    }
+                });
+
+                if(SettingsStore.checkBit(lookupQuote)){
+                    left_arr = left_arr.filter(e=>{
+                        return e===fix_lookupQuote;
+                    });
+                }
+
+                if(SettingsStore.checkBit(lookupBase)){
+                    right_arr = right_arr.filter(e=>{
+                        return e===fix_lookupBase;
+                    });           
+                }
+
+                for(let i1 = 0; i1<left_arr.length; i1+=1){
+                    for(let i2 = 0; i2<right_arr.length; i2+=1){
+                        otherMarkets.push({
+                            id:  left_arr[i1] +'_'+ right_arr[i2],
+                            base: right_arr[i2],
+                            quote: left_arr[i1]  
+                        });
+                    }
+                }
+            }
         }
 
         return (
@@ -660,7 +625,7 @@ class MyMarkets extends React.Component {
                                 onClick={this.toggleActiveMarketTab.bind(this, index)}
                                 className={cnames("mymarkets-tab", {active: this.state.activeMarketTab === index})}
                             >
-                                <AssetName name={base} isprefix={false} />
+                                <AssetName name={base} />
                             </li>
                         );
                     })}
@@ -673,9 +638,7 @@ class MyMarkets extends React.Component {
                         {activeTab==="starred"?<Translate content="exchange.favorites" />:<Translate content="exchange.others" />}
                     </li>
                 </ul>
-            {/*
-     
-            */}
+  
                 <div
                     style={listStyle}
                     className="table-container grid-block vertical mymarkets-list"
@@ -688,7 +651,6 @@ class MyMarkets extends React.Component {
                             key={base}
                             current={current}
                             starredMarkets={starredMarkets}
-                            staticDefaultMarkets={staticDefaultMarkets}
                             marketStats={marketStats}
                             viewSettings={viewSettings}
                             columns={columns}

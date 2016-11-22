@@ -113,13 +113,15 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
     }
 
     toClipboard(clipboardText) {
-        try {
-            this.setState({clipboardText}, () => {
-                document.execCommand("copy");
-            });
-        } catch(err) {
-            console.error(err);
-        }
+        try {  
+            this.refs.deposit_address.select();
+            var successful = document.execCommand('copy');  
+            var msg = successful ? 'successful' : 'unsuccessful';  
+            console.log('coppyng text command was ' + msg);  
+            this.setState({clipboardText});
+        } catch(err) {  
+            console.log('Oops, unable to copy',err);  
+        } 
     }
 
     render() {
@@ -202,7 +204,7 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
             {
                 // This is a client that uses unique deposit addresses to select the output
                 clipboardText = receive_address.address;
-                deposit_address_fragment = (<span>{receive_address.address}</span>);
+                deposit_address_fragment = (<input ref='deposit_address' type="text" readOnly="true" className="receive_address" value={receive_address.address} />);
             }
             var withdraw_memo_prefix = '';
         }
@@ -245,7 +247,7 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
                             <table className="table">
                                 <tbody>
                                     <tr>
-                                        <td colSpan="2" style={{textAlign: "left"}}>{deposit_address_fragment}</td>
+                                        <td colSpan="2" style={{textAlign: "left"}} >{deposit_address_fragment}</td>
                                     </tr>
                                     {deposit_memo ? (
                                     <tr>

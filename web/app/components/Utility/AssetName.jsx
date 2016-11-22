@@ -25,7 +25,7 @@ class AssetName extends React.Component {
 	}
 
 	render() {
-		let {name, replace, asset,isprefix} = this.props;
+		let {name, replace, asset} = this.props;
 
 		let isBitAsset = asset.has("bitasset");
 		let isPredMarket = isBitAsset && asset.getIn(["bitasset", "is_prediction_market"]);
@@ -34,8 +34,6 @@ class AssetName extends React.Component {
 		let {name: replacedName, prefix} = utils.replaceName(name, isBitAsset && !isPredMarket && asset.get("issuer") === "1.2.0");
 		// let prefix = isBitAsset && !isPredMarket ? <span>bit</span> :
 		// 			 replacedName !== this.props.name ? <span>{replacedPrefix}</span> : null;
-
-		(typeof isprefix==='boolean'&&!isprefix)?prefix='':1;
 
 		if (replace && replacedName !== this.props.name) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));

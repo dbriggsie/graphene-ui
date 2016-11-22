@@ -30,3 +30,5 @@ require("file?name=asset-symbols/[name].png!./eurt.png");
 require("file?name=asset-symbols/[name].png!./game.png");
 require("file?name=asset-symbols/[name].png!./grc.png");
 require("file?name=asset-symbols/[name].png!./usdt.png");
+require("file?name=asset-symbols/[name].png!./incnt.png");
+require("file?name=asset-symbols/[name].png!./nxc.png");

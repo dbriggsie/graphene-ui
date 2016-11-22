@@ -2,7 +2,7 @@ var alt = require("../alt-instance");
 var SettingsActions = require("../actions/SettingsActions");
 var IntlActions = require("../actions/IntlActions");
 var Immutable = require("immutable");
-import {merge} from "lodash";
+import { merge } from "lodash";
 import ls from "common/localStorage";
 
 const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when used with BTS chain which is the most usual case currently
@@ -14,9 +14,50 @@ let lang = {
     locale: "en"
 };
 
+let marketsList = [
+    'BLOCKPAY',
+    'BROWNIE.PTS',
+    'BTS',
+    'BTSR',
+    'GRIDCOIN',
+    'ICOO',
+    'OBITS',
+    'OPEN.ARDR',
+    'OPEN.BTC',
+    'OPEN.DASH',
+    'OPEN.DGD',
+    'OPEN.DOGE',
+    'OPEN.ETH',
+    'OPEN.EUR',
+    'OPEN.EURT',
+    'OPEN.GAME',
+    'OPEN.GRC',
+    'OPEN.HEAT',
+    'OPEN.LISK',
+    'OPEN.LTC',
+    'OPEN.MAID',
+    'OPEN.MUSE',
+    'OPEN.OMNI',
+    'OPEN.MKR',
+    'OPEN.INCNT',
+    'OPEN.STEEM',
+    'OPEN.USD',
+    'OPEN.USDT',
+    'OPEN.NXC',
+    'PEERPLAYS',
+    'SHAREBITS',
+    'SOLCERT'
+];
+
+function checkBit(bit){
+    if(bit=='BITUSD'||bit=='BITEUR'||bit=='BITCNY'||bit=='BITGOLD'||bit=='BITBTC'){
+        return true;
+    } 
+}
+
 class SettingsStore {
     constructor() {
-        this.exportPublicMethods({getSetting: this.getSetting.bind(this)});
+        this.exportPublicMethods({ getSetting: this.getSetting.bind(this) });
 
         this.defaultSettings = Immutable.Map({
             locale: lang.locale,
@@ -30,39 +71,7 @@ class SettingsStore {
             disableChat: false
         });
         // Default markets setup
-        let topMarkets = [
-          'BLOCKPAY',
-          'BROWNIE.PTS',
-          'BTS',
-          'BTSR',
-          'GRIDCOIN',
-          'ICOO',
-          'OBITS',
-          'OPEN.ARDR',
-          'OPEN.BTC',
-          'OPEN.DASH',
-          'OPEN.DGD',
-          'OPEN.DOGE',
-          'OPEN.ETH',
-          'OPEN.EUR',
-          'OPEN.EURT',
-          'OPEN.GAME',
-          'OPEN.GRC',
-          'OPEN.HEAT',
-          'OPEN.LISK',
-          'OPEN.LTC',
-          'OPEN.MAID',
-          'OPEN.MUSE',
-          'OPEN.OMNI',
-          'OPEN.MKR',
-          'OPEN.STEEM',
-          'OPEN.USD',
-          'OPEN.USDT',
-          'OPEN.NXC',
-          'PEERPLAYS',
-          'SHAREBITS',
-          'SOLCERT'
-        ];
+        let topMarkets = marketsList;
 
         // this.preferredBases = Immutable.List([CORE_ASSET, "OPEN.BTC", "USD", "CNY", "BTC"]);
         // Openledger
@@ -72,7 +81,7 @@ class SettingsStore {
             markets.filter(a => {
                 return a !== base;
             }).forEach(market => {
-                target.push([`${market}_${base}`, {"quote": market,"base": base}]);
+                target.push([`${market}_${base}`, { "quote": market, "base": base }]);
             });
         }
 
@@ -84,10 +93,10 @@ class SettingsStore {
         // If you want a default value to be translated, add the translation to settings in locale-xx.js
         // and use an object {translate: key} in the defaults array
         let apiServer = [
-            {url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany"},
-            {url: "wss://eu.openledger.info/ws", location: "Berlin, Germany"},
-            {url: "wss://openledger.hk/ws", location: "Hong Kong"},
-            {url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)"}
+            { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
+            { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
+            { url: "wss://openledger.hk/ws", location: "Hong Kong" },
+            { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
         ];
 
         let defaults = {
@@ -110,26 +119,26 @@ class SettingsStore {
                 "GBP"
             ],
             showSettles: [
-                {translate: "yes"},
-                {translate: "no"}
+                { translate: "yes" },
+                { translate: "no" }
             ],
             showAssetPercent: [
-                {translate: "yes"},
-                {translate: "no"}
+                { translate: "yes" },
+                { translate: "no" }
             ],
             disableChat: [
-                {translate: "yes"},
-                {translate: "no"}
+                { translate: "yes" },
+                { translate: "no" }
             ],
             themes: [
-                "darkTheme",
-                "lightTheme",
-                "olDarkTheme"
-            ]
-            // confirmMarketOrder: [
-            //     {translate: "confirm_yes"},
-            //     {translate: "confirm_no"}
-            // ]
+                    "darkTheme",
+                    "lightTheme",
+                    "olDarkTheme"
+                ]
+                // confirmMarketOrder: [
+                //     {translate: "confirm_yes"},
+                //     {translate: "confirm_no"}
+                // ]
         };
 
         this.bindListeners({
@@ -161,7 +170,7 @@ class SettingsStore {
         (savedDefaults.connection || []).forEach(api => {
             let hasApi = false;
             if (typeof api === "string") {
-                api = {url: api, location: null};
+                api = { url: api, location: null };
             }
             apiServer.forEach(server => {
                 if (server.url === api.url) {
@@ -177,7 +186,7 @@ class SettingsStore {
         (savedDefaults.apiServer || []).forEach(api => {
             let hasApi = false;
             if (typeof api === "string") {
-                api = {url: api, location: null};
+                api = { url: api, location: null };
             }
             this.defaults.apiServer.forEach(server => {
                 if (server.url === api.url) {
@@ -257,7 +266,7 @@ class SettingsStore {
         let marketID = market.quote + "_" + market.base;
 
         if (!this.starredMarkets.has(marketID)) {
-            this.starredMarkets = this.starredMarkets.set(marketID, {quote: market.quote, base: market.base});
+            this.starredMarkets = this.starredMarkets.set(marketID, { quote: market.quote, base: market.base });
 
             ss.set(this.marketsString, this.starredMarkets.toJS());
         } else {
@@ -275,7 +284,7 @@ class SettingsStore {
 
     onAddStarAccount(account) {
         if (!this.starredAccounts.has(account)) {
-            this.starredAccounts = this.starredAccounts.set(account, {name: account});
+            this.starredAccounts = this.starredAccounts.set(account, { name: account });
 
             ss.set("starredAccounts", this.starredAccounts.toJS());
         } else {
@@ -292,7 +301,7 @@ class SettingsStore {
 
     onAddWS(ws) {
         if (typeof ws === "string") {
-            ws = {url: ws, location: null};
+            ws = { url: ws, location: null };
         }
         this.defaults.apiServer.push(ws);
         ss.set("defaults_v1", this.defaults);
@@ -316,15 +325,20 @@ class SettingsStore {
         }
     }
 
-    onSwitchLocale({locale}) {
+    onSwitchLocale({ locale }) {
         console.log("onSwitchLocale:", locale);
 
-        this.onChangeSetting({setting: "locale", value: locale});
+        this.onChangeSetting({ setting: "locale", value: locale });
     }
 }
 
 let set_obj = alt.createStore(SettingsStore, "SettingsStore");
 
 set_obj.lang = lang;
+set_obj.checkBit = checkBit;
+set_obj.marketsList = marketsList;
+set_obj.marketsOpenList = marketsList.filter(e=>{
+    return e.indexOf("OPEN.")===0;
+}).map(e=>e.split('OPEN.').join(''));
 
 module.exports = set_obj;
