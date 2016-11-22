@@ -15,7 +15,15 @@ class DashboardAssetList extends React.Component {
         assets: ChainTypes.ChainAssetsList
     };
 
-    shouldComponentUpdate(np) {
+    constructor() {
+        super();
+
+        this.state = {
+            filter: ""
+        };
+    }
+
+    shouldComponentUpdate(np, ns) {
         let balancesChanged = false;
         np.balances.forEach((a, i) => {
             if (!Immutable.is(a, this.props.balances[i])) {
@@ -34,7 +42,8 @@ class DashboardAssetList extends React.Component {
             np.account !== this.props.account ||
             balancesChanged ||
             assetsChanged ||
-            np.hideZeroBalances !== this.props.hideZeroBalances
+            np.hideZeroBalances !== this.props.hideZeroBalances ||
+            ns.filter !== this.state.filter
         );
     }
 
@@ -78,9 +87,14 @@ class DashboardAssetList extends React.Component {
         SettingsActions.changeViewSetting({hideZeroBalances: !this.props.hideZeroBalances});
     }
 
+    _onSearch(e) {
+        this.setState({
+            filter: e.target.value.toUpperCase()
+        });
+    }
+
     render() {
         let assets = this.props.assetNames;
-
         // console.log("account:", this.props.account.toJS(), "balances:", this.props.balances);
 
         return (
@@ -91,6 +105,12 @@ class DashboardAssetList extends React.Component {
                     <input onChange={this._toggleZeroBalance.bind(this)} checked={this.props.hideZeroBalances} type="checkbox" />
                     <label style={{position: "relative", top: -3}} onClick={this._toggleZeroBalance.bind(this)}>Hide 0 balances</label>
 
+                    <div className="float-right">
+                        <div style={{position: "relative", top: -13}}>
+                        <input onChange={this._onSearch.bind(this)} value={this.state.filter} style={{marginBottom: 0, }} type="text" placeholder="Find an asset" />
+                        <span className="clickable" style={{position: "absolute", top: 12, right: 10, color: "black"}} onClick={() => {this.setState({filter: ""})}}>X</span>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <table className="table">
@@ -105,7 +125,7 @@ class DashboardAssetList extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {assets.map(a => this._renderRow(a))}
+                            {assets.filter(a => a.indexOf(this.state.filter) !== -1).map(a => this._renderRow(a))}
                         </tbody>
                     </table>
                 </div>
