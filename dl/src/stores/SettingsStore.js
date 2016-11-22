@@ -52,7 +52,7 @@ let marketsList = [
 function checkBit(bit){
     if(bit=='BITUSD'||bit=='BITEUR'||bit=='BITCNY'||bit=='BITGOLD'||bit=='BITBTC'){
         return true;
-    } 
+    }
 }
 
 class SettingsStore {
@@ -68,7 +68,8 @@ class SettingsStore {
             showAssetPercent: false,
             walletLockTimeout: 60 * 10,
             themes: "olDarkTheme",
-            disableChat: false
+            disableChat: false,
+            traderMode: false
         });
         // Default markets setup
         let topMarkets = marketsList;
@@ -131,10 +132,14 @@ class SettingsStore {
                 { translate: "no" }
             ],
             themes: [
-                    "darkTheme",
-                    "lightTheme",
-                    "olDarkTheme"
-                ]
+                "darkTheme",
+                "lightTheme",
+                "olDarkTheme"
+            ],
+            traderMode: [
+                false,
+                true
+            ]
                 // confirmMarketOrder: [
                 //     {translate: "confirm_yes"},
                 //     {translate: "confirm_no"}

@@ -33,7 +33,8 @@ class Header extends React.Component {
             locked: WalletUnlockStore.getState().locked,
             current_wallet: WalletManagerStore.getState().current_wallet,
             lastMarket: SettingsStore.getState().viewSettings.get("lastMarket"),
-            starredAccounts: SettingsStore.getState().starredAccounts
+            starredAccounts: SettingsStore.getState().starredAccounts,
+            traderMode: SettingsStore.getState().settings.get("traderMode"),
         };
     }
 
@@ -73,6 +74,7 @@ class Header extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         return (
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
+            nextProps.traderMode !== this.props.traderMode ||
             nextProps.currentAccount !== this.props.currentAccount ||
             nextProps.locked !== this.props.locked ||
             nextProps.current_wallet !== this.props.current_wallet ||
@@ -127,7 +129,7 @@ class Header extends React.Component {
 
     render() {
         let {active} = this.state;
-        let {linkedAccounts, currentAccount, starredAccounts} = this.props;
+        let {linkedAccounts, currentAccount, starredAccounts, traderMode} = this.props;
         let settings = counterpart.translate("header.settings");
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
@@ -161,11 +163,12 @@ class Header extends React.Component {
 
         let dashboard = (
             <a
-                style={{paddingTop: 3, paddingBottom: 3}}
+                style={{display: "inline-block", paddingTop: 3, paddingBottom: 3}}
                 className={cnames({active: active === "/" || active.indexOf("dashboard") !== -1})}
                 onClick={this._onNavigate.bind(this, "/dashboard")}
             >
                 <img style={{margin: 0, height: 40}} src={logo}/>
+                <div style={{display: "inline-block", position: "relative", top: 1, paddingLeft: 15}}>{!traderMode ? <Translate content="wallet.title" /> : null}</div>
             </a>
         );
 
@@ -255,7 +258,7 @@ class Header extends React.Component {
         }
 
         return (
-            <div className="header menu-group primary">
+            <div className="header menu-group primary" style={{minHeight: 49}}>
                 <div className="show-for-small-only">
                     <ul className="primary menu-bar title">
                         <li><a href onClick={this._triggerMenu}><Icon className="icon-14px" name="menu"/></a></li>
@@ -270,15 +273,15 @@ class Header extends React.Component {
                 <div className="grid-block show-for-medium">
                     <ul className="menu-bar">
                         <li>{dashboard}</li>
-                        {!currentAccount ? null : <li><Link to={`/account/${currentAccount}/overview`} activeClassName="active"><Translate content="header.account" /></Link></li>}
-                        <li><a className={cnames({active: active.indexOf("transfer") !== -1})} onClick={this._onNavigate.bind(this, "/transfer")}><Translate component="span" content="header.payments" /></a></li>
-                        <li>{tradeLink}</li>
-                        {currentAccount && myAccounts.indexOf(currentAccount) !== -1 ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
+                        {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} activeClassName="active"><Translate content="header.account" /></Link></li>}
+                        {!traderMode ? null : <li><a className={cnames({active: active.indexOf("transfer") !== -1})} onClick={this._onNavigate.bind(this, "/transfer")}><Translate component="span" content="header.payments" /></a></li>}
+                        {!traderMode ? null : <li>{tradeLink}</li>}
+                        {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                     </ul>
                 </div>
                 <div className="grid-block show-for-medium shrink">
                     <div className="grp-menu-items-group header-right-menu">
-                        {walletBalance}
+                        {!traderMode ? null : walletBalance}
 
                         <div className="grid-block shrink overflow-visible account-drop-down">
                             {accountsDropDown}

@@ -5,10 +5,13 @@ import SettingsStore from "stores/SettingsStore";
 
 import AltContainer from "alt-container";
 import Dashboard from "./Dashboard";
+import SimpleDashboard from "./SimpleDashboard";
 import Immutable from "immutable";
 
 class DashboardContainer extends React.Component {
     render() {
+        let traderMode = SettingsStore.getState().settings.get("traderMode");
+
         return (
             <AltContainer
                 stores={[AccountStore, SettingsStore]}
@@ -19,14 +22,17 @@ class DashboardContainer extends React.Component {
                     // return Immutable.List(AccountStore.getState().linkedAccounts);
                 // },
                 /** the dashboard only really needs the list of accounts */
-                linkedAccounts: () => {
-                    return AccountStore.getState().linkedAccounts;
-                },
-                myIgnoredAccounts: () => {
-                    return AccountStore.getState().myIgnoredAccounts;
-                }
-              }}>
-                <Dashboard/>
+                    linkedAccounts: () => {
+                        return AccountStore.getState().linkedAccounts;
+                    },
+                    myIgnoredAccounts: () => {
+                        return AccountStore.getState().myIgnoredAccounts;
+                    },
+                    currentAccount: () => {
+                        return AccountStore.getState().currentAccount;
+                    }
+                }}>
+                    {traderMode ? <Dashboard/> : <SimpleDashboard />}
             </AltContainer>
         );
     }
