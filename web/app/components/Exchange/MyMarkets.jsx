@@ -498,13 +498,6 @@ class MyMarkets extends React.Component {
         let market_tab = preferredBases.toArray()[this.state.activeMarketTab];
         let fix_lookupQuote = fix_prefix(lookupQuote);
         let fix_lookupBase = fix_prefix(lookupBase);
-        //console.log("@>market_tab", market_tab);
-        console.log(`activeTab = ${activeTab}, activeMarketTab = ${this.state.activeMarketTab}`);
-        console.log(`lookupBase =${lookupBase}, lookupQuote = ${lookupQuote}`);
-        console.log(`fixed base = ${fix_lookupBase} quote=${fix_lookupQuote}`);
-        //console.log("preferredBases", preferredBases.toArray());
-       // console.log("starredMarkets", starredMarkets.toArray());        
-        //console.log("staticDefaultMarkets", SettingsStore.marketsList);
 
         preferredBases.map(e=>{
             baseGroups[e] = [];
