@@ -36,6 +36,7 @@ class SimpleDashboard extends React.Component {
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
             nextProps.currentAccount !== this.props.currentAccount ||
             nextProps.ignoredAccounts !== this.props.ignoredAccounts ||
+            nextProps.viewSettings !== this.props.viewSettings ||
             nextState.width !== this.state.width ||
             nextState.height !== this.state.height ||
             nextState.showIgnored !== this.state.showIgnored
@@ -103,7 +104,10 @@ class SimpleDashboard extends React.Component {
         return (
             <div ref="wrapper" className="grid-block page-layout vertical">
                 <div ref="container" className="grid-container" style={{padding: "25px 10px 0 10px"}}>
-                    <DashboardAssetList account={currentAccount}/>
+                    <DashboardAssetList
+                        account={currentAccount}
+                        hideZeroBalances={this.props.viewSettings.get("hideZeroBalances")}
+                    />
 
                     {accountCount ? <RecentTransactions
                         style={{marginBottom: 20, marginTop: 20}}

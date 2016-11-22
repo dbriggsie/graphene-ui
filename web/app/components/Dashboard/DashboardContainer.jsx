@@ -30,6 +30,9 @@ class DashboardContainer extends React.Component {
                     },
                     currentAccount: () => {
                         return AccountStore.getState().currentAccount;
+                    },
+                    viewSettings: () => {
+                        return SettingsStore.getState().viewSettings;
                     }
                 }}>
                     {traderMode ? <Dashboard/> : <SimpleDashboard />}

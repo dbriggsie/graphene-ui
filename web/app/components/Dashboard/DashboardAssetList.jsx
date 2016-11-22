@@ -5,6 +5,7 @@ import BindToChainState from "../Utility/BindToChainState";
 import Immutable from "immutable";
 import FormattedAsset from "../Utility/FormattedAsset";
 import AssetName from "../Utility/AssetName";
+import SettingsActions from "actions/SettingsActions";
 
 @BindToChainState()
 class DashboardAssetList extends React.Component {
@@ -32,11 +33,10 @@ class DashboardAssetList extends React.Component {
         return (
             np.account !== this.props.account ||
             balancesChanged ||
-            assetsChanged
+            assetsChanged ||
+            np.hideZeroBalances !== this.props.hideZeroBalances
         );
     }
-
-
 
     _getBalance(asset_id) {
         let currentBalance = this.props.balances.find(a => {
@@ -55,6 +55,10 @@ class DashboardAssetList extends React.Component {
 
         let balance = this._getBalance(asset.get("id"));
 
+        if (this.props.hideZeroBalances && (!balance || (balance && balance.amount === 0))) {
+            return null;
+        }
+
         let imgName = asset.get("symbol").split(".");
         imgName = imgName.length === 2 ? imgName[1] : imgName[0];
 
@@ -70,28 +74,41 @@ class DashboardAssetList extends React.Component {
         );
     }
 
+    _toggleZeroBalance() {
+        SettingsActions.changeViewSetting({hideZeroBalances: !this.props.hideZeroBalances});
+    }
+
     render() {
         let assets = this.props.assetNames;
+
         // console.log("account:", this.props.account.toJS(), "balances:", this.props.balances);
+
         return (
             <div>
                 <h3>Wallet</h3>
 
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Asset</th>
-                            <th>Value</th>
-                            <th>Transfer actions</th>
-                            <th>Trade actions</th>
-                            <th>Pinned</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {assets.map(a => this._renderRow(a))}
-                    </tbody>
-                </table>
+                <div style={{paddingTop: 20}}>
+                    <input onChange={this._toggleZeroBalance.bind(this)} checked={this.props.hideZeroBalances} type="checkbox" />
+                    <label style={{position: "relative", top: -3}} onClick={this._toggleZeroBalance.bind(this)}>Hide 0 balances</label>
+
+                </div>
+                <div>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Asset</th>
+                                <th>Value</th>
+                                <th>Transfer actions</th>
+                                <th>Trade actions</th>
+                                <th>Pinned</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {assets.map(a => this._renderRow(a))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         );
     }
@@ -109,6 +126,7 @@ export default class ListWrapper extends React.Component {
     }
 
     render() {
+
         let balances = this.props.account.get("balances").map((a, key) => {
             return a;
         }).toArray();
@@ -117,10 +135,10 @@ export default class ListWrapper extends React.Component {
 
         return (
             <DashboardAssetList
-                account={this.props.account}
                 balances={Immutable.List(balances)}
                 assetNames={assets}
                 assets={Immutable.List(assets)}
+                {...this.props}
             />
         );
     }
