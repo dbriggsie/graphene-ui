@@ -8,6 +8,8 @@ import AssetName from "../Utility/AssetName";
 import SettingsActions from "actions/SettingsActions";
 import Icon from "../Icon/Icon";
 import utils from "common/utils";
+// import Ps from "perfect-scrollbar";
+
 require("./DashboardAssetList.scss");
 
 @BindToChainState()
@@ -25,6 +27,11 @@ class DashboardAssetList extends React.Component {
             filter: ""
         };
     }
+
+    // componentDidMount() {
+    //     let assets = ReactDOM.findDOMNode(this.refs.assetList);
+    //     Ps.initialize(assets);
+    // }
 
     shouldComponentUpdate(np, ns) {
         let balancesChanged = false;
@@ -50,6 +57,11 @@ class DashboardAssetList extends React.Component {
             !utils.are_equal_shallow(np.pinnedAssets, this.props.pinnedAssets)
         );
     }
+
+    // componentDidUpdate() {
+    //     let assets = ReactDOM.findDOMNode(this.refs.assetList);
+    //     Ps.update(assets);
+    // }
 
     _getBalance(asset_id) {
         let currentBalance = this.props.balances.find(a => {
@@ -138,8 +150,8 @@ class DashboardAssetList extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div>
-                    <table className="table" style={{maxHeight: 800}}>
+                <div className="grid-block" style={{maxHeight: 600, overflow: "auto", width: "100%"}}>
+                    <table className="table">
                         <thead>
                             <tr>
                                 <th></th>
