@@ -146,7 +146,9 @@ class DashboardAssetList extends React.Component {
                     <div className="float-right">
                         <div style={{position: "relative", top: -13}}>
                         <input onChange={this._onSearch.bind(this)} value={this.state.filter} style={{marginBottom: 0, }} type="text" placeholder="Find an asset" />
-                        <span className="clickable" style={{position: "absolute", top: 12, right: 10, color: "black"}} onClick={() => {this.setState({filter: ""})}}>X</span>
+                        {this.state.filter.length ? <span className="clickable" style={{position: "absolute", top: 12, right: 10, color: "black"}} onClick={() => {this.setState({filter: ""});}}>
+                            <Icon className="icon-14px fill-red" name="lnr-cross"/>
+                        </span> : null}
                         </div>
                     </div>
                 </div>
