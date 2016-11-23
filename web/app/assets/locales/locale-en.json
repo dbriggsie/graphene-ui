@@ -30,7 +30,8 @@
     "unlock": "Unlock Wallet",
     "help": "Help",
     "locked_tip": "Wallet is locked.<br/>Click to unlock.",
-    "unlocked_tip": "Wallet is unlocked.<br/>Click to lock."
+    "unlocked_tip": "Wallet is unlocked.<br/>Click to lock.",
+    "my_orders": "My orders"
   },
   "propose": "Propose",
   "cancel": "Cancel",

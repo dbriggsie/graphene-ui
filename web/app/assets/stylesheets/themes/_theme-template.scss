@@ -125,7 +125,7 @@
         .table {
             > thead > tr > th,
             > tbody > tr > td {
-                border-bottom-color: darken($secondary-text-color, 10%);                
+                border-bottom-color: darken($secondary-text-color, 10%);
             }
         }
     }
@@ -282,7 +282,7 @@
                 text-indent: 0;
                 padding: 0;
                 &::selection {
-                    background: transparent; 
+                    background: transparent;
                 }
             }
 
@@ -771,6 +771,10 @@
     }
     select.bts-select {
         color: $secondary-text-color;
+
+        > option {
+            color: $chat-text-color;
+        }
     }
     div.fm-container:hover {
         background-color: darken($light-panel-bg-color, 5%);
@@ -835,5 +839,38 @@
                 color: #aaa;
             }
         }
+    }
+
+    .buy-text {
+        color: $bid-color;
+
+        &.inactive {
+            color: grey;
+        }
+    }
+
+    .sell-text {
+        color: $ask-color;
+
+        &.inactive {
+            color: grey;
+        }
+    }
+
+    .orders-switch input:checked + label {
+
+            background: $ask-color;
+
+            &::after {
+                border-color: $ask-color;
+            }
+    }
+
+    .orders-switch input + label {
+            background: $bid-color;
+
+            &::after {
+                border-color: $bid-color;
+            }
     }
 }

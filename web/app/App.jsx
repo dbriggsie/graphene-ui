@@ -26,6 +26,7 @@ import AccountPermissions from "./components/Account/AccountPermissions";
 import AccountWhitelist from "./components/Account/AccountWhitelist";
 import AccountVoting from "./components/Account/AccountVoting";
 import AccountOrders from "./components/Account/AccountOrders";
+import MyOrders from "./components/Account/MyOrders";
 import Exchange from "./components/Exchange/ExchangeContainer";
 import Markets from "./components/Exchange/MarketsContainer";
 import Transfer from "./components/Transfer/Transfer";
@@ -106,9 +107,9 @@ class App extends React.Component {
         let connectionString = SettingsStore.getSetting("apiServer");
         ChainStore.init().then(() => {
             this.setState({ synced: true });
-            
+
             window._debug_wss_set = function(set){
-              Apis.instance().ws_rpc.ws.debug = !Apis.instance().ws_rpc.ws.debug;  
+              Apis.instance().ws_rpc.ws.debug = !Apis.instance().ws_rpc.ws.debug;
             }
 
             let _focusTimerInterval;
@@ -135,7 +136,7 @@ class App extends React.Component {
                 }
             }
 
-            
+
 
 
             Promise.all([
@@ -415,6 +416,7 @@ let routes = (
             <Route path="brainkey" component={Brainkey}/>
             <Route path="balance-claim" component={BalanceClaimActive}/>
         </Route>
+        <Route path="my-orders" component={MyOrders}/>
         <Route path="/account/:account_name" component={AccountPage}>
             <IndexRoute component={AccountOverview}/>
             <Route path="overview" component={AccountOverview}/>

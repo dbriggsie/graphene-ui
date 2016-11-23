@@ -74,22 +74,24 @@ class RecentTransactions extends React.Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if(!utils.are_equal_shallow(this.props.accountsList, nextProps.accountsList)) return true;
-        if(this.props.maxHeight !== nextProps.maxHeight) return true;
-        if(this.state.headerHeight !== nextState.headerHeight) return true;
-        if(this.state.filter !== nextState.filter) return true;
-        if (this.props.customFilter) {
-            if(!utils.are_equal_shallow(this.props.customFilter.fields, nextProps.customFilter.fields) ||
-                !utils.are_equal_shallow(this.props.customFilter.values, nextProps.customFilter.values)) {
+    shouldComponentUpdate(np, ns) {
+        if(!utils.are_equal_shallow(this.props.accountsList, np.accountsList)) return true;
+        if(this.props.maxHeight !== np.maxHeight) return true;
+        if(this.state.headerHeight !== ns.headerHeight) return true;
+        if(this.state.filter !== ns.filter) return true;
+        if (this.props.customFilter && np.customFilter) {
+            if(!utils.are_equal_shallow(this.props.customFilter.fields, np.customFilter.fields) ||
+                !utils.are_equal_shallow(this.props.customFilter.values, np.customFilter.values)) {
                 return true;
             };
+        } else if (this.props.customFilter && !np.customFilter) {
+            return true;
         }
 
-        if(this.props.maxHeight !== nextProps.maxHeight) return true;
-        if (nextState.limit !== this.state.limit || nextState.csvExport !== this.state.csvExport) return true;
-        for(let key = 0; key < nextProps.accountsList.length; ++key) {
-            let npa = nextProps.accountsList[key];
+        if(this.props.maxHeight !== np.maxHeight) return true;
+        if (ns.limit !== this.state.limit || ns.csvExport !== this.state.csvExport) return true;
+        for(let key = 0; key < np.accountsList.length; ++key) {
+            let npa = np.accountsList[key];
             let nsa = this.props.accountsList[key];
             if(npa && nsa && (npa.get("history") !== nsa.get("history"))) return true;
         }
@@ -139,21 +141,34 @@ class RecentTransactions extends React.Component {
             }
         }
         if (filterOp) {
+            if (!Array.isArray(filterOp)) {
+                filterOp = [filterOp];
+            }
+
             history = history.filter(a => {
-                return a.op[0] === operations[filterOp];
+                return filterOp.reduce((ret, op) => {
+                    return ret || a.op[0] === operations[op];
+                }, false);
             });
         }
 
         if (customFilter) {
             history = history.filter(a => {
                 let finalValue = customFilter.fields.reduce((final, filter) => {
+                    let filterValue = customFilter.values[filter];
                     switch (filter) {
-                        case "asset_id":
-                            return final && a.op[1]["amount"][filter] === customFilter.values[filter];
-                            break;
-                        default:
-                            return final && a.op[1][filter] === customFilter.values[filter];
-                            break;
+                    case "asset_id":
+                        if (a.op[0] === 1) { // limit_order_create
+                            return final && (a.op[1]["amount_to_sell"][filter] === filterValue || a.op[1]["min_to_receive"][filter] === filterValue);
+                        }
+                        if (a.op[0] === 4) { // fill_order
+                            return final && (a.op[1]["pays"][filter] === filterValue || a.op[1]["receives"][filter] === filterValue);
+                        }
+                        return final && a.op[1]["amount"][filter] === filterValue;
+                        break;
+                    default:
+                        return final && a.op[1][filter] === filterValue;
+                        break;
                     }
                 }, true)
                 return finalValue;

@@ -16,6 +16,7 @@ import WalletManagerStore from "stores/WalletManagerStore";
 import cnames from "classnames";
 import TotalBalanceValue from "../Utility/TotalBalanceValue";
 import Immutable from "immutable";
+import {ChainStore} from "graphenejs-lib";
 
 var logo = require("assets/ol_logo.png");
 
@@ -196,6 +197,11 @@ class Header extends React.Component {
         // Account selector: Only active inside the exchange
         let accountsDropDown = null;
 
+        let hasOrders = linkedAccounts.reduce((final, a) => {
+            let account = ChainStore.getAccount(a);
+            return final || account.get("orders").size > 0;
+        }, false);
+
         if (currentAccount) {
 
             let account_display_name = currentAccount.length > 20 ? `${currentAccount.slice(0, 20)}..` : currentAccount;
@@ -273,6 +279,7 @@ class Header extends React.Component {
                 <div className="grid-block show-for-medium">
                     <ul className="menu-bar">
                         <li>{dashboard}</li>
+                        {(!traderMode && hasOrders) ? <li><Link to={"/my-orders"} activeClassName="active"><Translate content="header.my_orders"/></Link></li> : null}
                         {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} activeClassName="active"><Translate content="header.account" /></Link></li>}
                         {!traderMode ? null : <li><a className={cnames({active: active.indexOf("transfer") !== -1})} onClick={this._onNavigate.bind(this, "/transfer")}><Translate component="span" content="header.payments" /></a></li>}
                         {!traderMode ? null : <li>{tradeLink}</li>}
