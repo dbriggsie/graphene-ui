@@ -248,7 +248,9 @@ class RecentTransactions extends React.Component {
 
                             {this.props.showFilters ? (
                             <div className="float-right">
-                                <select className="bts-select" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
+                                <div>
+                                    <select style={{position: "relative", top: -10, marginBottom: 0}} className="bts-select" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
+                                </div>
                             </div>) : null}
                         </div>
 
