@@ -106,7 +106,8 @@ class SimpleDashboard extends React.Component {
                 <div ref="container" className="grid-container" style={{padding: "25px 10px 0 10px"}}>
                     <DashboardAssetList
                         account={currentAccount}
-                        hideZeroBalances={this.props.viewSettings.get("hideZeroBalances")}
+                        showZeroBalances={this.props.viewSettings.get("showZeroBalances")}
+                        pinnedAssets={Immutable.Map(this.props.viewSettings.get("pinnedAssets", {}))}
                     />
 
                     {accountCount ? <RecentTransactions

@@ -6,6 +6,9 @@ import Immutable from "immutable";
 import FormattedAsset from "../Utility/FormattedAsset";
 import AssetName from "../Utility/AssetName";
 import SettingsActions from "actions/SettingsActions";
+import Icon from "../Icon/Icon";
+import utils from "common/utils";
+require("./DashboardAssetList.scss");
 
 @BindToChainState()
 class DashboardAssetList extends React.Component {
@@ -42,8 +45,9 @@ class DashboardAssetList extends React.Component {
             np.account !== this.props.account ||
             balancesChanged ||
             assetsChanged ||
-            np.hideZeroBalances !== this.props.hideZeroBalances ||
-            ns.filter !== this.state.filter
+            np.showZeroBalances !== this.props.showZeroBalances ||
+            ns.filter !== this.state.filter ||
+            !utils.are_equal_shallow(np.pinnedAssets, this.props.pinnedAssets)
         );
     }
 
@@ -55,7 +59,13 @@ class DashboardAssetList extends React.Component {
         return (!currentBalance || currentBalance.get("balance") === 0) ? null : {amount: currentBalance.get("balance"), asset_id: asset_id};
     }
 
+    _isPinned(asset) {
+        return this.props.pinnedAssets.has(asset);
+    }
+
+
     _renderRow(assetName) {
+        let isPinned = this._isPinned(assetName);
         let asset = ChainStore.getAsset(assetName);
 
         if (!asset) {
@@ -64,7 +74,7 @@ class DashboardAssetList extends React.Component {
 
         let balance = this._getBalance(asset.get("id"));
 
-        if (this.props.hideZeroBalances && (!balance || (balance && balance.amount === 0))) {
+        if (!isPinned && (!this.props.showZeroBalances && !this.state.filter.length) && (!balance || (balance && balance.amount === 0))) {
             return null;
         }
 
@@ -73,18 +83,35 @@ class DashboardAssetList extends React.Component {
 
         return (
             <tr key={assetName}>
-                <td><img style={{maxWidth: 30}} src={"asset-symbols/"+ imgName.toLowerCase() + ".png"} /></td>
+                <td><img style={{maxWidth: 25}} src={"asset-symbols/"+ imgName.toLowerCase() + ".png"} /></td>
                 <td><AssetName asset={assetName} name={assetName}/></td>
                 <td>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : "0"}</td>
                 <td><a>Deposit</a> | <a>Withdraw</a></td>
                 <td><a>Buy</a> | <a>Sell</a></td>
-                <td></td>
+                <td className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
+                    <span>
+                        {isPinned ?
+                            <Icon className="icon-14px" name="lnr-cross"/> :
+                            <Icon className="icon-14px" name="thumb-tack"/>
+                        }
+                    </span>
+                </td>
             </tr>
         );
     }
 
     _toggleZeroBalance() {
-        SettingsActions.changeViewSetting({hideZeroBalances: !this.props.hideZeroBalances});
+        SettingsActions.changeViewSetting({showZeroBalances: !this.props.showZeroBalances});
+    }
+
+    _togglePin(asset) {
+        let {pinnedAssets} = this.props;
+        if (pinnedAssets.has(asset)) {
+            pinnedAssets = pinnedAssets.delete(asset);
+        } else {
+            pinnedAssets = pinnedAssets.set(asset, true);
+        }
+        SettingsActions.changeViewSetting({pinnedAssets});
     }
 
     _onSearch(e) {
@@ -96,13 +123,12 @@ class DashboardAssetList extends React.Component {
     render() {
         let assets = this.props.assetNames;
         // console.log("account:", this.props.account.toJS(), "balances:", this.props.balances);
-
         return (
             <div>
                 <h3>Wallet</h3>
 
                 <div style={{paddingTop: 20}}>
-                    <input onChange={this._toggleZeroBalance.bind(this)} checked={this.props.hideZeroBalances} type="checkbox" />
+                    <input onChange={this._toggleZeroBalance.bind(this)} checked={!this.props.showZeroBalances && !this.state.filter.length} type="checkbox" />
                     <label style={{position: "relative", top: -3}} onClick={this._toggleZeroBalance.bind(this)}>Hide 0 balances</label>
 
                     <div className="float-right">
@@ -113,7 +139,7 @@ class DashboardAssetList extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <table className="table">
+                    <table className="table" style={{maxHeight: 800}}>
                         <thead>
                             <tr>
                                 <th></th>
@@ -121,7 +147,7 @@ class DashboardAssetList extends React.Component {
                                 <th>Value</th>
                                 <th>Transfer actions</th>
                                 <th>Trade actions</th>
-                                <th>Pinned</th>
+                                <th style={{textAlign: "center"}}>Pinned</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,7 +168,39 @@ export default class ListWrapper extends React.Component {
     };
 
     _getAssets() {
-        return ["BTS", "BTSR", "OBITS", "OPEN.XMR", "OPEN.BTC", "OPEN.MKR"];
+        return [
+            'BROWNIE.PTS',
+            'BTS',
+            'BTSR',
+            'GRIDCOIN',
+            'ICOO',
+            'OBITS',
+            'OPEN.ARDR',
+            'OPEN.BTC',
+            'OPEN.DASH',
+            'OPEN.DGD',
+            'OPEN.DOGE',
+            'OPEN.ETH',
+            'OPEN.EUR',
+            'OPEN.EURT',
+            'OPEN.GAME',
+            'OPEN.GRC',
+            'OPEN.HEAT',
+            'OPEN.LISK',
+            'OPEN.LTC',
+            'OPEN.MAID',
+            'OPEN.MUSE',
+            'OPEN.OMNI',
+            'OPEN.MKR',
+            'OPEN.INCNT',
+            'OPEN.STEEM',
+            'OPEN.USD',
+            'OPEN.USDT',
+            'OPEN.NXC',
+            'PEERPLAYS',
+            'SHAREBITS',
+            'SOLCERT'
+        ]
     }
 
     render() {
