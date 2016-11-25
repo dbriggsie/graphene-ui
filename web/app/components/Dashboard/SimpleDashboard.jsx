@@ -7,6 +7,7 @@ import ps from "perfect-scrollbar";
 import AssetName from "../Utility/AssetName";
 import assetUtils from "common/asset_utils";
 import DashboardAssetList from "./DashboardAssetList";
+import accountUtils from "common/account_utils";
 
 class SimpleDashboard extends React.Component {
 
@@ -16,10 +17,26 @@ class SimpleDashboard extends React.Component {
         this.state = {
             width: null,
             height: null,
-            showIgnored: false
+            openLedgerCoins: [],
+            openLedgerBackedCoins: []
         };
 
         this._setDimensions = this._setDimensions.bind(this);
+    }
+
+    componentWillMount() {
+        accountUtils.getFinalFeeAsset(this.props.account, "transfer");
+
+        fetch("https://blocktrades.us/ol/api/v2/coins").then(reply => reply.json().then(result => {
+            this.setState({
+                openLedgerCoins: result
+            });
+            this.setState({
+                openLedgerBackedCoins: this.getOpenledgerBackedCoins(result)
+            });
+        })).catch(err => {
+            console.log("error fetching openledger list of coins", err);
+        });
     }
 
     componentDidMount() {
@@ -35,12 +52,30 @@ class SimpleDashboard extends React.Component {
         return (
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
             nextProps.currentAccount !== this.props.currentAccount ||
-            nextProps.ignoredAccounts !== this.props.ignoredAccounts ||
             nextProps.viewSettings !== this.props.viewSettings ||
             nextState.width !== this.state.width ||
             nextState.height !== this.state.height ||
-            nextState.showIgnored !== this.state.showIgnored
+            nextState.openLedgerCoins.length !== this.state.openLedgerCoins.length ||
+            nextState.openLedgerBackedCoins.length !== this.state.openLedgerBackedCoins.length
         );
+    }
+
+    getOpenledgerBackedCoins(allOpenledgerCoins) {
+        let coins_by_type = {};
+        allOpenledgerCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
+        let openLedgerBackedCoins = [];
+        allOpenledgerCoins.forEach(coin_type => {
+            if (coin_type.walletSymbol.startsWith("OPEN.") && coin_type.backingCoinType)
+            {
+                openLedgerBackedCoins.push({
+                    name: coins_by_type[coin_type.backingCoinType].name,
+                    walletType: coins_by_type[coin_type.backingCoinType].walletType,
+                    backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
+                    symbol: coin_type.walletSymbol,
+                    supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos
+                });
+            }});
+        return openLedgerBackedCoins;
     }
 
     // componentDidUpdate() {
@@ -61,45 +96,13 @@ class SimpleDashboard extends React.Component {
         }
     }
 
-    _onToggleIgnored() {
-        this.setState({
-            showIgnored: !this.state.showIgnored
-        });
-    }
-
     render() {
         let {linkedAccounts, myIgnoredAccounts, currentAccount} = this.props;
-        let {width, height, showIgnored} = this.state;
+        let {width, height, showIgnored, openLedgerCoins} = this.state;
 
         let names = linkedAccounts.toArray().sort();
-        let ignored = myIgnoredAccounts.toArray().sort();
 
         let accountCount = linkedAccounts.size + myIgnoredAccounts.size;
-
-        let featuredMarkets = [
-            ["OPEN.BTC", "BTS", false],
-            ["OPEN.BTC", "OPEN.ETH"],
-            ["OPEN.BTC", "OPEN.STEEM"],
-            ["OPEN.BTC", "OPEN.DGD"],
-            ["OPEN.BTC", "BLOCKPAY"],
-            ["OPEN.BTC", "ICOO"],
-            ["BTS", "OBITS"],
-            ["BTS", "BTSR"],
-            ["BTS", "PEERPLAYS"],
-            ["OPEN.BTC", "OPEN.GAME"],
-            ["OPEN.BTC", "OPEN.INCNT"],
-            ["OPEN.BTC", "OPEN.NXC"],
-            ["BTS", "USD"],
-            ["BTS", "CNY"],
-            ["BTS", "EUR"],
-            ["BTS", "GOLD"]
-            // ["BTS", "SILVER"]
-        ];
-
-        let newAssets = [
-            "OPEN.USDT",
-            "OPEN.EURT"
-        ];
 
         return (
             <div ref="wrapper" className="grid-block page-layout vertical">

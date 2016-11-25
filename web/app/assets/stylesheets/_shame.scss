@@ -282,10 +282,10 @@ label.inline {
   flex-direction: column;
   padding: 1rem 2rem 1rem 2rem;
   background: hsl(0, 0%, 32%);
-  color: white;
   border-radius: 0.05rem;
+  color: white;
 
-  .help-content h3 {
+  .help-content, h3 {
     color: white;
   }
 }
@@ -362,4 +362,10 @@ select.bts-select {
 
 input[type=number] {
     -moz-appearance:textfield;
+}
+
+.asset-with-border {
+    padding-bottom: 1px;
+    border-bottom: 2px dashed #ccc;
+    cursor: pointer;
 }

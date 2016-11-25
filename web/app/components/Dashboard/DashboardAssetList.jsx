@@ -5,6 +5,7 @@ import BindToChainState from "../Utility/BindToChainState";
 import Immutable from "immutable";
 import FormattedAsset from "../Utility/FormattedAsset";
 import AssetName from "../Utility/AssetName";
+import AssetImage from "../Utility/AssetImage";
 import SettingsActions from "actions/SettingsActions";
 import Icon from "../Icon/Icon";
 import utils from "common/utils";
@@ -17,7 +18,8 @@ class DashboardAssetList extends React.Component {
 
     static propTypes = {
         balances: ChainTypes.ChainObjectsList,
-        assets: ChainTypes.ChainAssetsList
+        assets: ChainTypes.ChainAssetsList,
+        balanceAssets: ChainTypes.ChainAssetsList
     };
 
     constructor() {
@@ -48,10 +50,18 @@ class DashboardAssetList extends React.Component {
             }
         });
 
+        let balanceAssetsChanged = false;
+        np.assets.forEach((a, i) => {
+            if (!Immutable.is(a, this.props.assets[i])) {
+                balanceAssetsChanged = true;
+            }
+        });
+
         return (
             np.account !== this.props.account ||
             balancesChanged ||
             assetsChanged ||
+            balanceAssetsChanged ||
             np.showZeroBalances !== this.props.showZeroBalances ||
             ns.filter !== this.state.filter ||
             !utils.are_equal_shallow(np.pinnedAssets, this.props.pinnedAssets)
@@ -90,13 +100,10 @@ class DashboardAssetList extends React.Component {
             return null;
         }
 
-        let imgName = asset.get("symbol").split(".");
-        imgName = imgName.length === 2 ? imgName[1] : imgName[0];
-
         return (
             <tr key={assetName}>
-                <td><img style={{maxWidth: 25}} src={"asset-symbols/"+ imgName.toLowerCase() + ".png"} /></td>
-                <td><AssetName asset={assetName} name={assetName}/></td>
+                <td><AssetImage assetName={assetName} style={{maxWidth: 25}}/></td>
+                <td><AssetName popover asset={assetName} name={assetName}/></td>
                 <td>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : "0"}</td>
                 <td><a>Deposit</a> | <a>Withdraw</a></td>
                 <td><a>Buy</a> | <a>Sell</a></td>
@@ -134,6 +141,12 @@ class DashboardAssetList extends React.Component {
 
     render() {
         let assets = this.props.assetNames;
+
+        this.props.balanceAssets.forEach(a => {
+            if (a && assets.indexOf(a.get("symbol")) === -1) {
+                assets.push(a.get("symbol"));
+            }
+        });
         // console.log("account:", this.props.account.toJS(), "balances:", this.props.balances);
         return (
             <div>
@@ -219,7 +232,9 @@ export default class ListWrapper extends React.Component {
 
     render() {
 
+        let balanceAssets = Immutable.List();
         let balances = this.props.account.get("balances").map((a, key) => {
+            balanceAssets = balanceAssets.push(key);
             return a;
         }).toArray();
 
@@ -227,6 +242,7 @@ export default class ListWrapper extends React.Component {
 
         return (
             <DashboardAssetList
+                balanceAssets={balanceAssets}
                 balances={Immutable.List(balances)}
                 assetNames={assets}
                 assets={Immutable.List(assets)}
