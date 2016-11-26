@@ -1,0 +1,27 @@
+.balance-row {
+    margin-left: -10px;
+    margin-right: -10px;
+    padding: 10px 20px;
+
+    &.active {
+        background-color: #737373;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: #737373;
+    }
+}
+
+.SimpleBuySell__help-text {
+    font-style: italic;
+    padding-top: 5px;
+    font-size: 95%;
+}
+
+#simple_buy_modal, #simple_sell_modal {
+    background-color: grey;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+}

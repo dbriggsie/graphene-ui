@@ -63,7 +63,7 @@
     "react-popover": "^0.4.4",
     "react-responsive-mixin": "^0.3.5",
     "react-router": "^1.0.3",
-    "react-tooltip": "^3.0.8",
+    "react-tooltip": "^3.2.2",
     "react-translate-component": "^0.11.0",
     "sass-loader": "^3.2.3",
     "svgo": "^0.5.1",

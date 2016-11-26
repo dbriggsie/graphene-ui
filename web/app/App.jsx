@@ -177,6 +177,7 @@ class App extends React.Component {
 
     _rebuildTooltips() {
         if (this.refs.tooltip) {
+            console.log("_rebuildTooltips", this.refs.tooltip);
             this.refs.tooltip.globalRebuild();
         }
     }

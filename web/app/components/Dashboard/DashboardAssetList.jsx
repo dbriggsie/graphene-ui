@@ -9,6 +9,7 @@ import AssetImage from "../Utility/AssetImage";
 import SettingsActions from "actions/SettingsActions";
 import Icon from "../Icon/Icon";
 import utils from "common/utils";
+import SimpleBuySell from "./SimpleBuySell";
 // import Ps from "perfect-scrollbar";
 
 require("./DashboardAssetList.scss");
@@ -64,6 +65,7 @@ class DashboardAssetList extends React.Component {
             balanceAssetsChanged ||
             np.showZeroBalances !== this.props.showZeroBalances ||
             ns.filter !== this.state.filter ||
+            ns.activeAsset !== this.state.activeAsset ||
             !utils.are_equal_shallow(np.pinnedAssets, this.props.pinnedAssets)
         );
     }
@@ -106,7 +108,7 @@ class DashboardAssetList extends React.Component {
                 <td><AssetName popover asset={assetName} name={assetName}/></td>
                 <td>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : "0"}</td>
                 <td><a>Deposit</a> | <a>Withdraw</a></td>
-                <td><a>Buy</a> | <a>Sell</a></td>
+                <td><a onClick={this._showModal.bind(this, "buy_modal", assetName)}>Buy</a> | <a onClick={this._showModal.bind(this, "sell_modal", assetName)}>Sell</a></td>
                 <td className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
@@ -139,7 +141,18 @@ class DashboardAssetList extends React.Component {
         });
     }
 
+    _showModal(action, asset, e) {
+        console.log("_showModal", action, asset);
+        e.preventDefault();
+        this.setState({
+            activeAsset: asset
+        }, () => {
+            this.refs[action].show();
+        });
+    }
+
     render() {
+        let {activeAsset} = this.state;
         let assets = this.props.assetNames;
 
         this.props.balanceAssets.forEach(a => {
@@ -147,6 +160,7 @@ class DashboardAssetList extends React.Component {
                 assets.push(a.get("symbol"));
             }
         });
+        console.log("activeAsset:", activeAsset);
         // console.log("account:", this.props.account.toJS(), "balances:", this.props.balances);
         return (
             <div>
@@ -165,6 +179,7 @@ class DashboardAssetList extends React.Component {
                         </div>
                     </div>
                 </div>
+
                 <div className="grid-block" style={{maxHeight: 600, overflow: "auto", width: "100%"}}>
                     <table className="table">
                         <thead>
@@ -182,6 +197,24 @@ class DashboardAssetList extends React.Component {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Buy/Sell modals */}
+
+                <SimpleBuySell
+                    ref="buy_modal"
+                    action="buy"
+                    asset={activeAsset}
+                    modalId="simple_buy_modal"
+                    balances={this.props.balances.filter(b => !!b.get("balance"))}
+                />
+
+                <SimpleBuySell
+                    ref="sell_modal"
+                    action="sell"
+                    asset={activeAsset}
+                    modalId="simple_sell_modal"
+                    balances={this.props.balances.filter(b => !!b.get("balance"))}
+                />
             </div>
         );
     }
