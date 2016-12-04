@@ -205,7 +205,7 @@ class DashboardAssetList extends React.Component {
                     action="buy"
                     asset={activeAsset}
                     modalId="simple_buy_modal"
-                    balances={this.props.balances.filter(b => !!b.get("balance"))}
+                    balances={this.props.balances.filter(b => b && !!b.get("balance"))}
                 />
 
                 <SimpleBuySell
@@ -213,7 +213,7 @@ class DashboardAssetList extends React.Component {
                     action="sell"
                     asset={activeAsset}
                     modalId="simple_sell_modal"
-                    balances={this.props.balances.filter(b => !!b.get("balance"))}
+                    balances={this.props.balances.filter(b => b && !!b.get("balance"))}
                 />
             </div>
         );
