@@ -52,6 +52,7 @@ class MarketsStore {
         });
 
         this.allMarketStats = Immutable.Map();
+        this.lowVolumeMarkets = Immutable.Map();
 
         this.baseAsset = {
             id: "1.3.0",
@@ -246,6 +247,12 @@ class MarketsStore {
             this.marketStats = this.marketStats.set("change", stats.change);
             this.marketStats = this.marketStats.set("volumeBase", stats.volumeBase);
             this.marketStats = this.marketStats.set("volumeQuote", stats.volumeQuote);
+
+            if (stats.volumeBase) {
+                this.lowVolumeMarkets = this.lowVolumeMarkets.delete(result.market);
+            }
+        } else if (result.recent && !result.recent.length) {
+            this.lowVolumeMarkets = this.lowVolumeMarkets.set(result.market, true);
         }
 
         // Update orderbook

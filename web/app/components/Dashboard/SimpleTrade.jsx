@@ -30,7 +30,7 @@ class SimpleTradeContent extends React.Component {
 
     static getPropsFromStores() {
         return {
-            marketStats: MarketsStore.getState().marketStats,
+            lowVolumeMarkets: MarketsStore.getState().lowVolumeMarkets,
             activeBalanceId: SettingsStore.getState().viewSettings.get("activeBalanceId", preferredAssets[0])
         };
     };
@@ -137,7 +137,7 @@ class SimpleTradeContent extends React.Component {
     }
 
     render() {
-        let {modalId, asset, balances, marketStats} = this.props;
+        let {modalId, asset, balances, lowVolumeMarkets} = this.props;
         let {activeBalanceId} = this.state;
         let balanceOptions = [];
         let balanceSelections = balances.map(b => {
@@ -159,6 +159,8 @@ class SimpleTradeContent extends React.Component {
             return null;
         }
 
+        const isLowVolume = this.props.lowVolumeMarkets.get(this.props.currentAsset.get("id") + "_" + activeBalance.get("id"), false);
+
         return (
             <div>
                 <div style={{padding: "20px 2rem", backgroundColor: "#545454"}}>
@@ -167,9 +169,8 @@ class SimpleTradeContent extends React.Component {
                     <div style={{overflowY: "auto", maxHeight: 188, padding: "0 10px", border: "1px solid black"}}>
                         {balanceSelections}
                     </div>
-
-                    {marketStats && marketStats.get("volumeBase") === 0 ? <div style={{paddingTop: 20}} className="error">Warning: This is a low volume market</div> : null}
                 </div>
+
                 <div className="grid-block vertical no-overflow" style={{zIndex: 1002, paddingLeft: "2rem", paddingRight: "2rem"}}>
 
                     <div style={{margin: "0 -2rem", borderBottom: "2px solid #020202"}}></div>
@@ -237,6 +238,8 @@ class SimpleTradeContent extends React.Component {
                                 X {asset} => X other asset
                             </div>
                         </div>
+
+                        {isLowVolume ? <div style={{paddingTop: 20, paddingBottom: 20}} className="error">Warning: This is a low volume market</div> : null}
 
                         <div className="button-group">
                             <div className="button">Show market orders</div>
