@@ -9,7 +9,7 @@ import AssetImage from "../Utility/AssetImage";
 import SettingsActions from "actions/SettingsActions";
 import Icon from "../Icon/Icon";
 import utils from "common/utils";
-import SimpleBuySell from "./SimpleBuySell";
+import SimpleTrade from "./SimpleTrade";
 // import Ps from "perfect-scrollbar";
 
 require("./DashboardAssetList.scss");
@@ -27,7 +27,9 @@ class DashboardAssetList extends React.Component {
         super();
 
         this.state = {
-            filter: ""
+            filter: "",
+            activeSellAsset: null,
+            activeBuyAsset: null
         };
     }
 
@@ -64,16 +66,10 @@ class DashboardAssetList extends React.Component {
             assetsChanged ||
             balanceAssetsChanged ||
             np.showZeroBalances !== this.props.showZeroBalances ||
-            ns.filter !== this.state.filter ||
-            ns.activeAsset !== this.state.activeAsset ||
+            !utils.are_equal_shallow(ns, this.state) ||
             !utils.are_equal_shallow(np.pinnedAssets, this.props.pinnedAssets)
         );
     }
-
-    // componentDidUpdate() {
-    //     let assets = ReactDOM.findDOMNode(this.refs.assetList);
-    //     Ps.update(assets);
-    // }
 
     _getBalance(asset_id) {
         let currentBalance = this.props.balances.find(a => {
@@ -142,26 +138,35 @@ class DashboardAssetList extends React.Component {
     }
 
     _showModal(action, asset, e) {
-        console.log("_showModal", action, asset);
         e.preventDefault();
+        console.log(action, asset);
         this.setState({
-            activeAsset: asset
+            [action === "buy_modal" ? "activeBuyAsset" : "activeSellAsset"]: asset
         }, () => {
             this.refs[action].show();
         });
     }
 
     render() {
-        let {activeAsset} = this.state;
+        let {activeBuyAsset, activeSellAsset} = this.state;
         let assets = this.props.assetNames;
+
+        let currentBuyAsset, currentSellAsset;
 
         this.props.balanceAssets.forEach(a => {
             if (a && assets.indexOf(a.get("symbol")) === -1) {
                 assets.push(a.get("symbol"));
             }
+
+            if (a && a.get("symbol") === activeBuyAsset) {
+                currentBuyAsset = a;
+            }
+
+            if (a && a.get("symbol") === activeSellAsset) {
+                currentSellAsset = a;
+            }
         });
-        console.log("activeAsset:", activeAsset);
-        // console.log("account:", this.props.account.toJS(), "balances:", this.props.balances);
+
         return (
             <div>
                 <h3>Wallet</h3>
@@ -200,20 +205,24 @@ class DashboardAssetList extends React.Component {
 
                 {/* Buy/Sell modals */}
 
-                <SimpleBuySell
+                <SimpleTrade
                     ref="buy_modal"
                     action="buy"
-                    asset={activeAsset}
+                    asset={activeBuyAsset}
                     modalId="simple_buy_modal"
-                    balances={this.props.balances.filter(b => b && !!b.get("balance"))}
+                    currentAsset={currentBuyAsset}
+                    balances={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentBuyAsset ? currentBuyAsset.get("id") : null)))}
+                    balanceAssets={this.props.balanceAssets}
                 />
 
-                <SimpleBuySell
+                <SimpleTrade
                     ref="sell_modal"
                     action="sell"
-                    asset={activeAsset}
+                    asset={activeSellAsset}
                     modalId="simple_sell_modal"
-                    balances={this.props.balances.filter(b => b && !!b.get("balance"))}
+                    currentAsset={currentSellAsset}
+                    balances={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentSellAsset ? currentSellAsset.get("id") : null)))}
+                    balanceAssets={this.props.balanceAssets}
                 />
             </div>
         );
