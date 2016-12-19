@@ -98,13 +98,18 @@ class DashboardAssetList extends React.Component {
             return null;
         }
 
+        const sellDisabled = !balance || balance.amount === 0;
+
         return (
             <tr key={assetName}>
                 <td><AssetImage assetName={assetName} style={{maxWidth: 25}}/></td>
                 <td><AssetName popover asset={assetName} name={assetName}/></td>
                 <td>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : "0"}</td>
                 <td><a>Deposit</a> | <a>Withdraw</a></td>
-                <td><a onClick={this._showModal.bind(this, "buy_modal", assetName)}>Buy</a> | <a onClick={this._showModal.bind(this, "sell_modal", assetName)}>Sell</a></td>
+                <td>
+                    <a onClick={this._showModal.bind(this, "buy_modal", assetName)}>Buy</a>
+                    <span> | </span>
+                    <a className={sellDisabled ? "disabled" : ""} onClick={sellDisabled ? null : this._showModal.bind(this, "sell_modal", assetName)}>Sell</a></td>
                 <td className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
