@@ -274,6 +274,30 @@ class MarketsActions {
         return Promise.resolve(true);
     }
 
+    createLimitOrder2(order, fee_asset_id = "1.3.0") {
+        var tr = wallet_api.new_transaction();
+
+        let feeAsset = ChainStore.getAsset(fee_asset_id);
+        if( feeAsset.getIn(["options", "core_exchange_rate", "base", "asset_id"]) === "1.3.0" && feeAsset.getIn(["options", "core_exchange_rate", "quote", "asset_id"]) === "1.3.0" ) {
+            fee_asset_id = "1.3.0";
+        }
+
+        order.fee = {
+            amount: 0,
+            asset_id: fee_asset_id
+        };
+
+        tr.add_type_operation("limit_order_create", order);
+
+        return WalletDb.process_transaction(tr, null, true).then(result => {
+            return true;
+        })
+        .catch(error => {
+            console.log("order error:", error);
+            return {error};
+        });
+    }
+
     createLimitOrder(account, sellAmount, sellAsset, buyAmount, buyAsset, expiration, isFillOrKill, fee_asset_id) {
 
         var tr = wallet_api.new_transaction();
@@ -303,10 +327,10 @@ class MarketsActions {
         return WalletDb.process_transaction(tr, null, true).then(result => {
             return true;
         })
-            .catch(error => {
-                console.log("order error:", error);
-                return {error};
-            });
+        .catch(error => {
+            console.log("order error:", error);
+            return {error};
+        });
     }
 
     createPredictionShort(account, sellAmount, sellAsset, buyAmount, collateralAmount, buyAsset, expiration, isFillOrKill, fee_asset_id = "1.3.0") {

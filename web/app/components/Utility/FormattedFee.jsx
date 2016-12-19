@@ -3,10 +3,11 @@ import FormattedAsset from "./FormattedAsset";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
 import utils from "common/utils";
+import {ChainStore} from "graphenejs-lib";
 
 /**
  *
- *  Given an operation type, displays the CORE fee for that operation
+ *  Given an operation type, displays the fee for that operation using the given asset
  *
  */
 
@@ -16,16 +17,32 @@ class FormattedFee extends React.Component {
     static propTypes = {
         globalObject: ChainTypes.ChainObject.isRequired,
         opType: PropTypes.string,
-        options: PropTypes.array
+        options: PropTypes.array,
+        asset: ChainTypes.ChainAsset.isRequired
     };
 
     static defaultProps = {
         globalObject: "2.0.0",
-        options: []
+        options: [],
+        asset: "1.3.0"
     };
 
     getFee() { // Return fee via refs
-        return utils.estimateFee(this.props.opType, this.props.options, this.props.globalObject);
+        let {asset, opType, options, globalObject, balances} = this.props;
+        let coreAsset = ChainStore.getAsset("1.3.0");
+
+        const coreFee = utils.getFee({
+            opType,
+            options,
+            globalObject,
+            asset,
+            coreAsset,
+            balances
+        });
+
+        console.log("coreFee:", coreFee);
+
+        return coreFee;
     }
 
     render() {
@@ -35,9 +52,9 @@ class FormattedFee extends React.Component {
             return null;
         }
 
-        let amount = utils.estimateFee(opType, options, globalObject);
+        let fee = this.getFee();
 
-        return <FormattedAsset amount={amount} asset="1.3.0"/>;
+        return <FormattedAsset {...fee} />;
     }
 }
 

@@ -200,7 +200,7 @@ var Utils = {
                 };
             }
         }
-        
+
         let trailing = zeros ? dec.substr(Math.max(0, i + 1), dec.length) : null;
 
         if (trailing) {
@@ -330,6 +330,39 @@ var Utils = {
         return fee * globalObject.getIn(["parameters", "current_fees", "scale"]) / 10000;
     },
 
+    getFee: function({opType, options, globalObject, asset, coreAsset, balances}) {
+        let coreFee = {asset: "1.3.0"};
+        coreFee.amount = this.estimateFee(opType, options, globalObject) || 0;
+
+        if (!asset || asset.get("id") === "1.3.0") return coreFee; // Desired fee is in core asset
+
+        let cer = asset.getIn(["options", "core_exchange_rate"]).toJS();
+        if (!coreAsset || cer.base.asset_id === cer.quote.asset_id) return coreFee;
+        let price = this.convertPrice(coreAsset, cer, null, asset.get("id"));
+        let eqValue = this.convertValue(price, coreFee.amount, coreAsset, asset);
+        let fee = {
+            amount: Math.floor(eqValue + 0.5),
+            asset: asset.get("id")
+        };
+
+        let useCoreFee = true; // prefer CORE fee by default
+        if (balances && balances.length) {
+            balances.forEach(b => {
+                if (b.get("asset_type") === "1.3.0" && b.get("balance") < coreFee.amount) { // User has sufficient CORE, use it (cheapeest)
+                    useCoreFee = false;
+                }
+            });
+
+            balances.forEach(b => {
+                if (b.get("asset_type") === fee.asset && b.get("balance") < fee.amount) { // User has insufficient {asset}, use CORE instead
+                    useCoreFee = true;
+                }
+            });
+        }
+
+        return useCoreFee ? coreFee : fee;
+    },
+
     convertPrice: function(fromRate, toRate, fromID, toID) {
 
         if (!fromRate || !toRate) {
@@ -450,13 +483,13 @@ var Utils = {
     get_translation_parts(str) {
         let result = [];
         let toReplace = {};
-        let re = /{(.*?)}/g; 
+        let re = /{(.*?)}/g;
         let interpolators = str.split(re);
-        // console.log("split:", str.split(re)); 
+        // console.log("split:", str.split(re));
         return str.split(re);
         // var str = '{{azazdaz}} {{azdazd}}';
         // var m;
-         
+
         // while ((m = re.exec(str)) !== null) {
         //     if (m.index === re.lastIndex) {
         //         re.lastIndex++;
@@ -464,7 +497,7 @@ var Utils = {
         //     console.log("m:", m);
         //     // View your result using the m-variable.
         //     // eg m[0] etc.
-        //     // 
+        //     //
         //     toReplace[m[1]] = m[0]
         //     result.push(m[1])
         // }
@@ -491,10 +524,10 @@ var Utils = {
         let prefix ='';
         let partNames = name.split('.');
 
-        if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){            
+        if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){
             replacedName = partNames[1]
             prefix = (partNames[0]+'.').toLowerCase();
-            prefix = ''; //hard remove prefix        
+            prefix = ''; //hard remove prefix
         }else{
             replacedName = name;
             prefix = '';

@@ -207,21 +207,23 @@ class DashboardAssetList extends React.Component {
 
                 <SimpleTrade
                     ref="buy_modal"
+                    seller={this.props.account.get("id")}
                     action="buy"
                     asset={activeBuyAsset}
                     modalId="simple_buy_modal"
                     currentAsset={currentBuyAsset}
-                    balances={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentBuyAsset ? currentBuyAsset.get("id") : null)))}
+                    assets={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentBuyAsset ? currentBuyAsset.get("id") : null)))}
                     balanceAssets={this.props.balanceAssets}
                 />
 
                 <SimpleTrade
                     ref="sell_modal"
+                    seller={this.props.account.get("id")}
                     action="sell"
                     asset={activeSellAsset}
                     modalId="simple_sell_modal"
                     currentAsset={currentSellAsset}
-                    balances={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentSellAsset ? currentSellAsset.get("id") : null)))}
+                    assets={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentSellAsset ? currentSellAsset.get("id") : null)))}
                     balanceAssets={this.props.balanceAssets}
                 />
             </div>
