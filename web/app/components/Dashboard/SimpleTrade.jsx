@@ -345,7 +345,7 @@ class SimpleTradeContent extends React.Component {
                 <span className="inline-label" style={{margin: 0}}>
                     <input type="text" value={this.state[isBuy ? "saleValue" : "receiveValue"]} onChange={this[isBuy ? "_onInputSell" : "_onInputReceive"].bind(this)}/>
                     <span className="form-label" style={{border: "none", paddingLeft: 0, paddingRight: 0}}>
-                        <select onChange={this._dropdownBalance.bind(this)} value={activeAssetId} style={{minWidth: "10rem", color: "inherit", fontWeight: "normal", fontSize: "inherit", backgroundColor: "#eee", border: "none", margin: 0, paddingTop: 4, paddingBottom: 4}}>
+                        <select onChange={this._dropdownBalance.bind(this)} value={activeAssetId} style={{textTransform: "uppercase", minWidth: "10rem", color: "inherit", fontWeight: "normal", fontSize: "inherit", backgroundColor: "#eee", border: "none", margin: 0, paddingTop: 4, paddingBottom: 4}}>
                             {assetOptions
                                 .filter(a => a && a.asset)
                                 .map((b, index) => {
@@ -398,7 +398,7 @@ class SimpleTradeContent extends React.Component {
                                 <label style={{width: "100%", margin: 0}}>
                                     <span className="inline-label" style={{margin: 0}}>
                                         <input type="text" value={this.state.priceValue} onChange={this._onInputPrice.bind(this)}/>
-                                        <span className="form-label" style={{minWidth: "10rem"}}>{isBuy ? activeAsset.get("symbol") : asset}</span>
+                                        <span className="form-label" style={{minWidth: "10rem"}}><AssetName name={isBuy ? activeAsset.get("symbol") : asset} /></span>
                                     </span>
                                 </label>
                                 <div className="SimpleTrade__help-text">Enter your desired price for 1 <AssetName name={isBuy ? asset : activeAsset.get("symbol")} /></div>
@@ -456,6 +456,7 @@ export default class SimpleTradeModal extends React.Component {
     }
 
     render() {
+        console.log("currentAsset:", this.props.currentAsset);
         return (
             <Modal id={this.props.modalId} overlay={true} className="test">
                 <Trigger close={this.props.modalId}>

@@ -172,6 +172,16 @@ class DashboardAssetList extends React.Component {
             }
         });
 
+        this.props.assets.forEach(a => {
+            if (a && a.get("symbol") === activeBuyAsset) {
+                currentBuyAsset = a;
+            }
+
+            if (a && a.get("symbol") === activeSellAsset) {
+                currentSellAsset = a;
+            }
+        });
+
         return (
             <div>
                 <h3>Wallet</h3>
