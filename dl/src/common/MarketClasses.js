@@ -154,7 +154,7 @@ class Price {
     }
 }
 
-class LimitOrder {
+class LimitOrderCreate {
     constructor({for_sale, to_receive, seller = "", expiration = new Date(), fill_or_kill = false} = {}) {
         if (!for_sale || !to_receive) {
             throw new Error("Missing order amounts");
@@ -189,7 +189,7 @@ class LimitOrder {
 export {
     Asset,
     Price,
-    LimitOrder,
+    LimitOrderCreate,
     limitByPrecision,
     precisionToRatio
 };

@@ -13,7 +13,7 @@ import FormattedFee from "../Utility/FormattedFee";
 import BalanceComponent from "../Utility/BalanceComponent";
 import {ChainStore, FetchChainObjects} from "graphenejs-lib";
 import connectToStores from "alt/utils/connectToStores";
-import {LimitOrder, Price, Asset} from "common/orderClasses";
+import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
 
 // These are the preferred assets chosen by default if the the user either
 // doesn't have a balance in the currently selected asset anymore, or if he
@@ -299,7 +299,7 @@ class SimpleTradeContent extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        let order = new LimitOrder({
+        let order = new LimitOrderCreate({
             for_sale: this.state.for_sale,
             to_receive: this.state.to_receive,
             seller: this.props.seller

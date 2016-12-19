@@ -1,4 +1,4 @@
-import {LimitOrder, realToRatio, Price, Asset, limitByPrecision, precisionToRatio} from "../src/common/orderClasses";
+import {LimitOrderCreate, realToRatio, Price, Asset, limitByPrecision, precisionToRatio} from "../src/common/MarketClasses";
 import assert from "assert";
 
 console.log("**** Starting market tests here ****");
@@ -272,7 +272,7 @@ describe("Price", function() {
     });
 });
 
-describe("Limit order", function() {
+describe("Limit order create", function() {
     let USD = new Asset({
         precision: 4,
         asset_id: "1.3.121",
@@ -284,14 +284,14 @@ describe("Limit order", function() {
     });
 
     it("Instantiates", function() {
-        let order =  new LimitOrder({
+        let order =  new LimitOrderCreate({
             to_receive: USD,
             for_sale: BTS
         });
     });
 
     it("Can be converted to object", function() {
-        let order =  new LimitOrder({
+        let order =  new LimitOrderCreate({
             to_receive: USD,
             for_sale: BTS
         });
@@ -306,21 +306,21 @@ describe("Limit order", function() {
 
     it("Throws if inputs are invalid", function() {
         assert.throws(function() {
-            let order =  new LimitOrder({
+            let order =  new LimitOrderCreate({
                 to_receive: null,
                 for_sale: BTS
             });
         });
 
         assert.throws(function() {
-            let order =  new LimitOrder({
+            let order =  new LimitOrderCreate({
                 to_receive: USD,
                 for_sale: null
             });
         });
 
         assert.throws(function() {
-            let order =  new LimitOrder({
+            let order =  new LimitOrderCreate({
                 to_receive: null,
                 for_sale: null
             });
@@ -329,7 +329,7 @@ describe("Limit order", function() {
 
     it("Throws if assets are the same", function() {
         assert.throws(function() {
-            let order =  new LimitOrder({
+            let order =  new LimitOrderCreate({
                 to_receive: BTS,
                 for_sale: BTS
             });
