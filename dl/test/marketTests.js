@@ -120,6 +120,8 @@ describe("Asset", function() {
 
     it("Can be multiplied with a price", function() {
         let asset = new Asset({asset_id: "1.3.0", real: 100});
+        let asset2 = new Asset({asset_id: "1.3.121", precision: 4, real: 55});
+
         let price1 = new Price({
             base: new Asset({asset_id: "1.3.0"}),
             quote: new Asset({asset_id: "1.3.121", precision: 4}),
@@ -132,6 +134,12 @@ describe("Asset", function() {
             real: 0.001
         });
 
+        let price3 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 250
+        });
+
         let result1 = asset.times(price1);
         assert.equal(result1.asset_id, "1.3.121", "Asset id should be 1.3.121");
         // 100 BTS * 200 BTS/USD = 100 BTS * (1/200) USD/BTS = 0.5 USD
@@ -139,8 +147,11 @@ describe("Asset", function() {
 
         let result2 = asset.times(price2);
         assert.equal(result2.asset_id, "1.3.121", "Asset id should be 1.3.121");
-        // 100 BTS * 0.001 USD /BTS = 0.1 USD
+        // 100 BTS * 0.001 USD / BTS = 0.1 USD
         assert.equal(result2.getAmount({real: true}), 0.1, "Asset amount should be 0.1");
+
+        // 55 USD * 250 BTS / USD = 13750 BTS
+        assert.equal(asset2.times(price3).getAmount({real: true}), 13750, "Asset amount should equal 13750");
     });
 
     it("Throws when multiplied with an incorrect price", function() {
