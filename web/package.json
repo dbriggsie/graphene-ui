@@ -33,6 +33,8 @@
     "counterpart": "^0.17.1",
     "event-emitter": "^0.3.4",
     "foundation-apps": "git+https://github.com/zurb/foundation-apps.git",
+    "fractal": "0.0.3",
+    "fractional": "^1.0.0",
     "git-rev-sync": "^1.4.0",
     "graphenejs-lib": "^0.4.10",
     "highcharts": "4.2.6",
