@@ -282,6 +282,8 @@ class MarketsActions {
             fee_asset_id = "1.3.0";
         }
 
+        order.setExpiration();
+        order = order.toObject();
         order.fee = {
             amount: 0,
             asset_id: fee_asset_id

@@ -306,7 +306,7 @@ class SimpleTradeContent extends React.Component {
         });
 
         console.log("order:", order);
-        MarketsActions.createLimitOrder2(order.toObject()).then(() => {
+        MarketsActions.createLimitOrder2(order).then(() => {
             console.log("order succeess");
         }).catch(e => {
             console.log("order failed:", e);
@@ -317,7 +317,7 @@ class SimpleTradeContent extends React.Component {
         let {modalId, asset, assets, lowVolumeMarkets, action} = this.props;
         let {activeAssetId, for_sale, to_receive, price} = this.state;
         const isBuy = action === "buy";
-        console.log("price:", price.toReal(), price, "for_sale:", for_sale.getAmount({}), for_sale.asset_id, "to_receive:", to_receive.getAmount({}), to_receive.asset_id);
+        // console.log("price:", price.toReal(), price, "for_sale:", for_sale.getAmount({}), for_sale.asset_id, "to_receive:", to_receive.getAmount({}), to_receive.asset_id);
         let assetOptions = [];
         let assetSelections = assets.map(b => {
             assetOptions.push({id: b.get("asset_type"), asset: ChainStore.getAsset(b.get("asset_type"))});
@@ -456,7 +456,6 @@ export default class SimpleTradeModal extends React.Component {
     }
 
     render() {
-        console.log("currentAsset:", this.props.currentAsset);
         return (
             <Modal id={this.props.modalId} overlay={true} className="test">
                 <Trigger close={this.props.modalId}>
