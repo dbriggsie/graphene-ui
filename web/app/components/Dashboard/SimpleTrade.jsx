@@ -432,7 +432,7 @@ class SimpleTradeContent extends React.Component {
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
                             <div style={{display: "table-cell", float: "left"}}>Summary</div>
                             <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                                {for_sale.getAmount({real: true})} <AssetName name={asset} /> => {to_receive.getAmount({real: true})} <AssetName name={activeAsset.get("symbol")} />
+                                {for_sale.getAmount({real: true})} <AssetName name={action === "buy" ? activeAsset.get("symbol") : asset} /> => {to_receive.getAmount({real: true})} <AssetName name={action === "buy" ? asset : activeAsset.get("symbol")} />
                             </div>
                         </div>
 
