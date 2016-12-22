@@ -10,6 +10,8 @@ import SettingsActions from "actions/SettingsActions";
 import Icon from "../Icon/Icon";
 import utils from "common/utils";
 import SimpleTrade from "./SimpleTrade";
+import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
+
 // import Ps from "perfect-scrollbar";
 
 require("./DashboardAssetList.scss");
@@ -104,7 +106,9 @@ class DashboardAssetList extends React.Component {
             <tr key={assetName}>
                 <td><AssetImage assetName={assetName} style={{maxWidth: 25}}/></td>
                 <td><AssetName popover asset={assetName} name={assetName}/></td>
-                <td>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : "0"}</td>
+                <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : "0"}</td>
+                <td style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
+
                 <td><a>Deposit</a> | <a>Withdraw</a></td>
                 <td>
                     <a onClick={this._showModal.bind(this, "buy_modal", assetName)}>Buy</a>
@@ -206,7 +210,8 @@ class DashboardAssetList extends React.Component {
                             <tr>
                                 <th></th>
                                 <th>Asset</th>
-                                <th>Value</th>
+                                <th style={{textAlign: "right"}}>Balance</th>
+                                <th style={{textAlign: "right"}}>Value</th>
                                 <th>Transfer actions</th>
                                 <th>Trade actions</th>
                                 <th style={{textAlign: "center"}}>Pinned</th>

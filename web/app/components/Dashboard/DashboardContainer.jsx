@@ -33,6 +33,9 @@ class DashboardContainer extends React.Component {
                     },
                     viewSettings: () => {
                         return SettingsStore.getState().viewSettings;
+                    },
+                    preferredUnit: () => {
+                        return SettingsStore.getState().settings.get("unit", "1.3.0");
                     }
                 }}>
                     {traderMode ? <Dashboard/> : <SimpleDashboard />}

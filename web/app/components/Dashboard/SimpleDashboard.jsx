@@ -108,6 +108,7 @@ class SimpleDashboard extends React.Component {
             <div ref="wrapper" className="grid-block page-layout vertical">
                 <div ref="container" className="grid-container" style={{padding: "25px 10px 0 10px"}}>
                     <DashboardAssetList
+                        preferredUnit={this.props.preferredUnit}
                         account={currentAccount}
                         showZeroBalances={this.props.viewSettings.get("showZeroBalances")}
                         pinnedAssets={Immutable.Map(this.props.viewSettings.get("pinnedAssets", {}))}
