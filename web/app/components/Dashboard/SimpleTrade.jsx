@@ -35,6 +35,8 @@ class SimpleTradeContent extends React.Component {
         let isBuy = props.action === "buy";
         return {
             lowVolumeMarkets: MarketsStore.getState().lowVolumeMarkets,
+            highestBid: MarketsStore.getState().highestBid,
+            lowestAsk: MarketsStore.getState().lowestAsk,
             activeAssetId: SettingsStore.getState().viewSettings.get([isBuy ? "receiveAssetId" : "sellAssetId"], preferredAssets[0])
         };
     };
@@ -82,8 +84,8 @@ class SimpleTradeContent extends React.Component {
 
     _getNewAssetPropChange(props = this.props, state = this.state) {
         let newState = {};
-        const buy = props.action === "buy";
-        newState[(buy ? "to_receive" : "for_sale")] = buy ?
+        const isBuy = props.action === "buy";
+        newState[(isBuy ? "to_receive" : "for_sale")] = isBuy ?
             this._getToReceive(props, state) : this._getForSale(props, state);
 
         return newState;
@@ -104,14 +106,11 @@ class SimpleTradeContent extends React.Component {
 
         const currentPrice = price.isValid() ? price.toReal() : null;
 
-        console.log("for_sale:", isBuy ? newState.for_sale.asset_id : this.state.for_sale.asset_id, "to_receive:", isBuy ? this.state.to_receive.asset_id : newState.to_receive.asset_id);
         newState.price = new Price({
             base: isBuy ? newState.for_sale : this.state.for_sale,
             quote: isBuy ? this.state.to_receive : newState.to_receive,
             real: currentPrice
         });
-
-        console.log("state change:", newState);
 
         return newState;
     }
@@ -160,36 +159,38 @@ class SimpleTradeContent extends React.Component {
 
     _checkSubAndBalance(props = this.props, state = this.state) {
         const index = this._getAssetIndex(this.state.activeAssetId, props);
-        console.log("_checkSubAndBalance:", index);
         if (index === -1) {
-            this._unSubMarket();
+            this._unSubMarket().then(() => {
+                let newActiveAssetId = this._getNewActiveAssetId(props);
+                let newState = {};
+                let isBuy = props.action === "buy";
+                const currentAsset = isBuy ? "for_sale" : "to_receive";
+                if (newActiveAssetId !== state[currentAsset].asset_id) {
+                    newState = this._getNewAssetStateChange(newActiveAssetId);
+                }
+                newState.activeAssetId = newActiveAssetId;
 
-            let newActiveAssetId = this._getNewActiveAssetId(props);
-            let newState = {};
-            let buy = props.action === "buy";
-            const currentAsset = buy ? "for_sale" : "to_receive";
-            console.log("newActiveAssetId:", newActiveAssetId);
-            if (newActiveAssetId !== state[currentAsset].asset_id) {
-                newState = this._getNewAssetStateChange(newActiveAssetId);
-            }
-            newState.activeAssetId = newActiveAssetId;
+                this._setAssetSetting(newState.activeAssetId);
 
-            this._setAssetSetting(newState.activeAssetId);
-
-            return this.setState(newState, () => {
-                this._subToMarket(props);
+                return this.setState(newState, () => {
+                    this._subToMarket(props);
+                });
             });
         }
         this._subToMarket(props);
     }
 
     _setActiveAsset(id) {
-        this._setAssetSetting(id);
-        let newState = this._getNewAssetStateChange(id);
-        newState.activeAssetId = id;
-        this.setState(newState, () => {
-            this._subToMarket(this.props, this.state);
-        });
+        if (id !== this.state.activeAssetId) {
+            this._unSubMarket().then(() => {
+                this._setAssetSetting(id);
+                let newState = this._getNewAssetStateChange(id);
+                newState.activeAssetId = id;
+                this.setState(newState, () => {
+                    this._subToMarket(this.props, this.state);
+                });
+            });
+        }
     }
 
     _getAssetIndex(id, props = this.props) {
@@ -230,17 +231,63 @@ class SimpleTradeContent extends React.Component {
 
     _unSubMarket(props = this.props, state = this.state) {
         let {activeAssetId} = state;
-        Promise.all([
-            FetchChainObjects(ChainStore.getAsset, [props.asset]),
-            FetchChainObjects(ChainStore.getAsset, [activeAssetId])
-        ]).then(assets => {
-            let [quoteAsset, baseAsset] = assets;
-            MarketsActions.unSubscribeMarket(quoteAsset[0].get("id"), baseAsset[0].get("id"));
+        return new Promise((resolve, reject) => {
+            Promise.all([
+                FetchChainObjects(ChainStore.getAsset, [props.asset]),
+                FetchChainObjects(ChainStore.getAsset, [activeAssetId])
+            ]).then(assets => {
+                let [quoteAsset, baseAsset] = assets;
+                MarketsActions.unSubscribeMarket(quoteAsset[0].get("id"), baseAsset[0].get("id")).then(() => {
+                    resolve();
+                });
+            }).catch(err => {
+                reject(err);
+            });
         });
+
     }
 
     _getFee() {
         return this.refs.feeAsset.getFee();
+    }
+
+    _updatePrice(p = null) {
+        let updated = false;
+        if (p) {
+            this.state.price = this.props.action === "buy" ? p : p.invert();
+            this._updateToReceive() || this._updateForSale();
+            updated = true;
+        } else if (this.state.for_sale.hasAmount() && this.state.to_receive.hasAmount()) {
+            this.state.price = new Price({
+                base: this.state.for_sale,
+                quote: this.state.to_receive
+            });
+            updated = true;
+        }
+
+        if (updated) {
+            this.state.priceValue = this.state.price.toReal()
+            this.forceUpdate();
+        };
+        return updated;
+    }
+
+    _updateToReceive() {
+        if (this.state.price.isValid() && this.state.for_sale.hasAmount()) {
+            this.state.to_receive = this.state.for_sale.times(this.state.price);
+            this.state.receiveValue = this.state.to_receive.getAmount({real: true});
+            return true;
+        }
+        return false;
+    }
+
+    _updateForSale() {
+        if (this.state.price.isValid() && this.state.to_receive.hasAmount()) {
+            this.state.for_sale = this.state.to_receive.times(this.state.price);
+            this.state.saleValue = this.state.for_sale.getAmount({real: true});
+            return true;
+        }
+        return false;
     }
 
     _onInputPrice(e) {
@@ -249,14 +296,7 @@ class SimpleTradeContent extends React.Component {
             quote: this.state.to_receive,
             real: parseFloat(e.target.value)
         });
-
-        if (this.state.price.isValid() && this.state.for_sale.hasAmount()) {
-            this.state.to_receive = this.state.for_sale.times(this.state.price);
-            this.state.receiveValue = this.state.to_receive.getAmount({real: true});
-        } else if (this.state.price.isValid() && this.state.to_receive.hasAmount()) {
-            this.state.for_sale = this.state.to_receive.times(this.state.price);
-            this.state.saleValue = this.state.for_sale.getAmount({real: true});
-        }
+        this._updateToReceive() || this._updateForSale();
 
         this.setState({
             priceValue: e.target.value
@@ -265,16 +305,8 @@ class SimpleTradeContent extends React.Component {
 
     _onInputSell(e) {
         this.state.for_sale.setAmount({real: parseFloat(e.target.value)});
-        if (this.state.price.isValid() && this.state.for_sale.hasAmount()) {
-            this.state.to_receive = this.state.for_sale.times(this.state.price);
-            this.state.receiveValue = this.state.to_receive.getAmount({real: true});
-        } else if (this.state.for_sale.hasAmount() && this.state.to_receive.hasAmount()) {
-            this.state.price = new Price({
-                base: this.state.for_sale,
-                quote: this.state.to_receive
-            });
-            this.state.priceValue = this.state.price.toReal();
-        }
+        this._updateToReceive() || this._updatePrice();
+
         this.setState({
             saleValue: e.target.value
         });
@@ -282,16 +314,8 @@ class SimpleTradeContent extends React.Component {
 
     _onInputReceive(e) {
         this.state.to_receive.setAmount({real: parseFloat(e.target.value)});
-        if (this.state.price.isValid() && this.state.to_receive.hasAmount()) {
-            this.state.for_sale = this.state.to_receive.times(this.state.price);
-            this.state.saleValue = this.state.for_sale.getAmount({real: true});
-        } else if (this.state.for_sale.hasAmount() && this.state.to_receive.hasAmount()) {
-            this.state.price = new Price({
-                base: this.state.for_sale,
-                quote: this.state.to_receive
-            });
-            this.state.priceValue = this.state.price.toReal();
-        }
+        this._updateForSale() || this._updatePrice();
+
         this.setState({
             receiveValue: e.target.value
         });
@@ -314,7 +338,7 @@ class SimpleTradeContent extends React.Component {
     }
 
     render() {
-        let {modalId, asset, assets, lowVolumeMarkets, action} = this.props;
+        let {modalId, asset, assets, lowVolumeMarkets, action, lowestAsk, highestBid} = this.props;
         let {activeAssetId, for_sale, to_receive, price} = this.state;
         const isBuy = action === "buy";
         // console.log("price:", price.toReal(), price, "for_sale:", for_sale.getAmount({}), for_sale.asset_id, "to_receive:", to_receive.getAmount({}), to_receive.asset_id);
@@ -401,7 +425,10 @@ class SimpleTradeContent extends React.Component {
                                         <span className="form-label" style={{minWidth: "10rem"}}><AssetName name={isBuy ? activeAsset.get("symbol") : asset} /></span>
                                     </span>
                                 </label>
-                                <div className="SimpleTrade__help-text">Enter your desired price for 1 <AssetName name={isBuy ? asset : activeAsset.get("symbol")} /></div>
+                                <div className="SimpleTrade__help-text">
+                                    Enter your desired price for 1 <AssetName name={isBuy ? asset : activeAsset.get("symbol")} />
+                                    <div onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal(true)}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -432,7 +459,7 @@ class SimpleTradeContent extends React.Component {
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
                             <div style={{display: "table-cell", float: "left"}}>Summary</div>
                             <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                                {for_sale.getAmount({real: true})} <AssetName name={action === "buy" ? activeAsset.get("symbol") : asset} /> => {to_receive.getAmount({real: true})} <AssetName name={action === "buy" ? asset : activeAsset.get("symbol")} />
+                                {for_sale.getAmount({real: true})} <AssetName name={isBuy ? activeAsset.get("symbol") : asset} /> => {to_receive.getAmount({real: true})} <AssetName name={isBuy ? asset : activeAsset.get("symbol")} />
                             </div>
                         </div>
 

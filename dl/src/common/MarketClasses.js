@@ -182,6 +182,13 @@ class Price {
         return this[key] = parseFloat(real.toFixed(8)); // toFixed and parseFloat helps avoid floating point errors for really big or small numbers
     }
 
+    invert() {
+        return new Price({
+            base: this.quote,
+            quote: this.base
+        });
+    }
+
     equals(b) {
         if (this.base.asset_id !== b.base.asset_id || this.quote.asset_id !== b.quote.asset_id) {
             throw new Error("Cannot compare prices for different assets");
