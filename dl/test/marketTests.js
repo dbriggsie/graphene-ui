@@ -1,4 +1,5 @@
-import {LimitOrderCreate, realToRatio, Price, Asset, limitByPrecision, precisionToRatio} from "../src/common/MarketClasses";
+import {LimitOrderCreate, realToRatio, Price, Asset, limitByPrecision,
+    precisionToRatio} from "../src/common/MarketClasses";
 import assert from "assert";
 
 console.log("**** Starting market tests here ****");
@@ -173,6 +174,14 @@ describe("Asset", function() {
         assert.equal("asset_id" in obj, true, "Object should have asset_id key");
         assert.equal("amount" in obj, true, "Object should have amount key");
     });
+
+    it("Can be divided by another asset to give a price", function() {
+        let asset = new Asset({amount: 2323});
+        let asset2 = new Asset({amount: 10, precision: 4, asset_id: "1.3.121"});
+        let price = asset.divide(asset2);
+
+        assert.equal(price.toReal(), 23.23, "Price should equal 23.23");
+    });
 });
 
 describe("Price", function() {
@@ -270,9 +279,137 @@ describe("Price", function() {
             let price = new Price({base, quote: base});
         });
     });
+
+    it("Can be compared with equals", function() {
+        let price1 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 2312.151
+        });
+
+        let price2 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.23323
+        });
+
+        let price3 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 2312.151
+        });
+
+        assert.equal(price1.equals(price2), false, "Prices are not equal");
+        assert.equal(price1.equals(price3), true, "Prices are equal");
+    });
+
+    it("Can be compared with less than", function() {
+        let price1 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 2312.151
+        });
+
+        let price2 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.23323
+        });
+
+        assert.equal(price1.lt(price2), false, "Price1 is not less than price2");
+        assert.equal(price2.lt(price1), true, "Price2 is less than price1");
+    });
+
+    it("Can be compared with less than or equal", function() {
+        let price1 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.151
+        });
+
+        let price2 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.23323
+        });
+
+        let price3 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.151
+        });
+
+        assert.equal(price1.lte(price2), true, "Price1 is less than or equal");
+        assert.equal(price2.lte(price1), false, "Price2 is not less than price1");
+        assert.equal(price3.lte(price1), true, "Price3 is equal to price1");
+    });
+
+    it("Can be compared with not equal", function() {
+        let price1 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.151
+        });
+
+        let price2 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.23323
+        });
+
+        assert(price1.ne(price2));
+    });
+
+    it("Can be compared with greater than", function() {
+        let price1 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.151
+        });
+
+        let price2 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.23323
+        });
+
+        let price3 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.23323
+        });
+
+        assert.equal(price1.gt(price2), false, "Price1 is not greater than price2");
+        assert.equal(price2.gt(price1), true, "Price2 is greater than price1");
+        assert.equal(price2.gt(price3), false, "Price2 is equal to price3");
+    });
+
+    it("Can be compared with greater than or equal", function() {
+        let price1 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.151
+        });
+
+        let price2 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.23323
+        });
+
+        let price3 = new Price({
+            base: new Asset({asset_id: "1.3.0"}),
+            quote: new Asset({asset_id: "1.3.121", precision: 4}),
+            real: 212.23323
+        });
+
+        assert.equal(price1.gte(price2), false, "Price1 is not greater than price2");
+        assert.equal(price2.gte(price1), true, "Price2 is greater than price1");
+        assert.equal(price2.gte(price3), true, "Price2 is equal to price3");
+    });
 });
 
-describe("Limit order create", function() {
+describe("LimitOrderCreate", function() {
     let USD = new Asset({
         precision: 4,
         asset_id: "1.3.121",
@@ -335,7 +472,4 @@ describe("Limit order create", function() {
             });
         });
     });
-
 });
-
-// 93 BitUSD at 192.66528
