@@ -40,8 +40,6 @@ class FormattedFee extends React.Component {
             balances
         });
 
-        console.log("coreFee:", coreFee);
-
         return coreFee;
     }
 
