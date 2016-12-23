@@ -112,13 +112,14 @@ class MarketsStore {
 
         // Optimistic removal of activeMarket
         if (payload.unSub) {
-            this.activeMarket = null;
+            this.onClearMarket();
         } else { // Unsub failed, restore activeMarket
             this.activeMarket = payload.market;
         }
     }
 
     onClearMarket() {
+        this.activeMarket = null;
         this.activeMarketLimits = this.activeMarketLimits.clear();
         this.activeMarketCalls = this.activeMarketCalls.clear();
         this.activeMarketSettles = this.activeMarketSettles.clear();
@@ -161,8 +162,8 @@ class MarketsStore {
 
         if (result.market && (result.market !== this.activeMarket)) {
             // console.log("switch active market from", this.activeMarket, "to", result.market);
-            this.activeMarket = result.market;
             this.onClearMarket();
+            this.activeMarket = result.market;
         }
 
         if (result.buckets) {

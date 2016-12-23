@@ -79,6 +79,9 @@ class MarketsActions {
     }
 
     subscribeMarket(base, quote, bucketSize = 4 * 3600) {
+        if (base.get("id") === quote.get("id")) {
+            throw new Error("Market pair must be two different assets:" + base.get("id") + "_" + quote.get("id"));
+        }
         clearBatchTimeouts();
         let subID = quote.get("id") + "_" + base.get("id");
         let {isMarketAsset, marketAsset, inverted} = marketUtils.isMarketAsset(quote, base);

@@ -14,6 +14,7 @@ import BalanceComponent from "../Utility/BalanceComponent";
 import {ChainStore, FetchChainObjects} from "graphenejs-lib";
 import connectToStores from "alt/utils/connectToStores";
 import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
+import OrderBook from "../Exchange/OrderBook";
 import utils from "common/utils";
 
 // These are the preferred assets chosen by default if the the user either
@@ -36,6 +37,10 @@ class SimpleTradeContent extends React.Component {
     static getPropsFromStores(props) {
         let isBuy = props.action === "buy";
         return {
+            orders: MarketsStore.getState().activeMarketLimits,
+            calls: MarketsStore.getState().calls,
+            bids: MarketsStore.getState().bids,
+            asks: MarketsStore.getState().asks,
             lowVolumeMarkets: MarketsStore.getState().lowVolumeMarkets,
             highestBid: MarketsStore.getState().highestBid,
             lowestAsk: MarketsStore.getState().lowestAsk,
@@ -57,7 +62,8 @@ class SimpleTradeContent extends React.Component {
             receiveValue: "",
             activeAssetId,
             to_receive: this._getToReceive(props, {activeAssetId}),
-            for_sale: this._getForSale(props, {activeAssetId})
+            for_sale: this._getForSale(props, {activeAssetId}),
+            showOrders: true
         };
 
         this.state.price = new Price({
@@ -73,6 +79,9 @@ class SimpleTradeContent extends React.Component {
     }
 
     componentWillReceiveProps(np) {
+        if (this.props.open && !np.open) this._unSubMarket();
+        if (!this.props.open && np.open) this._subToMarket(np);
+
         if (np.asset !== this.props.asset) {
             this.setState(this._getNewAssetPropChange(np), () => {
                 this._checkSubAndBalance(np);
@@ -217,8 +226,9 @@ class SimpleTradeContent extends React.Component {
     }
 
     _subToMarket(props = this.props, state = this.state) {
-        let {assets} = props;
+        let {assets, action} = props;
         let {activeAssetId} = state;
+        const isBuy = action === "buy";
 
         if (this.props.asset && activeAssetId) {
             Promise.all([
@@ -226,13 +236,18 @@ class SimpleTradeContent extends React.Component {
                 FetchChainObjects(ChainStore.getAsset, [activeAssetId])
             ]).then(assets => {
                 let [quoteAsset, baseAsset] = assets;
-                MarketsActions.subscribeMarket.defer(baseAsset[0], quoteAsset[0]);
+                MarketsActions.subscribeMarket.defer(isBuy ? baseAsset[0] : quoteAsset[0], isBuy ? quoteAsset[0] : baseAsset[0]);
             });
+        } else {
+            console.log("did not subscribe", this.props.asset, activeAssetId);
         }
     }
 
     _unSubMarket(props = this.props, state = this.state) {
         let {activeAssetId} = state;
+        if (!activeAssetId || !props.asset) {
+            return;
+        }
         return new Promise((resolve, reject) => {
             Promise.all([
                 FetchChainObjects(ChainStore.getAsset, [props.asset]),
@@ -339,11 +354,17 @@ class SimpleTradeContent extends React.Component {
         });
     }
 
+    onToggleOrders() {
+        this.setState({
+            showOrders: !this.state.showOrders
+        });
+    }
+
     render() {
         let {modalId, asset, assets, lowVolumeMarkets, action, lowestAsk, highestBid} = this.props;
         let {activeAssetId, for_sale, to_receive, price} = this.state;
         const isBuy = action === "buy";
-        // console.log("price:", price.toReal(), price, "for_sale:", for_sale.getAmount({}), for_sale.asset_id, "to_receive:", to_receive.getAmount({}), to_receive.asset_id);
+        // console.log("price:", price.toReal(), price.base.asset_id, price.quote.asset_id, "for_sale:", for_sale.getAmount({}), for_sale.asset_id, "to_receive:", to_receive.getAmount({}), to_receive.asset_id);
         let assetOptions = [];
         let assetSelections = assets.map(b => {
             assetOptions.push({id: b.get("asset_type"), asset: ChainStore.getAsset(b.get("asset_type"))});
@@ -432,7 +453,7 @@ class SimpleTradeContent extends React.Component {
                                 </label>
                                 <div className="SimpleTrade__help-text">
                                     <Translate content="simple_trade.price_one" asset={isBuy ? assetName : activeAssetName} />
-                                    <div onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal(true)}</div>
+                                    <div onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal()}</div>
                                 </div>
                             </div>
                         </div>
@@ -473,29 +494,61 @@ class SimpleTradeContent extends React.Component {
                         {isLowVolume ? <div style={{paddingTop: 20, paddingBottom: 20}} className="error"><Translate content="simple_trade.volume_warning" /></div> : null}
 
                         <div className="button-group">
-                            <div className="button"><Translate content="simple_trade.show_market" /></div>
-                            <div className="button" onClick={this.onSubmit.bind(this)} type="submit"><Translate content="simple_trade.place_order" /></div>
+                            <div className="button" onClick={this.onToggleOrders.bind(this)} ><Translate content="simple_trade.show_market" /></div>
+                            <div className="button" onClick={this.onSubmit.bind(this)} type="submit" ><Translate content="simple_trade.place_order" /></div>
                         </div>
                     </form>
                 </div>
+
+                {this.state.showOrders ?
+                <div style={{padding: 0, backgroundColor: "#545454"}}>
+                    <OrderBook
+                        simpleTrade
+                        latest={1.2323}
+                        changeClass=""
+                        orders={this.props.orders}
+                        calls={this.props.calls}
+                        invertedCalls={false}
+                        combinedBids={this.props.bids}
+                        combinedAsks={this.props.asks}
+                        base={isBuy ? activeAsset : this.props.currentAsset}
+                        quote={isBuy ? this.props.currentAsset : activeAsset}
+                        onClick={() => {}}
+                        horizontal={true}
+                        moveOrderBook={null}
+                        flipOrderBook={false}
+                        marketReady
+                        className="order-1"
+                    />
+                </div> : null}
             </div>
         );
     }
 }
 
 export default class SimpleTradeModal extends React.Component {
+    constructor() {
+        super();
+
+        this.state = {open: false};
+    }
 
     show() {
         ZfApi.publish(this.props.modalId, "open");
+        this.setState({open: true});
+    }
+
+    onClose() {
+        this.setState({open: false});
     }
 
     render() {
         return (
-            <Modal id={this.props.modalId} overlay={true} className="test">
+            <Modal onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true} className="test">
                 <Trigger close={this.props.modalId}>
                     <a href="#" className="close-button">&times;</a>
                 </Trigger>
-                {this.props.currentAsset ? <SimpleTradeContent ref={"modal_content"} {...this.props} /> : null}
+                {this.props.currentAsset ? <SimpleTradeContent ref={"modal_content"} {...this.props} open={this.state.open} /> : null}
             </Modal>
         );
     }
