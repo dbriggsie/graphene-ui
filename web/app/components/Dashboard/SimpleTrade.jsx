@@ -385,15 +385,35 @@ class SimpleTradeContent extends React.Component {
         let assetOptions = [];
         let forSaleBalance = isBuy && currentBalance ? currentBalance.toJS() : {balance: 0, asset_type: isBuy ? this.props.currentAsset.get("id") : activeAssetId};
         let receiveBalance = !isBuy && currentBalance ? currentBalance.toJS() : {balance: 0, asset_type: isBuy ? activeAssetId : this.props.currentAsset.get("id")};
-        console.log("currentBalance:", currentBalance && currentBalance.toJS());
-        let assetSelections = assets.map(b => {
-            assetOptions.push({id: b.get("asset_type"), asset: ChainStore.getAsset(b.get("asset_type"))});
+
+        if (!isBuy) {
+            assets = assets.concat(this.props.marketAssets);
+        }
+        let assetSelections = assets
+        .sort((a, b) => {
+            return a.get("balance") ? -1 : 1;
+        })
+        .map(b => {
             if (b.get("asset_type") === forSaleBalance.asset_type) {
                 forSaleBalance = b.toJS();
             }
             if (b.get("asset_type") === receiveBalance.asset_type) {
                 receiveBalance = b.toJS();
             }
+            if (b.get("symbol")) {
+                assetOptions.push({id: b.get("id"), asset: b});
+                return (
+                    <div
+                        key={b.get("id")}
+                        onClick={this._setActiveAsset.bind(this, b.get("id"))}
+                        className={"balance-row" + (b.get("id") === activeAssetId ? " active": "")}
+                    >
+                        <FormattedAsset hide_amount asset={b.get("id")} />
+                    </div>
+                );
+            }
+
+            assetOptions.push({id: b.get("asset_type"), asset: ChainStore.getAsset(b.get("asset_type"))});
             return (
                 <div
                     key={b.get("asset_type")}
@@ -419,8 +439,6 @@ class SimpleTradeContent extends React.Component {
         const fsBalance = <div onClick={this._updateToReceive.bind(this, parseInt(forSaleBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
             <FormattedAsset amount={forSaleBalance.balance} asset={forSaleBalance.asset_type} />
         </div>;
-
-        console.log("forSaleBalance", forSaleBalance, "receiveBalance", receiveBalance);
 
         const rBalance = <div onClick={this._updateForSale.bind(this, parseInt(receiveBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
             <FormattedAsset amount={receiveBalance.balance} asset={receiveBalance.asset_type} />

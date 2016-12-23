@@ -186,6 +186,10 @@ class DashboardAssetList extends React.Component {
             }
         });
 
+        const balanceAssetIds = this.props.balances.map(b => {
+            if (b && b.get("balance") > 0) return b.get("asset_type");
+        }).filter(a => !!a);
+
         return (
             <div>
                 <h3>Wallet</h3>
@@ -246,6 +250,7 @@ class DashboardAssetList extends React.Component {
                     currentAsset={currentSellAsset}
                     currentBalance={this.props.balances.find(b => b && (b.get("asset_type") === (currentSellAsset ? currentSellAsset.get("id") : null)))}
                     assets={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentSellAsset ? currentSellAsset.get("id") : null)))}
+                    marketAssets={this.props.assets.filter(a => a && (balanceAssetIds.indexOf(a.get("id")) === -1))}
                     balanceAssets={this.props.balanceAssets}
                 />
             </div>
