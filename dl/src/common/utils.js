@@ -509,7 +509,7 @@ var Utils = {
         return Math.round((a/b) * 100) + "%";
     },
 
-    replaceName(name, isBitAsset = false) {
+    replaceName(name, returnFull = false) {
         /*let toReplace = ["TRADE.", "OPEN.", "METAEX."];
         let suffix = "";
         let i;
@@ -536,6 +536,10 @@ var Utils = {
         //bitUSD bitEUR bit bitGOLD bitBTC
         if(name==='USD'||name==='EUR'||name==='CNY'||name==='GOLD'||name==='BTC'){
             prefix='bit';
+        }
+
+        if (returnFull) {
+            return prefix + replacedName;
         }
 
         return {

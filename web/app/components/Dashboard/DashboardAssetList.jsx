@@ -290,7 +290,8 @@ export default class ListWrapper extends React.Component {
             'OPEN.NXC',
             'PEERPLAYS',
             'SHAREBITS',
-            'SOLCERT'
+            'SOLCERT',
+            'BTWTY'
         ]
     }
 

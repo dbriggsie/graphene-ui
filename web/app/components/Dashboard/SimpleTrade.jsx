@@ -14,6 +14,7 @@ import BalanceComponent from "../Utility/BalanceComponent";
 import {ChainStore, FetchChainObjects} from "graphenejs-lib";
 import connectToStores from "alt/utils/connectToStores";
 import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
+import utils from "common/utils";
 
 // These are the preferred assets chosen by default if the the user either
 // doesn't have a balance in the currently selected asset anymore, or if he
@@ -21,7 +22,8 @@ import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
 const preferredAssets = [
     "1.3.861", // OPEN.BTC
     "1.3.121", // bitUSD
-    "1.3.0" // BTS
+    "1.3.0", // BTS
+    "1.3.113" // bitCNY
 ];
 
 @connectToStores
@@ -362,6 +364,9 @@ class SimpleTradeContent extends React.Component {
             return null;
         }
 
+        const activeAssetName = utils.replaceName(activeAsset.get("symbol"), true);
+        const assetName = utils.replaceName(asset, true);
+
         const isLowVolume = this.props.lowVolumeMarkets.get(this.props.currentAsset.get("id") + "_" + activeAsset.get("id"), false);
 
         const assetSelector = <div style={{display: "table-cell", float: "right", width: "70%"}}>
@@ -380,7 +385,7 @@ class SimpleTradeContent extends React.Component {
                     </span>
                 </span>
             </label>
-            <div className="SimpleTrade__help-text">Enter the maximum amount you want to spend</div>
+            <div className="SimpleTrade__help-text"><Translate content="simple_trade.max_spend" /></div>
         </div>;
 
         const receiveAsset = <div style={{display: "table-cell", float: "right", width: "70%"}}>
@@ -390,19 +395,19 @@ class SimpleTradeContent extends React.Component {
                     <span className="form-label" style={{minWidth: "10rem"}}><AssetName name={asset} /></span>
                 </span>
             </label>
-            <div className="SimpleTrade__help-text">Enter the amount you wish to buy</div>
+            <div className="SimpleTrade__help-text"><Translate content="simple_trade.to_buy" /></div>
         </div>;
 
         return (
             <div>
                 <div style={{padding: "20px 2rem", backgroundColor: "#545454"}}>
                     {isBuy ?
-                        <h3>Buy <AssetName name={asset} /> with <AssetName name={activeAsset.get("symbol")} /></h3> :
-                        <h3>Sell <AssetName name={asset} /> for <AssetName name={activeAsset.get("symbol")} /></h3>
+                        <h3><Translate content="simple_trade.buy_with" buy={assetName} with={activeAssetName} /></h3> :
+                        <h3><Translate content="simple_trade.sell_for" sell={assetName} for={activeAssetName} /></h3>
                     }
 
                     <div style={{paddingBottom: 10}}>
-                        {isBuy ? "Current balances" : "Asset to receive"}:
+                        {isBuy ? <Translate content="simple_trade.current_sell" /> : <Translate content="simple_trade.current_receive" />}:
                     </div>
                     <div style={{overflowY: "auto", maxHeight: 188, padding: "0 10px", border: "1px solid black"}}>
                         {assetSelections}
@@ -417,7 +422,7 @@ class SimpleTradeContent extends React.Component {
 
                         {/* PRICE */}
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left", marginTop: 11}}>Price:</div>
+                            <div style={{display: "table-cell", float: "left", marginTop: 11}}><Translate content="exchange.price" />:</div>
                             <div style={{display: "table-cell", float: "right", width: "70%"}}>
                                 <label style={{width: "100%", margin: 0}}>
                                     <span className="inline-label" style={{margin: 0}}>
@@ -426,7 +431,7 @@ class SimpleTradeContent extends React.Component {
                                     </span>
                                 </label>
                                 <div className="SimpleTrade__help-text">
-                                    Enter your desired price for 1 <AssetName name={isBuy ? asset : activeAsset.get("symbol")} />
+                                    <Translate content="simple_trade.price_one" asset={isBuy ? assetName : activeAssetName} />
                                     <div onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal(true)}</div>
                                 </div>
                             </div>
@@ -440,7 +445,9 @@ class SimpleTradeContent extends React.Component {
 
                         {/* TOTAL */}
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left", marginTop: 11}}>You will receive:</div>
+                            <div style={{display: "table-cell", float: "left", marginTop: 11}}>
+                                <Translate content="simple_trade.will_receive" />:
+                            </div>
                             {isBuy ? receiveAsset : assetSelector}
                         </div>
 
@@ -457,17 +464,17 @@ class SimpleTradeContent extends React.Component {
                         </div>
 
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left"}}>Summary</div>
+                            <div style={{display: "table-cell", float: "left"}}><Translate content="simple_trade.summary" /></div>
                             <div style={{display: "table-cell", float: "right", width: "70%"}}>
                                 {for_sale.getAmount({real: true})} <AssetName name={isBuy ? activeAsset.get("symbol") : asset} /> => {to_receive.getAmount({real: true})} <AssetName name={isBuy ? asset : activeAsset.get("symbol")} />
                             </div>
                         </div>
 
-                        {isLowVolume ? <div style={{paddingTop: 20, paddingBottom: 20}} className="error">Warning: This is a low volume market</div> : null}
+                        {isLowVolume ? <div style={{paddingTop: 20, paddingBottom: 20}} className="error"><Translate content="simple_trade.volume_warning" /></div> : null}
 
                         <div className="button-group">
-                            <div className="button">Show market orders</div>
-                            <div className="button" onClick={this.onSubmit.bind(this)} type="submit">Place my order</div>
+                            <div className="button"><Translate content="simple_trade.show_market" /></div>
+                            <div className="button" onClick={this.onSubmit.bind(this)} type="submit"><Translate content="simple_trade.place_order" /></div>
                         </div>
                     </form>
                 </div>

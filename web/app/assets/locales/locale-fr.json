@@ -419,5 +419,19 @@
     "meta": {
       "open_website": "Open Website"
     }
+  },
+  "simple_trade": {
+      "max_spend": "Enter the maximum amount you want to spend",
+      "to_buy": "Enter the amount you wish to buy",
+      "buy_with": "Buy %(buy)s with %(with)s",
+      "sell_for": "Sell %(sell)s for %(for)s",
+      "current_sell": "Current balances",
+      "current_receive": "Asset to receive",
+      "price_one": "Enter your desired price for 1 %(asset)s",
+      "will_receive": "You will receive",
+      "summary": "Summary",
+      "volume_warning": "Warning: This is a low volume market",
+      "show_market": "Show market orders",
+      "place_order": "Place my order"
   }
 }

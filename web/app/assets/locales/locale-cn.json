@@ -1126,5 +1126,19 @@
     "title": "无法与API服务器同步连接",
     "sub_text_1": "请确认你的计算机系统时钟正确。",
     "sub_text_2": "同步你的计算机时钟后，请刷新本页面。如果你的时钟正确，那你连接的API服务器可能与区块链数据不同步，这种情况下，可尝试使用其他API服务器进行连接。"
+  },
+  "simple_trade": {
+      "max_spend": "Enter the maximum amount you want to spend",
+      "to_buy": "Enter the amount you wish to buy",
+      "buy_with": "Buy %(buy)s with %(with)s",
+      "sell_for": "Sell %(sell)s for %(for)s",
+      "current_sell": "Current balances",
+      "current_receive": "Asset to receive",
+      "price_one": "Enter your desired price for 1 %(asset)s",
+      "will_receive": "You will receive",
+      "summary": "Summary",
+      "volume_warning": "Warning: This is a low volume market",
+      "show_market": "Show market orders",
+      "place_order": "Place my order"
   }
 }

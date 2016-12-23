@@ -38,11 +38,11 @@ class AssetName extends React.Component {
 	render() {
 		let {name, replace, asset, popover} = this.props;
 
-		let isBitAsset = asset.has("bitasset");
-		let isPredMarket = isBitAsset && asset.getIn(["bitasset", "is_prediction_market"]);
+		// let isBitAsset = asset.has("bitasset");
+		// let isPredMarket = isBitAsset && asset.getIn(["bitasset", "is_prediction_market"]);
 
 
-		let {name: replacedName, prefix} = utils.replaceName(name, isBitAsset && !isPredMarket && asset.get("issuer") === "1.2.0");
+		let {name: replacedName, prefix} = utils.replaceName(name);
 		// let prefix = isBitAsset && !isPredMarket ? <span>bit</span> :
 		// 			 replacedName !== this.props.name ? <span>{replacedPrefix}</span> : null;
 
@@ -73,7 +73,7 @@ class AssetName extends React.Component {
 
 		if (replace && replacedName !== this.props.name) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
-			let tooltip = `<div><strong>${prefix}</strong><br />${desc.short ? desc.short : desc.main}</div>`;
+			// let tooltip = `<div><strong>${prefix}</strong><br />${desc.short ? desc.short : desc.main}</div>`;
 			return (
 				<span>
 					<span className="asset-prefix-replaced">{prefix}</span><span>{replacedName}</span>
