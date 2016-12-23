@@ -223,7 +223,24 @@ class DashboardAssetList extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {assets.filter(a => a.indexOf(this.state.filter) !== -1).map(a => this._renderRow(a))}
+                            {assets
+                                .filter(a => a.indexOf(this.state.filter) !== -1)
+                                .sort((a,b) => {
+                                    let assetA = ChainStore.getAsset(a);
+                                    let assetB = ChainStore.getAsset(b);
+                                    if (!assetA || !assetB) return -1;
+                                    let balanceA = this.props.balances.filter(b => b && b.get("balance") > 0).find(b => {return assetA.get("id") === b.get("asset_type");});
+                                    let balanceB = this.props.balances.filter(b => b && b.get("balance") > 0).find(b => {return assetB.get("id") === b.get("asset_type");});
+
+                                    if (balanceA && balanceA.get("balance") || balanceB && balanceB.get("balance")) {
+                                        if (balanceA && !balanceB) return -1;
+                                        if (balanceB && !balanceA) return 1;
+                                        return a > b ? 1 : a < b ? -1 : 0;
+                                    } else {
+                                        return a > b ? 1 : a < b ? -1 : 0;
+                                    }
+                                })
+                                .map(a => this._renderRow(a))}
                         </tbody>
                     </table>
                 </div>

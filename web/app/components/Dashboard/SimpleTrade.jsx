@@ -391,7 +391,20 @@ class SimpleTradeContent extends React.Component {
         }
         let assetSelections = assets
         .sort((a, b) => {
-            return a.get("balance") ? -1 : 1;
+            let assetA = ChainStore.getAsset(a.has("asset_type") ? a.get("asset_type") : a.get("id"));
+            let assetB = ChainStore.getAsset(b.has("asset_type") ? b.get("asset_type") : b.get("id"));
+            if (!assetA || !assetB) return -1;
+            const symbolA = assetA.get("symbol");
+            const symbolB = assetB.get("symbol");
+            let balanceA = a.has("asset_type") ? a : null;
+            let balanceB = b.has("asset_type") ? b : null;
+            if (balanceA && balanceA.get("balance") || balanceB && balanceB.get("balance")) {
+                if (balanceA && !balanceB) return -1;
+                if (balanceB && !balanceA) return 1;
+                return symbolA > symbolB ? 1 : symbolA < symbolB ? -1 : 0;
+            } else {
+                return symbolA > symbolB ? 1 : symbolA < symbolB ? -1 : 0;
+            }
         })
         .map(b => {
             if (b.get("asset_type") === forSaleBalance.asset_type) {
