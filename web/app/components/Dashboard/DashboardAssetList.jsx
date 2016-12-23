@@ -109,7 +109,7 @@ class DashboardAssetList extends React.Component {
                 <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : "0"}</td>
                 <td style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
 
-                <td><a>Deposit</a> | <a>Withdraw</a></td>
+                {/* <td><a>Deposit</a> | <a>Withdraw</a></td> */}
                 <td>
                     <a onClick={this._showModal.bind(this, "buy_modal", assetName)}>Buy</a>
                     <span> | </span>
@@ -216,7 +216,7 @@ class DashboardAssetList extends React.Component {
                                 <th>Asset</th>
                                 <th style={{textAlign: "right"}}>Balance</th>
                                 <th style={{textAlign: "right"}}>Value</th>
-                                <th>Transfer actions</th>
+                                {/* <th>Transfer actions</th> */}
                                 <th>Trade actions</th>
                                 <th style={{textAlign: "center"}}>Pinned</th>
                             </tr>
