@@ -551,6 +551,9 @@
     .menu-group.primary,
     .menu-group.primary .menu-bar {
         background-color: $panel-bg-color;
+        .menu-bar .grp-menu-item .button {
+            color: $primary-text-color;
+        }
         .menu-bar > li {
             > a {
                 color: $primary-text-color;

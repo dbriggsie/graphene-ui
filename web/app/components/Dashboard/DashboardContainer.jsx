@@ -8,9 +8,15 @@ import Dashboard from "./Dashboard";
 import SimpleDashboard from "./SimpleDashboard";
 import Immutable from "immutable";
 
+class Content extends React.Component {
+
+    render() {
+        return this.props.traderMode ? <Dashboard {...this.props} /> : <SimpleDashboard {...this.props} />;
+    }
+}
+
 class DashboardContainer extends React.Component {
     render() {
-        let traderMode = SettingsStore.getState().settings.get("traderMode");
 
         return (
             <AltContainer
@@ -36,9 +42,12 @@ class DashboardContainer extends React.Component {
                     },
                     preferredUnit: () => {
                         return SettingsStore.getState().settings.get("unit", "1.3.0");
+                    },
+                    traderMode: () => {
+                        return SettingsStore.getState().settings.get("traderMode");
                     }
                 }}>
-                    {traderMode ? <Dashboard/> : <SimpleDashboard />}
+                    <Content />
             </AltContainer>
         );
     }

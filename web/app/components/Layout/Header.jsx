@@ -5,6 +5,7 @@ import ActionSheet from "react-foundation-apps/src/action-sheet";
 import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
+import SettingsActions from "actions/SettingsActions";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import Icon from "../Icon/Icon";
 import Translate from "react-translate-component";
@@ -286,10 +287,16 @@ class Header extends React.Component {
                         {((traderMode || true) && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                     </ul>
                 </div>
-                <div className="grid-block show-for-medium shrink">
+                <div className="grid-block show-for-medium shrink menu-bar">
                     <div className="grp-menu-items-group header-right-menu">
                         {!traderMode ? null : walletBalance}
 
+                        {!traderMode ? <div className="grp-menu-item" onClick={() => {SettingsActions.changeSetting({setting: "traderMode", value: true});}}>
+                            <div style={{textTransform: "none", fontSize: "0.9rem"}} className="button">
+                                <Icon className="icon-14px" name="assets"/>
+                                <span style={{paddingLeft: 10}}><Translate content="header.switch_trader" /></span>
+                            </div>
+                        </div> : null}
                         <div className="grid-block shrink overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>

@@ -20,7 +20,8 @@
     "create_account": "Créér un compte",
     "create_asset": "Créér un actif",
     "lock": "Vérouiller",
-    "unlock": "Dévérouiller"
+    "unlock": "Dévérouiller",
+    "switch_trader": "Switch to Trader Mode"
   },
   "account": {
     "asset": "Actif",

@@ -45,7 +45,6 @@
     background: #414141 !important;
   }
   > a, .button {
-    color: #fff !important;
     padding: 0.5rem;
     @include breakpoint(large) {
       padding-left: 0.75rem;

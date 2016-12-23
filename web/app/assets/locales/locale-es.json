@@ -24,7 +24,8 @@
     "unlock": "Desbloquear",
     "help": "Ayuda",
     "locked_tip": "Billetera bloqueada. Click para desbloquear.",
-    "unlocked_tip": "Billetera desbloqueada. Click para bloquear"
+    "unlocked_tip": "Billetera desbloqueada. Click para bloquear",
+    "switch_trader": "Switch to Trader Mode"
   },
   "account": {
     "welcome": "Bienvenido a Openledger",

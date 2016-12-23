@@ -31,7 +31,8 @@
     "help": "Help",
     "locked_tip": "Wallet is locked.<br/>Click to unlock.",
     "unlocked_tip": "Wallet is unlocked.<br/>Click to lock.",
-    "my_orders": "My orders"
+    "my_orders": "My orders",
+    "switch_trader": "Switch to Trader Mode"
   },
   "propose": "Propose",
   "cancel": "Cancel",
