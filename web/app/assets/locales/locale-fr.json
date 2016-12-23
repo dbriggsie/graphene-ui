@@ -432,6 +432,9 @@
       "summary": "Summary",
       "volume_warning": "Warning: This is a low volume market",
       "show_market": "Show market orders",
-      "place_order": "Place my order"
+      "place_order": "Place my order",
+      "hide_zero": "Hide 0 balances",
+      "actions": "Trade actions",
+      "pinned": "Pinned"
   }
 }

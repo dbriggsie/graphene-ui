@@ -11,6 +11,7 @@ import Icon from "../Icon/Icon";
 import utils from "common/utils";
 import SimpleTrade from "./SimpleTrade";
 import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
+import Translate from "react-translate-component";
 
 // import Ps from "perfect-scrollbar";
 
@@ -111,9 +112,9 @@ class DashboardAssetList extends React.Component {
 
                 {/* <td><a>Deposit</a> | <a>Withdraw</a></td> */}
                 <td>
-                    <a onClick={this._showModal.bind(this, "buy_modal", assetName)}>Buy</a>
+                    <a onClick={this._showModal.bind(this, "buy_modal", assetName)}><Translate content="exchange.buy" /></a>
                     <span> | </span>
-                    <a className={sellDisabled ? "disabled" : ""} onClick={sellDisabled ? null : this._showModal.bind(this, "sell_modal", assetName)}>Sell</a></td>
+                    <a className={sellDisabled ? "disabled" : ""} onClick={sellDisabled ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a></td>
                 <td className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
@@ -192,11 +193,11 @@ class DashboardAssetList extends React.Component {
 
         return (
             <div>
-                <h3>Wallet</h3>
+                <Translate content="settings.wallet" component="h3" />
 
                 <div style={{paddingTop: 20}}>
                     <input onChange={this._toggleZeroBalance.bind(this)} checked={!this.props.showZeroBalances && !this.state.filter.length} type="checkbox" />
-                    <label style={{position: "relative", top: -3}} onClick={this._toggleZeroBalance.bind(this)}>Hide 0 balances</label>
+                    <label style={{position: "relative", top: -3}} onClick={this._toggleZeroBalance.bind(this)}><Translate content="simple_trade.hide_zero" /></label>
 
                     <div className="float-right">
                         <div style={{position: "relative", top: -13}}>
@@ -213,12 +214,12 @@ class DashboardAssetList extends React.Component {
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Asset</th>
-                                <th style={{textAlign: "right"}}>Balance</th>
-                                <th style={{textAlign: "right"}}>Value</th>
+                                <th><Translate content="account.asset" /></th>
+                                <th style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
+                                <th style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
                                 {/* <th>Transfer actions</th> */}
-                                <th>Trade actions</th>
-                                <th style={{textAlign: "center"}}>Pinned</th>
+                                <th><Translate content="simple_trade.actions" /></th>
+                                <th style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
                             </tr>
                         </thead>
                         <tbody>
