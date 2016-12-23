@@ -11,6 +11,7 @@ import Translate from "react-translate-component";
 import AssetName from "../Utility/AssetName";
 import FormattedFee from "../Utility/FormattedFee";
 import BalanceComponent from "../Utility/BalanceComponent";
+import FormattedAsset from "../Utility/FormattedAsset";
 import {ChainStore, FetchChainObjects} from "graphenejs-lib";
 import connectToStores from "alt/utils/connectToStores";
 import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
@@ -289,22 +290,38 @@ class SimpleTradeContent extends React.Component {
         return updated;
     }
 
-    _updateToReceive() {
-        if (this.state.price.isValid() && this.state.for_sale.hasAmount()) {
+    _updateToReceive(r = null) {
+        let updated = false;
+        if (r) {
+            this.state.to_receive.setAmount({sats: r});
+            this._updateForSale() || this._updatePrice();
+            updated = true;
+        } else if (this.state.price.isValid() && this.state.for_sale.hasAmount()) {
             this.state.to_receive = this.state.for_sale.times(this.state.price);
-            this.state.receiveValue = this.state.to_receive.getAmount({real: true});
-            return true;
+            updated = true;
         }
-        return false;
+        if (updated) {
+            this.state.receiveValue = this.state.to_receive.getAmount({real: true});
+            this.forceUpdate();
+        }
+        return updated;
     }
 
-    _updateForSale() {
-        if (this.state.price.isValid() && this.state.to_receive.hasAmount()) {
+    _updateForSale(f = null) {
+        let updated = false;
+        if (f) {
+            this.state.for_sale.setAmount({sats: f});
+            this._updateToReceive() || this._updatePrice();
+            updated = true;
+        } else if (this.state.price.isValid() && this.state.to_receive.hasAmount()) {
             this.state.for_sale = this.state.to_receive.times(this.state.price);
-            this.state.saleValue = this.state.for_sale.getAmount({real: true});
-            return true;
+            updated = true;
         }
-        return false;
+        if (updated) {
+            this.state.saleValue = this.state.for_sale.getAmount({real: true});
+            this.forceUpdate();
+        }
+        return updated;
     }
 
     _onInputPrice(e) {
@@ -361,13 +378,22 @@ class SimpleTradeContent extends React.Component {
     }
 
     render() {
-        let {modalId, asset, assets, lowVolumeMarkets, action, lowestAsk, highestBid} = this.props;
+        let {modalId, asset, assets, lowVolumeMarkets, action, lowestAsk, highestBid, currentBalance} = this.props;
         let {activeAssetId, for_sale, to_receive, price} = this.state;
         const isBuy = action === "buy";
         // console.log("price:", price.toReal(), price.base.asset_id, price.quote.asset_id, "for_sale:", for_sale.getAmount({}), for_sale.asset_id, "to_receive:", to_receive.getAmount({}), to_receive.asset_id);
         let assetOptions = [];
+        let forSaleBalance = isBuy && currentBalance ? currentBalance.toJS() : {balance: 0, asset_type: isBuy ? this.props.currentAsset.get("id") : activeAssetId};
+        let receiveBalance = !isBuy && currentBalance ? currentBalance.toJS() : {balance: 0, asset_type: isBuy ? activeAssetId : this.props.currentAsset.get("id")};
+        console.log("currentBalance:", currentBalance && currentBalance.toJS());
         let assetSelections = assets.map(b => {
             assetOptions.push({id: b.get("asset_type"), asset: ChainStore.getAsset(b.get("asset_type"))});
+            if (b.get("asset_type") === forSaleBalance.asset_type) {
+                forSaleBalance = b.toJS();
+            }
+            if (b.get("asset_type") === receiveBalance.asset_type) {
+                receiveBalance = b.toJS();
+            }
             return (
                 <div
                     key={b.get("asset_type")}
@@ -390,6 +416,16 @@ class SimpleTradeContent extends React.Component {
 
         const isLowVolume = this.props.lowVolumeMarkets.get(this.props.currentAsset.get("id") + "_" + activeAsset.get("id"), false);
 
+        const fsBalance = <div onClick={this._updateToReceive.bind(this, parseInt(forSaleBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
+            <FormattedAsset amount={forSaleBalance.balance} asset={forSaleBalance.asset_type} />
+        </div>;
+
+        console.log("forSaleBalance", forSaleBalance, "receiveBalance", receiveBalance);
+
+        const rBalance = <div onClick={this._updateForSale.bind(this, parseInt(receiveBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
+            <FormattedAsset amount={receiveBalance.balance} asset={receiveBalance.asset_type} />
+        </div>;
+
         const assetSelector = <div style={{display: "table-cell", float: "right", width: "70%"}}>
             <label style={{width: "100%", margin: 0}}>
                 <span className="inline-label" style={{margin: 0}}>
@@ -406,7 +442,10 @@ class SimpleTradeContent extends React.Component {
                     </span>
                 </span>
             </label>
-            <div className="SimpleTrade__help-text"><Translate content="simple_trade.max_spend" /></div>
+            <div className="SimpleTrade__help-text">
+                <Translate content={isBuy ? "simple_trade.max_spend" : "simple_trade.to_buy"} />
+                {isBuy ? rBalance : fsBalance}
+            </div>
         </div>;
 
         const receiveAsset = <div style={{display: "table-cell", float: "right", width: "70%"}}>
@@ -416,7 +455,10 @@ class SimpleTradeContent extends React.Component {
                     <span className="form-label" style={{minWidth: "10rem"}}><AssetName name={asset} /></span>
                 </span>
             </label>
-            <div className="SimpleTrade__help-text"><Translate content="simple_trade.to_buy" /></div>
+            <div className="SimpleTrade__help-text">
+                <Translate content={isBuy ? "simple_trade.to_buy" : "simple_trade.max_spend"} />
+                {isBuy ? fsBalance : rBalance}
+            </div>
         </div>;
 
         return (
@@ -453,7 +495,9 @@ class SimpleTradeContent extends React.Component {
                                 </label>
                                 <div className="SimpleTrade__help-text">
                                     <Translate content="simple_trade.price_one" asset={isBuy ? assetName : activeAssetName} />
-                                    <div onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal()}</div>
+                                    <div onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
+                                        <span>{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal()} {isBuy ? activeAssetName : assetName}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

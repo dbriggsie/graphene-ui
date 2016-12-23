@@ -232,6 +232,7 @@ class DashboardAssetList extends React.Component {
                     asset={activeBuyAsset}
                     modalId="simple_buy_modal"
                     currentAsset={currentBuyAsset}
+                    currentBalance={this.props.balances.find(b => b && (b.get("asset_type") === (currentBuyAsset ? currentBuyAsset.get("id") : null)))}
                     assets={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentBuyAsset ? currentBuyAsset.get("id") : null)))}
                     balanceAssets={this.props.balanceAssets}
                 />
@@ -243,6 +244,7 @@ class DashboardAssetList extends React.Component {
                     asset={activeSellAsset}
                     modalId="simple_sell_modal"
                     currentAsset={currentSellAsset}
+                    currentBalance={this.props.balances.find(b => b && (b.get("asset_type") === (currentSellAsset ? currentSellAsset.get("id") : null)))}
                     assets={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentSellAsset ? currentSellAsset.get("id") : null)))}
                     balanceAssets={this.props.balanceAssets}
                 />

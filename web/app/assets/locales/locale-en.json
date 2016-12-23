@@ -1089,7 +1089,7 @@
     "enable": "Enable chat now"
     },
     "simple_trade": {
-        "max_spend": "Enter the maximum amount you want to spend",
+        "max_spend": "Enter the max amount you want to spend",
         "to_buy": "Enter the amount you wish to buy",
         "buy_with": "Buy %(buy)s with %(with)s",
         "sell_for": "Sell %(sell)s for %(for)s",
