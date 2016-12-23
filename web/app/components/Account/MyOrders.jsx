@@ -171,7 +171,7 @@ class MyOrders extends React.Component {
         return (
             <div className="grid-container no-overflow" style={{minWidth: "50rem", paddingBottom: 15, paddingTop: 40}}>
                 <div className="text-center">
-                    <h3>My Orders</h3>
+                    <Translate content="header.my_orders" component="h3" />
 
                     <div style={{paddingTop: 20}}>
                         <span className={"buy-text" + (!myOrdersBuys ? " inactive" : "")} style={{paddingRight: 15}}>Buy</span>
