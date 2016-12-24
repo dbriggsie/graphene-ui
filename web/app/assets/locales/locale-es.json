@@ -25,7 +25,8 @@
     "help": "Ayuda",
     "locked_tip": "Billetera bloqueada. Click para desbloquear.",
     "unlocked_tip": "Billetera desbloqueada. Click para bloquear",
-    "switch_trader": "Switch to Trader Mode"
+    "switch_trader": "Switch to Trader Mode",
+    "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
   },
   "account": {
     "welcome": "Bienvenido a Openledger",

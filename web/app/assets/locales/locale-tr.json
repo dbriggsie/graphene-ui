@@ -26,7 +26,8 @@
     "help": "Yardım",
     "locked_tip": "Cüzdan kilidi kapalı.<br/>Açmak için tıkla.",
     "unlocked_tip": "Cüzdan kilidi açık .<br/>Kapamak için tıkla.",
-    "switch_trader": "Switch to Trader Mode"
+    "switch_trader": "Switch to Trader Mode",
+    "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
   },
   "propose": "Teklif Et",
   "cancel": "İptal",

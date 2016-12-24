@@ -6,6 +6,7 @@ import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
+import notify from "actions/NotificationActions";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import Icon from "../Icon/Icon";
 import Translate from "react-translate-component";
@@ -127,6 +128,16 @@ class Header extends React.Component {
         e.preventDefault();
 
         this.context.history.pushState(null, `/account/${account}/overview`);
+    }
+
+    onSetTraderMode() {
+        SettingsActions.changeSetting({setting: "traderMode", value: true});
+
+        notify.addNotification({
+            message: counterpart.translate("header.trader_mode_notify"),
+            level: "success",
+            autoDismiss: 10
+        });
     }
 
     render() {
@@ -291,7 +302,7 @@ class Header extends React.Component {
                     <div className="grp-menu-items-group header-right-menu">
                         {!traderMode ? null : walletBalance}
 
-                        {!traderMode ? <div className="grp-menu-item" onClick={() => {SettingsActions.changeSetting({setting: "traderMode", value: true});}}>
+                        {!traderMode ? <div className="grp-menu-item" onClick={this.onSetTraderMode}>
                             <div style={{textTransform: "none", fontSize: "0.9rem"}} className="button">
                                 <Icon className="icon-14px" name="assets"/>
                                 <span style={{paddingLeft: 10}}><Translate content="header.switch_trader" /></span>
