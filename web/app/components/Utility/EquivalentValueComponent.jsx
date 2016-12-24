@@ -44,8 +44,10 @@ class ValueComponent extends React.Component {
         let coreAsset = ChainStore.getAsset("1.3.0");
         if (coreAsset) {
             if (this.props.fromAsset.get("id") !== coreAsset.get("id")) {
-                MarketsActions.getMarketStats(coreAsset, this.props.fromAsset);
-                this.fromStatsInterval = setInterval(MarketsActions.getMarketStats.bind(this, coreAsset, this.props.fromAsset), 5 * 60 * 1000);
+                MarketsActions.getMarketStats.defer(coreAsset, this.props.fromAsset);
+                this.fromStatsInterval = setInterval(() => {
+                    MarketsActions.getMarketStats.defer(this, coreAsset, this.props.fromAsset);
+                }, 5 * 60 * 1000);
             }
 
             if (this.props.toAsset.get("id") !== coreAsset.get("id")) {
