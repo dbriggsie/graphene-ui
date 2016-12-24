@@ -13,24 +13,13 @@ for (let i of icons) icons_map[i] = require(`./${i}.svg`);
 
 require("./icon.scss");
 
-class Icon extends React.Component {
-    render() {
-        let classes = "icon " + this.props.name;
-        if(this.props.size) {
-            classes += " icon-" + this.props.size;
-        }
-        if(this.props.className) {
-            classes += " " + this.props.className;
-        }
-        return <span className={classes} dangerouslySetInnerHTML={{__html: icons_map[this.props.name]}}/>;
-    }
-}
+const Icon = ({name = "", size, className = ""}) => {
+    let classes = "icon " + name;
 
-Icon.propTypes = {
-    name: React.PropTypes.string.isRequired,
-    size: React.PropTypes.oneOf(["1x", "2x", "3x", "4x", "5x", "10x"]),
-    inverse: React.PropTypes.bool,
-    className: React.PropTypes.string
+    if(size) classes += " icon-" + size;
+    if(className) classes += " " + className;
+
+    return <span className={classes} dangerouslySetInnerHTML={{__html: icons_map[name]}}/>;
 };
 
 export default Icon;
