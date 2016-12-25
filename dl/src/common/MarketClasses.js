@@ -35,7 +35,7 @@ class Asset {
     }
 
     setAmount({sats, real}) {
-        if (!sats && !real) {
+        if (typeof sats !== "number" && typeof real !== "number") {
             throw new Error("Invalid arguments for setAmount");
         }
         if (typeof real !== "undefined" && typeof real === "number") {
