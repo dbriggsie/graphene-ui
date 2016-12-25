@@ -535,7 +535,7 @@ class SimpleTradeContent extends React.Component {
 
                         {/* SPEND */}
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left", marginTop: 11}}>{isBuy ? "Spend" : "Sell"}:</div>
+                            <div style={{display: "table-cell", float: "left", marginTop: 11}}>{isBuy ? <Translate content="simple_trade.spend" /> : <Translate content="exchange.sell" />}:</div>
                             {isBuy ? assetSelector : receiveAsset}
                         </div>
 

@@ -1114,6 +1114,7 @@
         "place_order": "Place my order",
         "hide_zero": "Hide 0 balances",
         "actions": "Trade actions",
-        "pinned": "Pinned"
+        "pinned": "Pinned",
+        "spend": "Spend"
     }
 }

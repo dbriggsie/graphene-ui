@@ -10,6 +10,7 @@ import SettingsActions from "actions/SettingsActions";
 import Icon from "../Icon/Icon";
 import utils from "common/utils";
 import SimpleTrade from "./SimpleTrade";
+import SimpleTransfer from "./SimpleTransfer";
 import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
@@ -102,20 +103,22 @@ class DashboardAssetList extends React.Component {
             return null;
         }
 
-        const sellDisabled = !balance || balance.amount === 0;
+        const hasBalance = !(!balance || balance.amount === 0);
 
         return (
             <tr key={assetName}>
                 <td><AssetImage assetName={assetName} style={{maxWidth: 25}}/></td>
                 <td><AssetName popover asset={assetName} name={assetName}/></td>
-                <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : "0"}</td>
+                <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : null}</td>
                 <td style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
-
+                <td>
+                    {hasBalance ? <a onClick={this._showTransfer.bind(this, assetName)} >Transfer</a> : null}
+                </td>
                 {/* <td><a>Deposit</a> | <a>Withdraw</a></td> */}
                 <td>
                     <a onClick={this._showModal.bind(this, "buy_modal", assetName)}><Translate content="exchange.buy" /></a>
                     <span> | </span>
-                    <a className={sellDisabled ? "disabled" : ""} onClick={sellDisabled ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a></td>
+                    <a className={!hasBalance ? "disabled" : ""} onClick={!hasBalance ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a></td>
                 <td className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
@@ -155,6 +158,16 @@ class DashboardAssetList extends React.Component {
             [action === "buy_modal" ? "activeBuyAsset" : "activeSellAsset"]: asset
         }, () => {
             this.refs[action].show();
+        });
+    }
+
+    _showTransfer(asset, e) {
+        e.preventDefault();
+        console.log("transfer", asset);
+        this.setState({
+            transferAsset: asset
+        }, () => {
+            this.refs.transfer_modal.show();
         });
     }
 
@@ -218,7 +231,7 @@ class DashboardAssetList extends React.Component {
                                 <th><Translate content="account.asset" /></th>
                                 <th data-place="top" data-tip={counterpart.translate("tooltip.current_balance")} style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
                                 <th data-place="top" data-tip={counterpart.translate("tooltip.equivalent_balance")} style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
-                                {/* <th>Transfer actions</th> */}
+                                <th>Transfer actions</th>
                                 <th data-place="top" data-tip={counterpart.translate("tooltip.trade_actions")} ><Translate content="simple_trade.actions" /></th>
                                 <th data-place="top" data-tip={counterpart.translate("tooltip.pinning")} style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
                             </tr>
@@ -271,6 +284,15 @@ class DashboardAssetList extends React.Component {
                     assets={this.props.balances.filter(b => b && (!!b.get("balance") && b.get("asset_type") !== (currentSellAsset ? currentSellAsset.get("id") : null)))}
                     marketAssets={this.props.assets.filter(a => a && (balanceAssetIds.indexOf(a.get("id")) === -1))}
                     balanceAssets={this.props.balanceAssets}
+                />
+
+                {/* Transfer Modal */}
+                <SimpleTransfer
+                    ref="transfer_modal"
+                    sender={this.props.account.get("id")}
+                    asset={this.state.transferAsset}
+                    modalId="simple_transfer_modal"
+                    balances={this.props.balances}
                 />
             </div>
         );

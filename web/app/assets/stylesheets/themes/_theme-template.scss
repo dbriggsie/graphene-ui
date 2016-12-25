@@ -431,6 +431,10 @@
     .facolor-fee {
         color: $fee-color;
     }
+    // Error test
+    .error {
+        color: $error-text-color;
+    }
     // AccountSelector component
     .account-selector {
         .error-area {
