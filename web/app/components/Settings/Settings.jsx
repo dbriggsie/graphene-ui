@@ -152,7 +152,7 @@ class Settings extends React.Component {
         if (!traderMode) {
             activeSetting = 0;
             settingEntries.general = ["locale", "disableChat", "themes",
-            "traderMode"];
+             "unit", "apiServer", "traderMode"];
 
             // menuEntries = menuEntries.filter(a => {
             //     console.log("menu entry:", a);

@@ -259,7 +259,7 @@ class Header extends React.Component {
                 accountsDropDown = (
                     <ActionSheet>
                         <ActionSheet.Button title="">
-                            <a style={{padding: "1rem"}} className="button">
+                            <a style={{padding: "1rem"}} className="button" data-place="bottom" data-tip={!traderMode ? counterpart.translate("tooltip.account_dropdown") : null}>
                                 &nbsp;{account_display_name} &nbsp;
                                 <Icon className="icon-14px" name="chevron-down"/>
                             </a>
@@ -302,7 +302,7 @@ class Header extends React.Component {
                     <div className="grp-menu-items-group header-right-menu">
                         {!traderMode ? null : walletBalance}
 
-                        {!traderMode ? <div className="grp-menu-item" onClick={this.onSetTraderMode}>
+                        {!traderMode ? <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSetTraderMode}>
                             <div style={{textTransform: "none", fontSize: "0.9rem"}} className="button">
                                 <Icon className="icon-14px" name="assets"/>
                                 <span style={{paddingLeft: 10}}><Translate content="header.switch_trader" /></span>

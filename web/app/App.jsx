@@ -93,6 +93,8 @@ class App extends React.Component {
             dockedChat: SettingsStore.getState().viewSettings.get("dockedChat", false),
             isMobile: false
         };
+
+        this._rebuildTooltips = this._rebuildTooltips.bind(this);
     }
 
     componentWillUnmount() {
@@ -168,17 +170,16 @@ class App extends React.Component {
             });
         }
 
-        this.props.history.listen(() => {
-            this._rebuildTooltips();
-        });
-
+        this.props.history.listen(this._rebuildTooltips);
         this._rebuildTooltips();
     }
 
     _rebuildTooltips() {
-        if (this.refs.tooltip) {
-            this.refs.tooltip.globalRebuild();
-        }
+        setTimeout(() => {
+            if (this.refs.tooltip) {
+                this.refs.tooltip.globalRebuild();
+            }
+        }, 1500);
     }
 
     /** Usage: NotificationActions.[success,error,warning,info] */
@@ -259,7 +260,7 @@ class App extends React.Component {
                         </div>
                     </div>
                     {showFooter ? <Footer synced={this.state.synced}/> : null}
-                    <ReactTooltip ref="tooltip" place="top" type="dark" effect="solid"/>
+                    <ReactTooltip ref="tooltip" place="bottom" type="dark" effect="solid"/>
                 </div>
             );
         }

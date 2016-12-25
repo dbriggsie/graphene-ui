@@ -28,6 +28,13 @@
     "switch_trader": "Switch to Trader Mode",
     "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
   },
+  "tooltip": {
+    "account_dropdown": "Click here to switch between accounts as well as to access the Settings, Block Explorer and Help sections.",
+    "current_balance": "This is your current balance of this asset.",
+    "equivalent_balance": "This is how much your current balance is worth in your prefered asset. You can change this asset in the Settings.",
+    "trade_actions": "Click here to either buy or sell this asset.",
+    "pinning": "Click here to pin or unpin an asset, which will display it regardless of your current holdings of that asset."
+  },
   "account": {
     "welcome": "Bienvenido a Openledger",
     "asset": "Activo",

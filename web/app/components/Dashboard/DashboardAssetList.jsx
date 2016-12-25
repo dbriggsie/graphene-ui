@@ -12,6 +12,7 @@ import utils from "common/utils";
 import SimpleTrade from "./SimpleTrade";
 import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
 import Translate from "react-translate-component";
+import counterpart from "counterpart";
 
 // import Ps from "perfect-scrollbar";
 
@@ -118,8 +119,8 @@ class DashboardAssetList extends React.Component {
                 <td className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
-                            <Icon className="icon-14px" name="lnr-cross"/> :
-                            <Icon className="icon-14px" name="thumb-tack"/>
+                            <span data-tip="Click to unpin"><Icon className="icon-14px" name="lnr-cross"/></span> :
+                            <span data-tip="Click to pin"><Icon className="icon-14px" name="thumb-tack"/></span>
                         }
                     </span>
                 </td>
@@ -215,11 +216,11 @@ class DashboardAssetList extends React.Component {
                             <tr>
                                 <th></th>
                                 <th><Translate content="account.asset" /></th>
-                                <th style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
-                                <th style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
+                                <th data-place="top" data-tip={counterpart.translate("tooltip.current_balance")} style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
+                                <th data-place="top" data-tip={counterpart.translate("tooltip.equivalent_balance")} style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
                                 {/* <th>Transfer actions</th> */}
-                                <th><Translate content="simple_trade.actions" /></th>
-                                <th style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
+                                <th data-place="top" data-tip={counterpart.translate("tooltip.trade_actions")} ><Translate content="simple_trade.actions" /></th>
+                                <th data-place="top" data-tip={counterpart.translate("tooltip.pinning")} style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
                             </tr>
                         </thead>
                         <tbody>

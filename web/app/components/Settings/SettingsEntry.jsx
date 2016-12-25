@@ -115,7 +115,7 @@ export default class SettingsEntry extends React.Component {
         case "traderMode":
             value = true;
 
-            input = <div style={{height: 60, width: "100%", paddingTop: 20}} className="button outline" onClick={this.props.onChange.bind(this, setting, !selected)}>{counterpart.translate("settings.trader_mode_" + selected)}</div>;
+            input = <div data-tip={counterpart.translate("header.trader_mode_tip")} style={{height: 60, width: "100%", paddingTop: 20}} className="button outline" onClick={this.props.onChange.bind(this, setting, !selected)}>{counterpart.translate("settings.trader_mode_" + selected)}</div>;
             noHeader = true;
             break;
 
