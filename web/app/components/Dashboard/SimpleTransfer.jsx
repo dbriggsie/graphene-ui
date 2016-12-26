@@ -43,6 +43,8 @@ class SimpleTransferContent extends React.Component {
                 asset_id: props.asset.get("id"),
                 precision: props.asset.get("precision")
             }),
+            includeMemo: false,
+            memo: ""
         };
     }
 
@@ -79,7 +81,7 @@ class SimpleTransferContent extends React.Component {
             this.state.to_account.get("id"),
             this.state.to_send.getAmount() - feeToSubtract,
             this.state.to_send.asset_id,
-            "", // memo
+            this.state.includeMemo ? this.state.memo : null, // memo
             null,
             fee.asset
         );
@@ -127,6 +129,18 @@ class SimpleTransferContent extends React.Component {
         });
     }
 
+    _onToggleMemo() {
+        this.setState({
+            includeMemo: !this.state.includeMemo
+        });
+    }
+
+    _onInputMemo(e) {
+        this.setState({
+            memo: e.target.value
+        });
+    }
+
     render() {
         let {asset, sender, balances} = this.props;
         let {to_send, toSendText, to} = this.state;
@@ -157,7 +171,7 @@ class SimpleTransferContent extends React.Component {
 
         const assetName = utils.replaceName(asset.get("symbol"), true);
 
-        let tabIndex = 0;
+        let tabIndex = 1;
 
         return (
             <div>
@@ -174,7 +188,7 @@ class SimpleTransferContent extends React.Component {
                         {/* SEND TO */}
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
                             <div style={{display: "table-cell", float: "left", marginTop: 11}}>
-                                <Translate content="transfer.to" />:
+                                <label><Translate content="transfer.to" />:</label>
                             </div>
 
                             <div style={{display: "table-cell", float: "right", width: "70%"}}>
@@ -200,7 +214,7 @@ class SimpleTransferContent extends React.Component {
                         {/* SEND AMOUNT */}
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 50}}>
                             <div style={{display: "table-cell", float: "left", marginTop: 11}}>
-                                <Translate content="transfer.amount" />:
+                                <label><Translate content="transfer.amount" />:</label>
                             </div>
 
                             <div style={{display: "table-cell", float: "right", width: "70%"}}>
@@ -223,20 +237,50 @@ class SimpleTransferContent extends React.Component {
                         </div>
 
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 30}}>
-                            <div style={{display: "table-cell", float: "left"}}><Translate content="transfer.fee" /></div>
+                            <div style={{display: "table-cell", float: "left"}}>
+                                <label style={{position: "relative", top: 10}}><Translate content="transfer.fee" />:</label>
+                            </div>
                             <div style={{display: "table-cell", float: "right", width: "70%"}}>
                                 <FormattedFee
+                                    style={{position: "relative", top: 10}}
                                     ref="feeAsset"
                                     asset={fee.asset}
                                     opType="transfer"
                                 />
+
+                                <div className="float-right">
+                                    <label style={{
+                                            display: "inline-block",
+                                            position: "relative",
+                                            top: -10,
+                                            margin: 0
+                                        }}
+                                    >
+                                        Include memo:
+                                    </label>
+                                    <div onClick={this._onToggleMemo.bind(this)} style={{transform: "scale3d(0.75, 0.75, 1)"}} className="switch">
+                                        <input tabIndex={tabIndex++} checked={this.state.includeMemo} type="checkbox" />
+                                        <label />
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="button-group">
-                            <div tabIndex={tabIndex++} className="button" onClick={this.onSubmit.bind(this)} type="submit" >
-                                <Translate content="transfer.send" />
+                        {this.state.includeMemo ?
+                            <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 30}}>
+                                <div style={{display: "table-cell", float: "left", marginTop: 16}}>
+                                    <label>Memo:</label>
+                                </div>
+                                <div style={{display: "table-cell", float: "right", width: "70%"}}>
+                                    <textarea style={{marginBottom: 0}} rows="1" value={this.state.memo} tabIndex={tabIndex++} onChange={this._onInputMemo.bind(this)} />
+                                </div>
                             </div>
+                            : null}
+
+                        <div className="button-group">
+                            <button tabIndex={tabIndex++} className="button" onClick={this.onSubmit.bind(this)} type="submit" >
+                                <Translate content="transfer.send" />
+                            </button>
                         </div>
                     </form>
                 </div>

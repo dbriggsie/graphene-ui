@@ -52,7 +52,7 @@ class FormattedFee extends React.Component {
 
         let fee = this.getFee();
 
-        return <FormattedAsset {...fee} />;
+        return <FormattedAsset style={this.props.style} {...fee} />;
     }
 }
 
