@@ -38,11 +38,13 @@ class InitError extends React.Component {
         if (e) {
             e.preventDefault();
         }
+
         if (window.electron) {
             window.location.hash = "";
             window.remote.getCurrentWindow().reload();
-        }
-        else window.location.href = "/";
+        } else{
+            window.location.href = "/"+window.location.search;
+        } 
     }
 
     onReset() {

@@ -82,7 +82,10 @@ class WalletActions {
                 faucetAddress = faucetAddress.replace(/http:\/\//, "https://");
             }
 
-            let refferer = window.location.search.split('=')[1];
+            let refferer_account = '';
+            if(window.location.search.split('=').length){
+                refferer_account = window.location.search.split('=')[1];
+            }
 
             let create_account_promise = fetch( faucetAddress + "/api/v1/accounts", {
                 method: 'post',
@@ -99,7 +102,7 @@ class WalletActions {
                         "memo_key": active_private.private_key.toPublicKey().toPublicKeyString(),
                         //"memo_key": memo_private.private_key.toPublicKey().toPublicKeyString(),
                         "refcode": refcode,
-                        "referrer": window && window.BTSW ? (BTSW.referrer || refferer) : ""
+                        "referrer": refferer_account
                     }
                 })
             }).then(r => r.json());
