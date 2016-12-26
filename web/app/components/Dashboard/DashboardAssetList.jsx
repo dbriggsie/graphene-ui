@@ -11,6 +11,7 @@ import Icon from "../Icon/Icon";
 import utils from "common/utils";
 import SimpleTrade from "./SimpleTrade";
 import SimpleTransfer from "./SimpleTransfer";
+import SimpleDepositWithdraw from "./SimpleDepositWithdraw";
 import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
@@ -34,14 +35,12 @@ class DashboardAssetList extends React.Component {
         this.state = {
             filter: "",
             activeSellAsset: null,
-            activeBuyAsset: null
+            activeBuyAsset: null,
+            transferAsset: null,
+            depositAsset: null,
+            withdrawAsset: null
         };
     }
-
-    // componentDidMount() {
-    //     let assets = ReactDOM.findDOMNode(this.refs.assetList);
-    //     Ps.initialize(assets);
-    // }
 
     shouldComponentUpdate(np, ns) {
         let balancesChanged = false;
@@ -88,6 +87,9 @@ class DashboardAssetList extends React.Component {
         return this.props.pinnedAssets.has(asset);
     }
 
+    _getSeparator(render) {
+        return render ? <span> | </span> : null;
+    }
 
     _renderRow(assetName) {
         let isPinned = this._isPinned(assetName);
@@ -113,11 +115,12 @@ class DashboardAssetList extends React.Component {
                 <td style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
                 <td style={{textAlign: "center"}}>
                     {hasBalance ? <a onClick={this._showTransfer.bind(this, assetName)} >Transfer</a> : null}
+                    {true ? <span>{this._getSeparator(hasBalance)}<a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName)}>Deposit</a></span> : null}
                 </td>
                 {/* <td><a>Deposit</a> | <a>Withdraw</a></td> */}
                 <td style={{textAlign: "center"}}>
                     <a onClick={this._showModal.bind(this, "buy_modal", assetName)}><Translate content="exchange.buy" /></a>
-                    <span> | </span>
+                    {this._getSeparator(true)}
                     <a className={!hasBalance ? "disabled" : ""} onClick={!hasBalance ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a></td>
                 <td className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
@@ -153,7 +156,6 @@ class DashboardAssetList extends React.Component {
 
     _showModal(action, asset, e) {
         e.preventDefault();
-        console.log(action, asset);
         this.setState({
             [action === "buy_modal" ? "activeBuyAsset" : "activeSellAsset"]: asset
         }, () => {
@@ -163,11 +165,20 @@ class DashboardAssetList extends React.Component {
 
     _showTransfer(asset, e) {
         e.preventDefault();
-        console.log("transfer", asset);
         this.setState({
             transferAsset: asset
         }, () => {
             this.refs.transfer_modal.show();
+        });
+    }
+
+    _showDepositWithdraw(action, asset, e) {
+        e.preventDefault();
+        console.log(action, asset);
+        this.setState({
+            [action === "deposit_modal" ? "depositAsset" : "withdrawAsset"]: asset
+        }, () => {
+            this.refs[action].show();
         });
     }
 
@@ -292,6 +303,16 @@ class DashboardAssetList extends React.Component {
                     sender={this.props.account.get("id")}
                     asset={this.state.transferAsset}
                     modalId="simple_transfer_modal"
+                    balances={this.props.balances}
+                />
+
+                {/* Deposit Modal */}
+                <SimpleDepositWithdraw
+                    ref="deposit_modal"
+                    action="deposit"
+                    sender={this.props.account.get("id")}
+                    asset={this.state.depositAsset}
+                    modalId="simple_deposit_modal"
                     balances={this.props.balances}
                 />
             </div>
