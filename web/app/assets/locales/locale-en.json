@@ -41,8 +41,8 @@
     "current_balance": "This is your current balance of this asset.",
     "equivalent_balance": "This is how much your current balance is worth in your prefered asset. You can change this asset in the Settings.",
     "trade_actions": "Click here to either buy or sell this asset.",
-    "pinning": "Click here to pin or unpin an asset, which will display it regardless of your current holdings of that asset."
-
+    "pinning": "Click here to pin or unpin an asset, which will display it regardless of your current holdings of that asset.",
+    "transfer_actions": "Click here to make a transfer, or to deposit/withdraw those assets that support it."
   },
   "propose": "Propose",
   "cancel": "Cancel",
@@ -1115,6 +1115,7 @@
         "hide_zero": "Hide 0 balances",
         "actions": "Trade actions",
         "pinned": "Pinned",
-        "spend": "Spend"
+        "spend": "Spend",
+        "transfer_actions": "Transfer actions"
     }
 }
