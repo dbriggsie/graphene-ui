@@ -20,8 +20,7 @@ import ReactTooltip from "react-tooltip";
 import counterpart from "counterpart";
 import {requestDepositAddress} from "common/blockTradesMethods";
 import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
-import ClipboardButton from "react-clipboard.js";
-import Icon from "../Icon/Icon";
+import CopyButton from "../Utility/CopyButton";
 
 @BindToChainState()
 class DepositWithdrawContent extends React.Component {
@@ -171,24 +170,13 @@ class DepositWithdrawContent extends React.Component {
         });
     }
 
-    toClipboard(clipboardText) {
-        try {
-            this.refs.deposit_address.select();
-            var successful = document.execCommand('copy');
-            var msg = successful ? 'successful' : 'unsuccessful';
-            console.log('copy text command was ' + msg);
-        } catch(err) {
-            console.log('Oops, unable to copy',err);
-        }
-    }
-
     _renderWithdraw() {
         const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
         let tabIndex = 1;
 
         return (
             <div style={{paddingTop: 20}}>
-                <p>You are going to withdraw funds from your OpenLedger account.</p>
+                <p><Translate content="gateway.withdraw_funds" /></p>
 
                 {this._renderCurrentBalance()}
 
@@ -220,22 +208,26 @@ class DepositWithdrawContent extends React.Component {
                 {this._renderCurrentBalance()}
 
                 <section style={{paddingTop: 15, paddingBottom: 15}}>
-                    <p className="help-tooltip" data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", {asset: assetName})}>Please send your {assetName} to the address below:</p>
+                    <p data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", {asset: assetName})}>
+                        <Translate className="help-tooltip" content="gateway.deposit_to" asset={assetName} />:
+                    </p>
                     <label>
                         <span className="inline-label">
                             <input readOnly style={{border: "1px solid grey"}} type="text" value={addressValue} />
-                            <ClipboardButton data-clipboard-text={addressValue} className="button">
-                                <Icon name="clippy"/>
-                            </ClipboardButton>
+
+                            <CopyButton
+                                text={addressValue}
+                            />
                         </span>
                     </label>
                     {hasMemo ?
                         <label>
                             <span className="inline-label">
                                 <input readOnly style={{border: "1px solid grey"}} type="text" value={counterpart.translate("transfer.memo") + ": " + receive_address.memo} />
-                                <ClipboardButton data-clipboard-text={receive_address.memo} className="button">
-                                    <Icon name="clippy"/>
-                                </ClipboardButton>
+
+                                <CopyButton
+                                    text={receive_address.memo}
+                                />
                             </span>
                         </label> : null}
                 </section>
