@@ -18,15 +18,17 @@ import AccountActions from "actions/AccountActions";
 import AccountSelector from "../Account/AccountSelector";
 import ReactTooltip from "react-tooltip";
 import counterpart from "counterpart";
-import {requestDepositAddress} from "common/blockTradesMethods";
+import {requestDepositAddress, validateAddress, WithdrawAddresses} from "common/blockTradesMethods";
 import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
 import CopyButton from "../Utility/CopyButton";
+import Icon from "../Icon/Icon";
 
 @BindToChainState()
 class DepositWithdrawContent extends React.Component {
 
     static propTypes = {
         sender: ChainTypes.ChainAccount.isRequired,
+        issuer: ChainTypes.ChainAccount.isRequired,
         asset: ChainTypes.ChainAsset.isRequired,
         coreAsset: ChainTypes.ChainAsset.isRequired,
         globalObject: ChainTypes.ChainAsset.isRequired
@@ -34,23 +36,24 @@ class DepositWithdrawContent extends React.Component {
 
     static defaultProps = {
         coreAsset: "1.3.0",
-        globalObject: "2.0.0"
+        globalObject: "2.0.0",
+        issuer: "openledger-wallet"
     }
 
     constructor(props) {
         super();
 
         this.state = {
-            to: "",
-            sendValue:"",
+            toAddress: WithdrawAddresses.getLast(props.walletType),
+            withdrawValue:"",
             amountError: null,
-            to_send: new Asset({
+            to_withdraw: new Asset({
                 asset_id: props.asset.get("id"),
                 precision: props.asset.get("precision")
-            }),
-            includeMemo: false,
-            memo: ""
+            })
         };
+
+        this._validateAddress(this.state.toAddress, props);
 
         this.deposit_address_cache = new BlockTradesDepositAddressCache();
         this.addDepositAddress = this.addDepositAddress.bind(this);
@@ -63,12 +66,14 @@ class DepositWithdrawContent extends React.Component {
     componentWillReceiveProps(np) {
         if (np.asset && np.asset !== this.props.asset) {
             this.setState({
-                to_send: new Asset({
+                to_withdraw: new Asset({
                     asset_id: np.asset.get("id"),
                     precision: np.asset.get("precision")
                 }),
-                sendValue: "",
-                receive_address: null
+                memo: "",
+                withdrawValue: "",
+                receive_address: null,
+                toAddress: WithdrawAddresses.getLast(np.walletType)
             }, this._getDepositAddress);
         }
     }
@@ -121,41 +126,37 @@ class DepositWithdrawContent extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-
-        if (this.state.to_send.getAmount() === 0) {
+        if (this.state.to_withdraw.getAmount() === 0) {
             return this.setState({
                 amountError: "transfer.errors.pos"
             });
         }
 
-        if (!this.state.to_account) return;
+        if (!this.props.issuer) return;
 
         let fee = this._getFee();
 
-        let feeToSubtract = this.state.to_send.asset_id !== fee.asset ? 0 :
+        let feeToSubtract = this.state.to_withdraw.asset_id !== fee.asset ? 0 :
             fee.amount;
 
         AccountActions.transfer(
             this.props.sender.get("id"),
-            this.state.to_account.get("id"),
-            this.state.to_send.getAmount() - feeToSubtract,
-            this.state.to_send.asset_id,
-            this.state.includeMemo ? this.state.memo : null, // memo
+            this.props.issuer.get("id"),
+            this.state.to_withdraw.getAmount() - feeToSubtract,
+            this.state.to_withdraw.asset_id,
+            this.props.backingCoinType.toLowerCase() + ":" + this.state.toAddress + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : ""),
             null,
             fee.asset
         );
     }
 
     _updateAmount(amount) {
-        this.state.to_send.setAmount({sats: amount});
+        console.log("updateAmount", amount);
+        this.state.to_withdraw.setAmount({sats: amount});
         this.setState({
-            sendValue: this.state.to_send.getAmount({real: true}),
+            withdrawValue: this.state.to_withdraw.getAmount({real: true}),
             amountError: null
         });
-    }
-
-    _onToChanged(to_name) {
-        this.setState({to_name, error: null});
     }
 
     _getFee() {
@@ -170,24 +171,96 @@ class DepositWithdrawContent extends React.Component {
         });
     }
 
+    _onInputAmount(e) {
+        try {
+            this.state.to_withdraw.setAmount({
+                real: parseFloat(e.target.value || 0)
+            });
+            this.setState({
+                withdrawValue: e.target.value,
+                amountError: null
+            });
+        } catch(err) {
+            console.error("err:", err);
+        }
+    }
+
+    _onInputTo(e) {
+        let toAddress = e.target.value.trim();
+
+        this.setState({
+            withdraw_address_check_in_progress: true,
+            withdraw_address_selected: toAddress,
+            validAddress: null,
+            toAddress: toAddress
+        });
+
+        this._validateAddress(address);
+    }
+
+    _onMemoChanged(e) {
+        this.setState({memo: e.target.value});
+    }
+
+    _validateAddress(address, props = this.props) {
+        validateAddress({walletType: props.walletType, newAddress: address})
+            .then(isValid => {
+                if (this.state.toAddress === address) {
+                    this.setState({
+                        withdraw_address_check_in_progress: false,
+                        validAddress: isValid
+                    });
+                }
+            });
+    }
+
     _renderWithdraw() {
         const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
         let tabIndex = 1;
+        const {supportsMemos} = this.props;
 
         return (
-            <div style={{paddingTop: 20}}>
-                <p><Translate content="gateway.withdraw_funds" /></p>
+            <div>
+                <p><Translate content="gateway.withdraw_funds" asset={assetName} /></p>
 
                 {this._renderCurrentBalance()}
 
-                <section style={{paddingTop: 15, paddingBottom: 15}}>
-                    <p className="help-tooltip" data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", {asset: assetName})}>Please send your {assetName} to the address below:</p>
-                    <div>TEMP</div>
-                </section>
+                <div className="SimpleTrade__withdraw-row">
+                    <label>
+                        {counterpart.translate("modal.withdraw.amount")}
+                        <span className="inline-label">
+                            <input tabIndex={tabIndex++} type="text" value={this.state.withdrawValue} onChange={this._onInputAmount.bind(this)} />
+                            <span className="form-label">{assetName}</span>
+                        </span>
+                    </label>
+                </div>
 
-                <div className="button-group">
+                <div className="SimpleTrade__withdraw-row">
+                    <label>
+                        {counterpart.translate("modal.withdraw.address")}
+                        <span className="inline-label">
+                            <input placeholder={counterpart.translate("gateway.withdraw_placeholder", {asset: assetName})} tabIndex={tabIndex++} type="text" value={this.state.toAddress} onChange={this._onInputTo.bind(this)} />
+                            <span data-place="right" data-tip={counterpart.translate("tooltip.withdraw_address", {asset: assetName})} className="form-label"><Icon name="question-circle" className="fill-black" /></span>
+                        </span>
+                    </label>
+                    {!this.state.validAddress && this.state.toAddress ? <div className="has-error" style={{paddingTop: 10}}><Translate content="gateway.valid_address" coin_type={assetName} /></div> : null}
+                </div>
+
+                {supportsMemos ? (
+                    <div className="SimpleTrade__withdraw-row">
+                        <label>
+                            {counterpart.translate("transfer.memo")}
+                            <span className="inline-label">
+                                <textarea rows="1" value={this.state.memo} tabIndex={tabIndex++} onChange={this._onMemoChanged.bind(this)} />
+                            </span>
+                        </label>
+                        {!this.state.validAddress && this.state.toAddress ? <div className="has-error" style={{paddingTop: 10}}><Translate content="gateway.valid_address" coin_type={assetName} /></div> : null}
+                    </div>
+                ) : null}
+
+                <div className="button-group SimpleTrade__withdraw-row">
                     <button tabIndex={tabIndex++} className="button" onClick={this.onSubmit.bind(this)} type="submit" >
-                        Generate new address
+                        <Translate content="gateway.withdraw_now" />
                     </button>
                 </div>
             </div>
@@ -202,12 +275,12 @@ class DepositWithdrawContent extends React.Component {
         let tabIndex = 1;
 
         return (
-            <div style={{paddingTop: 20}}>
+            <div>
                 <p><Translate content="gateway.add_funds" /></p>
 
                 {this._renderCurrentBalance()}
 
-                <section style={{paddingTop: 15, paddingBottom: 15}}>
+                <section style={{paddingBottom: 15}}>
                     <p data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", {asset: assetName})}>
                         <Translate className="help-tooltip" content="gateway.deposit_to" asset={assetName} />:
                     </p>
@@ -243,6 +316,7 @@ class DepositWithdrawContent extends React.Component {
 
     _renderCurrentBalance() {
         const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
+        const isDeposit = this.props.action === "deposit";
 
         let currentBalance = this.props.balances.find(b => {
             return b && b.get("asset_type") === this.props.asset.get("id");
@@ -254,21 +328,46 @@ class DepositWithdrawContent extends React.Component {
             amount: currentBalance.get("balance")
         }) : null;
 
+        // TEMP //
+        // asset = new Asset({
+        //     asset_id: this.props.asset.get("id"),
+        //     precision: this.props.asset.get("precision"),
+        //     amount: 65654645
+        // });
+
+        const applyBalanceButton = isDeposit ?
+            <span style={{border: "2px solid black", borderLeft: "none"}} className="form-label">{assetName}</span> :
+        (
+            <button
+                data-place="right" data-tip={counterpart.translate("tooltip.withdraw_full")}
+                className="button"
+                style={{border: "2px solid black", borderLeft: "none"}}
+                onClick={this._updateAmount.bind(this, !currentBalance ? 0 : parseInt(currentBalance.get("balance"), 10))}
+            >
+                <Icon name="clippy" />
+            </button>
+        );
+
         return (
-            <div style={{color: "black", fontWeight : "bold"}}>
-                <div style={{paddingBottom: 8, fontSize: "85%"}}>Current {assetName} balance:</div>
-                <div
-                    onClick={!currentBalance ? () => {} : this._updateAmount.bind(this, parseInt(currentBalance.get("balance"), 10))}
-                >
-                    <input disabled={this.props.action === "deposit"} style={{border: "2px solid black", padding: 10, width: "100%"}} value={!asset ? 0 : asset.getAmount({real: true})} />
-                </div>
+            <div className="SimpleTrade__withdraw-row" style={{color: "black", fontSize: "1rem"}}>
+                <label style={{color: "black", fontSize: "1rem"}}>
+                    {counterpart.translate("gateway.balance_asset", {asset: assetName})}:
+                    <span className="inline-label">
+                        <input
+                            disabled
+                            style={{color: "black", border: "2px solid black", padding: 10, width: "100%"}}
+                            value={!asset ? 0 : asset.getAmount({real: true})}
+                        />
+                        {applyBalanceButton}
+                    </span>
+                </label>
             </div>
         );
     }
 
     render() {
         let {asset, sender, balances, action} = this.props;
-        let {to_send, toSendText, to} = this.state;
+        let {to_withdraw, toSendText, to} = this.state;
 
         let isDeposit = action === "deposit";
 
@@ -276,13 +375,7 @@ class DepositWithdrawContent extends React.Component {
             return null;
         }
 
-        const fee = this._getFee();
-
-
-
         const assetName = utils.replaceName(asset.get("symbol"), true);
-
-        let tabIndex = 1;
 
         return (
             <div style={{backgroundColor: "#545454"}}>

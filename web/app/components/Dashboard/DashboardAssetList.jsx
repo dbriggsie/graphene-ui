@@ -108,6 +108,7 @@ class DashboardAssetList extends React.Component {
         const hasBalance = !(!balance || balance.amount === 0);
 
         const canDepositWithdraw = !!this.props.openLedgerBackedCoins.find(a => a.symbol === asset.get("symbol"));
+        const canWithdraw = canDepositWithdraw && hasBalance;
 
         return (
             <tr key={assetName}>
@@ -116,9 +117,23 @@ class DashboardAssetList extends React.Component {
                 <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : null}</td>
                 <td style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
                 <td style={{textAlign: "center"}}>
-                    {hasBalance ? <a onClick={this._showTransfer.bind(this, assetName)} >Transfer</a> : null}
-                    {canDepositWithdraw ? <span>{this._getSeparator(hasBalance)}<a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName)}>Deposit</a></span> : null}
-                    {canDepositWithdraw ? <span>{this._getSeparator(canDepositWithdraw || hasBalance)}<a onClick={this._showDepositWithdraw.bind(this, "withdraw_modal", assetName)}>Withdraw</a></span> : null}
+                    {hasBalance ? <a onClick={this._showTransfer.bind(this, assetName)} ><Translate content="transaction.trxTypes.transfer" /></a> : null}
+                    {canDepositWithdraw ? (
+                        <span>
+                            {this._getSeparator(hasBalance)}
+                            <a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName)}>
+                                <Translate content="gateway.deposit" />
+                            </a>
+                        </span>
+                    ) : null}
+                    {canDepositWithdraw ? (
+                        <span>
+                            {this._getSeparator(canDepositWithdraw || hasBalance)}
+                            <a className={!canWithdraw ? "disabled" : ""} onClick={canWithdraw ? this._showDepositWithdraw.bind(this, "withdraw_modal", assetName) : () => {}}>
+                                <Translate content="modal.withdraw.submit" />
+                            </a>
+                        </span>
+                    ) : null}
                 </td>
                 {/* <td><a>Deposit</a> | <a>Withdraw</a></td> */}
                 <td style={{textAlign: "center"}}>
@@ -422,7 +437,7 @@ export default class ListWrapper extends React.Component {
                 assets.push(c.symbol);
             }
         });
-        
+
         return (
             <DashboardAssetList
                 {...this.state}

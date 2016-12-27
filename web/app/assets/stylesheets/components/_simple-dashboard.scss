@@ -25,6 +25,9 @@
 
 #simple_deposit_modal, #simple_withdraw_modal {
     max-width: 500px;
+    label {
+        text-transform: none !important;
+    }
 }
 
 #simple_buy_modal, #simple_sell_modal {
@@ -51,4 +54,8 @@ a.disabled {
 
 .clip-button {
     border: none !important;
+}
+
+.SimpleTrade__withdraw-row {
+    padding: 10px 0;
 }
