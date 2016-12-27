@@ -22,7 +22,6 @@ let marketsList = [
   'CNY',
   'EUR',
   'BTSR',
-  'GRIDCOIN',
   'ICOO',
   'OBITS',
   'OPEN.ARDR',
