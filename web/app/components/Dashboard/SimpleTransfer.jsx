@@ -295,8 +295,9 @@ export default class SimpleTransferModal extends React.Component {
     }
 
     show() {
-        ZfApi.publish(this.props.modalId, "open");
-        this.setState({open: true});
+        this.setState({open: true}, () => {
+            ZfApi.publish(this.props.modalId, "open");
+        });
     }
 
     onClose() {
@@ -309,7 +310,7 @@ export default class SimpleTransferModal extends React.Component {
                 <Trigger close={this.props.modalId}>
                     <a href="#" className="close-button">&times;</a>
                 </Trigger>
-                <SimpleTransferContent {...this.props} open={this.state.open} />
+                {this.state.open ? <SimpleTransferContent {...this.props} open={this.state.open} /> : null}
             </Modal>
         );
     }
