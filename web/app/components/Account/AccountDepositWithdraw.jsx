@@ -20,6 +20,7 @@ import cnames from "classnames";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
+import {fetchCoins, getBackedCoins} from "common/blockTradesMethods";
 
 @BindToChainState()
 class AccountDepositWithdraw extends React.Component {
@@ -65,63 +66,19 @@ class AccountDepositWithdraw extends React.Component {
     componentWillMount() {
         accountUtils.getFinalFeeAsset(this.props.account, "transfer");
 
-        fetch("https://blocktrades.us/api/v2/coins").then(reply => reply.json().then(result => {
+        fetchCoins("https://blocktrades.us/api/v2/coins").then(result => {
             this.setState({
-                blockTradesCoins: result
+                blockTradesCoins: result,
+                blockTradesBackedCoins: getBackedCoins({allCoins: result, backer: "TRADE"})
             });
-            this.setState({
-                blockTradesBackedCoins: this.getBlocktradesBackedCoins(result)
-            });
-        })).catch(err => {
-            console.log("error fetching blocktrades list of coins", err);
         });
 
-        fetch("https://blocktrades.us/ol/api/v2/coins").then(reply => reply.json().then(result => {
+        fetchCoins().then(result => {
             this.setState({
-                openLedgerCoins: result
+                openLedgerCoins: result,
+                openLedgerBackedCoins: getBackedCoins({allCoins: result, backer: "OPEN"})
             });
-            this.setState({
-                openLedgerBackedCoins: this.getOpenledgerBackedCoins(result)
-            });
-        })).catch(err => {
-            console.log("error fetching openledger list of coins", err);
         });
-    }
-
-    getBlocktradesBackedCoins(allBlocktradesCoins) {
-        let coins_by_type = {};
-        allBlocktradesCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
-        let blocktradesBackedCoins = [];
-        allBlocktradesCoins.forEach(coin_type => {
-            if (coin_type.walletSymbol.startsWith('TRADE.') && coin_type.backingCoinType)
-            {
-                blocktradesBackedCoins.push({
-                    name: coins_by_type[coin_type.backingCoinType].name,
-                    walletType: coins_by_type[coin_type.backingCoinType].walletType,
-                    backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
-                    symbol: coin_type.walletSymbol,
-					supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos
-                });
-            }});
-        return blocktradesBackedCoins;
-    }
-
-	getOpenledgerBackedCoins(allOpenledgerCoins) {
-        let coins_by_type = {};
-        allOpenledgerCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
-        let openledgerBackedCoins = [];
-        allOpenledgerCoins.forEach(coin_type => {
-            if (coin_type.walletSymbol.startsWith('OPEN.') && coin_type.backingCoinType)
-            {
-                openledgerBackedCoins.push({
-                    name: coins_by_type[coin_type.backingCoinType].name,
-                    walletType: coins_by_type[coin_type.backingCoinType].walletType,
-                    backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
-                    symbol: coin_type.walletSymbol,
-					supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos
-                });
-            }});
-        return openledgerBackedCoins;
     }
 
     toggleOLService(service) {
