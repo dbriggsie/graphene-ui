@@ -364,8 +364,6 @@ input[type=number] {
     -moz-appearance:textfield;
 }
 
-.asset-with-border {
-    padding-bottom: 1px;
-    border-bottom: 2px dashed #ccc;
-    cursor: pointer;
+.__react_component_tooltip {
+    max-width: 20rem;
 }

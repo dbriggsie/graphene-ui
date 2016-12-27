@@ -23,6 +23,10 @@
     padding: 0;
 }
 
+#simple_deposit_modal, #simple_withdraw_modal {
+    max-width: 500px;
+}
+
 #simple_buy_modal, #simple_sell_modal {
     background-color: grey;
     padding: 0;
@@ -31,4 +35,20 @@
 a.disabled {
     color: grey !important;
     cursor: default !important;
+}
+
+.help-tooltip {
+    padding-bottom: 1px;
+    border-bottom: 2px dashed #ccc;
+    cursor: help;
+}
+
+.deposit-address {
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.clip-button {
+    border: none !important;
 }

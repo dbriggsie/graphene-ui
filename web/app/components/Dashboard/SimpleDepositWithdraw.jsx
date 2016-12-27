@@ -16,6 +16,12 @@ import ChainTypes from "../Utility/ChainTypes";
 import AccountApi from "api/accountApi";
 import AccountActions from "actions/AccountActions";
 import AccountSelector from "../Account/AccountSelector";
+import ReactTooltip from "react-tooltip";
+import counterpart from "counterpart";
+import {requestDepositAddress} from "common/blockTradesMethods";
+import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
+import ClipboardButton from "react-clipboard.js";
+import Icon from "../Icon/Icon";
 
 @BindToChainState()
 class DepositWithdrawContent extends React.Component {
@@ -46,6 +52,13 @@ class DepositWithdrawContent extends React.Component {
             includeMemo: false,
             memo: ""
         };
+
+        this.deposit_address_cache = new BlockTradesDepositAddressCache();
+        this.addDepositAddress = this.addDepositAddress.bind(this);
+    }
+
+    componentWillMount() {
+        this._getDepositAddress();
     }
 
     componentWillReceiveProps(np) {
@@ -55,9 +68,56 @@ class DepositWithdrawContent extends React.Component {
                     asset_id: np.asset.get("id"),
                     precision: np.asset.get("precision")
                 }),
-                sendValue: ""
+                sendValue: "",
+                receive_address: null
+            }, this._getDepositAddress);
+        }
+    }
+
+    _getDepositAddress() {
+        if (!this.props.backingCoinType) return;
+        let account_name = this.props.sender.get("name");
+        let receive_address = this.deposit_address_cache.getCachedInputAddress(
+            "openledger",
+            account_name,
+            this.props.backingCoinType.toLowerCase(),
+            this.props.symbol.toLowerCase()
+        );
+
+        if (!receive_address) {
+            requestDepositAddress(this._getDepositObject());
+        } else {
+            this.setState({
+                receive_address
             });
         }
+    }
+
+    _getDepositObject() {
+        return {
+            inputCoinType: this.props.backingCoinType.toLowerCase(),
+            outputCoinType: this.props.symbol.toLowerCase(),
+            outputAddress: this.props.sender.get("name"),
+            url: "https://bitshares.openledger.info/depositwithdraw/api/v2",
+            stateCallback: this.addDepositAddress
+        };
+    }
+
+    addDepositAddress( receive_address ) {
+        let account_name = this.props.sender.get("name");
+        this.deposit_address_cache.cacheInputAddress(
+            "openledger",
+            account_name,
+            this.props.backingCoinType.toLowerCase(),
+            this.props.symbol.toLowerCase(),
+            receive_address.address,
+            receive_address.memo
+        );
+        this.setState( {receive_address} );
+    }
+
+    componentDidUpdate() {
+        ReactTooltip.rebuild();
     }
 
     onSubmit(e) {
@@ -95,26 +155,8 @@ class DepositWithdrawContent extends React.Component {
         });
     }
 
-    _onInputSend(e) {
-        try {
-            this.state.to_send.setAmount({
-                real: parseFloat(e.target.value || 0)
-            });
-            this.setState({
-                sendValue: e.target.value,
-                amountError: null
-            });
-        } catch(err) {
-            console.error("err:", err);
-        }
-    }
-
     _onToChanged(to_name) {
         this.setState({to_name, error: null});
-    }
-
-    _onToAccountChanged(to_account) {
-        this.setState({to_account, error: null});
     }
 
     _getFee() {
@@ -129,115 +171,87 @@ class DepositWithdrawContent extends React.Component {
         });
     }
 
-    _onToggleMemo() {
-        this.setState({
-            includeMemo: !this.state.includeMemo
-        });
-    }
-
-    _onInputMemo(e) {
-        this.setState({
-            memo: e.target.value
-        });
+    toClipboard(clipboardText) {
+        try {
+            this.refs.deposit_address.select();
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('copy text command was ' + msg);
+        } catch(err) {
+            console.log('Oops, unable to copy',err);
+        }
     }
 
     _renderWithdraw() {
+        const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
+        let tabIndex = 1;
+
         return (
-        <form style={{paddingTop: 20}} onSubmit={this.onSubmit.bind(this)}>
+            <div style={{paddingTop: 20}}>
+                <p>You are going to withdraw funds from your OpenLedger account.</p>
 
-            {/* SEND AMOUNT */}
-            <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 50}}>
-                <div style={{display: "table-cell", float: "left", marginTop: 11}}>
-                    <label><Translate content="transfer.amount" />:</label>
-                </div>
+                {this._renderCurrentBalance()}
 
-                <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                    <label style={{width: "100%", margin: 0}}>
-                        <span className="inline-label" style={{margin: 0}}>
-                            <input tabIndex={tabIndex++} type="text" value={this.state.sendValue} onChange={this._onInputSend.bind(this)} />
-                            <span className="form-label" style={{padding: "0 1.5rem"}}><AssetName name={asset.get("symbol")} /></span>
-                        </span>
-                    </label>
+                <section style={{paddingTop: 15, paddingBottom: 15}}>
+                    <p className="help-tooltip" data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", {asset: assetName})}>Please send your {assetName} to the address below:</p>
+                    <div>TEMP</div>
+                </section>
 
-                    <div style={{position: "relative"}}>
-                        <label style={{margin: 0}}>
-                            {this.state.amountError ? <div style={{fontSize: "1rem", top: "0.65rem", position: "absolute"}} className="error">
-                            <span><Translate content={this.state.amountError} /></span>
-                        </div> : null}
-                        </label>
-                        {currentB}
-                    </div>
+                <div className="button-group">
+                    <button tabIndex={tabIndex++} className="button" onClick={this.onSubmit.bind(this)} type="submit" >
+                        Generate new address
+                    </button>
                 </div>
             </div>
-
-            <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 30}}>
-                <div style={{display: "table-cell", float: "left"}}>
-                    <label style={{position: "relative", top: 10}}><Translate content="transfer.fee" />:</label>
-                </div>
-                <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                    <FormattedFee
-                        style={{position: "relative", top: 10}}
-                        ref="feeAsset"
-                        asset={fee.asset}
-                        opType="transfer"
-                    />
-
-                    <div className="float-right">
-                        <label style={{
-                                display: "inline-block",
-                                position: "relative",
-                                top: -10,
-                                margin: 0
-                            }}
-                        >
-                            Include memo:
-                        </label>
-                        <div onClick={this._onToggleMemo.bind(this)} style={{transform: "scale3d(0.75, 0.75, 1)"}} className="switch">
-                            <input tabIndex={tabIndex++} checked={this.state.includeMemo} type="checkbox" />
-                            <label />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="button-group">
-                <button tabIndex={tabIndex++} className="button" onClick={this.onSubmit.bind(this)} type="submit" >
-                    <Translate content="transfer.send" />
-                </button>
-            </div>
-        </form>);
+        );
     }
 
     _renderDeposit() {
-        let symbol = this.props.asset.get("symbol");
+        const {receive_address} = this.state;
+        const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
+        const hasMemo = receive_address && "memo" in receive_address && receive_address.memo;
+        const addressValue = receive_address && receive_address.address || "";
         let tabIndex = 1;
-        return (
-        <div style={{paddingTop: 20}}>
-            <p>You are going to add funds to your OpenLedger account.</p>
 
-            <div style={{color: "black", fontWeight : "bold"}}>
-                <div style={{paddingBottom: 10}}>Current {symbol} balance:</div>
+        return (
+            <div style={{paddingTop: 20}}>
+                <p><Translate content="gateway.add_funds" /></p>
+
                 {this._renderCurrentBalance()}
 
+                <section style={{paddingTop: 15, paddingBottom: 15}}>
+                    <p className="help-tooltip" data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", {asset: assetName})}>Please send your {assetName} to the address below:</p>
+                    <label>
+                        <span className="inline-label">
+                            <input readOnly style={{border: "1px solid grey"}} type="text" value={addressValue} />
+                            <ClipboardButton data-clipboard-text={addressValue} className="button">
+                                <Icon name="clippy"/>
+                            </ClipboardButton>
+                        </span>
+                    </label>
+                    {hasMemo ?
+                        <label>
+                            <span className="inline-label">
+                                <input readOnly style={{border: "1px solid grey"}} type="text" value={counterpart.translate("transfer.memo") + ": " + receive_address.memo} />
+                                <ClipboardButton data-clipboard-text={receive_address.memo} className="button">
+                                    <Icon name="clippy"/>
+                                </ClipboardButton>
+                            </span>
+                        </label> : null}
+                </section>
+
+                <div className="button-group">
+                    <button tabIndex={tabIndex++} className="button" onClick={requestDepositAddress.bind(null, this._getDepositObject())} type="submit" >
+                        <Translate content="gateway.generate_new" />
+                    </button>
+                </div>
             </div>
-
-            <p>Please send your {symbol} to the address below:</p>
-
-            <div>DADLHAZDJHKAZHDKAJZHKDJHAZKJH</div>
-
-            <div className="button-group">
-                <button tabIndex={tabIndex++} className="button" onClick={this.onSubmit.bind(this)} type="submit" >
-                    Generate new address
-                </button>
-
-                <button tabIndex={tabIndex++} className="button" onClick={this.onSubmit.bind(this)} type="submit" >
-                    Copy address
-                </button>
-            </div>
-        </div>);
+        );
     }
 
     _renderCurrentBalance() {
+        const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
+
         let currentBalance = this.props.balances.find(b => {
             return b && b.get("asset_type") === this.props.asset.get("id");
         });
@@ -248,12 +262,16 @@ class DepositWithdrawContent extends React.Component {
             amount: currentBalance.get("balance")
         }) : null;
 
-        return currentBalance ?
-            <div
-                onClick={this._updateAmount.bind(this, parseInt(currentBalance.get("balance"), 10))}
-            >
-                <input style={{border: "2px solid black", padding: 10}} value={asset.getAmount({real: true})} />
-            </div> : null;
+        return (
+            <div style={{color: "black", fontWeight : "bold"}}>
+                <div style={{paddingBottom: 8, fontSize: "85%"}}>Current {assetName} balance:</div>
+                <div
+                    onClick={!currentBalance ? () => {} : this._updateAmount.bind(this, parseInt(currentBalance.get("balance"), 10))}
+                >
+                    <input disabled={this.props.action === "deposit"} style={{border: "2px solid black", padding: 10, width: "100%"}} value={!asset ? 0 : asset.getAmount({real: true})} />
+                </div>
+            </div>
+        );
     }
 
     render() {
@@ -307,7 +325,7 @@ export default class SimpleDepositWithdrawModal extends React.Component {
 
     render() {
         return (
-            <Modal small onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true}>
+            <Modal className="small" onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true}>
                 <Trigger close={this.props.modalId}>
                     <a href="#" className="close-button">&times;</a>
                 </Trigger>

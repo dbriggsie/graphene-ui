@@ -55,7 +55,7 @@ class AssetName extends React.Component {
 					body={(
 						<div style={{minWidth: "20rem", minHeight: "15rem"}}>
 							<h3>{prefix}{replacedName}</h3>
-							<div className="grid-block small-8" style={{paddingTop: 10}}>{desc.short ? desc.short : desc.main}</div>
+							<div className="grid-block no-overflow small-8" style={{paddingTop: 10}}>{desc.short ? desc.short : desc.main}</div>
 
 							<AssetImage style={{maxHeight: 125, position: "absolute", top: 25, right: 15}} assetName={asset.get("symbol")} />
 
@@ -63,7 +63,7 @@ class AssetName extends React.Component {
 					)}
 					preferPlace="right"
 				>
-					<span className="asset-with-border" onClick={() => {this.setState({isPopoverOpen: !this.state.isPopoverOpen});}} >
+					<span className="help-tooltip" onClick={() => {this.setState({isPopoverOpen: !this.state.isPopoverOpen});}} >
 						<span className="asset-prefix-replaced">{prefix}</span>
 						<span>{replacedName}</span>
 					</span>

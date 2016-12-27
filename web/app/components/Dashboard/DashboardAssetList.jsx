@@ -15,8 +15,7 @@ import SimpleDepositWithdraw from "./SimpleDepositWithdraw";
 import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
-
-// import Ps from "perfect-scrollbar";
+import {fetchCoins, getBackedCoins} from "common/blockTradesMethods";
 
 require("./DashboardAssetList.scss");
 
@@ -38,7 +37,8 @@ class DashboardAssetList extends React.Component {
             activeBuyAsset: null,
             transferAsset: null,
             depositAsset: null,
-            withdrawAsset: null
+            withdrawAsset: null,
+            blockTradesStatus: 0
         };
     }
 
@@ -58,8 +58,8 @@ class DashboardAssetList extends React.Component {
         });
 
         let balanceAssetsChanged = false;
-        np.assets.forEach((a, i) => {
-            if (!Immutable.is(a, this.props.assets[i])) {
+        np.balanceAssets.forEach((a, i) => {
+            if (!Immutable.is(a, this.props.balanceAssets[i])) {
                 balanceAssetsChanged = true;
             }
         });
@@ -107,6 +107,8 @@ class DashboardAssetList extends React.Component {
 
         const hasBalance = !(!balance || balance.amount === 0);
 
+        const canDepositWithdraw = !!this.props.openLedgerBackedCoins.find(a => a.symbol === asset.get("symbol"));
+
         return (
             <tr key={assetName}>
                 <td><AssetImage assetName={assetName} style={{maxWidth: 25}}/></td>
@@ -115,7 +117,8 @@ class DashboardAssetList extends React.Component {
                 <td style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
                 <td style={{textAlign: "center"}}>
                     {hasBalance ? <a onClick={this._showTransfer.bind(this, assetName)} >Transfer</a> : null}
-                    {true ? <span>{this._getSeparator(hasBalance)}<a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName)}>Deposit</a></span> : null}
+                    {canDepositWithdraw ? <span>{this._getSeparator(hasBalance)}<a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName)}>Deposit</a></span> : null}
+                    {canDepositWithdraw ? <span>{this._getSeparator(canDepositWithdraw || hasBalance)}<a onClick={this._showDepositWithdraw.bind(this, "withdraw_modal", assetName)}>Withdraw</a></span> : null}
                 </td>
                 {/* <td><a>Deposit</a> | <a>Withdraw</a></td> */}
                 <td style={{textAlign: "center"}}>
@@ -186,8 +189,8 @@ class DashboardAssetList extends React.Component {
         let {activeBuyAsset, activeSellAsset} = this.state;
         let assets = this.props.assetNames;
 
+        // Find the current buy and sell assets
         let currentBuyAsset, currentSellAsset;
-
         this.props.balanceAssets.forEach(a => {
             if (a && assets.indexOf(a.get("symbol")) === -1) {
                 assets.push(a.get("symbol"));
@@ -212,9 +215,19 @@ class DashboardAssetList extends React.Component {
             }
         });
 
+        // Create a map of balance asset ids for later filtering
         const balanceAssetIds = this.props.balances.map(b => {
             if (b && b.get("balance") > 0) return b.get("asset_type");
         }).filter(a => !!a);
+
+        // Find the current Openledger coins
+        const currentDepositAsset = this.props.openLedgerBackedCoins.find(c => {
+            return c.symbol === this.state.depositAsset;
+        }) || {};
+        const currentWithdrawAsset = this.props.openLedgerBackedCoins.find(c => {
+            return c.symbol === this.state.withdrawAsset;
+        }) || {};
+        // console.log("currentDepositAsset", currentDepositAsset, "openLedgerBackedCoins:", this.props.openLedgerBackedCoins);
 
         return (
             <div>
@@ -304,6 +317,7 @@ class DashboardAssetList extends React.Component {
                     asset={this.state.transferAsset}
                     modalId="simple_transfer_modal"
                     balances={this.props.balances}
+
                 />
 
                 {/* Deposit Modal */}
@@ -314,6 +328,18 @@ class DashboardAssetList extends React.Component {
                     asset={this.state.depositAsset}
                     modalId="simple_deposit_modal"
                     balances={this.props.balances}
+                    {...currentDepositAsset}
+                />
+
+                {/* Withdraw Modal */}
+                <SimpleDepositWithdraw
+                    ref="withdraw_modal"
+                    action="withdraw"
+                    sender={this.props.account.get("id")}
+                    asset={this.state.withdrawAsset}
+                    modalId="simple_withdraw_modal"
+                    balances={this.props.balances}
+                    {...currentWithdrawAsset}
                 />
             </div>
         );
@@ -326,6 +352,23 @@ export default class ListWrapper extends React.Component {
     static propTypes = {
         account: ChainTypes.ChainAccount.isRequired
     };
+
+    constructor() {
+        super();
+
+        this.state = {
+            openLedgerCoins: [],
+            openLedgerBackedCoins: []
+        };
+    }
+
+    componentWillMount() {
+        fetchCoins().then(result => {
+            this.setState({
+                openLedgerBackedCoins: getBackedCoins({allCoins: result, backer: "OPEN"})
+            });
+        });
+    }
 
     _getAssets() {
         return [
@@ -365,17 +408,24 @@ export default class ListWrapper extends React.Component {
     }
 
     render() {
-
         let balanceAssets = Immutable.List();
         let balances = this.props.account.get("balances").map((a, key) => {
             balanceAssets = balanceAssets.push(key);
             return a;
         }).toArray();
 
+        // Get hard coded default assets
         let assets = this._getAssets();
-
+        // Add Openledger backed assets
+        this.state.openLedgerBackedCoins.forEach(c => {
+            if (assets.indexOf(c.symbol) === -1) {
+                assets.push(c.symbol);
+            }
+        });
+        
         return (
             <DashboardAssetList
+                {...this.state}
                 balanceAssets={balanceAssets}
                 balances={Immutable.List(balances)}
                 assetNames={assets}

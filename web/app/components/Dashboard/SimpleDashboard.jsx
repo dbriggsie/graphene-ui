@@ -26,23 +26,9 @@ class SimpleDashboard extends React.Component {
 
     componentWillMount() {
         accountUtils.getFinalFeeAsset(this.props.account, "transfer");
-
-        fetch("https://blocktrades.us/ol/api/v2/coins").then(reply => reply.json().then(result => {
-            this.setState({
-                openLedgerCoins: result
-            });
-            this.setState({
-                openLedgerBackedCoins: this.getOpenledgerBackedCoins(result)
-            });
-        })).catch(err => {
-            console.log("error fetching openledger list of coins", err);
-        });
     }
 
     componentDidMount() {
-        // let c = ReactDOM.findDOMNode(this.refs.container);
-        // ps.initialize(c);
-
         this._setDimensions();
 
         window.addEventListener("resize", this._setDimensions, false);
@@ -60,23 +46,7 @@ class SimpleDashboard extends React.Component {
         );
     }
 
-    getOpenledgerBackedCoins(allOpenledgerCoins) {
-        let coins_by_type = {};
-        allOpenledgerCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
-        let openLedgerBackedCoins = [];
-        allOpenledgerCoins.forEach(coin_type => {
-            if (coin_type.walletSymbol.startsWith("OPEN.") && coin_type.backingCoinType)
-            {
-                openLedgerBackedCoins.push({
-                    name: coins_by_type[coin_type.backingCoinType].name,
-                    walletType: coins_by_type[coin_type.backingCoinType].walletType,
-                    backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
-                    symbol: coin_type.walletSymbol,
-                    supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos
-                });
-            }});
-        return openLedgerBackedCoins;
-    }
+
 
     // componentDidUpdate() {
     //     let c = ReactDOM.findDOMNode(this.refs.container);
@@ -98,7 +68,7 @@ class SimpleDashboard extends React.Component {
 
     render() {
         let {linkedAccounts, myIgnoredAccounts, currentAccount} = this.props;
-        let {width, height, showIgnored, openLedgerCoins} = this.state;
+        let {width, height, showIgnored} = this.state;
 
         let names = linkedAccounts.toArray().sort();
 
