@@ -1,3 +1,6 @@
+import ls from "./localStorage";
+const blockTradesStorage = new ls("");
+
 function fetchCoins(url = "https://blocktrades.us/ol/api/v2/coins") {
     return fetch(url).then(reply => reply.json().then(result => {
         return result;
@@ -37,11 +40,9 @@ function requestDepositAddress({inputCoinType, outputCoinType, outputAddress, ur
 function getBackedCoins({allCoins, backer}) {
     let coins_by_type = {};
     allCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
-    console.log("coins_by_type", coins_by_type);
     let blocktradesBackedCoins = [];
     allCoins.forEach(coin_type => {
-        if (coin_type.walletSymbol.startsWith(backer + ".") && coin_type.backingCoinType)
-        {
+        if (coin_type.walletSymbol.startsWith(backer + ".") && coin_type.backingCoinType) {
             blocktradesBackedCoins.push({
                 name: coins_by_type[coin_type.backingCoinType].name,
                 walletType: coins_by_type[coin_type.backingCoinType].walletType,
@@ -53,8 +54,45 @@ function getBackedCoins({allCoins, backer}) {
     return blocktradesBackedCoins;
 }
 
+function validateAddress({url = "https://bitshares.openledger.info/depositwithdraw/api/v2", walletType, newAddress}) {
+    return fetch(
+        url + "/wallets/" + walletType + "/address-validator?address=" + encodeURIComponent(newAddress),
+        {
+            method: "get",
+            headers: new Headers({"Accept": "application/json"})
+        }).then(reply => reply.json().then( json => json.isValid));
+}
+
+function hasWithdrawalAddress(wallet) {
+    return blockTradesStorage.has(`history_address_${wallet}`);
+}
+
+function setWithdrawalAddresses({wallet, addresses}) {
+    blockTradesStorage.set(`history_address_${wallet}`, addresses);
+}
+
+function getWithdrawalAddresses(wallet) {
+    return blockTradesStorage.get(`history_address_${wallet}`, []);
+}
+
+function setLastWithdrawalAddress({wallet, address}) {
+    blockTradesStorage.set(`history_address_last_${wallet}`, address);
+}
+
+function getLastWithdrawalAddress(wallet) {
+    return blockTradesStorage.get(`history_address_last_${wallet}`, "");
+}
+
 export default {
     fetchCoins,
     getBackedCoins,
-    requestDepositAddress
+    requestDepositAddress,
+    validateAddress,
+    WithdrawAddresses: {
+        has: hasWithdrawalAddress,
+        set: setWithdrawalAddresses,
+        get: getWithdrawalAddresses,
+        setLast: setLastWithdrawalAddress,
+        getLast: getLastWithdrawalAddress
+    }
 };
