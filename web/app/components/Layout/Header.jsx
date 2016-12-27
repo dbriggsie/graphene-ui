@@ -295,7 +295,7 @@ class Header extends React.Component {
                         {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} activeClassName="active"><Translate content="header.account" /></Link></li>}
                         {!traderMode ? null : <li><a className={cnames({active: active.indexOf("transfer") !== -1})} onClick={this._onNavigate.bind(this, "/transfer")}><Translate component="span" content="header.payments" /></a></li>}
                         {!traderMode ? null : <li>{tradeLink}</li>}
-                        {((traderMode || true) && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
+                        {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                     </ul>
                 </div>
                 <div className="grid-block show-for-medium shrink menu-bar">
