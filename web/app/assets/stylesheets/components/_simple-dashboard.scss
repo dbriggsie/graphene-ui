@@ -19,6 +19,22 @@
     font-size: 95%;
 }
 
+.SimpleTrade__modal {
+    > div.Modal__header {
+        background-color: rgb(84, 84, 84);
+        padding: 20px 2rem;
+    }
+
+    > div.Modal__divider {
+        margin: 0px;
+        border-bottom: 2px solid rgb(2, 2, 2);
+    }
+}
+
+#simple_transfer_modal {
+    max-width: 650px;
+}
+
 #simple_transfer_modal, #simple_deposit_modal, #simple_withdraw_modal {
     padding: 0;
 }
@@ -31,7 +47,6 @@
 }
 
 #simple_buy_modal, #simple_sell_modal {
-    background-color: grey;
     padding: 0;
 }
 

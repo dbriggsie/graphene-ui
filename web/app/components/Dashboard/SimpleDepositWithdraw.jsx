@@ -370,7 +370,6 @@ class DepositWithdrawContent extends React.Component {
         let {to_withdraw, toSendText, to} = this.state;
 
         let isDeposit = action === "deposit";
-
         if (!asset) {
             return null;
         }
@@ -378,12 +377,20 @@ class DepositWithdrawContent extends React.Component {
         const assetName = utils.replaceName(asset.get("symbol"), true);
 
         return (
-            <div style={{backgroundColor: "#545454"}}>
-                <div style={{padding: "20px 2rem"}}>
-                        <h3><Translate content={"gateway." + (isDeposit ? "deposit" : "withdraw")} /> {assetName}</h3>
+            <div className="SimpleTrade__modal">
+                <div className="Modal__header">
+                    <h3><Translate content={isDeposit ? "gateway.deposit" : "modal.withdraw.submit"} /> {assetName}</h3>
                 </div>
+                <div className="Modal__divider"></div>
 
-                <div className="grid-block vertical no-overflow" style={{zIndex: 1002, paddingLeft: "2rem", paddingRight: "2rem"}}>
+                <div
+                    className="grid-block vertical no-overflow"
+                    style={{
+                        zIndex: 1002,
+                        paddingLeft: "2rem",
+                        paddingRight: "2rem",
+                        paddingTop: "1rem"
+                    }}>
 
                     {isDeposit ? this._renderDeposit() : this._renderWithdraw()}
                 </div>
@@ -410,7 +417,7 @@ export default class SimpleDepositWithdrawModal extends React.Component {
 
     render() {
         return (
-            <Modal className="small" onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true}>
+            <Modal onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true}>
                 <Trigger close={this.props.modalId}>
                     <a href="#" className="close-button">&times;</a>
                 </Trigger>

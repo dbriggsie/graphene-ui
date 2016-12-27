@@ -17,6 +17,9 @@ import connectToStores from "alt/utils/connectToStores";
 import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
 import OrderBook from "../Exchange/OrderBook";
 import utils from "common/utils";
+import counterpart from "counterpart";
+import Icon from "../Icon/Icon";
+import ReactTooltip from "react-tooltip";
 
 // These are the preferred assets chosen by default if the the user either
 // doesn't have a balance in the currently selected asset anymore, or if he
@@ -88,6 +91,10 @@ class SimpleTradeContent extends React.Component {
                 this._checkSubAndBalance(np);
             });
         }
+    }
+
+    componentDidUpdate() {
+        ReactTooltip.rebuild();
     }
 
     componentWillUnmount() {
@@ -377,6 +384,55 @@ class SimpleTradeContent extends React.Component {
         });
     }
 
+    _renderCurrentBalance() {
+        const isBuy = this.props.action === "buy";
+
+        let currentBalance = isBuy ? this.props.assets.find(a => a.get("asset_type") === this.state.activeAssetId) : this.props.currentBalance;
+        let currentAsset = ChainStore.getAsset(currentBalance.get("asset_type"));
+        const assetName = utils.replaceName(currentAsset.get("symbol"), true);
+
+        console.log("isBuy", isBuy, this.state.activeAssetId);
+        let asset = new Asset({
+            asset_id: currentBalance.get("asset_type"),
+            precision: currentAsset.get("precision"),
+            amount: currentBalance.get("balance")
+        });
+
+        // TEMP //
+        // asset = new Asset({
+        //     asset_id: this.props.asset.get("id"),
+        //     precision: this.props.asset.get("precision"),
+        //     amount: 65654645
+        // });
+
+        const applyBalanceButton = (
+            <button
+                data-place="right" data-tip={counterpart.translate("tooltip.trade_full")}
+                className="button"
+                style={{border: "2px solid black", borderLeft: "none"}}
+                onClick={this._updateForSale.bind(this, !currentBalance ? 0 : parseInt(currentBalance.get("balance"), 10))}
+            >
+                <Icon name="clippy" />
+            </button>
+        );
+
+        return (
+            <div className="SimpleTrade__withdraw-row" style={{color: "black", fontSize: "1rem"}}>
+                <label style={{color: "black", fontSize: "1rem"}}>
+                    {counterpart.translate("gateway.balance_asset", {asset: assetName})}:
+                    <span className="inline-label">
+                        <input
+                            disabled
+                            style={{color: "black", border: "2px solid black", padding: 10, width: "100%"}}
+                            value={!asset ? 0 : asset.getAmount({real: true})}
+                        />
+                        {applyBalanceButton}
+                    </span>
+                </label>
+            </div>
+        );
+    }
+
     render() {
         let {modalId, asset, assets, lowVolumeMarkets, action, lowestAsk, highestBid, currentBalance} = this.props;
         let {activeAssetId, for_sale, to_receive, price} = this.state;
@@ -449,11 +505,11 @@ class SimpleTradeContent extends React.Component {
 
         const isLowVolume = this.props.lowVolumeMarkets.get(this.props.currentAsset.get("id") + "_" + activeAsset.get("id"), false);
 
-        const fsBalance = <div onClick={this._updateToReceive.bind(this, parseInt(forSaleBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
+        const fsBalance = <div data-tip={counterpart.translate("tooltip.apply_balance")} onClick={this._updateToReceive.bind(this, parseInt(forSaleBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
             <FormattedAsset amount={forSaleBalance.balance} asset={forSaleBalance.asset_type} />
         </div>;
 
-        const rBalance = <div onClick={this._updateForSale.bind(this, parseInt(receiveBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
+        const rBalance = <div data-tip={counterpart.translate("tooltip.apply_balance")} onClick={this._updateForSale.bind(this, parseInt(receiveBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
             <FormattedAsset amount={receiveBalance.balance} asset={receiveBalance.asset_type} />
         </div>;
 
@@ -462,7 +518,7 @@ class SimpleTradeContent extends React.Component {
                 <span className="inline-label" style={{margin: 0}}>
                     <input type="text" value={this.state[isBuy ? "saleValue" : "receiveValue"]} onChange={this[isBuy ? "_onInputSell" : "_onInputReceive"].bind(this)}/>
                     <span className="form-label" style={{border: "none", paddingLeft: 0, paddingRight: 0}}>
-                        <select onChange={this._dropdownBalance.bind(this)} value={activeAssetId} style={{textTransform: "uppercase", minWidth: "10rem", color: "inherit", fontWeight: "normal", fontSize: "inherit", backgroundColor: "#eee", border: "none", margin: 0, paddingTop: 4, paddingBottom: 4}}>
+                        <select onChange={this._dropdownBalance.bind(this)} value={activeAssetId} style={{textTransform: "uppercase", minWidth: "10rem", color: "inherit", fontWeight: "normal", fontSize: "inherit", backgroundColor: "#eee", border: "none", margin: 0, paddingTop: 3, paddingBottom: 3}}>
                             {assetOptions
                                 .filter(a => a && a.asset)
                                 .map((b, index) => {
@@ -493,8 +549,8 @@ class SimpleTradeContent extends React.Component {
         </div>;
 
         return (
-            <div>
-                <div style={{padding: "20px 2rem", backgroundColor: "#545454"}}>
+            <div className="SimpleTrade__modal">
+                <div className="Modal__header">
                     {isBuy ?
                         <h3><Translate content="simple_trade.buy_with" buy={assetName} with={activeAssetName} /></h3> :
                         <h3><Translate content="simple_trade.sell_for" sell={assetName} for={activeAssetName} /></h3>
@@ -506,11 +562,13 @@ class SimpleTradeContent extends React.Component {
                     <div style={{overflowY: "auto", maxHeight: 188, padding: "0 10px", border: "1px solid black"}}>
                         {assetSelections}
                     </div>
+
+                    {/* {this._renderCurrentBalance()} */}
+
                 </div>
+                <div className="Modal__divider"></div>
 
                 <div className="grid-block vertical no-overflow" style={{zIndex: 1002, paddingLeft: "2rem", paddingRight: "2rem"}}>
-
-                    <div style={{margin: "0 -2rem", borderBottom: "2px solid #020202"}}></div>
 
                     <form style={{paddingTop: 20}} onSubmit={this.onSubmit.bind(this)}>
 
@@ -526,7 +584,7 @@ class SimpleTradeContent extends React.Component {
                                 </label>
                                 <div className="SimpleTrade__help-text">
                                     <Translate content="simple_trade.price_one" asset={isBuy ? assetName : activeAssetName} />
-                                    <div onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
+                                    <div data-tip={counterpart.translate("tooltip.apply_price")} onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
                                         <span>{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal()} {isBuy ? activeAssetName : assetName}</span>
                                     </div>
                                 </div>
@@ -574,9 +632,9 @@ class SimpleTradeContent extends React.Component {
                         </div>
                     </form>
                 </div>
-
+                {this.state.showOrders ? <div className="Modal__divider"></div> : null}
                 {this.state.showOrders ?
-                <div style={{padding: 0, backgroundColor: "#545454"}}>
+                <div style={{padding: 0}}>
                     <OrderBook
                         simpleTrade
                         latest={1.2323}

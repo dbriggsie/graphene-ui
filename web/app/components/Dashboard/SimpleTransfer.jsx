@@ -174,15 +174,13 @@ class SimpleTransferContent extends React.Component {
         let tabIndex = 1;
 
         return (
-            <div>
-                <div style={{padding: "20px 2rem", backgroundColor: "#545454"}}>
-                        <h3><Translate content="transfer.send" /> {assetName}</h3>
+            <div className="SimpleTrade__modal">
+                <div className="Modal__header">
+                    <h3><Translate content="transfer.send" /> {assetName}</h3>
                 </div>
+                <div className="Modal__divider"></div>
 
                 <div className="grid-block vertical no-overflow" style={{zIndex: 1002, paddingLeft: "2rem", paddingRight: "2rem"}}>
-
-                    <div style={{margin: "0 -2rem", borderBottom: "2px solid #020202"}}></div>
-
                     <form style={{paddingTop: 20}} onSubmit={this.onSubmit.bind(this)}>
 
                         {/* SEND TO */}
@@ -307,7 +305,7 @@ export default class SimpleTransferModal extends React.Component {
 
     render() {
         return (
-            <Modal onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true} className="test">
+            <Modal onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true}>
                 <Trigger close={this.props.modalId}>
                     <a href="#" className="close-button">&times;</a>
                 </Trigger>
