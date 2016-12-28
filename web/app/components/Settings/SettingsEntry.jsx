@@ -2,6 +2,7 @@ import React from "react";
 import counterpart from "counterpart";
 import Translate from "react-translate-component";
 import SettingsActions from "actions/SettingsActions";
+import {Link} from "react-router";
 
 export default class SettingsEntry extends React.Component {
 
@@ -117,6 +118,20 @@ export default class SettingsEntry extends React.Component {
 
             input = <div data-tip={counterpart.translate("header.trader_mode_tip")} style={{height: 60, width: "100%", paddingTop: 20}} className="button outline" onClick={this.props.onChange.bind(this, setting, !selected)}>{counterpart.translate("settings.trader_mode_" + selected)}</div>;
             noHeader = true;
+            break;
+
+        case "password":
+            value = true;
+            input = <div style={{height: 60, paddingLeft: 15, paddingTop: 10}}><button className="button outline"><Link to="wallet/change-password">Change password</Link></button></div>;
+            break;
+
+        case "backup":
+            value = true;
+            input = (
+            <div style={{height: 60, paddingLeft: 15, paddingTop: 10}}>
+                <button className="button outline"><Link to="wallet/backup/create">Create</Link></button>
+                <button className="button outline"><Link to="wallet/backup/restore">Restore</Link></button>
+            </div>);
             break;
 
         default:
