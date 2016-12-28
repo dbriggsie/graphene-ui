@@ -16,6 +16,7 @@ import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import {fetchCoins, getBackedCoins} from "common/blockTradesMethods";
+import ReactTooltip from "react-tooltip";
 
 require("./DashboardAssetList.scss");
 
