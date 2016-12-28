@@ -174,17 +174,17 @@ class MyOrders extends React.Component {
                     <Translate content="header.my_orders" component="h3" />
 
                     <div style={{paddingTop: 20}}>
-                        <span className={"buy-text" + (!myOrdersBuys ? " inactive" : "")} style={{paddingRight: 15}}>Buy</span>
+                        <span className={"buy-text" + (!myOrdersBuys ? " inactive" : "")} style={{paddingRight: 15}}><Translate content="exchange.buy" /></span>
                         <div onClick={this._onToggleBids.bind(this)} className="switch orders-switch" style={{marginBottom: 0, top: 9}}>
                             <input type="checkbox" checked={!myOrdersBuys}/>
                             <label />
                         </div>
-                        <span className={"sell-text" + (myOrdersBuys ? " inactive" : "")} style={{paddingLeft: 15}}>Sell</span>
+                        <span className={"sell-text" + (myOrdersBuys ? " inactive" : "")} style={{paddingLeft: 15}}><Translate content="exchange.sell" /></span>
                     </div>
 
                     <div style={{paddingTop: 20, maxWidth: "15rem"}}>
                         <select className="bts-select" onChange={this._setAssetFilter.bind(this)}>
-                            <option value={"null"}>Show all assets</option>
+                            <option value={"null"}><Translate content="simple_trade.show_all" /></option>
                             {marketIDs.map(a => {return <option key={a} value={"1.3." + a}><FormattedAsset amount={0} asset={"1.3." + a} hide_amount /></option>;})}
                         </select>
                     </div>

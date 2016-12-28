@@ -75,6 +75,10 @@ class DashboardAssetList extends React.Component {
         );
     }
 
+    componentDidUpdate() {
+        ReactTooltip.rebuild();
+    }
+
     _getBalance(asset_id) {
         let currentBalance = this.props.balances.find(a => {
             return (a ? a.get("asset_type") === asset_id : false);
@@ -140,11 +144,11 @@ class DashboardAssetList extends React.Component {
                     <a onClick={this._showModal.bind(this, "buy_modal", assetName)}><Translate content="exchange.buy" /></a>
                     {this._getSeparator(true)}
                     <a className={!hasBalance ? "disabled" : ""} onClick={!hasBalance ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a></td>
-                <td className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
+                <td data-place="right" data-tip={isPinned ? counterpart.translate("tooltip.unpin") : counterpart.translate("tooltip.pin")} className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
-                            <span data-tip="Click to unpin"><Icon className="icon-14px" name="lnr-cross"/></span> :
-                            <span data-tip="Click to pin"><Icon className="icon-14px" name="thumb-tack"/></span>
+                            <span><Icon className="icon-14px" name="lnr-cross"/></span> :
+                            <span><Icon className="icon-14px" name="thumb-tack"/></span>
                         }
                     </span>
                 </td>

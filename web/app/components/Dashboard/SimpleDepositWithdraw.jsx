@@ -349,8 +349,8 @@ class DepositWithdrawContent extends React.Component {
         );
 
         return (
-            <div className="SimpleTrade__withdraw-row" style={{color: "black", fontSize: "1rem"}}>
-                <label style={{color: "black", fontSize: "1rem"}}>
+            <div className="SimpleTrade__withdraw-row" style={{fontSize: "1rem"}}>
+                <label style={{fontSize: "1rem"}}>
                     {counterpart.translate("gateway.balance_asset", {asset: assetName})}:
                     <span className="inline-label">
                         <input

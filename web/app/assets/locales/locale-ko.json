@@ -34,7 +34,15 @@
     "equivalent_balance": "This is how much your current balance is worth in your prefered asset. You can change this asset in the Settings.",
     "trade_actions": "Click here to either buy or sell this asset.",
     "pinning": "Click here to pin or unpin an asset, which will display it regardless of your current holdings of that asset.",
-    "transfer_actions": "Click here to make a transfer, or to deposit/withdraw those assets that support it."
+    "transfer_actions": "Click here to make a transfer, or to deposit/withdraw those assets that support it.",
+    "deposit_tip": "To complete the deposit, go to your %(asset)s wallet and make a transfer to the address listed on this page. You will receive the deposit as soon as it has been confirmed. If a memo is shown , it is essential that you include this memo in your transfer.",
+    "copy_tip": "Click to copy the text",
+    "withdraw_full": "Click to withdraw the full balance",
+    "withdraw_address": "If you don't already have a %(asset)s address, please find a wallet provider and create one in order to complete the withdrawal.",
+    "apply_price": "This is the best market price currently available, you may click on it to use that price.",
+    "apply_balance": "This is your current balance. Click on it to use the full amount.",
+    "pin": "Click to pin this asset",
+    "unpin": "Click to unpin this asset"
   },
   "account": {
     "welcome": "비트쉐어 2.0 이용을 환영합니다",
@@ -686,6 +694,8 @@
       "hide_zero": "Hide 0 balances",
       "actions": "Trade actions",
       "pinned": "Pinned",
-      "transfer_actions": "Transfer actions"
+      "transfer_actions": "Transfer actions",
+      "include_memo": "Include memo",
+      "show_all": "Show all assets"
   }
 }

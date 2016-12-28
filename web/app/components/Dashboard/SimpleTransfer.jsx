@@ -267,7 +267,7 @@ class SimpleTransferContent extends React.Component {
                         {this.state.includeMemo ?
                             <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 30}}>
                                 <div style={{display: "table-cell", float: "left", marginTop: 16}}>
-                                    <label>Memo:</label>
+                                    <label><Translate content="transfer.memo" />:</label>
                                 </div>
                                 <div style={{display: "table-cell", float: "right", width: "70%"}}>
                                     <textarea style={{marginBottom: 0}} rows="1" value={this.state.memo} tabIndex={tabIndex++} onChange={this._onInputMemo.bind(this)} />

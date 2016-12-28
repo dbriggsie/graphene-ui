@@ -3,13 +3,8 @@
     margin-right: -10px;
     padding: 10px 20px;
 
-    &.active {
-        background-color: #737373;
-    }
-
     &:hover {
         cursor: pointer;
-        background-color: #737373;
     }
 }
 
@@ -21,7 +16,6 @@
 
 .SimpleTrade__modal {
     > div.Modal__header {
-        background-color: rgb(84, 84, 84);
         padding: 20px 2rem;
     }
 

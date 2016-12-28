@@ -880,4 +880,21 @@
                 border-color: $bid-color;
             }
     }
+
+    // SimpleTrade mode
+    .SimpleTrade__modal {
+        > div.Modal__header {
+            background-color: $header-color;
+        }
+    }
+
+    .balance-row {
+        &.active {
+            background-color: $row-accent-color;
+        }
+
+        &:hover {
+            background-color: $row-accent-color;
+        }
+    }
 }
