@@ -324,7 +324,7 @@ class DepositWithdrawContent extends React.Component {
 
         let asset = currentBalance ? new Asset({
             asset_id: currentBalance.get("asset_type"),
-            precision: currentBalance.get("precision"),
+            precision: this.props.asset.get("precision"),
             amount: currentBalance.get("balance")
         }) : null;
 
