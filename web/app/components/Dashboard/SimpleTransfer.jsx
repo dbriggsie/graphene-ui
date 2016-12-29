@@ -161,7 +161,7 @@ class SimpleTransferContent extends React.Component {
             style={{
                 position: "absolute",
                 right: 0,
-                top: 10,
+                top: 0,
                 borderBottom: "#A09F9F 1px dotted",
                 cursor: "pointer"
             }}
@@ -227,6 +227,9 @@ class SimpleTransferContent extends React.Component {
                             </div> */}
 
                             <div>
+                                <div style={{position: "relative"}}>
+                                    {currentB}
+                                </div>
                                 <label>
                                     <Translate content="transfer.amount" />:
                                     <span className="inline-label">
@@ -241,7 +244,6 @@ class SimpleTransferContent extends React.Component {
                                         <span><Translate content={this.state.amountError} /></span>
                                     </div> : null}
                                     </label>
-                                    {currentB}
                                 </div>
                             </div>
                         </div>
