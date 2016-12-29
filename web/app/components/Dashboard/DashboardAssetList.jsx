@@ -117,10 +117,10 @@ class DashboardAssetList extends React.Component {
 
         return (
             <tr key={assetName}>
-                <td><AssetImage assetName={assetName} style={{maxWidth: 25}}/></td>
+                <td className="show-for-medium"><AssetImage assetName={assetName} style={{maxWidth: 25}}/></td>
                 <td><AssetName popover asset={assetName} name={assetName}/></td>
                 <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : null}</td>
-                <td style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
+                <td className="show-for-medium" style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
                 <td style={{textAlign: "center"}}>
                     {hasBalance ? <a onClick={this._showTransfer.bind(this, assetName)} ><Translate content="transaction.trxTypes.transfer" /></a> : null}
                     {canDepositWithdraw ? (
@@ -145,7 +145,7 @@ class DashboardAssetList extends React.Component {
                     <a onClick={this._showModal.bind(this, "buy_modal", assetName)}><Translate content="exchange.buy" /></a>
                     {this._getSeparator(true)}
                     <a className={!hasBalance ? "disabled" : ""} onClick={!hasBalance ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a></td>
-                <td data-place="right" data-tip={isPinned ? counterpart.translate("tooltip.unpin") : counterpart.translate("tooltip.pin")} className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
+                <td className="show-for-medium" data-place="right" data-tip={isPinned ? counterpart.translate("tooltip.unpin") : counterpart.translate("tooltip.pin")} className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
                             <span><Icon className="icon-14px" name="lnr-cross"/></span> :
@@ -255,7 +255,7 @@ class DashboardAssetList extends React.Component {
 
                 <div style={{paddingTop: 20}}>
                     <input onChange={this._toggleZeroBalance.bind(this)} checked={!this.props.showZeroBalances && !this.state.filter.length} type="checkbox" />
-                    <label style={{position: "relative", top: -3}} onClick={this._toggleZeroBalance.bind(this)}><Translate content="simple_trade.hide_zero" /></label>
+                    <label className="SimpleTrade__hide-zero" onClick={this._toggleZeroBalance.bind(this)}><Translate content="simple_trade.hide_zero" /></label>
 
                     <div className="float-right">
                         <div style={{position: "relative", top: -13}}>
@@ -268,16 +268,16 @@ class DashboardAssetList extends React.Component {
                 </div>
 
                 <div className="grid-block" style={{maxHeight: 600, overflow: "auto", width: "100%"}}>
-                    <table className="table">
+                    <table className="table responsive-text">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th className="show-for-medium"></th>
                                 <th><Translate content="account.asset" /></th>
                                 <th data-place="top" data-tip={counterpart.translate("tooltip.current_balance")} style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
-                                <th data-place="top" data-tip={counterpart.translate("tooltip.equivalent_balance")} style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
+                                <th className="show-for-medium" data-place="top" data-tip={counterpart.translate("tooltip.equivalent_balance")} style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
                                 <th style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.transfer_actions")}><Translate content="simple_trade.transfer_actions" /></th>
                                 <th style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.trade_actions")} ><Translate content="simple_trade.actions" /></th>
-                                <th data-place="top" data-tip={counterpart.translate("tooltip.pinning")} style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
+                                <th className="show-for-medium" data-place="top" data-tip={counterpart.translate("tooltip.pinning")} style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
                             </tr>
                         </thead>
                         <tbody>

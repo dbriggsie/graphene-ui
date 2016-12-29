@@ -15,6 +15,7 @@
 }
 
 .SimpleTrade__modal {
+    overflow: auto;
     > div.Modal__header {
         padding: 20px 2rem;
     }
@@ -23,6 +24,12 @@
         margin: 0px;
         border-bottom: 2px solid rgb(2, 2, 2);
     }
+}
+
+.SimpleTrade__hide-zero {
+    position: relative;
+    top: -3px;
+    cursor: pointer;
 }
 
 #simple_transfer_modal {
@@ -34,6 +41,7 @@
 }
 
 #simple_deposit_modal, #simple_withdraw_modal {
+    overflow: auto !important;
     max-width: 500px;
     label {
         text-transform: none !important;
@@ -41,6 +49,7 @@
 }
 
 #simple_buy_modal, #simple_sell_modal {
+    overflow: auto !important;
     padding: 0;
 }
 
@@ -67,4 +76,12 @@ a.disabled {
 
 .SimpleTrade__withdraw-row {
     padding: 10px 0;
+}
+.responsive-text {
+    font-size: 80%;
+}
+@include breakpoint(medium) {
+    .responsive-text {
+        font-size: inherit;
+    }
 }
