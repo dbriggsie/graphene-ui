@@ -537,7 +537,7 @@ class SimpleTradeContent extends React.Component {
                 {isBuy ? spendSellText : receiveText}:
                 <span className="inline-label">
                     <input type="text" value={this.state[isBuy ? "saleValue" : "receiveValue"]} onChange={this[isBuy ? "_onInputSell" : "_onInputReceive"].bind(this)}/>
-                    <span className="form-label" style={{border: "none", paddingLeft: 0, paddingRight: 0}}>
+                    <span data-place="bottom" data-tip="Click here to select from a list of assets" className="form-label" style={{border: "none", paddingLeft: 0, paddingRight: 0}}>
                         <select onChange={this._dropdownBalance.bind(this)} value={activeAssetId} style={{textTransform: "uppercase", minWidth: "10rem", color: "inherit", fontWeight: "normal", fontSize: "inherit", backgroundColor: "#eee", border: "none", margin: 0, paddingTop: 3, paddingBottom: 3}}>
                             {assetOptions
                                 .filter(a => a && a.asset)
@@ -592,10 +592,10 @@ class SimpleTradeContent extends React.Component {
 
                 <div className="grid-block vertical no-overflow" style={{zIndex: 1002, paddingLeft: "2rem", paddingRight: "2rem"}}>
 
-                    <form style={{paddingTop: 20}} onSubmit={this.onSubmit.bind(this)}>
+                    <form style={{paddingTop: 10}} onSubmit={this.onSubmit.bind(this)}>
 
                         {/* PRICE */}
-                        <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
+                        <div className="SimpleTrade__withdraw-row">
                             <div>
                                 <div className="SimpleTrade__help-text">
                                     <div data-tip={counterpart.translate("tooltip.apply_price")} onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
@@ -616,40 +616,38 @@ class SimpleTradeContent extends React.Component {
                         </div>
 
                         {/* SPEND */}
-                        <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
+                        <div className="SimpleTrade__withdraw-row">
                             {isBuy ? assetSelector : receiveAsset}
                         </div>
 
                         {/* TOTAL */}
-                        <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
+                        <div className="SimpleTrade__withdraw-row">
                             <div style={{display: "table-cell", float: "left", marginTop: 11}}>
 
                             </div>
                             {isBuy ? receiveAsset : assetSelector}
                         </div>
 
-                        <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left"}}><Translate content="transfer.fee" /></div>
-                            <div style={{display: "table-cell", float: "right", width: "70%"}}>
+                        <div className="SimpleTrade__withdraw-row" style={{paddingTop: 20, paddingBottom: 20, fontWeight: "bold"}}>
+
+                                <span><Translate content="simple_trade.summary" />: &nbsp;</span>
+                                {for_sale.getAmount({real: true})} <AssetName name={isBuy ? activeAsset.get("symbol") : asset} /> => {to_receive.getAmount({real: true})} <AssetName name={isBuy ? asset : activeAsset.get("symbol")} />
+                                <span>  (</span>
+                                <Translate style={{textTransform: "lowercase"}} content="transfer.fee" />
+                                <span>: </span>
                                 <FormattedFee
                                     ref="feeAsset"
                                     asset={activeAssetId}
                                     opType="limit_order_create"
                                     balances={assets}
-                                />
-                            </div>
+                                />)
+
+
                         </div>
 
-                        <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left"}}><Translate content="simple_trade.summary" /></div>
-                            <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                                {for_sale.getAmount({real: true})} <AssetName name={isBuy ? activeAsset.get("symbol") : asset} /> => {to_receive.getAmount({real: true})} <AssetName name={isBuy ? asset : activeAsset.get("symbol")} />
-                            </div>
-                        </div>
+                        {isLowVolume ? <div className="SimpleTrade__withdraw-row error"><Translate content="simple_trade.volume_warning" /></div> : null}
 
-                        {isLowVolume ? <div style={{paddingTop: 20, paddingBottom: 20}} className="error"><Translate content="simple_trade.volume_warning" /></div> : null}
-
-                        <div className="button-group">
+                        <div className="SimpleTrade__withdraw-row button-group">
                             <div className="button" onClick={this.onToggleOrders.bind(this)} ><Translate content="simple_trade.show_market" /></div>
                             <div className="button" onClick={this.onSubmit.bind(this)} type="submit" ><Translate content="simple_trade.place_order" /></div>
                         </div>
