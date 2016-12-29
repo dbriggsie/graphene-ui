@@ -537,7 +537,7 @@ class SimpleTradeContent extends React.Component {
                 {isBuy ? spendSellText : receiveText}:
                 <span className="inline-label">
                     <input type="text" value={this.state[isBuy ? "saleValue" : "receiveValue"]} onChange={this[isBuy ? "_onInputSell" : "_onInputReceive"].bind(this)}/>
-                    <span data-place="bottom" data-tip="Click here to select from a list of assets" className="form-label" style={{border: "none", paddingLeft: 0, paddingRight: 0}}>
+                    <span data-place="bottom" data-tip={counterpart.translate("tooltip.asset_dropdown")} className="form-label" style={{border: "none", paddingLeft: 0, paddingRight: 0}}>
                         <select onChange={this._dropdownBalance.bind(this)} value={activeAssetId} style={{textTransform: "uppercase", minWidth: "10rem", color: "inherit", fontWeight: "normal", fontSize: "inherit", backgroundColor: "#eee", border: "none", margin: 0, paddingTop: 3, paddingBottom: 3}}>
                             {assetOptions
                                 .filter(a => a && a.asset)

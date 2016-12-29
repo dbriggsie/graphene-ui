@@ -43,7 +43,8 @@
     "apply_price": "This is the best market price currently available, you may click on it to use that price.",
     "apply_balance": "This is your current balance. Click on it to use the full amount.",
     "pin": "Click to pin this asset",
-    "unpin": "Click to unpin this asset"
+    "unpin": "Click to unpin this asset",
+    "asset_dropdown": "Click here to select from a list of assets."
   },
   "propose": "vorschlagen",
   "cancel": "abbrechen",
