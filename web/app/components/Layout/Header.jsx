@@ -211,7 +211,7 @@ class Header extends React.Component {
 
         let hasOrders = linkedAccounts.reduce((final, a) => {
             let account = ChainStore.getAccount(a);
-            return final || account.get("orders").size > 0;
+            return final || (account && account.get("orders") && account.get("orders").size > 0);
         }, false);
 
         if (currentAccount) {
