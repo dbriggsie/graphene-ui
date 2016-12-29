@@ -67,7 +67,7 @@ class SimpleTradeContent extends React.Component {
             activeAssetId,
             to_receive: this._getToReceive(props, {activeAssetId}),
             for_sale: this._getForSale(props, {activeAssetId}),
-            showOrders: true
+            showOrders: false
         };
 
         this.state.price = new Price({
