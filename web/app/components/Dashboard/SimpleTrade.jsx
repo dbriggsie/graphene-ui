@@ -84,7 +84,11 @@ class SimpleTradeContent extends React.Component {
 
     componentWillReceiveProps(np) {
         if (this.props.open && !np.open) this._unSubMarket();
-        if (!this.props.open && np.open) this._subToMarket(np);
+        if (!this.props.open && np.open) {
+            this._unSubMarket(this.props).then(() => {
+                this._subToMarket(np);
+            });
+        };
 
         if (np.asset !== this.props.asset) {
             this.setState(this._getNewAssetPropChange(np), () => {
@@ -191,12 +195,14 @@ class SimpleTradeContent extends React.Component {
 
                 this._setAssetSetting(newState.activeAssetId);
 
-                return this.setState(newState, () => {
+                this.setState(newState, () => {
                     this._subToMarket(props);
                 });
             });
         }
-        this._subToMarket(props);
+        this._unSubMarket().then(() => {
+            this._subToMarket(props);
+        });
     }
 
     _setActiveAsset(id) {
@@ -256,13 +262,16 @@ class SimpleTradeContent extends React.Component {
         if (!activeAssetId || !props.asset) {
             return;
         }
+        const isBuy = props.action === "buy";
         return new Promise((resolve, reject) => {
             Promise.all([
                 FetchChainObjects(ChainStore.getAsset, [props.asset]),
                 FetchChainObjects(ChainStore.getAsset, [activeAssetId])
             ]).then(assets => {
                 let [quoteAsset, baseAsset] = assets;
-                MarketsActions.unSubscribeMarket(quoteAsset[0].get("id"), baseAsset[0].get("id")).then(() => {
+                let baseID = baseAsset[0].get("id");
+                let quoteID = quoteAsset[0].get("id");
+                MarketsActions.unSubscribeMarket(isBuy ? quoteID : baseID, isBuy ? baseID : quoteID).then(() => {
                     resolve();
                 });
             }).catch(err => {
@@ -503,7 +512,11 @@ class SimpleTradeContent extends React.Component {
         const activeAssetName = utils.replaceName(activeAsset.get("symbol"), true);
         const assetName = utils.replaceName(asset, true);
 
-        const isLowVolume = this.props.lowVolumeMarkets.get(this.props.currentAsset.get("id") + "_" + activeAsset.get("id"), false);
+        const marketID = isBuy ?
+            this.props.currentAsset.get("id") + "_" + activeAsset.get("id") :
+            activeAsset.get("id") + "_" + this.props.currentAsset.get("id");
+
+        const isLowVolume = this.props.lowVolumeMarkets.get(marketID, false);
 
         const fsBalance = <div data-tip={counterpart.translate("tooltip.apply_balance")} onClick={this._updateToReceive.bind(this, parseInt(forSaleBalance.balance, 10))} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
             <FormattedAsset amount={forSaleBalance.balance} asset={forSaleBalance.asset_type} />
