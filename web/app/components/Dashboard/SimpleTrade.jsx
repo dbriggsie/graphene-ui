@@ -513,9 +513,16 @@ class SimpleTradeContent extends React.Component {
             <FormattedAsset amount={receiveBalance.balance} asset={receiveBalance.asset_type} />
         </div>;
 
-        const assetSelector = <div style={{display: "table-cell", float: "right", width: "70%"}}>
-            <label style={{width: "100%", margin: 0}}>
-                <span className="inline-label" style={{margin: 0}}>
+        const spendSellText = isBuy ? <Translate content="simple_trade.spend" /> : <Translate content="exchange.sell" />;
+        const receiveText = <Translate content="simple_trade.will_receive" />;
+
+        const assetSelector = <div>
+            <div className="SimpleTrade__help-text">
+                {isBuy ? rBalance : fsBalance}
+            </div>
+            <label style={{width: "100%"}}>
+                {isBuy ? spendSellText : receiveText}:
+                <span className="inline-label">
                     <input type="text" value={this.state[isBuy ? "saleValue" : "receiveValue"]} onChange={this[isBuy ? "_onInputSell" : "_onInputReceive"].bind(this)}/>
                     <span className="form-label" style={{border: "none", paddingLeft: 0, paddingRight: 0}}>
                         <select onChange={this._dropdownBalance.bind(this)} value={activeAssetId} style={{textTransform: "uppercase", minWidth: "10rem", color: "inherit", fontWeight: "normal", fontSize: "inherit", backgroundColor: "#eee", border: "none", margin: 0, paddingTop: 3, paddingBottom: 3}}>
@@ -531,20 +538,22 @@ class SimpleTradeContent extends React.Component {
             </label>
             <div className="SimpleTrade__help-text">
                 <Translate content={isBuy ? "simple_trade.max_spend" : "simple_trade.to_buy"} />
-                {isBuy ? rBalance : fsBalance}
             </div>
         </div>;
 
-        const receiveAsset = <div style={{display: "table-cell", float: "right", width: "70%"}}>
-            <label style={{width: "100%", margin: 0}}>
-                <span className="inline-label" style={{margin: 0}}>
+        const receiveAsset = <div>
+            <div className="SimpleTrade__help-text">
+                {isBuy ? fsBalance : rBalance}
+            </div>
+            <label style={{width: "100%"}}>
+                {isBuy ? receiveText : spendSellText}:
+                <span className="inline-label">
                     <input type="text" value={this.state[isBuy ? "receiveValue" : "saleValue"]} onChange={this[isBuy ? "_onInputReceive" : "_onInputSell"].bind(this)} />
                     <span className="form-label" style={{minWidth: "10rem"}}><AssetName name={asset} /></span>
                 </span>
             </label>
             <div className="SimpleTrade__help-text">
                 <Translate content={isBuy ? "simple_trade.to_buy" : "simple_trade.max_spend"} />
-                {isBuy ? fsBalance : rBalance}
             </div>
         </div>;
 
@@ -574,33 +583,34 @@ class SimpleTradeContent extends React.Component {
 
                         {/* PRICE */}
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left", marginTop: 11}}><Translate content="exchange.price" />:</div>
-                            <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                                <label style={{width: "100%", margin: 0}}>
-                                    <span className="inline-label" style={{margin: 0}}>
+                            <div>
+                                <div className="SimpleTrade__help-text">
+                                    <div data-tip={counterpart.translate("tooltip.apply_price")} onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
+                                        <span>{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal()} {isBuy ? activeAssetName : assetName}</span>
+                                    </div>
+                                </div>
+                                <label style={{width: "100%"}}>
+                                    <Translate content="exchange.price" />:
+                                    <span className="inline-label">
                                         <input type="text" value={this.state.priceValue} onChange={this._onInputPrice.bind(this)}/>
                                         <span className="form-label" style={{minWidth: "10rem"}}><AssetName name={isBuy ? activeAsset.get("symbol") : asset} /></span>
                                     </span>
                                 </label>
                                 <div className="SimpleTrade__help-text">
                                     <Translate content="simple_trade.price_one" asset={isBuy ? assetName : activeAssetName} />
-                                    <div data-tip={counterpart.translate("tooltip.apply_price")} onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
-                                        <span>{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal()} {isBuy ? activeAssetName : assetName}</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* SPEND */}
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left", marginTop: 11}}>{isBuy ? <Translate content="simple_trade.spend" /> : <Translate content="exchange.sell" />}:</div>
                             {isBuy ? assetSelector : receiveAsset}
                         </div>
 
                         {/* TOTAL */}
                         <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
                             <div style={{display: "table-cell", float: "left", marginTop: 11}}>
-                                <Translate content="simple_trade.will_receive" />:
+
                             </div>
                             {isBuy ? receiveAsset : assetSelector}
                         </div>

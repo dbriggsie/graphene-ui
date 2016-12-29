@@ -184,14 +184,25 @@ class SimpleTransferContent extends React.Component {
                     <form style={{paddingTop: 20}} onSubmit={this.onSubmit.bind(this)}>
 
                         {/* SEND TO */}
-                        <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 20}}>
-                            <div style={{display: "table-cell", float: "left", marginTop: 11}}>
+                        <div className="SimpleTrade__withdraw-row">
+                            {/* <div style={{display: "table-cell", float: "left", marginTop: 11}}>
                                 <label><Translate content="transfer.to" />:</label>
-                            </div>
+                            </div> */}
 
-                            <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                                <label style={{width: "100%", margin: 0}}>
-                                    <span className="inline-label" style={{margin: 0}}>
+                            {/* <label>
+                                <span className="inline-label">
+                                    <input readOnly style={{border: "1px solid grey"}} type="text" value={addressValue} />
+
+                                    <CopyButton
+                                        text={addressValue}
+                                    />
+                                </span>
+                            </label> */}
+
+                            <div>
+                                <label>
+                                    <Translate content="transfer.to" />:
+                                    <span className="inline-label">
                                         <AccountSelector
                                             fullWidth
                                             style={{width: "100%"}}
@@ -210,14 +221,15 @@ class SimpleTransferContent extends React.Component {
                         </div>
 
                         {/* SEND AMOUNT */}
-                        <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 50}}>
-                            <div style={{display: "table-cell", float: "left", marginTop: 11}}>
-                                <label><Translate content="transfer.amount" />:</label>
-                            </div>
+                        <div className="SimpleTrade__withdraw-row">
+                            {/* <div style={{display: "table-cell", float: "left", marginTop: 11}}>
+                                <label></label>
+                            </div> */}
 
-                            <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                                <label style={{width: "100%", margin: 0}}>
-                                    <span className="inline-label" style={{margin: 0}}>
+                            <div>
+                                <label>
+                                    <Translate content="transfer.amount" />:
+                                    <span className="inline-label">
                                         <input tabIndex={tabIndex++} type="text" value={this.state.sendValue} onChange={this._onInputSend.bind(this)} />
                                         <span className="form-label" style={{padding: "0 1.5rem"}}><AssetName name={asset.get("symbol")} /></span>
                                     </span>
@@ -234,43 +246,43 @@ class SimpleTransferContent extends React.Component {
                             </div>
                         </div>
 
-                        <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 30}}>
-                            <div style={{display: "table-cell", float: "left"}}>
-                                <label style={{position: "relative", top: 10}}><Translate content="transfer.fee" />:</label>
-                            </div>
-                            <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                                <FormattedFee
-                                    style={{position: "relative", top: 10}}
-                                    ref="feeAsset"
-                                    asset={fee.asset}
-                                    opType="transfer"
-                                />
-
-                                <div className="float-right">
+                        <div className="SimpleTrade__withdraw-row" style={{padding: "30px 0"}}>
+                            <div style={{position: "relative"}}>
+                                <label style={{position: "relative", top: 10}}>
+                                    <Translate content="transfer.fee" />
+                                    <span>: </span>
+                                    <FormattedFee
+                                        ref="feeAsset"
+                                        asset={fee.asset}
+                                        opType="transfer"
+                                    />
+                                </label>
+                                <div style={{position: "absolute", right: 0, top: 0}}>
                                     <label style={{
-                                            display: "inline-block",
-                                            position: "relative",
-                                            top: -10,
-                                            margin: 0
-                                        }}
+                                        display: "inline-block",
+                                        position: "relative",
+                                        top: -10,
+                                        margin: 0
+                                    }}
                                     >
-                                        Include memo:
+                                        <Translate content="simple_trade.include_memo" />:
                                     </label>
                                     <div onClick={this._onToggleMemo.bind(this)} style={{transform: "scale3d(0.75, 0.75, 1)"}} className="switch">
                                         <input tabIndex={tabIndex++} checked={this.state.includeMemo} type="checkbox" />
-                                        <label />
+                                        <label style={{marginRight: 0}} />
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 
                         {this.state.includeMemo ?
                             <div style={{width: "100%", display: "table-row", float: "left", paddingBottom: 30}}>
-                                <div style={{display: "table-cell", float: "left", marginTop: 16}}>
-                                    <label><Translate content="transfer.memo" />:</label>
-                                </div>
-                                <div style={{display: "table-cell", float: "right", width: "70%"}}>
-                                    <textarea style={{marginBottom: 0}} rows="1" value={this.state.memo} tabIndex={tabIndex++} onChange={this._onInputMemo.bind(this)} />
+                                <div>
+                                    <label>
+                                        <Translate content="transfer.memo" />:
+                                        <textarea style={{marginBottom: 0}} rows="1" value={this.state.memo} tabIndex={tabIndex++} onChange={this._onInputMemo.bind(this)} />
+                                    </label>
                                 </div>
                             </div>
                             : null}
