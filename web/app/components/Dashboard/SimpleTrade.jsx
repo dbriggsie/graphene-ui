@@ -61,6 +61,7 @@ class SimpleTradeContent extends React.Component {
         let activeAssetId =this._getNewActiveAssetId(props);
         this.state = {
             priceValue: "",
+            price: null,
             saleValue: "",
             receiveValue: "",
             activeAssetId,
@@ -89,6 +90,8 @@ class SimpleTradeContent extends React.Component {
             });
         };
 
+        this._getCurrentPrice(np);
+
         if (np.asset !== this.props.asset) {
             this.setState(this._getNewAssetPropChange(np), () => {
                 this._checkSubAndBalance(np);
@@ -102,6 +105,26 @@ class SimpleTradeContent extends React.Component {
 
     componentWillUnmount() {
         this._unSubMarket();
+    }
+
+    _getCurrentPrice(props = this.props) {
+        let {lowestAsk, highestBid} = props;
+        if (!lowestAsk || !highestBid) return this.setState({
+            price: null,
+            priceValue: ""
+        });
+
+        const isBuy = props.action === "buy";
+        const current = isBuy ? lowestAsk.clone() : highestBid.clone();
+
+        if (!this.state.price) {
+            this.setState({
+                price: current,
+                priceValue: current.toReal()
+            }, () => {
+                this._updateToReceive() || this._updateForSale();
+            });
+        }
     }
 
     _getNewAssetPropChange(props = this.props, state = this.state) {
@@ -126,7 +149,7 @@ class SimpleTradeContent extends React.Component {
             real: oldAmount
         });
 
-        const currentPrice = price.isValid() ? price.toReal() : null;
+        const currentPrice = price && price.isValid() ? price.toReal() : null;
 
         newState.price = new Price({
             base: isBuy ? newState.for_sale : this.state.for_sale,
@@ -300,7 +323,7 @@ class SimpleTradeContent extends React.Component {
         }
 
         if (updated) {
-            this.state.priceValue = this.state.price.toReal()
+            this.state.priceValue = this.state.price.toReal();
             this.forceUpdate();
         };
         return updated;
@@ -312,7 +335,7 @@ class SimpleTradeContent extends React.Component {
             this.state.to_receive.setAmount({sats: r});
             this._updateForSale() || this._updatePrice();
             updated = true;
-        } else if (this.state.price.isValid() && this.state.for_sale.hasAmount()) {
+        } else if (this.state.price && this.state.price.isValid() && this.state.for_sale.hasAmount()) {
             this.state.to_receive = this.state.for_sale.times(this.state.price);
             updated = true;
         }
@@ -329,7 +352,7 @@ class SimpleTradeContent extends React.Component {
             this.state.for_sale.setAmount({sats: f});
             this._updateToReceive() || this._updatePrice();
             updated = true;
-        } else if (this.state.price.isValid() && this.state.to_receive.hasAmount()) {
+        } else if (this.state.price && this.state.price.isValid() && this.state.to_receive.hasAmount()) {
             this.state.for_sale = this.state.to_receive.times(this.state.price);
             updated = true;
         }

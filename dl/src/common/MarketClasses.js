@@ -224,6 +224,13 @@ class Price {
     gte(b) {
         return !(this.lt(b));
     }
+
+    clone() {
+        return new Price({
+            quote: this.quote,
+            base: this.base
+        });
+    }
 }
 
 class LimitOrderCreate {
