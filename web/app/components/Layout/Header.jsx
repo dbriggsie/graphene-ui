@@ -88,7 +88,9 @@ class Header extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // this._setActivePath();
+        if (nextProps.traderMode && !this.props.traderMode) {
+            this.context.history.pushState(null, "/dashboard");
+        }
     }
 
     _triggerMenu(e) {
@@ -292,7 +294,7 @@ class Header extends React.Component {
                     <ul className="menu-bar">
                         <li>{dashboard}</li>
                         {(!traderMode && hasOrders) ? <li><Link to={"/my-orders"} activeClassName="active"><Translate content="header.my_orders"/></Link></li> : null}
-                        {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} activeClassName="active"><Translate content="header.account" /></Link></li>}
+                        {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} className={cnames({active: active.indexOf("account/") !== -1})}><Translate content="header.account" /></Link></li>}
                         {!traderMode ? null : <li><a className={cnames({active: active.indexOf("transfer") !== -1})} onClick={this._onNavigate.bind(this, "/transfer")}><Translate component="span" content="header.payments" /></a></li>}
                         {!traderMode ? null : <li>{tradeLink}</li>}
                         {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
