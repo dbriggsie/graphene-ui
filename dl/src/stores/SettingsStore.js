@@ -15,46 +15,46 @@ let lang = {
 };
 
 let marketsList = [
-  'BLOCKPAY',
-  'BROWNIE.PTS',
-  'BTS',
-  'BTWTY',
-  'CNY',
-  'EUR',
-  'BTSR',
-  'GRIDCOIN',
-  'ICOO',
-  'OBITS',
-  'OPEN.ARDR',
-  'OPEN.BTC',
-  'OPEN.DASH',
-  'OPEN.DCT',
-  'OPEN.DGD',
-  'OPEN.DOGE',
-  'OPEN.ETH',
-  'OPEN.EUR',
-  'OPEN.EURT',
-  'OPEN.GAME',
-  'OPEN.GRC',
-  'OPEN.HEAT',
-  'OPEN.INCNT',
-  'OPEN.LISK',
-  'OPEN.LTC',
-  'OPEN.MAID',
-  'OPEN.MKR',
-  'OPEN.MUSE',
-  'OPEN.NXC',
-  'OPEN.OMNI',
-  'OPEN.STEEM',
-  'OPEN.USD',
-  'OPEN.USDT',
-  'PEERPLAYS',
-  'SHAREBITS',
-  'SOLCERT'
+    "BLOCKPAY",
+    "BROWNIE.PTS",
+    "BTS",
+    "BTWTY",
+    "CNY",
+    "EUR",
+    "BTSR",
+    "GRIDCOIN",
+    "ICOO",
+    "OBITS",
+    "OPEN.ARDR",
+    "OPEN.BTC",
+    "OPEN.DASH",
+    "OPEN.DCT",
+    "OPEN.DGD",
+    "OPEN.DOGE",
+    "OPEN.ETH",
+    "OPEN.EUR",
+    "OPEN.EURT",
+    "OPEN.GAME",
+    "OPEN.GRC",
+    "OPEN.HEAT",
+    "OPEN.INCNT",
+    "OPEN.LISK",
+    "OPEN.LTC",
+    "OPEN.MAID",
+    "OPEN.MKR",
+    "OPEN.MUSE",
+    "OPEN.NXC",
+    "OPEN.OMNI",
+    "OPEN.STEEM",
+    "OPEN.USD",
+    "OPEN.USDT",
+    "PEERPLAYS",
+    "SHAREBITS",
+    "SOLCERT"
 ];
 
 function checkBit(bit){
-    if(bit=='BITUSD'||bit=='BITEUR'||bit=='BITCNY'||bit=='BITGOLD'||bit=='BITBTC'){
+    if(bit=="BITUSD"||bit=="BITEUR"||bit=="BITCNY"||bit=="BITGOLD"||bit=="BITBTC"){
         return true;
     }
 }
@@ -76,7 +76,7 @@ class SettingsStore {
             traderMode: false
         });
         // Default markets setup
-        let topMarkets = marketsList;
+        this.topMarkets = marketsList;
 
         // this.preferredBases = Immutable.List([CORE_ASSET, "OPEN.BTC", "USD", "CNY", "BTC"]);
         // Openledger
@@ -92,7 +92,7 @@ class SettingsStore {
 
         let defaultMarkets = [];
         this.preferredBases.forEach(base => {
-            addMarkets(defaultMarkets, base, topMarkets);
+            addMarkets(defaultMarkets, base, this.topMarkets);
         });
 
         // If you want a default value to be translated, add the translation to settings in locale-xx.js
@@ -348,6 +348,6 @@ set_obj.checkBit = checkBit;
 set_obj.marketsList = marketsList;
 set_obj.marketsOpenList = marketsList.filter(e=>{
     return e.indexOf("OPEN.")===0;
-}).map(e=>e.split('OPEN.').join(''));
+}).map(e=>e.split("OPEN.").join(""));
 
 module.exports = set_obj;

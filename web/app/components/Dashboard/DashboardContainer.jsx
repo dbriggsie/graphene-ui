@@ -45,6 +45,9 @@ class DashboardContainer extends React.Component {
                     },
                     traderMode: () => {
                         return SettingsStore.getState().settings.get("traderMode");
+                    },
+                    defaultAssets: () => {
+                        return SettingsStore.getState().topMarkets;
                     }
                 }}>
                     <Content {...this.props} />

@@ -396,43 +396,6 @@ export default class ListWrapper extends React.Component {
         });
     }
 
-    _getAssets() {
-        return [
-            'BROWNIE.PTS',
-            'BTS',
-            'BTSR',
-            'GRIDCOIN',
-            'ICOO',
-            'OBITS',
-            'OPEN.ARDR',
-            'OPEN.BTC',
-            'OPEN.DASH',
-            'OPEN.DGD',
-            'OPEN.DOGE',
-            'OPEN.ETH',
-            'OPEN.EUR',
-            'OPEN.EURT',
-            'OPEN.GAME',
-            'OPEN.GRC',
-            'OPEN.HEAT',
-            'OPEN.LISK',
-            'OPEN.LTC',
-            'OPEN.MAID',
-            'OPEN.MUSE',
-            'OPEN.OMNI',
-            'OPEN.MKR',
-            'OPEN.INCNT',
-            'OPEN.STEEM',
-            'OPEN.USD',
-            'OPEN.USDT',
-            'OPEN.NXC',
-            'PEERPLAYS',
-            'SHAREBITS',
-            'SOLCERT',
-            'BTWTY'
-        ]
-    }
-
     render() {
         let balanceAssets = Immutable.List();
         let balances = this.props.account.get("balances", []).map((a, key) => {
@@ -443,7 +406,7 @@ export default class ListWrapper extends React.Component {
 
 
         // Get hard coded default assets
-        let assets = this._getAssets();
+        let assets = this.props.defaultAssets;
         // Add Openledger backed assets
         this.state.openLedgerBackedCoins.forEach(c => {
             if (assets.indexOf(c.symbol) === -1) {
