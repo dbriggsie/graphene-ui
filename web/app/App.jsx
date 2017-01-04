@@ -175,6 +175,7 @@ class App extends React.Component {
     }
 
     _rebuildTooltips() {
+        ReactTooltip.hide();
         setTimeout(() => {
             if (this.refs.tooltip) {
                 this.refs.tooltip.globalRebuild();
