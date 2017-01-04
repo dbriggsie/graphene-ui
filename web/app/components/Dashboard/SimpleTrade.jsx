@@ -54,7 +54,6 @@ class SimpleTradeContent extends React.Component {
 
     constructor(props) {
         super(props);
-
         /*
         * The terminology used assumes "buy" modal, so the assets in the
         * dropdown and list are base assets (for sale it's the opposite)
@@ -73,7 +72,7 @@ class SimpleTradeContent extends React.Component {
         this.state.price = new Price({
             base: this.state.for_sale,
             quote: this.state.to_receive
-        })
+        });
 
         this._subToMarket = this._subToMarket.bind(this);
     }
@@ -170,7 +169,8 @@ class SimpleTradeContent extends React.Component {
     }
 
     _getNewActiveAssetId(props) {
-        let newBaseId = props.assets[0].get("asset_type");
+        let newBaseId = props.assets.length ? props.assets[0].get("asset_type") :
+            props.marketAssets.length ? props.marketAssets[0].get("id") : "1.3.0";
         for (var i = 0; i < preferredAssets.length; i++) {
             if (this._getAssetIndex(preferredAssets[i], props) >= 0) {
                 newBaseId = preferredAssets[i];

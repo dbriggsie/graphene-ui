@@ -13,31 +13,13 @@ import AccountStore from "stores/AccountStore";
 
 class SimpleDashboard extends React.Component {
 
-
-    constructor() {
-        super();
-        this.state = {
-            width: null,
-            height: null,
-            openLedgerCoins: [],
-            openLedgerBackedCoins: []
-        };
-
-        this._setDimensions = this._setDimensions.bind(this);
-    }
-
     componentWillMount() {
         // Check for wallet and account, if not present redirect to create-account
-        if (!!WalletDb.getWallet() || !this.props.linkedAccounts.size) {
+        if (!WalletDb.getWallet() || !this.props.linkedAccounts.size) {
             this.props.history.push("/create-account");
+        } else {
+            accountUtils.getFinalFeeAsset(this.props.account, "transfer");
         }
-        accountUtils.getFinalFeeAsset(this.props.account, "transfer");
-    }
-
-    componentDidMount() {
-        this._setDimensions();
-
-        window.addEventListener("resize", this._setDimensions, false);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -45,36 +27,12 @@ class SimpleDashboard extends React.Component {
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
             nextProps.currentAccount !== this.props.currentAccount ||
             nextProps.viewSettings !== this.props.viewSettings ||
-            nextState.width !== this.state.width ||
-            nextState.height !== this.state.height ||
-            nextState.openLedgerCoins.length !== this.state.openLedgerCoins.length ||
-            nextState.openLedgerBackedCoins.length !== this.state.openLedgerBackedCoins.length
+            nextProps.preferredUnit || this.props.preferredUnit
         );
-    }
-
-    // componentDidUpdate() {
-    //     let c = ReactDOM.findDOMNode(this.refs.container);
-    //     ps.update(c);
-    // }
-
-    componentWillUnmount() {
-        window.removeEventListener("resize", this._setDimensions, false);
-    }
-
-    _setDimensions() {
-        let width = window.innerWidth;
-        let height = this.refs.wrapper.offsetHeight;
-
-        if (width !== this.state.width || height !== this.state.height) {
-            this.setState({width, height});
-        }
     }
 
     render() {
         let {linkedAccounts, myIgnoredAccounts, currentAccount} = this.props;
-        let {width, height, showIgnored} = this.state;
-
-        let names = linkedAccounts.toArray().sort();
 
         let accountCount = linkedAccounts.size + myIgnoredAccounts.size;
 
@@ -84,7 +42,7 @@ class SimpleDashboard extends React.Component {
                     <DashboardAssetList
                         preferredUnit={this.props.preferredUnit}
                         account={currentAccount}
-                        showZeroBalances={this.props.viewSettings.get("showZeroBalances")}
+                        showZeroBalances={this.props.viewSettings.get("showZeroBalances", true)}
                         pinnedAssets={Immutable.Map(this.props.viewSettings.get("pinnedAssets", {}))}
                     />
 

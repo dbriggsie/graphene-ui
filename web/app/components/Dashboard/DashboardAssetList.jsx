@@ -88,6 +88,12 @@ class DashboardAssetList extends React.Component {
         return (!currentBalance || currentBalance.get("balance") === 0) ? null : {amount: currentBalance.get("balance"), asset_id: asset_id};
     }
 
+    _hasOtherBalance(asset_id) {
+        return !!this.props.balances.find(a => {
+            return (a ? a.get("asset_type") !== asset_id : false);
+        });
+    }
+
     _isPinned(asset) {
         return this.props.pinnedAssets.has(asset);
     }
@@ -111,7 +117,7 @@ class DashboardAssetList extends React.Component {
         }
 
         const hasBalance = !(!balance || balance.amount === 0);
-
+        const canBuy = this._hasOtherBalance(asset.get("id"));
         const canDepositWithdraw = !!this.props.openLedgerBackedCoins.find(a => a.symbol === asset.get("symbol"));
         const canWithdraw = canDepositWithdraw && hasBalance;
 
@@ -140,9 +146,9 @@ class DashboardAssetList extends React.Component {
                         </span>
                     ) : null}
                 </td>
-                {/* <td><a>Deposit</a> | <a>Withdraw</a></td> */}
+
                 <td style={{textAlign: "center"}}>
-                    <a onClick={this._showModal.bind(this, "buy_modal", assetName)}><Translate content="exchange.buy" /></a>
+                    <a data-place="top" data-tip={!canBuy ? counterpart.translate("tooltip.cant_buy") : null} className={!canBuy ? "disabled" : ""} onClick={canBuy ? this._showModal.bind(this, "buy_modal", assetName) : null}><Translate content="exchange.buy" /></a>
                     {this._getSeparator(true)}
                     <a className={!hasBalance ? "disabled" : ""} onClick={!hasBalance ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a></td>
                 <td className="column-hide-small" data-place="right" data-tip={isPinned ? counterpart.translate("tooltip.unpin") : counterpart.translate("tooltip.pin")} className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
@@ -429,10 +435,12 @@ export default class ListWrapper extends React.Component {
 
     render() {
         let balanceAssets = Immutable.List();
-        let balances = this.props.account.get("balances").map((a, key) => {
+        let balances = this.props.account.get("balances", []).map((a, key) => {
             balanceAssets = balanceAssets.push(key);
             return a;
-        }).toArray();
+        });
+        if (balances && balances.toArray) balances = balances.toArray();
+
 
         // Get hard coded default assets
         let assets = this._getAssets();

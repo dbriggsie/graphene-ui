@@ -4,6 +4,7 @@ import classNames from "classnames";
 import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
 import AccountNameInput from "./../Forms/AccountNameInput";
+import SettingsStore from "stores/SettingsStore";
 import PasswordInput from "./../Forms/PasswordInput";
 import WalletDb from "stores/WalletDb";
 import notify from "actions/NotificationActions";
@@ -23,11 +24,11 @@ import {BackupCreate} from "../Wallet/Backup";
 class CreateAccount extends React.Component {
 
     static getStores() {
-        return [AccountStore];
+        return [AccountStore, SettingsStore];
     };
 
     static getPropsFromStores() {
-        return {};
+        return {traderMode: SettingsStore.getState().settings.get("traderMode")};
     };
 
     constructor() {
@@ -101,7 +102,8 @@ class CreateAccount extends React.Component {
                     console.log('metrika');
                 }catch(err){console.log('metrik trouble',err);}
 
-            AccountActions.createAccount(name, this.state.registrar_account, this.state.registrar_account, 0, refcode).then(() => {
+            AccountActions.createAccount(name, this.state.registrar_account, this.state.registrar_account, 0, refcode)
+            .then(() => {
                 // User registering his own account
                 if(this.state.registrar_account) {
                     this.setState({loading: false});
@@ -109,8 +111,10 @@ class CreateAccount extends React.Component {
                 } else { // Account registered by the faucet
                     console.log("account registed by faucet");
                     // this.props.history.pushState(null, `/wallet/backup/create?newAccount=true`);
-                    this.setState({
-                        step: 2
+                    FetchChain("getAccount", name).then((acc) => {
+                        this.setState({
+                            step: 2
+                        });
                     });
                     // this.props.history.pushState(null, `/account/${name}/overview`);
 
@@ -300,6 +304,7 @@ class CreateAccount extends React.Component {
     }
 
     _renderGetStarted() {
+        const {traderMode} = this.props;
 
         return (
             <div>
@@ -311,22 +316,20 @@ class CreateAccount extends React.Component {
                             <td><Link to="dashboard"><Translate content="header.dashboard" /></Link></td>
                         </tr>
 
-                        <tr>
+                        {traderMode ? <tr>
                             <td><Translate content="wallet.tips_account" />:</td>
                             <td><Link to={`/account/${this.state.accountName}/overview`} ><Translate content="wallet.link_account" /></Link></td>
-                        </tr>
+                        </tr> : null}
 
-                        <tr>
+                        {traderMode ? <tr>
                             <td><Translate content="wallet.tips_deposit" />:</td>
                             <td><Link to="deposit-withdraw"><Translate content="wallet.link_deposit" /></Link></td>
-                        </tr>
+                        </tr> : null}
 
-
-
-                        <tr>
+                        {traderMode ? <tr>
                             <td><Translate content="wallet.tips_transfer" />:</td>
                             <td><Link to="transfer"><Translate content="wallet.link_transfer" /></Link></td>
-                        </tr>
+                        </tr> : null}
 
                         <tr>
                             <td><Translate content="wallet.tips_settings" />:</td>
@@ -359,7 +362,7 @@ class CreateAccount extends React.Component {
 
         let my_accounts = AccountStore.getMyAccounts();
         let firstAccount = my_accounts.length === 0;
-
+        
         return (
             <div className="grid-block vertical page-layout">
                 <div className="grid-container shrink">
