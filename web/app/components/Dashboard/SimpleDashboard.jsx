@@ -8,6 +8,8 @@ import AssetName from "../Utility/AssetName";
 import assetUtils from "common/asset_utils";
 import DashboardAssetList from "./DashboardAssetList";
 import accountUtils from "common/account_utils";
+import WalletDb from "stores/WalletDb";
+import AccountStore from "stores/AccountStore";
 
 class SimpleDashboard extends React.Component {
 
@@ -25,6 +27,10 @@ class SimpleDashboard extends React.Component {
     }
 
     componentWillMount() {
+        // Check for wallet and account, if not present redirect to create-account
+        if (!!WalletDb.getWallet() || !this.props.linkedAccounts.size) {
+            this.props.history.push("/create-account");
+        }
         accountUtils.getFinalFeeAsset(this.props.account, "transfer");
     }
 
@@ -45,8 +51,6 @@ class SimpleDashboard extends React.Component {
             nextState.openLedgerBackedCoins.length !== this.state.openLedgerBackedCoins.length
         );
     }
-
-
 
     // componentDidUpdate() {
     //     let c = ReactDOM.findDOMNode(this.refs.container);
