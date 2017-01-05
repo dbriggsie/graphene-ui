@@ -90,6 +90,8 @@ class Header extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.traderMode && !this.props.traderMode) {
             this.context.history.pushState(null, "/dashboard");
+        }else if(!nextProps.traderMode && this.props.traderMode){
+            this.context.history.pushState(null, "/dashboard");
         }
     }
 
@@ -132,14 +134,19 @@ class Header extends React.Component {
         this.context.history.pushState(null, `/account/${account}/overview`);
     }
 
-    onSetTraderMode() {
-        SettingsActions.changeSetting({setting: "traderMode", value: true});
+    onSwitchTraderMode() {
 
-        notify.addNotification({
+        if(SettingsStore.getState().settings.get("traderMode")){
+            SettingsActions.changeSetting({setting: "traderMode", value: false});
+        }else{
+            SettingsActions.changeSetting({setting: "traderMode", value: true});
+        }
+
+        /*notify.addNotification({
             message: counterpart.translate("header.trader_mode_notify"),
             level: "success",
             autoDismiss: 10
-        });
+        });*/
     }
 
     render() {
@@ -304,12 +311,12 @@ class Header extends React.Component {
                     <div className="grp-menu-items-group header-right-menu">
                         {!traderMode ? null : walletBalance}
 
-                        {!traderMode ? <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSetTraderMode}>
+                        <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
                             <div style={{textTransform: "none", fontSize: "0.9rem"}} className="button">
                                 <Icon className="icon-14px" name="assets"/>
-                                <span style={{paddingLeft: 10}}><Translate content="header.switch_trader" /></span>
+                                <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_beginner" />:<Translate content="header.switch_trader" />}</span>
                             </div>
-                        </div> : null}
+                        </div> 
                         <div className="grid-block shrink overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>

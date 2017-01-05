@@ -267,6 +267,8 @@ class CreateAccount extends React.Component {
                 <Translate style={{textAlign: "left"}} component="p" content="wallet.create_account_text" />
 
                 {firstAccount ? <Translate style={{textAlign: "left"}} component="p" content="wallet.first_account_paid" /> : null}
+                <p><iframe width="100%" height="315" src="https://www.youtube.com/embed/ttN0flPsnBc" ></iframe></p>
+                {firstAccount ? <Translate style={{textAlign: "left"}} component="p" content="wallet.remember_please_you" /> : null}
 
                 {/* {this.state.hide_refcode ? null :
                     <div>

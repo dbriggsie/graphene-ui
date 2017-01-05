@@ -26,6 +26,7 @@
     "locked_tip": "지갑이 잠겨있습니다. 잠금해제를 눌러주세요.",
     "unlocked_tip": "지갑이 잠금해제 되어있습니다. 잠금을 눌러주세요.",
     "switch_trader": "Switch to Trader Mode",
+    "switch_beginner": "Switch to Beginner Mode",
     "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
   },
   "tooltip": {

@@ -21,6 +21,7 @@ let marketsList = [
     "BTWTY",
     "CNY",
     "EUR",
+    "USD",
     "BTSR",
     "GRIDCOIN",
     "ICOO",

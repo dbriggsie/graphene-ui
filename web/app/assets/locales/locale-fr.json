@@ -22,6 +22,7 @@
     "lock": "Vérouiller",
     "unlock": "Dévérouiller",
     "switch_trader": "Switch to Trader Mode",
+    "switch_beginner": "Switch to Beginner Mode",
     "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
   },
   "tooltip": {
