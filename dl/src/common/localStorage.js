@@ -1,5 +1,5 @@
 // Localstorage
-import ls, {ls_key_exists} from './localStorageImpl';
+import ls, {ls_key_exists} from "./localStorageImpl";
 
 if (null===ls) throw "localStorage is required but isn't available on this platform";
 
@@ -12,7 +12,12 @@ module.exports = (key) => {
 
             let rv;
             if ( ls_key_exists(STORAGE_KEY + key, ls) ) {
-                rv = JSON.parse(ls.getItem(STORAGE_KEY + key));
+                let e = ls.getItem(STORAGE_KEY + key);
+                try {
+                    rv = JSON.parse(e);
+                } catch(err) {
+                    rv = e;
+                }
             }
             return rv ? rv : dv;
         },

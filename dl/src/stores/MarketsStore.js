@@ -6,6 +6,7 @@ var market_utils = require("../common/market_utils");
 import ls from "common/localStorage";
 import {ChainStore} from "graphenejs-lib";
 import utils from "common/utils";
+import {Asset, Price} from "common/MarketClasses";
 
 import {
     LimitOrder,
@@ -44,6 +45,8 @@ class MarketsStore {
         this.bucketSize = this._getBucketSize();
         this.priceHistory = [];
         this.lowestCallPrice = null;
+        this.highestBid = null;
+        this.lowestAsk = null;
         this.marketBase = "BTS";
         this.marketStats = Immutable.Map({
             change: 0,
@@ -52,6 +55,7 @@ class MarketsStore {
         });
 
         this.allMarketStats = Immutable.Map();
+        this.lowVolumeMarkets = Immutable.Map();
 
         this.baseAsset = {
             id: "1.3.0",
@@ -108,13 +112,14 @@ class MarketsStore {
 
         // Optimistic removal of activeMarket
         if (payload.unSub) {
-            this.activeMarket = null;
+            this.onClearMarket();
         } else { // Unsub failed, restore activeMarket
             this.activeMarket = payload.market;
         }
     }
 
     onClearMarket() {
+        this.activeMarket = null;
         this.activeMarketLimits = this.activeMarketLimits.clear();
         this.activeMarketCalls = this.activeMarketCalls.clear();
         this.activeMarketSettles = this.activeMarketSettles.clear();
@@ -132,6 +137,8 @@ class MarketsStore {
             volumeBase: 0,
             volumeQuote: 0
         });
+        this.highestBid = null;
+        this.lowestAsk = null;
     }
 
     onSubscribeMarket(result) {
@@ -148,12 +155,15 @@ class MarketsStore {
         this.quoteAsset = ChainStore.getAsset(result.quote.get("id"));
         this.baseAsset = ChainStore.getAsset(result.base.get("id"));
 
-
+        this.assetMap = {
+            [this.quoteAsset.get("id")]: this.quoteAsset,
+            [this.baseAsset.get("id")]: this.baseAsset
+        }
 
         if (result.market && (result.market !== this.activeMarket)) {
             // console.log("switch active market from", this.activeMarket, "to", result.market);
-            this.activeMarket = result.market;
             this.onClearMarket();
+            this.activeMarket = result.market;
         }
 
         if (result.buckets) {
@@ -246,6 +256,12 @@ class MarketsStore {
             this.marketStats = this.marketStats.set("change", stats.change);
             this.marketStats = this.marketStats.set("volumeBase", stats.volumeBase);
             this.marketStats = this.marketStats.set("volumeQuote", stats.volumeQuote);
+
+            if (stats.volumeBase) {
+                this.lowVolumeMarkets = this.lowVolumeMarkets.delete(result.market);
+            }
+        } else if (result.recent && !result.recent.length) {
+            this.lowVolumeMarkets = this.lowVolumeMarkets.set(result.market, true);
         }
 
         // Update orderbook
@@ -479,6 +495,15 @@ class MarketsStore {
             }).map(order => {
                 // let isAskOrder = market_utils.isAsk(order, this.baseAsset);
                 let {value, price, amount} = market_utils.parseOrder(order, this.baseAsset, this.quoteAsset);
+
+                let sellPrice = new Price({
+                    base: new Asset({asset_id: order.sell_price.base.asset_id, amount: order.sell_price.base.amount, precision: this.assetMap[order.sell_price.base.asset_id].get("precision")}) ,
+                    quote: new Asset({asset_id: order.sell_price.quote.asset_id, amount: order.sell_price.quote.amount, precision: this.assetMap[order.sell_price.quote.asset_id].get("precision")}) ,
+                });
+
+                this.highestBid = !this.highestBid ? sellPrice :
+                    this.highestBid.gt(sellPrice) ? this.highestBid : sellPrice;
+
                 // console.log("order:", order);
                 bids.push({
                     value: value,
@@ -521,6 +546,14 @@ class MarketsStore {
             }).map(order => {
                 // let isAskOrder = market_utils.isAsk(order, this.baseAsset);
                 let {value, price, amount} = market_utils.parseOrder(order, this.baseAsset, this.quoteAsset);
+                let sellPrice = new Price({
+                    base: new Asset({asset_id: order.sell_price.quote.asset_id, amount: order.sell_price.quote.amount, precision: this.assetMap[order.sell_price.quote.asset_id].get("precision")}),
+                    quote: new Asset({asset_id: order.sell_price.base.asset_id, amount: order.sell_price.base.amount, precision: this.assetMap[order.sell_price.base.asset_id].get("precision")}),
+                });
+
+                this.lowestAsk = !this.lowestAsk ? sellPrice :
+                    this.lowestAsk.lt(sellPrice) ? this.lowestAsk : sellPrice;
+
                 asks.push({
                     value: value,
                     price: price,

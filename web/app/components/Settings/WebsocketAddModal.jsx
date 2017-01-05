@@ -47,7 +47,6 @@ class WebsocketAddModal extends React.Component {
 
     onAddSubmit(e) {
         e.preventDefault();
-        debugger;
         SettingsActions.addWS(this.state.ws);
 
         this.setState({
@@ -59,7 +58,6 @@ class WebsocketAddModal extends React.Component {
     onRemoveSubmit(e) {
         e.preventDefault();
         let removeIndex;
-        debugger;
         this.props.apis.forEach((api, index) => {
             if (api.url === this.refs.select.value) {
                 removeIndex = index;

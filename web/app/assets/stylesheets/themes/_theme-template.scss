@@ -125,7 +125,7 @@
         .table {
             > thead > tr > th,
             > tbody > tr > td {
-                border-bottom-color: darken($secondary-text-color, 10%);                
+                border-bottom-color: darken($secondary-text-color, 10%);
             }
         }
     }
@@ -282,7 +282,7 @@
                 text-indent: 0;
                 padding: 0;
                 &::selection {
-                    background: transparent; 
+                    background: transparent;
                 }
             }
 
@@ -431,6 +431,10 @@
     .facolor-fee {
         color: $fee-color;
     }
+    // Error test
+    .error {
+        color: $error-text-color;
+    }
     // AccountSelector component
     .account-selector {
         .error-area {
@@ -551,6 +555,9 @@
     .menu-group.primary,
     .menu-group.primary .menu-bar {
         background-color: $panel-bg-color;
+        .menu-bar .grp-menu-item .button {
+            color: $primary-text-color;
+        }
         .menu-bar > li {
             > a {
                 color: $primary-text-color;
@@ -771,6 +778,10 @@
     }
     select.bts-select {
         color: $secondary-text-color;
+
+        > option {
+            color: $chat-text-color;
+        }
     }
     div.fm-container:hover {
         background-color: darken($light-panel-bg-color, 5%);
@@ -834,6 +845,56 @@
                 position: absolute;
                 color: #aaa;
             }
+        }
+    }
+
+    .buy-text {
+        color: $bid-color;
+
+        &.inactive {
+            color: grey;
+        }
+    }
+
+    .sell-text {
+        color: $ask-color;
+
+        &.inactive {
+            color: grey;
+        }
+    }
+
+    .orders-switch input:checked + label {
+
+            background: $ask-color;
+
+            &::after {
+                border-color: $ask-color;
+            }
+    }
+
+    .orders-switch input + label {
+            background: $bid-color;
+
+            &::after {
+                border-color: $bid-color;
+            }
+    }
+
+    // SimpleTrade mode
+    .SimpleTrade__modal {
+        > div.Modal__header {
+            background-color: $header-color;
+        }
+    }
+
+    .balance-row {
+        &.active {
+            background-color: $row-accent-color;
+        }
+
+        &:hover {
+            background-color: $row-accent-color;
         }
     }
 }

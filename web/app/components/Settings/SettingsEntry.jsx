@@ -2,6 +2,7 @@ import React from "react";
 import counterpart from "counterpart";
 import Translate from "react-translate-component";
 import SettingsActions from "actions/SettingsActions";
+import {Link} from "react-router";
 
 export default class SettingsEntry extends React.Component {
 
@@ -23,6 +24,7 @@ export default class SettingsEntry extends React.Component {
         let options, optional, confirmButton, value, input, selected = settings.get(setting);
 
         let myLocale = counterpart.getLocale();
+        let noHeader = false;
 
         switch (setting) {
         case "locale":
@@ -111,6 +113,27 @@ export default class SettingsEntry extends React.Component {
             input = <input type="text" defaultValue={value} onChange={this.props.onChange.bind(this, setting)}/>;
             break;
 
+        case "traderMode":
+            value = true;
+
+            input = <div data-tip={counterpart.translate("header.trader_mode_tip")} style={{height: 60, width: "100%", paddingTop: 20}} className="button outline" onClick={this.props.onChange.bind(this, setting, !selected)}>{counterpart.translate("settings.trader_mode_" + selected)}</div>;
+            noHeader = true;
+            break;
+
+        case "password":
+            value = true;
+            input = <div style={{height: 60, paddingLeft: 15, paddingTop: 10}}><button className="button outline"><Link to="wallet/change-password">Change password</Link></button></div>;
+            break;
+
+        case "backup":
+            value = true;
+            input = (
+            <div style={{height: 60, paddingLeft: 15, paddingTop: 10}}>
+                <button className="button outline"><Link to="wallet/backup/create">Create</Link></button>
+                <button className="button outline"><Link to="wallet/backup/restore">Restore</Link></button>
+            </div>);
+            break;
+
         default:
 
             if (typeof selected === "number") {
@@ -152,7 +175,7 @@ export default class SettingsEntry extends React.Component {
 
         return (
             <section className="block-list">
-                <header><Translate component="span" content={`settings.${setting}`} /></header>
+                {noHeader ? null :<header><Translate component="span" content={`settings.${setting}`} /></header>}
                 {options ? <ul>
                     <li className="with-dropdown">
                         {optional}

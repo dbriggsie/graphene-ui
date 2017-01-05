@@ -8,45 +8,29 @@ import SettingsStore from "stores/SettingsStore";
 /**
  *  Renders a tab layout, handling switching and optionally persists the currently open tab using the SettingsStore
  *
- *  props: 
+ *  props:
  *     setting: unique name to be used to remember the active tab of this tabs layout,
  *     tabsClass: optional classes for the tabs container div
  *     contentClass: optional classes for the content container div
  *
- *  Usage: 
- *  
+ *  Usage:
+ *
  *  <Tabs setting="mySetting">
  *      <Tab title="locale.string.title1">Tab 1 content</Tab>
  *      <Tab title="locale.string.title2">Tab 2 content</Tab>
  *  </Tabs>
- *     
+ *
  */
 
-class Tab extends React.Component {
+const Tab = ({isActive = false, index = 0, changeTab, title}) => {
 
-    static propTypes = {
-        title: PropTypes.string.isRequired,
-        changeTab: PropTypes.func,
-        isActive: PropTypes.bool.isRequired,
-        index: PropTypes.number.isRequired
-    };
-
-    static defaultProps = {
-        isActive: false,
-        index: 0
-    };
-
-    render() {
-        let {isActive, index, changeTab, title} = this.props;
-        let c = cnames("tab-item", {"is-active": isActive});
-
-        return (
-            <div className={c} onClick={changeTab.bind(this, index)}>
-                {title.indexOf(".") > 0 ? <Translate content={title} /> : title}
-            </div>
-        );
-    }
-}
+    const c = cnames("tab-item", {"is-active": isActive});
+    return (
+        <div className={c} onClick={changeTab.bind(this, index)}>
+            {title.indexOf(".") > 0 ? <Translate content={title} /> : title}
+        </div>
+    );
+};
 
 @connectToStores
 class Tabs extends React.Component {

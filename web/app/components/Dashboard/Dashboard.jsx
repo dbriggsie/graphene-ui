@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import Immutable from "immutable";
 import DashboardList from "./DashboardList";
 import RecentTransactions from "../Account/RecentTransactions";
@@ -84,7 +83,7 @@ class Dashboard extends React.Component {
             ["OPEN.BTC", "ICOO"],
             ["BTS", "OBITS"],
             ["BTS", "BTSR"],
-            ["BTS", "PEERPLAYS"],
+            ["EUR", "OPEN.BTC"],
             ["OPEN.BTC", "OPEN.DCT"],
             ["OPEN.BTC", "OPEN.INCNT"],
             ["OPEN.BTC", "OPEN.NXC"],

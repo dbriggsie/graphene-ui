@@ -21,7 +21,7 @@ import Icon from "../Icon/Icon";
 class AccountSelector extends React.Component {
 
     static propTypes = {
-        label: React.PropTypes.string.isRequired, // a translation key for the label
+        label: React.PropTypes.any, // a translation key for the label
         error: React.PropTypes.element, // the error message override
         placeholder: React.PropTypes.string, // the placeholder text to be displayed when there is no user_input
         onChange: React.PropTypes.func, // a method to be called any time user input changes
@@ -32,7 +32,11 @@ class AccountSelector extends React.Component {
         tabIndex: React.PropTypes.number, // tabindex property to be passed to input tag
         disableActionButton: React.PropTypes.bool, // use it if you need to disable action button,
         allowUppercase: React.PropTypes.bool // use it if you need to allow uppercase letters
-    }
+    };
+
+    static defaultProps = {
+        noImage: false
+    };
 
     // can be used in parent component: this.refs.account_selector.getAccount()
     getAccount() {
@@ -91,6 +95,7 @@ class AccountSelector extends React.Component {
     }
 
     render() {
+        let {noImage} = this.props;
         let error = this.getError();
         let type = this.getNameType(this.props.accountName);
         let lookup_display;
@@ -137,10 +142,10 @@ class AccountSelector extends React.Component {
 
         return (
             <div className="account-selector no-overflow" style={this.props.style}>
-                 <div className="content-area">
+                 <div className={this.props.fullWidth ? "" : "content-area"}>
                     <div className="header-area">
-                        {error ? null : <div className="right-label"><span>{member_status}</span> &nbsp; <span>{lookup_display}</span></div>}
-                        <Translate component="label" content={this.props.label}/>
+                        {error || this.props.fullWidth ? null : <div className="right-label"><span>{member_status}</span> &nbsp; <span>{lookup_display}</span></div>}
+                        {this.props.label ? <Translate component="label" content={this.props.label}/> : null}
                     </div>
                     <div className="input-area">
                       <div className="inline-label">
@@ -164,9 +169,13 @@ class AccountSelector extends React.Component {
                         <span>{error}</span>
                     </div>
                 </div>
-                {type === "pubkey" ? <div className="account-image"><Icon name="key" size="4x"/></div> :
-                <AccountImage size={{height: this.props.size || 80, width: this.props.size || 80}}
-                              account={this.props.account ? this.props.account.get('name') : null} custom_image={null}/>}
+                {noImage ? null : type === "pubkey" ?
+                    <div className="account-image"><Icon name="key" size="4x"/></div> :
+                    <AccountImage
+                        size={{height: this.props.size || 80, width: this.props.size || 80}}
+                        account={this.props.account ? this.props.account.get('name') : null}
+                        custom_image={null}
+                    />}
             </div>
         )
 

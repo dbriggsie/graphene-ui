@@ -40,7 +40,7 @@ hr {
 }
 
 .error {
-  color: #ff0000;
+  text-transform: uppercase;
   //padding: 16px;
 }
 
@@ -282,10 +282,10 @@ label.inline {
   flex-direction: column;
   padding: 1rem 2rem 1rem 2rem;
   background: hsl(0, 0%, 32%);
-  color: white;
   border-radius: 0.05rem;
+  color: white;
 
-  .help-content h3 {
+  .help-content, h3 {
     color: white;
   }
 }
@@ -362,4 +362,12 @@ select.bts-select {
 
 input[type=number] {
     -moz-appearance:textfield;
+}
+
+.__react_component_tooltip {
+    max-width: 20rem;
+}
+
+.fill-black {
+    fill: #333;
 }
