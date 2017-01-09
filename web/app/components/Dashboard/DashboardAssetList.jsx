@@ -18,8 +18,6 @@ import counterpart from "counterpart";
 import {fetchCoins, getBackedCoins} from "common/blockTradesMethods";
 import ReactTooltip from "react-tooltip";
 
-require("./DashboardAssetList.scss");
-
 @BindToChainState()
 class DashboardAssetList extends React.Component {
 

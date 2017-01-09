@@ -187,7 +187,7 @@ class Header extends React.Component {
                 className={cnames({active: active === "/" || active.indexOf("dashboard") !== -1})}
                 onClick={this._onNavigate.bind(this, "/dashboard")}
             >
-                <img style={{margin: 0, height: 40}} src={logo}/>
+                <img style={{margin: 0, height: 40}} src={'app/assets/logo.png'}/>
                 <div style={{display: "inline-block", position: "relative", top: 1, paddingLeft: 15}}>{!traderMode ? <Translate content="wallet.title" /> : null}</div>
             </a>
         );
