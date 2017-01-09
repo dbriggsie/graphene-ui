@@ -25,7 +25,28 @@
     "help": "帮助",
     "locked_tip": "钱包已锁定，点击解锁。",
     "unlocked_tip": "钱包已解锁，点击锁定。",
-    "update_asset": "更新资产"
+    "update_asset": "更新资产",
+    "switch_trader": "Switch to Trader Mode",
+    "switch_beginner": "Switch to Beginner Mode",
+    "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
+  },
+  "tooltip": {
+    "account_dropdown": "Click here to switch between accounts as well as to access the Settings, Block Explorer and Help sections.",
+    "current_balance": "This is your current balance of this asset.",
+    "equivalent_balance": "This is how much your current balance is worth in your prefered asset. You can change this asset in the Settings.",
+    "trade_actions": "Click here to either buy or sell this asset.",
+    "pinning": "Click here to pin or unpin an asset, which will display it regardless of your current holdings of that asset.",
+    "transfer_actions": "Click here to make a transfer, or to deposit/withdraw those assets that support it.",
+    "deposit_tip": "To complete the deposit, go to your %(asset)s wallet and make a transfer to the address listed on this page. You will receive the deposit as soon as it has been confirmed. If a memo is shown , it is essential that you include this memo in your transfer.",
+    "copy_tip": "Click to copy the text",
+    "withdraw_full": "Click to withdraw the full balance",
+    "withdraw_address": "If you don't already have a %(asset)s address, please find a wallet provider and create one in order to complete the withdrawal.",
+    "apply_price": "This is the best market price currently available, you may click on it to use that price.",
+    "apply_balance": "This is your current balance. Click on it to use the full amount.",
+    "pin": "Click to pin this asset",
+    "unpin": "Click to unpin this asset",
+    "asset_dropdown": "Click here to select from a list of assets.",
+    "cant_buy": "You do not have any balances you can use to buy this asset with."
   },
   "account": {
     "welcome": "欢迎使用 Openledger (石墨烯)系统",
@@ -912,6 +933,7 @@
     "account_create_wallet_text": "这个密码将被用来创建你的钱包，并且仅保存在本地的浏览器中，而不是在云端。一个钱包中往往包含多个账户。通过备份文件的传输可以轻松实现钱包的跨浏览器或夸计算器的迁移。",
     "create_account_text": "请输入你期望的账户名。这个账户名将在区块链上进行注册，并将作为你的身份标识。",
     "first_account_paid": "由于这是你的第一个账户，水龙头服务讲免费为你支付账户在区块链上的注册费用。",
+        "remember_please_you": "Remember please, you are the only one in control of your private keys to access your account, so you need to make sure to follow instructions to save your backup key when prompted. This is very important for you to enjoy all the great features of the OpenLedger DEX.",
     "must_be_ltm": "费用的支付账户必须为一个终身会员账户。",
     "backup_explain": "点击按钮将生成一个后缀名为 .bin 的备份文件。这个备份文件使用你的钱包密码进行加密。其中包含该钱包中的所有私钥。通过它可以恢复钱包，或者在不同浏览器或者计算机间进行钱包迁移。",
     "backup_new_account": "恭喜，你已经创建了一个新账户。强烈建议你立即备份你的钱包。如果你的计算机/浏览器发生意外，而你又没有备份文件，你将永久丢失钱包及其包含的数据、数字资产。",
@@ -1126,5 +1148,25 @@
     "title": "无法与API服务器同步连接",
     "sub_text_1": "请确认你的计算机系统时钟正确。",
     "sub_text_2": "同步你的计算机时钟后，请刷新本页面。如果你的时钟正确，那你连接的API服务器可能与区块链数据不同步，这种情况下，可尝试使用其他API服务器进行连接。"
+  },
+  "simple_trade": {
+      "max_spend": "Enter the maximum amount you want to spend",
+      "to_buy": "Enter the amount you wish to buy",
+      "buy_with": "Buy %(buy)s with %(with)s",
+      "sell_for": "Sell %(sell)s for %(for)s",
+      "current_sell": "Current balances",
+      "current_receive": "Asset to receive",
+      "price_one": "Enter your desired price for 1 %(asset)s",
+      "will_receive": "You will receive",
+      "summary": "Summary",
+      "volume_warning": "Warning: This is a low volume market",
+      "show_market": "Show market orders",
+      "place_order": "Place my order",
+      "hide_zero": "Hide 0 balances",
+      "actions": "Trade actions",
+      "pinned": "Pinned",
+      "transfer_actions": "Transfer actions",
+      "include_memo": "Include memo",
+      "show_all": "Show all assets"
   }
 }

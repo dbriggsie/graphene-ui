@@ -42,18 +42,19 @@ class ValueComponent extends React.Component {
 
     componentWillMount() {
         let coreAsset = ChainStore.getAsset("1.3.0");
-        if (coreAsset) {
-            if (this.props.fromAsset.get("id") !== coreAsset.get("id")) {
-                MarketsActions.getMarketStats(coreAsset, this.props.fromAsset);
-                this.fromStatsInterval = setInterval(MarketsActions.getMarketStats.bind(this, coreAsset, this.props.fromAsset), 5 * 60 * 1000);
+        let {fromAsset, toAsset} = this.props;
+        if (coreAsset && fromAsset && toAsset) {
+            if (fromAsset.get("id") !== coreAsset.get("id")) {
+                MarketsActions.getMarketStats.defer(coreAsset, fromAsset);
+                this.fromStatsInterval = setInterval(() => {
+                    MarketsActions.getMarketStats.defer(coreAsset, fromAsset);
+                }, 5 * 60 * 1000);
             }
 
-            if (this.props.toAsset.get("id") !== coreAsset.get("id")) {
-                // wrap this in a timeout to prevent dispatch in the middle of a dispatch
-                // MarketsActions.getMarketStats.bind(this, this.props.toAsset, coreAsset);
-                MarketsActions.getMarketStats.defer(coreAsset, this.props.toAsset);
+            if (toAsset.get("id") !== coreAsset.get("id")) {
+                MarketsActions.getMarketStats.defer(coreAsset, toAsset);
                 this.toStatsInterval = setInterval(() => {
-                    MarketsActions.getMarketStats.defer(coreAsset, this.props.toAsset);
+                    MarketsActions.getMarketStats.defer(coreAsset, toAsset);
                 }, 5 * 60 * 1000);
             }
         }

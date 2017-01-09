@@ -33,7 +33,7 @@ class OpType extends React.Component {
     render() {
         let trxTypes = counterpart.translate("transaction.trxTypes");
         let labelClass = classNames("txtlabel", this.props.color || "info");
-        
+
         return (
             <tr>
                 <td>
@@ -112,7 +112,7 @@ class Transaction extends React.Component {
 
         let opCount = trx.operations.length;
         let memo = null;
-        
+
         trx.operations.forEach((op, opIndex) => {
 
             let rows = [];
@@ -181,7 +181,9 @@ class Transaction extends React.Component {
                                     base_asset={op[1].amount_to_sell.asset_id}
                                     quote_asset={op[1].min_to_receive.asset_id}
                                     base_amount={op[1].amount_to_sell.amount}
-                                    quote_amount={op[1].min_to_receive.amount} />
+                                    quote_amount={op[1].min_to_receive.amount}
+                                    noPopOver
+                                />
                             </td>
                         </tr>
                     );
@@ -192,7 +194,7 @@ class Transaction extends React.Component {
                             <td><FormattedAsset amount={op[1].amount_to_sell.amount} asset={op[1].amount_to_sell.asset_id} /></td>
                         </tr>
                     );
-                    
+
                     rows.push(
                         <tr key={key++}>
                             <td><Translate component="span" content="exchange.buy" /></td>
@@ -969,7 +971,7 @@ class Transaction extends React.Component {
                         </tr>
                     )
                     break
-                
+
                 case "proposal_update":
                     let fields = [
                         "active_approvals_to_add", "active_approvals_to_remove",
@@ -1018,7 +1020,7 @@ class Transaction extends React.Component {
                             <td>{this.linkToAccount(op[1].issuer)}</td>
                         </tr>
                     );
-                    
+
                     break;
 
                 case "asset_reserve":
@@ -1045,7 +1047,7 @@ class Transaction extends React.Component {
                             <td><FormattedAsset amount={op[1].amount_to_reserve.amount} asset={op[1].amount_to_reserve.asset_id} /></td>
                         </tr>
                     );
-                    break;                    
+                    break;
 
                 default:
                     console.log("unimplemented op:", op);

@@ -32,7 +32,7 @@ class Settings extends React.Component {
             ],
             settingEntries: {
                 general: ["locale", "unit", "showSettles", "walletLockTimeout", "themes",
-                "disableChat", "showAssetPercent"],
+                "disableChat", "showAssetPercent", "traderMode"],
                 access: ["apiServer", "faucet_address"]
             }
         };
@@ -43,7 +43,9 @@ class Settings extends React.Component {
     }
 
     _onChangeSetting(setting, e) {
-        e.preventDefault();
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
 
         let {defaults} = this.props;
         let value = null;
@@ -113,6 +115,10 @@ class Settings extends React.Component {
             SettingsActions.changeSetting({setting: setting, value: defaults[setting][index]});
             break;
 
+        case "traderMode":
+            let value = e;
+            break;
+
         default:
             value = findEntry(e.target.value, defaults[setting]);
             break;
@@ -140,6 +146,22 @@ class Settings extends React.Component {
     render() {
         let {settings, defaults} = this.props;
         let {menuEntries, activeSetting, settingEntries} = this.state;
+
+        let traderMode = settings.get("traderMode");
+
+        if (!traderMode) {
+            activeSetting = 0;
+            settingEntries.general = ["locale", "disableChat", "themes",
+            "password", "backup", "unit", "apiServer", "traderMode"];
+
+            // menuEntries = menuEntries.filter(a => {
+            //     console.log("menu entry:", a);
+            // });
+            //
+            // settingEntries = settingEntries.filter(a => {
+            //     console.log("menu entry:", a);
+            // });
+        }
 
         let entries;
         let activeEntry = menuEntries[activeSetting];
@@ -185,7 +207,7 @@ class Settings extends React.Component {
         return (
             <div className="grid-block page-layout">
                 <div className="grid-block main-content wrap" style={{marginTop: "1rem"}}>
-                    <div className="grid-content large-offset-2 shrink" style={{paddingRight: "4rem"}}>
+                    {!traderMode ? null : <div className="grid-content large-offset-2 shrink" style={{paddingRight: "4rem"}}>
                         <Translate style={{paddingBottom: 20}} className="bottom-border" component="h4" content="header.settings" />
 
                         <ul className="settings-menu">
@@ -193,11 +215,11 @@ class Settings extends React.Component {
                                 return <li className={index === activeSetting ? "active" : ""} onClick={this._onChangeMenu.bind(this, entry)} key={entry}><Translate content={"settings." + entry} /></li>;
                             })}
                         </ul>
-                    </div>
+                    </div>}
 
-                    <div className="grid-content">
-                        <div className="grid-block small-10 no-padding no-margin vertical">
-                            <Translate component="h3" content={"settings." + menuEntries[activeSetting]} />
+                    <div className={(traderMode ? "grid-content" : "grid-container")}  style={{minWidth: 500, maxWidth: 1000}}>
+                        <div className={"grid-block no-padding no-margin vertical"}>
+                            <Translate component="h3" content={traderMode ? "settings." + menuEntries[activeSetting] : "header.settings"} />
                             <Translate style={{paddingTop: 10, paddingBottom: 20, marginBottom: 30}} className="bottom-border" content={`settings.${menuEntries[activeSetting]}_text`} />
                             {entries}
                         </div>

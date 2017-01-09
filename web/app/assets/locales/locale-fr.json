@@ -20,7 +20,28 @@
     "create_account": "Créér un compte",
     "create_asset": "Créér un actif",
     "lock": "Vérouiller",
-    "unlock": "Dévérouiller"
+    "unlock": "Dévérouiller",
+    "switch_trader": "Switch to Trader Mode",
+    "switch_beginner": "Switch to Beginner Mode",
+    "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
+  },
+  "tooltip": {
+    "account_dropdown": "Click here to switch between accounts as well as to access the Settings, Block Explorer and Help sections.",
+    "current_balance": "This is your current balance of this asset.",
+    "equivalent_balance": "This is how much your current balance is worth in your prefered asset. You can change this asset in the Settings.",
+    "trade_actions": "Click here to either buy or sell this asset.",
+    "pinning": "Click here to pin or unpin an asset, which will display it regardless of your current holdings of that asset.",
+    "transfer_actions": "Click here to make a transfer, or to deposit/withdraw those assets that support it.",
+    "deposit_tip": "To complete the deposit, go to your %(asset)s wallet and make a transfer to the address listed on this page. You will receive the deposit as soon as it has been confirmed. If a memo is shown , it is essential that you include this memo in your transfer.",
+    "copy_tip": "Click to copy the text",
+    "withdraw_full": "Click to withdraw the full balance",
+    "withdraw_address": "If you don't already have a %(asset)s address, please find a wallet provider and create one in order to complete the withdrawal.",
+    "apply_price": "This is the best market price currently available, you may click on it to use that price.",
+    "apply_balance": "This is your current balance. Click on it to use the full amount.",
+    "pin": "Click to pin this asset",
+    "unpin": "Click to unpin this asset",
+    "asset_dropdown": "Click here to select from a list of assets.",
+    "cant_buy": "You do not have any balances you can use to buy this asset with."
   },
   "account": {
     "asset": "Actif",
@@ -419,5 +440,25 @@
     "meta": {
       "open_website": "Open Website"
     }
+  },
+  "simple_trade": {
+      "max_spend": "Enter the maximum amount you want to spend",
+      "to_buy": "Enter the amount you wish to buy",
+      "buy_with": "Buy %(buy)s with %(with)s",
+      "sell_for": "Sell %(sell)s for %(for)s",
+      "current_sell": "Current balances",
+      "current_receive": "Asset to receive",
+      "price_one": "Enter your desired price for 1 %(asset)s",
+      "will_receive": "You will receive",
+      "summary": "Summary",
+      "volume_warning": "Warning: This is a low volume market",
+      "show_market": "Show market orders",
+      "place_order": "Place my order",
+      "hide_zero": "Hide 0 balances",
+      "actions": "Trade actions",
+      "pinned": "Pinned",
+      "transfer_actions": "Transfer actions",
+      "include_memo": "Include memo",
+      "show_all": "Show all assets"
   }
 }

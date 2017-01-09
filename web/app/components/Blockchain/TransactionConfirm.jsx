@@ -7,6 +7,7 @@ import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import TransactionConfirmActions from "actions/TransactionConfirmActions";
 import TransactionConfirmStore from "stores/TransactionConfirmStore";
+import SettingsStore from "stores/SettingsStore";
 import connectToStores from "alt/utils/connectToStores";
 import Icon from "../Icon/Icon";
 import LoadingIndicator from "../LoadingIndicator";
@@ -18,13 +19,15 @@ import utils from "common/utils";
 
 @connectToStores
 class TransactionConfirm extends React.Component {
-    
+
     static getStores() {
-        return [TransactionConfirmStore]
+        return [TransactionConfirmStore, SettingsStore]
     };
 
     static getPropsFromStores() {
-        return TransactionConfirmStore.getState();
+        let state = TransactionConfirmStore.getState();
+        state.traderMode = SettingsStore.getState().settings.get("traderMode");
+        return state;
     };
 
     shouldComponentUpdate(nextProps) {
@@ -74,7 +77,7 @@ class TransactionConfirm extends React.Component {
     }
 
     render() {
-        let {broadcast, broadcasting} = this.props;
+        let {broadcast, broadcasting, traderMode} = this.props;
 
         if ( !this.props.transaction || this.props.closed ) {return null; }
         let button_group, header, confirmButtonClass = "button";
@@ -133,7 +136,7 @@ class TransactionConfirm extends React.Component {
                 <div className="button-group">
                     <div className="grid-block full-width-content">
                         <div className={confirmButtonClass} onClick={this.onConfirmClick.bind(this)}>
-                            {this.props.propose ? 
+                            {this.props.propose ?
                                 <Translate content="propose" />:
                                 <Translate content="transfer.confirm" />
                             }
@@ -159,7 +162,7 @@ class TransactionConfirm extends React.Component {
                             index={0}
                             no_links={true}/>
                     </div>
-                    
+
                     {/* P R O P O S E   F R O M */}
                     {this.props.propose ?
                     <div className="full-width-content form-group">
@@ -169,12 +172,12 @@ class TransactionConfirm extends React.Component {
                             onChange={this.onProposeAccount.bind(this)}
                         />
                     </div> : null}
-                    
+
                     <div className="grid-block shrink" style={{paddingTop: "1rem"}}>
                         {button_group}
 
                         {/* P R O P O S E   T O G G L E */}
-                        { !this.props.transaction.has_proposed_operation() && !(broadcast || broadcasting) ?
+                        { traderMode && !this.props.transaction.has_proposed_operation() && !(broadcast || broadcasting) ?
                             <div className="align-right grid-block">
                                 <label style={{paddingTop: "0.5rem", paddingRight: "0.5rem"}}><Translate content="propose" />:</label>
                                 <div className="switch" onClick={this.onProposeClick.bind(this)}>
@@ -193,4 +196,3 @@ class TransactionConfirm extends React.Component {
 }
 
 export default TransactionConfirm;
-

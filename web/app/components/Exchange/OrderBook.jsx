@@ -95,7 +95,8 @@ class OrderBook extends React.Component {
             scrollToBottom: true,
             flip: props.flipOrderBook,
             showAllBids: false,
-            showAllAsks: false
+            showAllAsks: false,
+            rowsToShow: props.simpleTrade ? 5 : 10
         };
 
         this._updateHeight = this._updateHeight.bind(this);
@@ -104,7 +105,6 @@ class OrderBook extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         return (
             !Immutable.is(nextProps.orders, this.props.orders) ||
-            !Immutable.is(nextProps.calls, this.props.calls) ||
             !Immutable.is(nextProps.calls, this.props.calls) ||
             nextProps.horizontal !== this.props.horizontal ||
             nextProps.latest !== this.props.latest ||
@@ -240,7 +240,7 @@ class OrderBook extends React.Component {
     }
 
     render() {
-        let {combinedBids, combinedAsks, quote, base, quoteSymbol, baseSymbol, horizontal} = this.props;
+        let {combinedBids, combinedAsks, quote, base, horizontal} = this.props;
         let {showAllAsks, showAllBids} = this.state;
 
         let bidRows = null, askRows = null;
@@ -250,6 +250,9 @@ class OrderBook extends React.Component {
         let totalAskAmount = 0;
 
         let totalAsks = 0, totalBids = 0, totalBidForSale = 0;
+
+        const baseSymbol = base ? base.get("symbol") : "";
+        const quoteSymbol = quote ? quote.get("symbol") : "";
 
         if(base && quote) {
             let totalBidAmount = 0;
@@ -378,11 +381,11 @@ class OrderBook extends React.Component {
             let totalAsksLength = askRows.length;
 
             if (!showAllBids) {
-                bidRows.splice(10, bidRows.length);
+                bidRows.splice(this.state.rowsToShow, bidRows.length);
             }
 
             if (!showAllAsks) {
-                askRows.splice(10, askRows.length);
+                askRows.splice(this.state.rowsToShow, askRows.length);
             }
 
             let leftHeader = (
@@ -444,7 +447,7 @@ class OrderBook extends React.Component {
                                         </TransitionWrapper>
                                     </table>
                                 </div>
-                                {totalAsksLength > 13 ? (
+                                {totalAsksLength > (this.props.simpleTrade ? 5 : 10) ? (
                                 <div className="orderbook-showall">
                                     <a onClick={this._onToggleShowAll.bind(this, "asks")}>
                                         <Translate content={showAllAsks ? "exchange.hide" : "exchange.show_asks"} />
@@ -458,7 +461,7 @@ class OrderBook extends React.Component {
                             <div className="exchange-bordered">
                                 <div className="exchange-content-header bid">
                                     <Translate content="exchange.bids" />
-                                    {!this.state.flip ? (
+                                    {!this.state.flip && !this.props.simpleTrade ? (
                                     <span>
                                         <span onClick={this._flipBuySell.bind(this)} style={{cursor: "pointer", fontSize: "1rem"}}>  &#8646;</span>
                                         <span onClick={this.props.moveOrderBook} style={{cursor: "pointer", fontSize: "1rem"}}> &#8645;</span>
@@ -485,7 +488,7 @@ class OrderBook extends React.Component {
                                         </TransitionWrapper>
                                     </table>
                                 </div>
-                                {totalBidsLength > 13 ? (
+                                {totalBidsLength > (this.props.simpleTrade ? 5 : 10) ? (
                                 <div className="orderbook-showall">
                                     <a onClick={this._onToggleShowAll.bind(this, "bids")}>
                                         <Translate content={showAllBids ? "exchange.hide" : "exchange.show_bids"} />

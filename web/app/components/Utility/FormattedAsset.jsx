@@ -16,7 +16,7 @@ import {ChainStore} from "graphenejs-lib";
  *  Given an amount and an asset, render it with proper precision
  *
  *  Expected Properties:
- *     asset:  asset id, which will be fetched from the 
+ *     asset:  asset id, which will be fetched from the
  *     amount: the ammount of asset
  *
  */
@@ -108,7 +108,7 @@ class FormattedAsset extends React.Component {
         </div>;
 
         return (
-                <span className={colorClass}  >
+                <span className={colorClass} style={this.props.style} >
                 {!hide_amount ?
                     <FormattedNumber
                         value={this.props.exact_amount ? amount : amount / precision}
@@ -125,11 +125,10 @@ class FormattedAsset extends React.Component {
                     >
                         <span className="currency click-for-help" onClick={this.togglePopover}><AssetName name={asset.symbol} /></span>
                     </Popover></span>) :
-                    <span className="currency" onClick={this.togglePopover}> <AssetName name={asset.symbol} /></span>)} 
+                    <span className="currency" onClick={this.togglePopover}> <AssetName name={asset.symbol} /></span>)}
                 </span>
         );
     }
 }
 
 export default FormattedAsset;
-

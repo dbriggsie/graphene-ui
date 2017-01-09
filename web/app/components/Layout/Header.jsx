@@ -5,6 +5,8 @@ import ActionSheet from "react-foundation-apps/src/action-sheet";
 import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
+import SettingsActions from "actions/SettingsActions";
+import notify from "actions/NotificationActions";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import Icon from "../Icon/Icon";
 import Translate from "react-translate-component";
@@ -16,6 +18,7 @@ import WalletManagerStore from "stores/WalletManagerStore";
 import cnames from "classnames";
 import TotalBalanceValue from "../Utility/TotalBalanceValue";
 import Immutable from "immutable";
+import {ChainStore} from "graphenejs-lib";
 
 @connectToStores
 class Header extends React.Component {
@@ -31,7 +34,8 @@ class Header extends React.Component {
             locked: WalletUnlockStore.getState().locked,
             current_wallet: WalletManagerStore.getState().current_wallet,
             lastMarket: SettingsStore.getState().viewSettings.get("lastMarket"),
-            starredAccounts: SettingsStore.getState().starredAccounts
+            starredAccounts: SettingsStore.getState().starredAccounts,
+            traderMode: SettingsStore.getState().settings.get("traderMode"),
         };
     }
 
@@ -71,6 +75,7 @@ class Header extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         return (
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
+            nextProps.traderMode !== this.props.traderMode ||
             nextProps.currentAccount !== this.props.currentAccount ||
             nextProps.locked !== this.props.locked ||
             nextProps.current_wallet !== this.props.current_wallet ||
@@ -81,7 +86,11 @@ class Header extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // this._setActivePath();
+        if (nextProps.traderMode && !this.props.traderMode) {
+            this.context.history.pushState(null, "/dashboard");
+        }else if(!nextProps.traderMode && this.props.traderMode){
+            this.context.history.pushState(null, "/dashboard");
+        }
     }
 
     _triggerMenu(e) {
@@ -123,9 +132,24 @@ class Header extends React.Component {
         this.context.history.pushState(null, `/account/${account}/overview`);
     }
 
+    onSwitchTraderMode() {
+
+        if(SettingsStore.getState().settings.get("traderMode")){
+            SettingsActions.changeSetting({setting: "traderMode", value: false});
+        }else{
+            SettingsActions.changeSetting({setting: "traderMode", value: true});
+        }
+
+        /*notify.addNotification({
+            message: counterpart.translate("header.trader_mode_notify"),
+            level: "success",
+            autoDismiss: 10
+        });*/
+    }
+
     render() {
         let {active} = this.state;
-        let {linkedAccounts, currentAccount, starredAccounts} = this.props;
+        let {linkedAccounts, currentAccount, starredAccounts, traderMode} = this.props;
         let settings = counterpart.translate("header.settings");
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
@@ -159,11 +183,12 @@ class Header extends React.Component {
 
         let dashboard = (
             <a
-                style={{paddingTop: 3, paddingBottom: 3}}
+                style={{display: "inline-block", paddingTop: 3, paddingBottom: 3}}
                 className={cnames({active: active === "/" || active.indexOf("dashboard") !== -1})}
                 onClick={this._onNavigate.bind(this, "/dashboard")}
             >
-                <img style={{margin: 0, height: 40}} src={'app/assets/logo.png'}/>
+                <img style={{margin: 0, height: 40}} src={logo}/>
+                <div style={{display: "inline-block", position: "relative", top: 1, paddingLeft: 15}}>{!traderMode ? <Translate content="wallet.title" /> : null}</div>
             </a>
         );
 
@@ -190,6 +215,11 @@ class Header extends React.Component {
 
         // Account selector: Only active inside the exchange
         let accountsDropDown = null;
+
+        let hasOrders = linkedAccounts.reduce((final, a) => {
+            let account = ChainStore.getAccount(a);
+            return final || (account && account.get("orders") && account.get("orders").size > 0);
+        }, false);
 
         if (currentAccount) {
 
@@ -236,7 +266,7 @@ class Header extends React.Component {
                 accountsDropDown = (
                     <ActionSheet>
                         <ActionSheet.Button title="">
-                            <a style={{padding: "1rem"}} className="button">
+                            <a style={{padding: "1rem"}} className="button" data-place="bottom" data-tip={!traderMode ? counterpart.translate("tooltip.account_dropdown") : null}>
                                 &nbsp;{account_display_name} &nbsp;
                                 <Icon className="icon-14px" name="chevron-down"/>
                             </a>
@@ -253,7 +283,7 @@ class Header extends React.Component {
         }
 
         return (
-            <div className="header menu-group primary">
+            <div className="header menu-group primary" style={{minHeight: 49}}>
                 <div className="show-for-small-only">
                     <ul className="primary menu-bar title">
                         <li><a href onClick={this._triggerMenu}><Icon className="icon-14px" name="menu"/></a></li>
@@ -268,16 +298,23 @@ class Header extends React.Component {
                 <div className="grid-block show-for-medium">
                     <ul className="menu-bar">
                         <li>{dashboard}</li>
-                        {!currentAccount ? null : <li><Link to={`/account/${currentAccount}/overview`} activeClassName="active"><Translate content="header.account" /></Link></li>}
-                        <li><a className={cnames({active: active.indexOf("transfer") !== -1})} onClick={this._onNavigate.bind(this, "/transfer")}><Translate component="span" content="header.payments" /></a></li>
-                        <li>{tradeLink}</li>
-                        {currentAccount && myAccounts.indexOf(currentAccount) !== -1 ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
+                        {(!traderMode && hasOrders) ? <li><Link to={"/my-orders"} activeClassName="active"><Translate content="header.my_orders"/></Link></li> : null}
+                        {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} className={cnames({active: active.indexOf("account/") !== -1})}><Translate content="header.account" /></Link></li>}
+                        {!traderMode ? null : <li><a className={cnames({active: active.indexOf("transfer") !== -1})} onClick={this._onNavigate.bind(this, "/transfer")}><Translate component="span" content="header.payments" /></a></li>}
+                        {!traderMode ? null : <li>{tradeLink}</li>}
+                        {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                     </ul>
                 </div>
-                <div className="grid-block show-for-medium shrink">
+                <div className="grid-block show-for-medium shrink menu-bar">
                     <div className="grp-menu-items-group header-right-menu">
-                        {walletBalance}
+                        {!traderMode ? null : walletBalance}
 
+                        <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
+                            <div style={{textTransform: "none", fontSize: "0.9rem"}} className="button">
+                                <Icon className="icon-14px" name="assets"/>
+                                <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_beginner" />:<Translate content="header.switch_trader" />}</span>
+                            </div>
+                        </div> 
                         <div className="grid-block shrink overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>

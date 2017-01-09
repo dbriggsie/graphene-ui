@@ -182,7 +182,7 @@ class Asset extends React.Component {
             })
         }
 
-        let {name, prefix} = utils.replaceName(asset.symbol, "bitasset" in asset && !asset.bitasset.is_prediction_market && asset.issuer === "1.2.0");
+        let {name, prefix} = utils.replaceName(asset.symbol);
 
         return (
                 <div style={{overflow:"visible"}}>

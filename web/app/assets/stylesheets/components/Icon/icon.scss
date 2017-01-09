@@ -56,6 +56,7 @@ $icons: "user",
 "database",
 "search",
 "plus-circle",
+"lnr-cross",
 "question-circle",
 "cross-circle",
 "cog",
@@ -80,19 +81,14 @@ $icons: "user",
 "fi-star",
 "fees",
 "thumb-tack",
-"clock";
+"clock",
+"clippy";
+
 @each $image in $icons {
     .#{$image} {
-      -webkit-mask:url('./components/Icon/#{$image}.svg') no-repeat 50% 50%;
-      mask: url('./components/Icon/#{$image}.svg') no-repeat 50% 50%;
-      -webkit-mask-size: cover;
-      mask-size: cover;
+        -webkit-mask:url('./components/Icon/#{$image}.svg') no-repeat 50% 50%;
+        mask: url('./components/Icon/#{$image}.svg') no-repeat 50% 50%;
+        -webkit-mask-size: cover;
+        mask-size: cover;
     }
 }
-
-
-
-
-    /*background-color: red;
-    -webkit-mask:  url(icon.svg) no-repeat 50% 50%;
-    mask: url(icon.svg) no-repeat 50% 50%;*/
