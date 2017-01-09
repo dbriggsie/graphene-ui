@@ -687,15 +687,6 @@
     "disableChat": "Sohbeti etkinsizleştir"
   },
   "footer": {
-<<<<<<< HEAD
-    "title": "Openledger",
-    "block": "Baş blok",
-    "loading": "Yüklüyor...",
-    "backup": "Yedekleme Gerekiyor",
-    "nosync": "Blokzinciri ile eşzamanlı değil, lütfen senkronize olana kadar bekleyin..",
-    "connection": "Blokzinciri bağlantısı yok",
-    "brainkey": "Beyin anahtarının yedeklenmesi tavsiye edilir "
-=======
     "title": "Graphene",
     "block": "Başat blok",
     "loading": "Yükleniyor...",
@@ -703,7 +694,6 @@
     "nosync": "Blokzinciri ile eşzamanlı değil, lütfen senkronize olana kadar bekleyin...",
     "connection": "Blokzinciri bağlantısı yok.",
     "brainkey": "TekAnahtar yedeklemesi tavsiye edilir."
->>>>>>> 39d2d5a97fbbec501cb7aa044477d14da3ccf9f8
   },
   "exchange": {
     "market": "Piyasa",

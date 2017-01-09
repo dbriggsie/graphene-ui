@@ -20,9 +20,6 @@ import MemoText from "./MemoText";
 import {ChainTypes} from "graphenejs-lib";
 let {operations} = ChainTypes;
 
-require("./operations.scss");
-require("./json-inspector.scss");
-
 let ops = Object.keys(operations);
 let listings = Object.keys(account_constants.account_listing);
 

@@ -21,8 +21,6 @@ import ImportKeysStore from "stores/ImportKeysStore";
 
 import GenesisFilter from "chain/GenesisFilter";
 
-require("./ImportKeys.scss");
-
 let import_keys_assert_checking = false;
 
 @connectToStores

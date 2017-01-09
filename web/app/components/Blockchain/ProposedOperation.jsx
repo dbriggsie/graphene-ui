@@ -18,8 +18,6 @@ import MemoText from "./MemoText";
 import TranslateWithLinks from "../Utility/TranslateWithLinks";
 let {operations} = require("graphenejs-lib").ChainTypes;
 
-require("./operations.scss");
-
 let ops = Object.keys(operations);
 let listings = account_constants.account_listing;
 

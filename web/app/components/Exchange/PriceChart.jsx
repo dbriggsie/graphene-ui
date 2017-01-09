@@ -13,7 +13,6 @@ require("./highcharts-plugins/rsi.js");
 require("./highcharts-plugins/ema.js");
 require("./highcharts-plugins/atr.js");
 require("./highcharts-plugins/sma.js");
-require("./highcharts-plugins/indicators.css");
 require("./highcharts-plugins/highstock-current-price-indicator.js");
 
 class PriceChart extends React.Component {

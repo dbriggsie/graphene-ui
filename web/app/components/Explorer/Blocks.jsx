@@ -20,8 +20,6 @@ import Icon from "../Icon/Icon";
 import Ps from "perfect-scrollbar";
 import TransitionWrapper from "../Utility/TransitionWrapper";
 
-require("../Blockchain/json-inspector.scss");
-
 class BlockTimeAgo extends React.Component {
 
     shouldComponentUpdate(nextProps) {

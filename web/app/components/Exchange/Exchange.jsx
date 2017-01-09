@@ -37,8 +37,6 @@ import counterpart from "counterpart";
 import AssetName from "../Utility/AssetName";
 import Highcharts from "highcharts/highstock";
 
-require("./exchange.scss");
-
 let emitter = EmitterInstance.emitter();
 let callListener, limitListener, newCallListener, feedUpdateListener, settleOrderListener;
 let SATOSHI = 8;

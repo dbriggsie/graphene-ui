@@ -125,7 +125,7 @@
         .table {
             > thead > tr > th,
             > tbody > tr > td {
-                border-bottom-color: darken($secondary-text-color, 10%);                
+                border-bottom-color: darken($secondary-text-color, 10%);
             }
         }
     }
@@ -227,14 +227,14 @@
         a > span {
             color: $secondary-text-color;
         }
-        svg > path {
-            fill: $secondary-text-color;
+        .icon {
+            background-color: $secondary-text-color;
+            &:hover {
+                background-color: $primary-text-color;
+            }
         }
         a:hover > span {
             color: $primary-text-color;
-        }
-        svg:hover > path {
-            fill: $primary-text-color;
         }
     }
     // cards
@@ -275,18 +275,16 @@
         }
         > tbody > tr > td {
             border-bottom-color: $dark-text-color;
-            .receive_address{
+            .receive_address {
                 background: transparent;
                 border: none;
                 color: $secondary-text-color;
                 text-indent: 0;
                 padding: 0;
                 &::selection {
-                    background: transparent; 
+                    background: transparent;
                 }
             }
-
-
         }
         &.table-hover > tbody > tr:hover > td,
         .table-hover > tbody > tr:hover > th {

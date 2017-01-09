@@ -13,8 +13,6 @@ import SettingsActions from "actions/SettingsActions";
 import SettingsStore from "stores/SettingsStore";
 import classNames from "classnames";
 
-require("./witnesses.scss");
-
 @BindToChainState({keep_updating: true})
 class WitnessCard extends React.Component {
 

@@ -3,7 +3,7 @@ import WalletApi from "rpc_api/WalletApi";
 import WalletDb from "../stores/WalletDb";
 import {ChainStore, ChainTypes} from "graphenejs-lib";
 import {Apis} from "graphenejs-ws";
-import marketUtils from "common/market_utils";
+import market_utils from "common/market_utils";
 import accountUtils from "common/account_utils";
 import Immutable from "immutable";
 
@@ -82,7 +82,7 @@ class MarketsActions {
         clearBatchTimeouts();
         let subID = quote.get("id") + "_" + base.get("id");
 
-        let {isMarketAsset, marketAsset, inverted} = marketUtils.isMarketAsset(quote, base);
+        let {isMarketAsset, marketAsset, inverted} = market_utils.isMarketAsset(quote, base);
 
         let bucketCount = 200;
         // let lastLimitOrder = null;

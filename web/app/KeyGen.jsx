@@ -5,8 +5,6 @@ const { Route, RouteHandler, DefaultRoute } = Router;
 
 import KeyGenComponent from "./components/Wallet/KeyGenComponent";
 
-require("./assets/loader");
-
 class KeyGen  {
 
     constructor(props) {

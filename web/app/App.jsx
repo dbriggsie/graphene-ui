@@ -133,9 +133,7 @@ class App extends React.Component {
                         //console.log("connected to:", res[0].network);
                     });
                 }
-            }
-
-            
+            }       
 
 
             Promise.all([

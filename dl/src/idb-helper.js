@@ -40,7 +40,7 @@ module.exports = idb_helper = {
         @return Promise (resolves or rejects outside of the transaction)
     */
     add: (store, object, event_callback) => {
-        return (object, event_callback) => {
+        return ((object, event_callback) => {
             var request = store.add(object)
             
             var event_promise = null
@@ -63,7 +63,7 @@ module.exports = idb_helper = {
                 return Promise.all([event_promise, request_promise])
             return request_promise
             
-        }(object, event_callback)//copy var references for callbacks
+        })(object, event_callback)//copy var references for callbacks
     },
     
     /** callback may return <b>false</b> to indicate that iteration should stop */

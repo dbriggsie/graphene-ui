@@ -15,7 +15,7 @@ import AccountSelector from "../Account/AccountSelector";
 import AmountSelector from "../Utility/AmountSelector";
 
 @BindToChainState()
-export default class IssueModal extends React.Component {
+class IssueModal extends React.Component {
 
     static propTypes = {
         asset_to_issue: ChainTypes.ChainAsset.isRequired
