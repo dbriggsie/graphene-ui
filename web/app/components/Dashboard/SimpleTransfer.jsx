@@ -79,7 +79,7 @@ class SimpleTransferContent extends React.Component {
         AccountActions.transfer(
             this.props.sender.get("id"),
             this.state.to_account.get("id"),
-            this.state.to_send.getAmount() - feeToSubtract,
+            this.state.to_send.getAmount(),
             this.state.to_send.asset_id,
             this.state.includeMemo ? this.state.memo : null, // memo
             null,
