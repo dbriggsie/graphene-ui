@@ -72,14 +72,26 @@ class SimpleTransferContent extends React.Component {
         if (!this.state.to_account) return;
 
         let fee = this._getFee();
+        let currentBalance = this._getCurrentBalance();
 
-        let feeToSubtract = this.state.to_send.asset_id !== fee.asset ? 0 :
-            fee.amount;
+        let amountToTransfer = this.state.to_send.getAmount();
+        if (this.state.to_send.asset_id === fee.asset) {
+            let feeToSubtract = fee.amount;
+
+            /*
+            * If the balance is insufficient to transfer and also pay for the fee,
+            * subtract the fee from the amount before transferring
+            */
+            if (currentBalance.get("balance") < (amountToTransfer + fee.amount)) {
+                amountToTransfer -= feeToSubtract;
+            }
+        }
+
 
         AccountActions.transfer(
             this.props.sender.get("id"),
             this.state.to_account.get("id"),
-            this.state.to_send.getAmount(),
+            amountToTransfer,
             this.state.to_send.asset_id,
             this.state.includeMemo ? this.state.memo : null, // memo
             null,
@@ -129,6 +141,12 @@ class SimpleTransferContent extends React.Component {
         });
     }
 
+    _getCurrentBalance() {
+        return this.props.balances.find(b => {
+            return b && b.get("asset_type") === this.props.asset.get("id");
+        });
+    }
+
     _onToggleMemo() {
         this.setState({
             includeMemo: !this.state.includeMemo
@@ -151,9 +169,7 @@ class SimpleTransferContent extends React.Component {
 
         const fee = this._getFee();
 
-        let currentBalance = balances.find(b => {
-            return b && b.get("asset_type") === asset.get("id");
-        });
+        let currentBalance = this._getCurrentBalance();
 
         const currentB = currentBalance ?
         <div
