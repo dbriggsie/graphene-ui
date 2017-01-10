@@ -1,13 +1,12 @@
 .icon {
     position: relative;
     top: 1px;
-}
-
-.icon {
     width: 1.12rem;
     height: 1.12rem;
     display: inline-block;
+    background-color: #fff;
 }
+
 
 .icon-14px {
     width: 14px;
@@ -83,7 +82,6 @@ $icons: "user",
 "thumb-tack",
 "clock",
 "clippy";
-
 @each $image in $icons {
     .#{$image} {
         -webkit-mask:url('./components/Icon/#{$image}.svg') no-repeat 50% 50%;

@@ -130,10 +130,7 @@
         }
     }
     .footer {
-        @include color($secondary-text-color, $panel-bg-color);
-        svg > path {
-            fill: $secondary-text-color;
-        }
+        @include color($secondary-text-color, $panel-bg-color);        
         .logo .version {
             color: darken($secondary-text-color, 10%);
         }
@@ -444,15 +441,11 @@
     }
     .icon.success {
         padding-right: 1rem;
-        > svg > path {
-            fill: $success-color;
-        }
+        background-color: $success-color;
     }
     .icon.error {
         padding-right: 1rem;
-        > svg > path {
-            fill: $warning-color;
-        }
+        background-color: $warning-color;
     }
     .circle-wrapper {
         .circle:before {
@@ -776,7 +769,6 @@
     }
     select.bts-select {
         color: $secondary-text-color;
-
         > option {
             color: $chat-text-color;
         }
@@ -845,52 +837,40 @@
             }
         }
     }
-
     .buy-text {
         color: $bid-color;
-
         &.inactive {
             color: grey;
         }
     }
-
     .sell-text {
         color: $ask-color;
-
         &.inactive {
             color: grey;
         }
     }
-
     .orders-switch input:checked + label {
-
-            background: $ask-color;
-
-            &::after {
-                border-color: $ask-color;
-            }
+        background: $ask-color;
+        &::after {
+            border-color: $ask-color;
+        }
     }
-
     .orders-switch input + label {
-            background: $bid-color;
-
-            &::after {
-                border-color: $bid-color;
-            }
+        background: $bid-color;
+        &::after {
+            border-color: $bid-color;
+        }
     }
-
     // SimpleTrade mode
     .SimpleTrade__modal {
         > div.Modal__header {
             background-color: $header-color;
         }
     }
-
     .balance-row {
         &.active {
             background-color: $row-accent-color;
         }
-
         &:hover {
             background-color: $row-accent-color;
         }
