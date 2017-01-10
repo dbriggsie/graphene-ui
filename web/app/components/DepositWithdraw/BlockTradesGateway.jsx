@@ -1,5 +1,5 @@
 import React from "react";
-import BlockTradesGatewayDepositRequest from "../DepositWithdraw/blocktrades/BlockTradesGatewayDepositRequest";
+import BlockTradesGatewayDepositRequest from "./blocktrades/BlockTradesGatewayDepositRequest";
 import Translate from "react-translate-component";
 import AccountBalance from "components/Account/AccountBalance";
 import connectToStores from "alt/utils/connectToStores";

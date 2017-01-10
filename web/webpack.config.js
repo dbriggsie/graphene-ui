@@ -163,7 +163,6 @@ function CreateWebpackConfig(type) {
                 unsafe: true
             }
         }));
-        this.plugins.push(new webpack.optimize.DedupePlugin());
     }
 }
 
