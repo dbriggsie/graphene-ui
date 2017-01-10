@@ -14,16 +14,14 @@
     "url": "git://github.com/cryptonomex/graphene_ui"
   },
   "scripts": {
-    "test": "jest",
-    "profile-dev": "webpack --config conf/webpack-dev.js --profile --json > stats-dev.json",
-    "profile-build": "NODE_ENV=production webpack --config conf/webpack-prod.js --profile --json > stats-prod.json",
-    "profile-nougly": "NODE_ENV=production webpack --config conf/webpack-prod-nougly.js --profile --json > stats-prod-nougly.json",
+    "test": "test",
+    "profile-dev": "webpack --config web/webpack.config.js --profile --json > stats-dev.json",
+    "profile-build": "NODE_ENV=production webpack --config web/webpack.config.js --profile --json > stats-prod.json",
     "start": "node server.js",
-    "build": "NODE_ENV=production webpack --progress --display-error-details --colors",
-    "build-nougly": "NODE_ENV=production webpack --config conf/webpack-prod-nougly.js --progress --display-error-details --colors",
-    "electron": "NODE_ENV=production webpack --config conf/webpack-electron.js --progress --display-error-details --colors;",
-    "postelectron": " echo 'copying to electron/build..'; cp -r dist/* ../electron/build/; echo 'done.'",
-    "build-win32": "set NODE_ENV=production && webpack --config conf/webpack-prod.js --progress --colors &&  echo 'copying to electron/build..' &&  xcopy dist ..\\electron\\build /s /e /y && echo 'done.'"
+    "build": "NODE_ENV=production webpack --config web/webpack.config.js --progress --display-error-details --colors",
+    "electron": "NODE_ENV=production webpack --config web/webpack.config.js --progress --display-error-details --colors;",
+    "postelectron": " echo 'copying to ./electron/build..'; cp -r web/dist/* ./electron/build/; echo 'done.'",
+    "build-win32": "set NODE_ENV=production && webpack --config web/webpack.config.js --progress --colors &&  echo 'copying to electron/build..' &&  xcopy dist ..\\electron\\build /s /e /y && echo 'done.'"
   },
   "dependencies": {
     "alt": "^0.17.8",
