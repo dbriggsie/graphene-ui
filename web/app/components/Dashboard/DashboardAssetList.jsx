@@ -15,8 +15,10 @@ import SimpleDepositWithdraw from "./SimpleDepositWithdraw";
 import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
-import {fetchCoins, getBackedCoins} from "common/blockTradesMethods";
+import { fetchCoins,getBackedCoins } from "common/blockTradesMethods"; 
 import ReactTooltip from "react-tooltip";
+
+
 
 @BindToChainState()
 class DashboardAssetList extends React.Component {

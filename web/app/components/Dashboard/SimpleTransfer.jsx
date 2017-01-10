@@ -75,18 +75,6 @@ class SimpleTransferContent extends React.Component {
         let currentBalance = this._getCurrentBalance();
 
         let amountToTransfer = this.state.to_send.getAmount();
-        if (this.state.to_send.asset_id === fee.asset) {
-            let feeToSubtract = fee.amount;
-
-            /*
-            * If the balance is insufficient to transfer and also pay for the fee,
-            * subtract the fee from the amount before transferring
-            */
-            if (currentBalance.get("balance") < (amountToTransfer + fee.amount)) {
-                amountToTransfer -= feeToSubtract;
-            }
-        }
-
 
         AccountActions.transfer(
             this.props.sender.get("id"),
@@ -208,7 +196,6 @@ class SimpleTransferContent extends React.Component {
                             {/* <label>
                                 <span className="inline-label">
                                     <input readOnly style={{border: "1px solid grey"}} type="text" value={addressValue} />
-
                                     <CopyButton
                                         text={addressValue}
                                     />

@@ -336,6 +336,6 @@ class TransactionWrapper extends React.Component {
 
 }
 
-RecentTransactions.TransactionWrapper = TransactionWrapper;
+export {TransactionWrapper};
 
 export default RecentTransactions;

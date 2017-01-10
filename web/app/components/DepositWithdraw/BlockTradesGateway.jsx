@@ -14,6 +14,7 @@ import BindToChainState from "../Utility/BindToChainState";
 import ChainTypes from "../Utility/ChainTypes";
 import LoadingIndicator from "../LoadingIndicator";
 
+
 @connectToStores
 export default class BlockTradesGateway extends React.Component {
 
