@@ -43,14 +43,14 @@ class BuySell extends React.Component {
 
     _addBalance(balance) {
         if (this.props.type === "bid") {
-            this.props.totalChange({target: {value: balance.toString()}});
+            this.props.totalChange({target: {value: balance}});
         } else {
-            this.props.amountChange({target: {value: balance.toString()}});
+            this.props.amountChange({target: {value: balance}});
         }
     }
 
     _setPrice(price) {
-        this.props.priceChange({target: {value: price.toString()}});
+        this.props.priceChange({target: {value: price}});
     }
 
     render() {
@@ -66,6 +66,11 @@ class BuySell extends React.Component {
         if (this.props.price) price = this.props.price;
         if (this.props.total) total = this.props.total;
 
+        ~amount.toString().indexOf('e')?amount = Number(amount).toFixed(8).replace(/\.?0+$/,""):1;
+        ~price.toString().indexOf('e')?price = Number(price).toFixed(8).replace(/\.?0+$/,""):1;
+        ~total.toString().indexOf('e')?total = Number(total).toFixed(8).replace(/\.?0+$/,""):1;
+
+        
         let balanceAmount = balance ? utils.get_asset_amount(balance.get("balance"), {precision: balancePrecision}) : 0;
         if (!balanceAmount) {
             balanceAmount = 0;

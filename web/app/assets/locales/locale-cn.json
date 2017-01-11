@@ -27,7 +27,7 @@
     "unlocked_tip": "钱包已解锁，点击锁定。",
     "update_asset": "更新资产",
     "switch_trader": "Switch to Trader Mode",
-    "switch_beginner": "Switch to Beginner Mode",
+    "switch_basic": "Switch to Basic Mode",
     "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
   },
   "tooltip": {

@@ -312,7 +312,7 @@ class Header extends React.Component {
                         <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
                             <div style={{textTransform: "none", fontSize: "0.9rem"}} className="button">
                                 <Icon className="icon-14px" name="assets"/>
-                                <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_beginner" />:<Translate content="header.switch_trader" />}</span>
+                                <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_basic" />:<Translate content="header.switch_trader" />}</span>
                             </div>
                         </div> 
                         <div className="grid-block shrink overflow-visible account-drop-down">
