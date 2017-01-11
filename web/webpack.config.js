@@ -5,6 +5,15 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const fs = require('fs');
 const git = require('git-rev-sync');
+const exec = require('child_process').exec;
+
+exec(`rm -fr ${__dirname}/dist/*`, (err, stdout, stderr) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(stdout);
+});
 
 function CreateWebpackConfig(type) {
 
