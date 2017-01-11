@@ -304,6 +304,15 @@ class DashboardAssetList extends React.Component {
                                         return a > b ? 1 : a < b ? -1 : 0;
                                     }
                                 })
+                                .sort((a,b) => {
+                                    if(this._isPinned(a)>this._isPinned(b)){
+                                        return -1;
+                                    }else if(this._isPinned(a)<this._isPinned(b)){
+                                        return 1;
+                                    }else {
+                                        return 0;
+                                    }
+                                })
                                 .map(a => this._renderRow(a))}
                         </tbody>
                     </table>
