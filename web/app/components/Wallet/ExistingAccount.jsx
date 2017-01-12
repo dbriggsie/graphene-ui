@@ -30,7 +30,12 @@ class ExistingAccount extends ExistingAccountBaseComponent {
                                 <h3><Translate content="wallet.create_wallet_backup" /></h3> :
                                 <h3><Translate content="wallet.setup_wallet" /></h3>}
                         </div>
-                        <div className="content-block">
+
+                        <Link to="/restore-brainkey">
+                            <Translate content="settings.backup_brainkey" />
+                        </Link>
+                        
+                        <div className="content-block" style={{'padding':'20px 0 0 0'}} >
                             {this.props.children}
                         </div>
                     </div>

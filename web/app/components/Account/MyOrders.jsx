@@ -169,7 +169,7 @@ class MyOrders extends React.Component {
         }
 
         return (
-            <div className="grid-container no-overflow" style={{minWidth: "50rem", paddingBottom: 15, paddingTop: 40}}>
+            <div className="grid-container " style={{minWidth: "50rem", paddingBottom: 15, paddingTop: 40}}>
                 <div className="text-center">
                     <Translate content="header.my_orders" component="h3" />
 

@@ -121,5 +121,5 @@ class Tabs extends React.Component {
 }
 
 
-Tabs.Tab = Tab;
+export {Tab};
 export default Tabs;

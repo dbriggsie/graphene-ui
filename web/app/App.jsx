@@ -60,6 +60,7 @@ import WalletManager, {WalletOptions, ChangeActiveWallet, WalletDelete} from "./
 import BalanceClaimActive from "./components/Wallet/BalanceClaimActive";
 import BackupBrainkey from "./components/Wallet/BackupBrainkey";
 import Brainkey from "./components/Wallet/Brainkey";
+import BrainKeyPage from "./components/Wallet/BrainKeyPage";
 import AccountRefsStore from "stores/AccountRefsStore";
 import Help from "./components/Help";
 import InitError from "./components/InitError";
@@ -384,6 +385,7 @@ let routes = (
         <Route path="block/:height" component={BlockContainer}/>
         <Route path="asset/:symbol" component={AssetContainer}/>
         <Route path="create-account" component={CreateAccount}/>
+        <Route path="restore-brainkey" component={BrainKeyPage}/>
         <Route path="existing-account" component={ExistingAccount}>
             <IndexRoute component={BackupRestore}/>
             <Route path="import-backup" component={ExistingAccountOptions}/>

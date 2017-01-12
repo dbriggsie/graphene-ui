@@ -208,7 +208,6 @@ class CreateAccount extends React.Component {
                 {/* Only ask for password if a wallet already exists */}
                 {hasWallet ?
                     null :
-
                         <PasswordInput
                             ref="password"
                             confirmation={true}
@@ -385,17 +384,17 @@ class CreateAccount extends React.Component {
                         <p style={{fontWeight: "bold"}}>
                             <Translate content={"wallet.step_" + step} />
                         </p>
-
-                        {step === 1 ? this._renderAccountCreateForm() : step === 2 ? this._renderBackup() :
-                            this._renderGetStarted()
+                        {step === 1 ? 
+                            this._renderAccountCreateForm() : step === 2 ? 
+                                this._renderBackup() :this._renderGetStarted()
                         }
                     </div>
 
                     <div className="grid-content small-12 medium-6" style={{paddingRight: "15%"}}>
-                        {step === 1 ? this._renderAccountCreateText() : step === 2 ? this._renderBackupText() :
-                            this._renderGetStartedText()
+                        {step === 1 ? 
+                            this._renderAccountCreateText() : step === 2 ? 
+                                this._renderBackupText() :this._renderGetStartedText()                                
                         }
-
                     </div>
                 </div>
             </div>
