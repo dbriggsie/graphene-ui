@@ -255,6 +255,107 @@ class DashboardAssetList extends React.Component {
         }) || {};
         // console.log("currentDepositAsset", currentDepositAsset, "openLedgerBackedCoins:", this.props.openLedgerBackedCoins);
 
+
+        /*
+    .filter(a => a.indexOf(this.state.filter) !== -1)
+                                .sort((a,b) => {
+                                    let assetA = ChainStore.getAsset(a);
+                                    let assetB = ChainStore.getAsset(b);
+                                    if (!assetA || !assetB) return -1;
+                                    let balanceA = this.props.balances.filter(b => b && b.get("balance") > 0).find(b => {return assetA.get("id") === b.get("asset_type");});
+                                    let balanceB = this.props.balances.filter(b => b && b.get("balance") > 0).find(b => {return assetB.get("id") === b.get("asset_type");});
+
+                                    if (balanceA && balanceA.get("balance") || balanceB && balanceB.get("balance")) {
+                                        if (balanceA && !balanceB) return -1;
+                                        if (balanceB && !balanceA) return 1;
+                                        return a > b ? 1 : a < b ? -1 : 0;
+                                    } else {
+                                        return a > b ? 1 : a < b ? -1 : 0;
+                                    }
+                                })
+                                .sort((a,b) => {
+                                    if(this._isPinned(a)>this._isPinned(b)){
+                                        return -1;
+                                    }else if(this._isPinned(a)<this._isPinned(b)){
+                                        return 1;
+                                    }else {
+                                        return 0;
+                                    }
+                                })
+                                )
+        */
+
+        let sortedAssets = ((els)=>{
+            let isPinnedArr = [];
+            let isBalanceArr = [];
+            let resultArray = [];
+            let exceptPinnedResultArray = [];
+            let unpinnedAndNoBalance = [];
+            let assetKeys = {};
+
+            let els_obj = els.map(e=>ChainStore.getAsset(e)).filter(e=>{
+                return e&&e.toJS()&&~e.get('symbol').indexOf(this.state.filter);
+            });
+
+            els_obj.map(e=>{
+                this._isPinned(e.get('symbol'))?isPinnedArr.push(e.get('id')):1;
+                assetKeys[e.get('id')] = e.get('symbol');         
+            });
+
+            this.props.balances.sort((a,b)=>{
+                
+                if(a.get("balance")>b.get("balance")){
+                    return -1;
+                }else if(a.get("balance")<b.get("balance")){
+                    return 1;
+                }else{
+                    return 0;
+                }
+                
+            }).map(e=>{isBalanceArr.push(e.toJS())});
+
+
+            isBalanceArr.map(e1=>{  
+                let isPinned = false;              
+                isPinnedArr.map((e2,index)=>{
+                    if(e1.asset_type === e2){
+                        resultArray.push(e1.asset_type);
+                        isPinned = true;
+                        isPinnedArr[index] = null;
+                    }
+                });
+                !isPinned?exceptPinnedResultArray.push(e1.asset_type):1;                
+            });
+
+            resultArray = resultArray.concat(exceptPinnedResultArray);
+            resultArray = resultArray.concat(isPinnedArr.filter(e=>e));
+
+            for(let i in assetKeys){
+                let indexResEl = resultArray.indexOf(i);
+                indexResEl===-1?resultArray.push(assetKeys[i]):resultArray[indexResEl] = assetKeys[resultArray[indexResEl]]
+                //console.log("@>",indexResEl);
+               // isPinnedArr
+
+            }
+
+            return resultArray;
+
+           // resultArray = resultArray.concat(els_obj.map(e=>e.get('id')));
+
+            //return resultArray.map(e=>assetKeys[e]);
+            
+            console.log("@>resultArray",resultArray);
+            console.log("@>isPinnedArr",isPinnedArr);
+            console.log("@>assetKeys",assetKeys);
+ 
+            /*els.map(e=>{
+
+            });*/
+
+
+        })(assets);
+            //console.log("@>sortedAssets",sortedAssets);
+
         return (
             <div>
                 <Translate content="settings.wallet" component="h3" />
@@ -287,33 +388,7 @@ class DashboardAssetList extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {assets
-                                .filter(a => a.indexOf(this.state.filter) !== -1)
-                                .sort((a,b) => {
-                                    let assetA = ChainStore.getAsset(a);
-                                    let assetB = ChainStore.getAsset(b);
-                                    if (!assetA || !assetB) return -1;
-                                    let balanceA = this.props.balances.filter(b => b && b.get("balance") > 0).find(b => {return assetA.get("id") === b.get("asset_type");});
-                                    let balanceB = this.props.balances.filter(b => b && b.get("balance") > 0).find(b => {return assetB.get("id") === b.get("asset_type");});
-
-                                    if (balanceA && balanceA.get("balance") || balanceB && balanceB.get("balance")) {
-                                        if (balanceA && !balanceB) return -1;
-                                        if (balanceB && !balanceA) return 1;
-                                        return a > b ? 1 : a < b ? -1 : 0;
-                                    } else {
-                                        return a > b ? 1 : a < b ? -1 : 0;
-                                    }
-                                })
-                                .sort((a,b) => {
-                                    if(this._isPinned(a)>this._isPinned(b)){
-                                        return -1;
-                                    }else if(this._isPinned(a)<this._isPinned(b)){
-                                        return 1;
-                                    }else {
-                                        return 0;
-                                    }
-                                })
-                                .map(a => this._renderRow(a))}
+                            {sortedAssets.map(a => this._renderRow(a))} 
                         </tbody>
                     </table>
                 </div>
