@@ -23,7 +23,6 @@ let marketsList = [
     "EUR",
     "USD",
     "BTSR",
-    "GRIDCOIN",
     "ICOO",
     "OBITS",
     "OPEN.ARDR",
@@ -32,6 +31,7 @@ let marketsList = [
     "OPEN.DCT",
     "OPEN.DGD",
     "OPEN.DOGE",
+    "OPEN.BKS",
     "OPEN.ETH",
     "OPEN.EUR",
     "OPEN.EURT",
@@ -49,13 +49,12 @@ let marketsList = [
     "OPEN.STEEM",
     "OPEN.USD",
     "OPEN.USDT",
-    "PEERPLAYS",
     "SHAREBITS",
     "SOLCERT"
 ];
 
-function checkBit(bit){
-    if(bit=="BITUSD"||bit=="BITEUR"||bit=="BITCNY"||bit=="BITGOLD"||bit=="BITBTC"){
+function checkBit(bit) {
+    if (bit == "BITUSD" || bit == "BITEUR" || bit == "BITCNY" || bit == "BITGOLD" || bit == "BITBTC") {
         return true;
     }
 }
@@ -142,9 +141,9 @@ class SettingsStore {
                 "olDarkTheme"
             ],
             traderMode: [
-                false,
-                true
-            ]
+                    false,
+                    true
+                ]
                 // confirmMarketOrder: [
                 //     {translate: "confirm_yes"},
                 //     {translate: "confirm_no"}
@@ -347,8 +346,8 @@ let set_obj = alt.createStore(SettingsStore, "SettingsStore");
 set_obj.lang = lang;
 set_obj.checkBit = checkBit;
 set_obj.marketsList = marketsList;
-set_obj.marketsOpenList = marketsList.filter(e=>{
-    return e.indexOf("OPEN.")===0;
-}).map(e=>e.split("OPEN.").join(""));
+set_obj.marketsOpenList = marketsList.filter(e => {
+    return e.indexOf("OPEN.") === 0;
+}).map(e => e.split("OPEN.").join(""));
 
 module.exports = set_obj;
