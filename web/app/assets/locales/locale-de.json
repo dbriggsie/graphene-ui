@@ -275,6 +275,7 @@
     "send": "Senden",
     "final": "Abschließendes Guthaben",
     "balances": "Guthaben",
+    "my_balance": "My Balance",
     "available": "Verfügbar: ",
     "errors": {
       "req": "Plfichtfeld",

@@ -130,10 +130,9 @@ class Dashboard extends React.Component {
                         {markets}
                     </div>
 
-                    {accountCount ? <div className="generic-bordered-box" style={{marginBottom: 5}}>
-                        <div className="block-content-header" style={{marginBottom: 15}}>
-                            <Translate content="account.accounts" />
-                        </div>
+                    {accountCount ? <div className="generic-bordered-box" >
+                        
+                        <Translate content="account.accounts" component="h4" />                        
                         <div className="box-content">
                             <DashboardList accounts={Immutable.List(names)} width={width} />
                             {myIgnoredAccounts.size ?

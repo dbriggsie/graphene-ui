@@ -188,6 +188,7 @@
     "send": "Enviar",
     "final": "Balance final",
     "balances": "Balances",
+    "my_balance": "My Balance",
     "available": "Disponible",
     "errors": {
       "req": "Campo requerido",

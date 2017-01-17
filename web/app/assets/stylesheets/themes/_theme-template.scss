@@ -3,6 +3,14 @@
     #content-wrapper {
         @include color($primary-text-color, $bg-color);
     }
+
+    h4{
+    padding: 50px 0 10px 0;
+    border-bottom: 1px solid $dark-text-color;
+    margin: 0 0 35px 0;
+    color: $dark-text-color;
+    }
+
     hr {
         border-color: $dark-text-color;
         background-color: $dark-text-color !important;
@@ -333,14 +341,13 @@
     input[type="number"],
     input[type="search"],
     textarea {
-        background-color: #ddd;
-        &:hover,
+        background-color: rgba(0,0,0,0.2);
+        color: $secondary-text-color;
+        text-indent: 6px;
         &:focus,
-        &:active {
-            background-color: #ddd;
-        }
-        &:focus {
-            border-color: #aaa;
+        &:active
+        &:focus{
+            background-color: rgba(0,0,0,1);
         }
     }
     // Tabs
@@ -875,4 +882,140 @@
             background-color: $row-accent-color;
         }
     }
+
+
+
+    .balance-row {
+    margin-left: -10px;
+    margin-right: -10px;
+    padding: 10px 20px;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.SimpleTrade__help-text {
+    font-style: italic;
+    padding-top: 5px;
+    font-size: 95%;
+}
+
+.SimpleTrade__modal {
+    overflow: auto;
+    > div.Modal__header {
+        padding: 20px 2rem;
+    }
+    > div.Modal__divider {
+        margin: 0px;
+        border-bottom: 2px solid rgb(2, 2, 2);
+    }
+}
+
+.SimpleTrade__hide-zero {
+    position: relative;
+    top: -3px;
+    cursor: pointer;
+}
+
+#simple_transfer_modal {
+    max-width: 650px;
+}
+
+#simple_transfer_modal,
+#simple_deposit_modal,
+#simple_withdraw_modal {
+    padding: 0;
+}
+
+#simple_deposit_modal,
+#simple_withdraw_modal {
+    overflow: auto !important;
+    max-width: 500px;
+    label {
+        text-transform: none !important;
+    }
+}
+
+#simple_buy_modal,
+#simple_sell_modal {
+    overflow: auto !important;
+    padding: 0;
+}
+
+a.disabled {
+    color: grey !important;
+    cursor: default !important;
+}
+
+.help-tooltip {
+    padding-bottom: 1px;
+    border-bottom: 2px dotted #ccc;
+    cursor: help;
+}
+
+.deposit-address {
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.clip-button {
+    border: none !important;
+}
+
+.SimpleTrade__withdraw-row {
+    padding: 10px 0;
+}
+
+.responsive-text {
+    font-size: 80%;
+}
+
+@include breakpoint(medium) {
+    .responsive-text {
+        font-size: inherit;
+    }
+}
+
+.inside_content {
+    position: relative;
+    display: flex;
+    .fm-container {        
+        flex-direction: row;
+        padding: 0;
+        min-width: 10.9rem;
+        .fm-volume {
+            display: none;
+        }
+    }
+}
+
+.simple_scroll_line {
+    position: relative;
+    width: 50%;
+    margin: 25px auto;
+    &::before {
+        position: absolute;
+        content: "";
+        left: 0;
+        top: 8px;
+        width: 100%;
+        height: 1px;
+        background: #ccc;
+        z-index: 0;
+    }
+
+    &>.simple_button{
+        cursor:pointer;
+        position: relative;
+        background: #ccc;
+        width:50px;
+        height: 16px;
+        border-radius:20px; 
+
+    }
+}
+
+
+
 }

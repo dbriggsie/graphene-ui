@@ -153,6 +153,7 @@
     "send": "Envoyer",
     "final": "Soldes finaux",
     "balances": "Soldes",
+    "my_balance": "My Balance",
     "available": "Disponible",
     "errors": {
       "req": "Champ obligatoire",

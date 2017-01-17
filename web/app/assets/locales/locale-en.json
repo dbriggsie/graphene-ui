@@ -334,6 +334,7 @@
     "send": "Send",
     "final": "Final balance",
     "balances": "Balances",
+    "my_balance": "My Balance",
     "available": "Available",
     "errors": {
       "req": "Required field",

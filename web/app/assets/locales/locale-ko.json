@@ -188,6 +188,7 @@
     "send": "전송",
     "final": "전송 후 잔고",
     "balances": "잔고",
+    "my_balance": "My Balance",
     "available": "사용가능액",
     "errors": {
       "req": "필수 입력",

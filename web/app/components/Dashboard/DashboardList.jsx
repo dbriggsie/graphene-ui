@@ -228,7 +228,7 @@ class DashboardList extends React.Component {
         return (
             <div style={this.props.style}>
                 {!this.props.compact ? (
-                    <section style={{paddingLeft: "5px", maxWidth: "20rem"}}>
+                    <section >
                         <input placeholder={filterText} type="text" value={dashboardFilter} onChange={this._onFilter.bind(this)} />
                     </section>) : null}
                 <table className="table table-hover" style={{fontSize: "0.85rem"}}>

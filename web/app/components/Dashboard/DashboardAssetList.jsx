@@ -360,7 +360,8 @@ class DashboardAssetList extends React.Component {
 
         return (
             <div>
-                <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40}} />
+                <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40, padding: '50px 0 0 0'}} />    
+                <Translate content="exchange.featured" component="h4"  />
                 <div className="simple_featured_markets no-overflow" ref="simple_slider" >
                     <div className="inside_content" style={{transform:"translateX(0px)"}} > 
                         {markets}
@@ -370,7 +371,8 @@ class DashboardAssetList extends React.Component {
                     <div className="simple_button" id="thumbtrack" ref="thumbtrack"></div>
                 </div>
 
-                <div style={{paddingTop: 20}}>
+                <Translate content="transfer.my_balance" component="h4"  />
+                <div >
                     <input onChange={this._toggleZeroBalance.bind(this)} checked={!this.props.showZeroBalances && !this.state.filter.length} type="checkbox" />
                     <label className="SimpleTrade__hide-zero" onClick={this._toggleZeroBalance.bind(this)}><Translate content="simple_trade.hide_zero" /></label>
 
