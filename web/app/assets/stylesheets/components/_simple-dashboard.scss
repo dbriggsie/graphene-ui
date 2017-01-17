@@ -2,7 +2,6 @@
     margin-left: -10px;
     margin-right: -10px;
     padding: 10px 20px;
-
     &:hover {
         cursor: pointer;
     }
@@ -19,7 +18,6 @@
     > div.Modal__header {
         padding: 20px 2rem;
     }
-
     > div.Modal__divider {
         margin: 0px;
         border-bottom: 2px solid rgb(2, 2, 2);
@@ -36,11 +34,14 @@
     max-width: 650px;
 }
 
-#simple_transfer_modal, #simple_deposit_modal, #simple_withdraw_modal {
+#simple_transfer_modal,
+#simple_deposit_modal,
+#simple_withdraw_modal {
     padding: 0;
 }
 
-#simple_deposit_modal, #simple_withdraw_modal {
+#simple_deposit_modal,
+#simple_withdraw_modal {
     overflow: auto !important;
     max-width: 500px;
     label {
@@ -48,7 +49,8 @@
     }
 }
 
-#simple_buy_modal, #simple_sell_modal {
+#simple_buy_modal,
+#simple_sell_modal {
     overflow: auto !important;
     padding: 0;
 }
@@ -77,11 +79,52 @@ a.disabled {
 .SimpleTrade__withdraw-row {
     padding: 10px 0;
 }
+
 .responsive-text {
     font-size: 80%;
 }
+
 @include breakpoint(medium) {
     .responsive-text {
         font-size: inherit;
+    }
+}
+
+.inside_content {
+    position: relative;
+    display: flex;
+    .fm-container {        
+        flex-direction: row;
+        padding: 0;
+        min-width: 10.9rem;
+        .fm-volume {
+            display: none;
+        }
+    }
+}
+
+.simple_scroll_line {
+    position: relative;
+    width: 50%;
+    margin: 25px auto;
+    &::before {
+        position: absolute;
+        content: "";
+        left: 0;
+        top: 8px;
+        width: 100%;
+        height: 1px;
+        background: #ccc;
+        z-index: 0;
+    }
+
+    &>.simple_button{
+        cursor:pointer;
+        position: relative;
+        background: #ccc;
+        width:50px;
+        height: 16px;
+        border-radius:20px; 
+
     }
 }

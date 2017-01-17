@@ -17,8 +17,8 @@ import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import { fetchCoins,getBackedCoins } from "common/blockTradesMethods"; 
 import ReactTooltip from "react-tooltip";
-
-
+import MarketCard from "./MarketCard";
+import simple_scroll from "../Utility/simple_scroll";
 
 @BindToChainState()
 class DashboardAssetList extends React.Component {
@@ -256,35 +256,6 @@ class DashboardAssetList extends React.Component {
         // console.log("currentDepositAsset", currentDepositAsset, "openLedgerBackedCoins:", this.props.openLedgerBackedCoins);
 
 
-        /*
-    .filter(a => a.indexOf(this.state.filter) !== -1)
-                                .sort((a,b) => {
-                                    let assetA = ChainStore.getAsset(a);
-                                    let assetB = ChainStore.getAsset(b);
-                                    if (!assetA || !assetB) return -1;
-                                    let balanceA = this.props.balances.filter(b => b && b.get("balance") > 0).find(b => {return assetA.get("id") === b.get("asset_type");});
-                                    let balanceB = this.props.balances.filter(b => b && b.get("balance") > 0).find(b => {return assetB.get("id") === b.get("asset_type");});
-
-                                    if (balanceA && balanceA.get("balance") || balanceB && balanceB.get("balance")) {
-                                        if (balanceA && !balanceB) return -1;
-                                        if (balanceB && !balanceA) return 1;
-                                        return a > b ? 1 : a < b ? -1 : 0;
-                                    } else {
-                                        return a > b ? 1 : a < b ? -1 : 0;
-                                    }
-                                })
-                                .sort((a,b) => {
-                                    if(this._isPinned(a)>this._isPinned(b)){
-                                        return -1;
-                                    }else if(this._isPinned(a)<this._isPinned(b)){
-                                        return 1;
-                                    }else {
-                                        return 0;
-                                    }
-                                })
-                                )
-        */
-
         let sortedAssets = ((els)=>{
             let isPinnedArr = [];
             let isBalanceArr = [];
@@ -312,7 +283,9 @@ class DashboardAssetList extends React.Component {
                     return 0;
                 }
                 
-            }).map(e=>{isBalanceArr.push(e.toJS())});
+            }).map(e=>{
+                e&&isBalanceArr.push(e.toJS());                
+            });
 
 
             isBalanceArr.map(e1=>{  
@@ -333,32 +306,69 @@ class DashboardAssetList extends React.Component {
             for(let i in assetKeys){
                 let indexResEl = resultArray.indexOf(i);
                 indexResEl===-1?resultArray.push(assetKeys[i]):resultArray[indexResEl] = assetKeys[resultArray[indexResEl]]
-                //console.log("@>",indexResEl);
-               // isPinnedArr
-
             }
 
             return resultArray;
 
-           // resultArray = resultArray.concat(els_obj.map(e=>e.get('id')));
-
-            //return resultArray.map(e=>assetKeys[e]);
-            
-            console.log("@>resultArray",resultArray);
-            console.log("@>isPinnedArr",isPinnedArr);
-            console.log("@>assetKeys",assetKeys);
- 
-            /*els.map(e=>{
-
-            });*/
-
-
         })(assets);
-            //console.log("@>sortedAssets",sortedAssets);
+
+        let featuredMarkets = [
+            ["OPEN.BTC", "BTS", false],
+            ["OPEN.BTC", "OPEN.ETH"],
+            ["OPEN.BTC", "OPEN.STEEM"],
+            ["OPEN.BTC", "OPEN.DGD"],
+            ["OPEN.BTC", "BLOCKPAY"],
+            ["OPEN.BTC", "ICOO"],
+            ["BTS", "OBITS"],
+            ["BTS", "BTSR"],
+            ["OPEN.EUR", "OPEN.BTC"],
+            ["OPEN.BTC", "OPEN.DCT"],
+            ["OPEN.BTC", "OPEN.INCNT"],
+            ["OPEN.BTC", "OPEN.NXC"],
+            ["BTS", "USD"],
+            ["BTS", "CNY"],
+            ["BTS", "EUR"],
+            ["BTS", "GOLD"]
+        ];
+
+        let newAssets = [
+            "OPEN.USDT",
+            "OPEN.EURT"
+        ];
+
+        let markets = featuredMarkets.map((pair, index) => {
+
+            let className = "";
+            if (index > 3) {
+                className += "show-for-medium";
+            }
+            if (index > 8) {
+                className += " show-for-large";
+            }
+
+            return (
+                <MarketCard
+                    key={pair[0] + "_" + pair[1]}
+                    new={newAssets.indexOf(pair[1]) !== -1}
+                    className={className}
+                    quote={pair[0]}
+                    base={pair[1]}
+                    invert={pair[2]}
+                />
+            );
+        });
 
         return (
             <div>
-                <Translate content="settings.wallet" component="h3" />
+                <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40}} />
+                <div className="simple_featured_markets no-overflow" ref="simple_slider" >
+                    <div className="inside_content" style={{transform:"translateX(0px)"}} > 
+                        {markets}
+                    </div>
+                </div>
+                <div className="simple_scroll_line"  >
+                    <div className="simple_button" id="thumbtrack" ref="thumbtrack"></div>
+                </div>
 
                 <div style={{paddingTop: 20}}>
                     <input onChange={this._toggleZeroBalance.bind(this)} checked={!this.props.showZeroBalances && !this.state.filter.length} type="checkbox" />
@@ -453,6 +463,10 @@ class DashboardAssetList extends React.Component {
                 />
             </div>
         );
+    }
+
+    componentDidUpdate(){
+        simple_scroll(this.refs.thumbtrack, this.refs.simple_slider);        
     }
 }
 

@@ -22,15 +22,6 @@ class Dashboard extends React.Component {
         this._setDimensions = this._setDimensions.bind(this);
     }
 
-    componentDidMount() {
-        // let c = ReactDOM.findDOMNode(this.refs.container);
-        // ps.initialize(c);
-
-        this._setDimensions();
-
-        window.addEventListener("resize", this._setDimensions, false);
-    }
-
     shouldComponentUpdate(nextProps, nextState) {
         return (
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
@@ -41,14 +32,25 @@ class Dashboard extends React.Component {
         );
     }
 
+    componentWillUnmount() {
+        window.removeEventListener("resize", this._setDimensions, false);
+    }
+
+    componentDidMount() {
+        // let c = ReactDOM.findDOMNode(this.refs.container);
+        // ps.initialize(c);
+
+        this._setDimensions();
+
+        window.addEventListener("resize", this._setDimensions, false);
+    }
+
+
     // componentDidUpdate() {
     //     let c = ReactDOM.findDOMNode(this.refs.container);
     //     ps.update(c);
     // }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this._setDimensions, false);
-    }
 
     _setDimensions() {
         let width = window.innerWidth;
@@ -91,7 +93,6 @@ class Dashboard extends React.Component {
             ["BTS", "CNY"],
             ["BTS", "EUR"],
             ["BTS", "GOLD"]
-            // ["BTS", "SILVER"]
         ];
 
         let newAssets = [
