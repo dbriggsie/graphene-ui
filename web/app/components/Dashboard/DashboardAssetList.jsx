@@ -467,8 +467,10 @@ class DashboardAssetList extends React.Component {
         );
     }
 
-    componentDidUpdate(){
-        simple_scroll(this.refs.thumbtrack, this.refs.simple_slider);        
+    componentDidMount(){
+        setTimeout(()=>{
+            simple_scroll(this.refs.thumbtrack, this.refs.simple_slider);
+        },3000);               
     }
 }
 
