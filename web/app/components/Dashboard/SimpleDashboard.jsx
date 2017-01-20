@@ -34,6 +34,10 @@ class SimpleDashboard extends React.Component {
     render() {
         let {linkedAccounts, myIgnoredAccounts, currentAccount} = this.props;
 
+        console.log("@>linkedAccounts",linkedAccounts)
+        console.log("@>myIgnoredAccounts",myIgnoredAccounts)
+        console.log("@>currentAccount",currentAccount)
+
         let accountCount = linkedAccounts.size + myIgnoredAccounts.size;
 
         return (

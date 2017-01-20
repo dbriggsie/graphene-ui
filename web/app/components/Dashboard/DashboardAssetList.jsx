@@ -18,7 +18,6 @@ import counterpart from "counterpart";
 import { fetchCoins,getBackedCoins } from "common/blockTradesMethods"; 
 import ReactTooltip from "react-tooltip";
 import MarketCard from "./MarketCard";
-import simple_scroll from "../Utility/simple_scroll";
 
 @BindToChainState()
 class DashboardAssetList extends React.Component {
@@ -124,7 +123,7 @@ class DashboardAssetList extends React.Component {
         return (
             <tr key={assetName}>
                 <td className="column-hide-small"><AssetImage assetName={assetName} style={{maxWidth: 25}}/></td>
-                <td><AssetName popover asset={assetName} name={assetName}/></td>
+                <td className="simple-td-name" ><AssetName popover asset={assetName} name={assetName}/></td>
                 <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : null}</td>
                 <td className="column-hide-small" style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
                 <td style={{textAlign: "center"}}>
@@ -312,65 +311,9 @@ class DashboardAssetList extends React.Component {
 
         })(assets);
 
-        let featuredMarkets = [
-            ["OPEN.BTC", "BTS", false],
-            ["OPEN.BTC", "OPEN.ETH"],
-            ["OPEN.BTC", "OPEN.STEEM"],
-            ["OPEN.BTC", "OPEN.DGD"],
-            ["OPEN.BTC", "BLOCKPAY"],
-            ["OPEN.BTC", "ICOO"],
-            ["BTS", "OBITS"],
-            ["BTS", "BTSR"],
-            ["OPEN.EUR", "OPEN.BTC"],
-            ["OPEN.BTC", "OPEN.DCT"],
-            ["OPEN.BTC", "OPEN.INCNT"],
-            ["OPEN.BTC", "OPEN.NXC"],
-            ["BTS", "USD"],
-            ["BTS", "CNY"],
-            ["BTS", "EUR"],
-            ["BTS", "GOLD"]
-        ];
-
-        let newAssets = [
-            "OPEN.USDT",
-            "OPEN.EURT"
-        ];
-
-        let markets = featuredMarkets.map((pair, index) => {
-
-            let className = "";
-            if (index > 3) {
-                className += "show-for-medium";
-            }
-            if (index > 8) {
-                className += " show-for-large";
-            }
-
-            return (
-                <MarketCard
-                    key={pair[0] + "_" + pair[1]}
-                    new={newAssets.indexOf(pair[1]) !== -1}
-                    className={className}
-                    quote={pair[0]}
-                    base={pair[1]}
-                    invert={pair[2]}
-                />
-            );
-        });
-
         return (
             <div>
-                <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40, padding: '50px 0 0 0'}} />    
-                <Translate content="exchange.featured" component="h4"  />
-                <div className="simple_featured_markets no-overflow" ref="simple_slider" >
-                    <div className="inside_content" style={{transform:"translateX(0px)"}} > 
-                        {markets}
-                    </div>
-                </div>
-                <div className="simple_scroll_line"  >
-                    <div className="simple_button" id="thumbtrack" ref="thumbtrack"></div>
-                </div>
-
+                <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40, padding: '15px 0 0 0'}} />    
                 <Translate content="transfer.my_balance" component="h4"  />
                 <div >
                     <input onChange={this._toggleZeroBalance.bind(this)} checked={!this.props.showZeroBalances && !this.state.filter.length} type="checkbox" />
@@ -387,7 +330,7 @@ class DashboardAssetList extends React.Component {
                 </div>
 
                 <div className="grid-block" style={{maxHeight: 600, width: "100%"}}>
-                    <table className="table responsive-text">
+                    <table className="table responsive-text" style={{'overflow-y': 'scroll'}} >
                         <thead>
                             <tr>
                                 <th className="column-hide-small"></th>
@@ -465,12 +408,6 @@ class DashboardAssetList extends React.Component {
                 />
             </div>
         );
-    }
-
-    componentDidMount(){
-        setTimeout(()=>{
-            simple_scroll(this.refs.thumbtrack, this.refs.simple_slider);
-        },3000);               
     }
 }
 

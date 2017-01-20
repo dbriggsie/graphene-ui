@@ -49,15 +49,15 @@ class AssetName extends React.Component {
 		if (popover) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
 			return (
-				<Popover
+				<Popover className="simple_Popover"
 					isOpen={this.state.isPopoverOpen}
 					onOuterAction={() => {this.setState({isPopoverOpen: false});}}
 					body={(
-						<div style={{minWidth: "20rem", minHeight: "15rem"}}>
+						<div >
 							<h3>{prefix}{replacedName}</h3>
-							<div className="grid-block no-overflow small-8" style={{paddingTop: 10}}>{desc.short ? desc.short : desc.main}</div>
+							<div className="grid-block no-overflow small-8" >{desc.short ? desc.short : desc.main}</div>
 
-							<AssetImage style={{maxHeight: 125, position: "absolute", top: 25, right: 15}} assetName={asset.get("symbol")} />
+							<AssetImage assetName={asset.get("symbol")} />
 
 						</div>
 					)}
