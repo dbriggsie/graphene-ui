@@ -428,6 +428,14 @@ export default class ListWrapper extends React.Component {
         };
     }
 
+    componentWillMount() {
+        fetchCoins().then(result => {
+            this.setState({
+                openLedgerBackedCoins: getBackedCoins({allCoins: result, backer: "OPEN"})
+            });
+        });
+    }
+
     render() {
         let balanceAssets = Immutable.List();
         let balances = this.props.account.get("balances", []).map((a, key) => {
@@ -440,11 +448,6 @@ export default class ListWrapper extends React.Component {
         // Get hard coded default assets
         let assets = this.props.defaultAssets;
         // Add Openledger backed assets
-        this.state.openLedgerBackedCoins.forEach(c => {
-            if (assets.indexOf(c.symbol) === -1) {
-                assets.push(c.symbol);
-            }
-        });
 
         return (
             <DashboardAssetList
