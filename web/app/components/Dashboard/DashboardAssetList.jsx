@@ -146,10 +146,11 @@ class DashboardAssetList extends React.Component {
                     ) : null}
                 </td>
 
-                <td style={{textAlign: "center"}}>
+                <td className="simpe_buy_sell" style={{textAlign: "center"}} >
                     <a data-place="top" data-tip={!canBuy ? counterpart.translate("tooltip.cant_buy") : null} className={!canBuy ? "disabled" : ""} onClick={canBuy ? this._showModal.bind(this, "buy_modal", assetName) : null}><Translate content="exchange.buy" /></a>
                     {this._getSeparator(true)}
-                    <a className={!hasBalance ? "disabled" : ""} onClick={!hasBalance ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a></td>
+                    <a className={!hasBalance ? "disabled" : ""} onClick={!hasBalance ? null : this._showModal.bind(this, "sell_modal", assetName)}><Translate content="exchange.sell" /></a>
+                </td>
                 <td className="column-hide-small" data-place="right" data-tip={isPinned ? counterpart.translate("tooltip.unpin") : counterpart.translate("tooltip.pin")} className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
@@ -338,7 +339,7 @@ class DashboardAssetList extends React.Component {
                                 <th data-place="top" data-tip={counterpart.translate("tooltip.current_balance")} style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
                                 <th className="column-hide-small" data-place="top" data-tip={counterpart.translate("tooltip.equivalent_balance")} style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
                                 <th style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.transfer_actions")}><Translate content="simple_trade.transfer_actions" /></th>
-                                <th style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.trade_actions")} ><Translate content="simple_trade.actions" /></th>
+                                <th className="simpe_buy_sell" style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.trade_actions")} ><Translate content="simple_trade.actions" /></th>
                                 <th className="column-hide-small" data-place="top" data-tip={counterpart.translate("tooltip.pinning")} style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
                             </tr>
                         </thead>

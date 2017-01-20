@@ -33,15 +33,10 @@ class SimpleDashboard extends React.Component {
 
     render() {
         let {linkedAccounts, myIgnoredAccounts, currentAccount} = this.props;
-
-        console.log("@>linkedAccounts",linkedAccounts)
-        console.log("@>myIgnoredAccounts",myIgnoredAccounts)
-        console.log("@>currentAccount",currentAccount)
-
         let accountCount = linkedAccounts.size + myIgnoredAccounts.size;
 
         return (
-            <div ref="wrapper" className="grid-block page-layout vertical">
+            <div ref="wrapper" className={"grid-block page-layout vertical "+this.props.className} >
                 <div ref="container" className="grid-container" style={{padding: "25px 10px 0 10px"}}>
                     <DashboardAssetList
                         defaultAssets={this.props.defaultAssets}
