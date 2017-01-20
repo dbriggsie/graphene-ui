@@ -331,7 +331,7 @@ class DashboardAssetList extends React.Component {
                 </div>
 
                 <div className="grid-block" style={{maxHeight: 600, width: "100%"}}>
-                    <table className="table responsive-text" style={{'overflow-y': 'scroll'}} >
+                    <table className="table responsive-text" style={{'overflowY': 'scroll'}} >
                         <thead>
                             <tr>
                                 <th className="column-hide-small"></th>
