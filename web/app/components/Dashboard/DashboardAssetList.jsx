@@ -32,6 +32,7 @@ class DashboardAssetList extends React.Component {
         super();
 
         this.state = {
+            coreAsset: ChainStore.getAsset("1.3.0"),
             filter: "",
             activeSellAsset: null,
             activeBuyAsset: null,
@@ -127,8 +128,8 @@ class DashboardAssetList extends React.Component {
                 <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : null}</td>
                 <td className="column-hide-small" style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
                 <td style={{textAlign: "center"}}>
-                    {hasBalance ? <a onClick={this._showTransfer.bind(this, assetName)} ><Translate content="transaction.trxTypes.transfer" /></a> : null}
-                    {canDepositWithdraw ? (
+                    {hasBalance && this.props.isMyAccount? <a onClick={this._showTransfer.bind(this, assetName)} ><Translate content="transaction.trxTypes.transfer" /></a> : null}
+                    {canDepositWithdraw && this.props.isMyAccount? (
                         <span>
                             {this._getSeparator(hasBalance)}
                             <a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName)}>
@@ -136,7 +137,7 @@ class DashboardAssetList extends React.Component {
                             </a>
                         </span>
                     ) : null}
-                    {canDepositWithdraw ? (
+                    {canDepositWithdraw && this.props.isMyAccount? (
                         <span>
                             {this._getSeparator(canDepositWithdraw || hasBalance)}
                             <a className={!canWithdraw ? "disabled" : ""} onClick={canWithdraw ? this._showDepositWithdraw.bind(this, "withdraw_modal", assetName) : () => {}}>
@@ -212,7 +213,7 @@ class DashboardAssetList extends React.Component {
     }
 
     render() {
-        let {activeBuyAsset, activeSellAsset} = this.state;
+        let {activeBuyAsset, activeSellAsset, coreAsset} = this.state;
         let assets = this.props.assetNames;
 
         // Find the current buy and sell assets
@@ -257,6 +258,7 @@ class DashboardAssetList extends React.Component {
 
 
         let sortedAssets = ((els)=>{
+            //console.log("@>>",els);
             let isPinnedArr = [];
             let isBalanceArr = [];
             let resultArray = [];
@@ -270,14 +272,29 @@ class DashboardAssetList extends React.Component {
 
             els_obj.map(e=>{
                 this._isPinned(e.get('symbol'))?isPinnedArr.push(e.get('id')):1;
-                assetKeys[e.get('id')] = e.get('symbol');         
+                assetKeys[e.get('id')] = e.toJS();         
             });
 
+            //console.log("@>balances",coreAsset.toJS(), this.props.balances[1].toJS());
+
             this.props.balances.sort((a,b)=>{
-                
-                if(a.get("balance")>b.get("balance")){
+
+                let a_precision = assetKeys[a.get('asset_type')];
+                let b_precision = assetKeys[b.get('asset_type')];
+
+                let a_bal = parseInt(a.get("balance"))||0;
+                let b_bal = parseInt(b.get("balance"))||0;
+
+                //console.log("a",assetKeys[a.get('asset_type')])
+
+                if(a_precision && b_precision){
+                    a_bal = a_bal / Math.pow(10,a_precision.precision);
+                    b_bal = b_bal / Math.pow(10,b_precision.precision);
+                }
+               
+                if(a_bal>b_bal){
                     return -1;
-                }else if(a.get("balance")<b.get("balance")){
+                }else if(a_bal<b_bal){
                     return 1;
                 }else{
                     return 0;
@@ -286,6 +303,8 @@ class DashboardAssetList extends React.Component {
             }).map(e=>{
                 e&&isBalanceArr.push(e.toJS());                
             });
+
+           //console.log("@>isBalanceArr",isBalanceArr); 
 
 
             isBalanceArr.map(e1=>{  
@@ -303,9 +322,11 @@ class DashboardAssetList extends React.Component {
             resultArray = resultArray.concat(exceptPinnedResultArray);
             resultArray = resultArray.concat(isPinnedArr.filter(e=>e));
 
+            
+
             for(let i in assetKeys){
                 let indexResEl = resultArray.indexOf(i);
-                indexResEl===-1?resultArray.push(assetKeys[i]):resultArray[indexResEl] = assetKeys[resultArray[indexResEl]]
+                indexResEl===-1?resultArray.push(assetKeys[i].symbol):resultArray[indexResEl] = assetKeys[resultArray[indexResEl]].symbol;
             }
 
             return resultArray;
@@ -338,7 +359,7 @@ class DashboardAssetList extends React.Component {
                                 <th><Translate content="account.asset" /></th>
                                 <th data-place="top" data-tip={counterpart.translate("tooltip.current_balance")} style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
                                 <th className="column-hide-small" data-place="top" data-tip={counterpart.translate("tooltip.equivalent_balance")} style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
-                                <th style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.transfer_actions")}><Translate content="simple_trade.transfer_actions" /></th>
+                                <th style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.transfer_actions")}>{this.props.isMyAccount?<Translate content="simple_trade.transfer_actions" />:null}</th>
                                 <th className="simpe_buy_sell" style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.trade_actions")} ><Translate content="simple_trade.actions" /></th>
                                 <th className="column-hide-small" data-place="top" data-tip={counterpart.translate("tooltip.pinning")} style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
                             </tr>

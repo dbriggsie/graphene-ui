@@ -119,6 +119,9 @@ class ValueComponent extends React.Component {
                                         fromID,
                                         toID);
 
+       // console.log("@>===",price, amount, ""fromAsset.toJS(), toAsset.toJS());
+        //console.log("@>===", amount, fromAsset.toJS(), toAsset.toJS());
+
         let eqValue = price ? utils.convertValue(price, amount, fromAsset, toAsset) : null;
 
         if (!eqValue) {
