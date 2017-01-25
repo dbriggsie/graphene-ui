@@ -32,7 +32,7 @@
     "locked_tip": "Wallet is locked.<br/>Click to unlock.",
     "unlocked_tip": "Wallet is unlocked.<br/>Click to lock.",
     "my_orders": "My orders",
-    "switch_trader": "Switch to Trader Mode",
+    "switch_advanced": "Switch to Advanced Mode",
     "switch_basic": "Switch to Basic Mode",
     "trader_mode_tip": "Trader Mode gives you access to additional settings as well as the full Exchange interface, with less hints and descriptions.",
     "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
