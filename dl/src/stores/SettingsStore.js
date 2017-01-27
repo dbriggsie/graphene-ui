@@ -49,6 +49,7 @@ let marketsList = [
     "OPEN.STEEM",
     "OPEN.USD",
     "OPEN.USDT",
+    "OPEN.WAVES",
     "SHAREBITS",
     "SOLCERT"
 ];

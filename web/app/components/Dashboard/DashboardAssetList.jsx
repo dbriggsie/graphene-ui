@@ -258,24 +258,25 @@ class DashboardAssetList extends React.Component {
 
 
         let sortedAssets = ((els)=>{
-            //console.log("@>>",els);
             let isPinnedArr = [];
             let isBalanceArr = [];
             let resultArray = [];
             let exceptPinnedResultArray = [];
             let unpinnedAndNoBalance = [];
             let assetKeys = {};
+            let all_AssetKeys = {};
 
             let els_obj = els.map(e=>ChainStore.getAsset(e)).filter(e=>{
-                return e&&e.toJS()&&~e.get('symbol').indexOf(this.state.filter);
-            });
+                if(e&&e.toJS){                    
+                    all_AssetKeys[e.get('id')]=e.toJS();
+                    return ~e.get('symbol').indexOf(this.state.filter);
+                }                
+            });            
 
             els_obj.map(e=>{
                 this._isPinned(e.get('symbol'))?isPinnedArr.push(e.get('id')):1;
                 assetKeys[e.get('id')] = e.toJS();         
             });
-
-            //console.log("@>balances",coreAsset.toJS(), this.props.balances[1].toJS());
 
             this.props.balances.sort((a,b)=>{
 
@@ -284,8 +285,6 @@ class DashboardAssetList extends React.Component {
 
                 let a_bal = parseInt(a.get("balance"))||0;
                 let b_bal = parseInt(b.get("balance"))||0;
-
-                //console.log("a",assetKeys[a.get('asset_type')])
 
                 if(a_precision && b_precision){
                     a_bal = a_bal / Math.pow(10,a_precision.precision);
@@ -304,9 +303,6 @@ class DashboardAssetList extends React.Component {
                 e&&isBalanceArr.push(e.toJS());                
             });
 
-           //console.log("@>isBalanceArr",isBalanceArr); 
-
-
             isBalanceArr.map(e1=>{  
                 let isPinned = false;              
                 isPinnedArr.map((e2,index)=>{
@@ -321,12 +317,17 @@ class DashboardAssetList extends React.Component {
 
             resultArray = resultArray.concat(exceptPinnedResultArray);
             resultArray = resultArray.concat(isPinnedArr.filter(e=>e));
+            resultArray = resultArray.map(e=>{
+                if(all_AssetKeys[e]){
+                    return all_AssetKeys[e].symbol;
+                }
 
-            
+                return e;                
+            });
 
             for(let i in assetKeys){
-                let indexResEl = resultArray.indexOf(i);
-                indexResEl===-1?resultArray.push(assetKeys[i].symbol):resultArray[indexResEl] = assetKeys[resultArray[indexResEl]].symbol;
+                let indexResEl = resultArray.indexOf(assetKeys[i].symbol);
+                indexResEl===-1?resultArray.push(all_AssetKeys[i].symbol):1;
             }
 
             return resultArray;
