@@ -9,7 +9,7 @@ import FormattedAsset from "components/Utility/FormattedAsset";
 import utils from "common/utils";
 import classNames from "classnames";
 import BalanceComponent from "components/Utility/BalanceComponent";
-import WalletApi from "rpc_api/WalletApi";
+import WalletApi from "api/WalletApi";
 import WalletDb from "stores/WalletDb";
 import FormattedPrice from "components/Utility/FormattedPrice";
 import counterpart from "counterpart";

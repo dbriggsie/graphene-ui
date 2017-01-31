@@ -56,7 +56,7 @@ function CreateWebpackConfig(type) {
         this.resolve.extensions.push(".coffee");
         this.resolve.extensions.push(".json");
 
-        this.resolve.root = [path.resolve(__dirname, "../web/app"), path.resolve(__dirname, "../dl/src")];
+        this.resolve.root = [path.resolve(__dirname, "./app"), path.resolve(__dirname, "./lib")];
         this.resolve.modulesDirectories = ["../node_modules"];
         this.resolve.fallback = [path.resolve(__dirname, "../node_modules")];
         this.resolveLoader = {

@@ -9,7 +9,7 @@ import utils from "common/utils";
 import AccountSelect from "components/Forms/AccountSelect";
 import AccountStore from "stores/AccountStore";
 import WalletDb from "stores/WalletDb";
-import WalletApi from "rpc_api/WalletApi";
+import WalletApi from "api/WalletApi";
 import Immutable from "immutable";
 import NestedApprovalState from "../Account/NestedApprovalState";
 import pu from "common/permission_utils";

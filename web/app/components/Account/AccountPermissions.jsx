@@ -7,7 +7,7 @@ import counterpart from "counterpart";
 import LoadingIndicator from "../LoadingIndicator";
 import utils from "common/utils";
 import accountUtils from "common/account_utils";
-import WalletApi from "rpc_api/WalletApi";
+import WalletApi from "api/WalletApi";
 import WalletDb from "stores/WalletDb.js"
 import AccountImage from "./AccountImage";
 import WorkerApproval from "./WorkerApproval";

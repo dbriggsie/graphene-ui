@@ -195,7 +195,7 @@ class DepositWithdrawContent extends React.Component {
             toAddress: toAddress
         });
 
-        this._validateAddress(address);
+        this._validateAddress(toAddress);
     }
 
     _onMemoChanged(e) {
