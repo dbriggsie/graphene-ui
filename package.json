@@ -27,6 +27,7 @@
   "dependencies": {
     "alt": "^0.17.8",
     "alt-container": "^1.0.0",
+    "alt-react": "0.0.1",
     "bigi": "^1.4.2",
     "bignumber.js": "^2.1.0",
     "bs58": "2.0.0",

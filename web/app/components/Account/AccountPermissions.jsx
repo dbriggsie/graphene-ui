@@ -14,7 +14,7 @@ import WorkerApproval from "./WorkerApproval";
 import {FetchChainObjects, PublicKey, ChainStore} from "graphenejs-lib";;
 import AccountPermissionsList from "./AccountPermissionsList";
 import PubKeyInput from "../Forms/PubKeyInput";
-import Tabs, {Tab} from "../Utility/Tabs";
+import {Tabs, Tab} from "../Utility/Tabs";
 import HelpContent from "../Utility/HelpContent";
 import RecentTransactions from "./RecentTransactions";
 

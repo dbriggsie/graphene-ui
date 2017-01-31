@@ -16,7 +16,7 @@ import AccountVotingProxy from "./AccountVotingProxy";
 import AccountsList from "./AccountsList";
 import HelpContent from "../Utility/HelpContent";
 import cnames from "classnames";
-import Tabs, {Tab} from "../Utility/Tabs";
+import {Tabs, Tab} from "../Utility/Tabs";
 import FormattedAsset from "../Utility/FormattedAsset";
 import BindToChainState from "../Utility/BindToChainState";
 import ChainTypes from "../Utility/ChainTypes";

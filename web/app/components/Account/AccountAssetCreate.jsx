@@ -17,7 +17,7 @@ import AccountInfo from "./AccountInfo";
 import big from "bignumber.js";
 import cnames from "classnames";
 import assetUtils from "common/asset_utils";
-import Tabs, {Tab} from "../Utility/Tabs";
+import {Tabs, Tab} from "../Utility/Tabs";
 import AmountSelector from "../Utility/AmountSelector";
 import assetConstants from "chain/asset_constants";
 
