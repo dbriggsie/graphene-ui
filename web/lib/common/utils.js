@@ -511,21 +511,13 @@ var Utils = {
     },
 
     replaceName(name, returnFull = false) {
-        /*let toReplace = ["TRADE.", "OPEN.", "METAEX."];
-        let suffix = "";
-        let i;
-        for (i = 0; i < toReplace.length; i++) {
-            if (name.indexOf(toReplace[i]) !== -1) {
-                name = name.replace(toReplace[i], "") + suffix;
-                break;
-            }
-        }*/
 
         let replacedName ='';
         let prefix ='';
         let partNames = name.split('.');
 
-        if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){
+        //if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){
+        if(~name.indexOf("OPEN.")){
             replacedName = partNames[1]
             prefix = (partNames[0]+'.').toLowerCase();
             prefix = ''; //hard remove prefix

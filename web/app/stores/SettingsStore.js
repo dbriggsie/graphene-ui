@@ -15,43 +15,45 @@ let lang = {
 };
 
 let marketsList = [
-    "BLOCKPAY",
-    "BROWNIE.PTS",
-    "BTS",
-    "BTWTY",
-    "CNY",
-    "EUR",
-    "USD",
-    "BTSR",
-    "ICOO",
-    "OBITS",
-    "OPEN.ARDR",
-    "OPEN.BTC",
-    "OPEN.DASH",
-    "OPEN.DCT",
-    "OPEN.DGD",
-    "OPEN.DOGE",
-    "OPEN.BKS",
-    "OPEN.ETH",
-    "OPEN.EUR",
-    "OPEN.EURT",
-    "OPEN.GAME",
-    "OPEN.GRC",
-    "OPEN.HEAT",
-    "OPEN.INCNT",
-    "OPEN.LISK",
-    "OPEN.LTC",
-    "OPEN.MAID",
-    "OPEN.MKR",
-    "OPEN.MUSE",
-    "OPEN.NXC",
-    "OPEN.OMNI",
-    "OPEN.STEEM",
-    "OPEN.USD",
-    "OPEN.USDT",
-    "OPEN.WAVES",
-    "SHAREBITS",
-    "SOLCERT"
+   "BLOCKPAY",
+   "BROWNIE.PTS",
+   "BTS",
+   "BTWTY",
+   "CNY",
+   "EUR",
+   "USD",
+   "BTSR",
+   "ICOO",
+   "OBITS",
+   "OPEN.ARDR",
+   "OPEN.BTC",
+   "OPEN.CNY",
+   "OPEN.DASH",
+   "OPEN.DCT",
+   "OPEN.DGD",
+   "OPEN.DOGE",
+   "OPEN.BKS",
+   "OPEN.ETH",
+   "OPEN.EUR",
+   "OPEN.EURT",
+   "OPEN.GAME",
+   "OPEN.GRC",
+   "OPEN.HEAT",
+   "OPEN.INCNT",
+   "OPEN.LISK",
+   "OPEN.LTC",
+   "OPEN.MAID",
+   "OPEN.MKR",
+   "OPEN.MUSE",
+   "OPEN.NXC",
+   "OPEN.OMNI",
+   "OPEN.STEEM",
+   "OPEN.USD",
+   "OPEN.USDT",
+   "OPEN.WAVES",
+   "SHAREBITS",
+   "SOLCERT",
+   "HEMPSWEET"
 ];
 
 function checkBit(bit) {
@@ -344,7 +346,29 @@ class SettingsStore {
 
 let set_obj = alt.createStore(SettingsStore, "SettingsStore");
 
+set_obj.fiatAssets = [{
+    backingCoinType: "USD",
+    name: "Dollar",
+    supportsMemos: false,
+    symbol: "OPEN.USD",
+    walletType: "openledger-fiat"
+}, {
+    backingCoinType: "EUR",
+    name: "Euro",
+    supportsMemos: false,
+    symbol: "OPEN.EUR",
+    walletType: "openledger-fiat"
+}, {
+    backingCoinType: "CNY",
+    name: "Dollar",
+    supportsMemos: false,
+    symbol: "OPEN.CNY",
+    walletType: "openledger-fiat"
+}];
+
 set_obj.lang = lang;
+set_obj.rpc_url = "https://openledger.info/api/";
+set_obj.site_registr = "https://openledger.info/v/";
 set_obj.checkBit = checkBit;
 set_obj.marketsList = marketsList;
 set_obj.marketsOpenList = marketsList.filter(e => {

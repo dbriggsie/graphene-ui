@@ -22,6 +22,12 @@ import {requestDepositAddress, validateAddress, WithdrawAddresses} from "common/
 import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
 import CopyButton from "../Utility/CopyButton";
 import Icon from "../Icon/Icon";
+import SettingsStore from "stores/SettingsStore";
+
+
+import DepositFiatOpenLedger from "components/DepositWithdraw/openledger/DepositFiatOpenLedger";
+import WithdrawFiatOpenLedger from "components/DepositWithdraw/openledger/WithdrawFiatOpenLedger";
+
 
 @BindToChainState()
 class DepositWithdrawContent extends React.Component {
@@ -219,6 +225,21 @@ class DepositWithdrawContent extends React.Component {
         let tabIndex = 1;
         const {supportsMemos} = this.props;
 
+        if(this.props.fiatModal){
+            if(~this.props.fiatModal.indexOf('canFiatWith')){
+                return (<WithdrawFiatOpenLedger
+                    account={this.props.account}
+                    issuer_account="openledger-fiat"
+                    deposit_asset={this.props.asset.get("symbol").split('OPEN.').join('')}
+                    receive_asset={this.props.asset.get("symbol")} 
+                    rpc_url={SettingsStore.rpc_url}
+                />);
+            }else{
+                return (<p>Click <a href='#' onClick={(e)=>{ window.open(SettingsStore.site_registr,'_blank');}} >here</a> to register for deposits </p>);
+            }            
+
+        }
+
         return (
             <div>
                 <p><Translate content="gateway.withdraw_funds" asset={assetName} /></p>
@@ -273,6 +294,21 @@ class DepositWithdrawContent extends React.Component {
         const hasMemo = receive_address && "memo" in receive_address && receive_address.memo;
         const addressValue = receive_address && receive_address.address || "";
         let tabIndex = 1;
+
+        if(this.props.fiatModal){
+            if(~this.props.fiatModal.indexOf('canFiatDep')){
+                return (<DepositFiatOpenLedger
+                    account={this.props.account}
+                    issuer_account="openledger-fiat"
+                    deposit_asset={this.props.asset.get("symbol").split('OPEN.').join('')}
+                    receive_asset={this.props.asset.get("symbol")} 
+                    rpc_url={SettingsStore.rpc_url}
+                />);
+            }else{
+                return (<p>Click <a href='#' onClick={(e)=>{ window.open(SettingsStore.site_registr,'_blank');}} >here</a> to register for deposits </p>);
+            }            
+
+        }
 
         return (
             <div>

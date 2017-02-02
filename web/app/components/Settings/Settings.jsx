@@ -117,6 +117,7 @@ class Settings extends React.Component {
 
         case "traderMode":
             let value = e;
+            SettingsActions.changeSetting({setting: "traderMode", value: value});
             break;
 
         default:

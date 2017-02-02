@@ -18,6 +18,7 @@ import counterpart from "counterpart";
 import { fetchCoins,getBackedCoins } from "common/blockTradesMethods"; 
 import ReactTooltip from "react-tooltip";
 import MarketCard from "./MarketCard";
+import SettingsStore from "stores/SettingsStore";
 
 @BindToChainState()
 class DashboardAssetList extends React.Component {
@@ -120,6 +121,15 @@ class DashboardAssetList extends React.Component {
         const canBuy = this._hasOtherBalance(asset.get("id"));
         const canDepositWithdraw = !!this.props.openLedgerBackedCoins.find(a => a.symbol === asset.get("symbol"));
         const canWithdraw = canDepositWithdraw && hasBalance;
+        let fiatModal;
+
+        SettingsStore.fiatAssets.map((e)=>{
+            if(e.symbol === assetName && this.props.openLedgerBackedFiatCoins.deposit ){
+                let canFiatDep = ~this.props.openLedgerBackedFiatCoins.deposit.indexOf(e.backingCoinType)?'canFiatDep':'';
+                let canFiatWith = ~this.props.openLedgerBackedFiatCoins.withdraw.indexOf(e.backingCoinType)?'canFiatWith':'';
+                fiatModal=canFiatDep+' '+canFiatWith;
+            }
+        });
 
         return (
             <tr key={assetName}>
@@ -132,7 +142,7 @@ class DashboardAssetList extends React.Component {
                     {canDepositWithdraw && this.props.isMyAccount? (
                         <span>
                             {this._getSeparator(hasBalance)}
-                            <a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName)}>
+                            <a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName, fiatModal)}>
                                 <Translate content="gateway.deposit" />
                             </a>
                         </span>
@@ -140,7 +150,7 @@ class DashboardAssetList extends React.Component {
                     {canDepositWithdraw && this.props.isMyAccount? (
                         <span>
                             {this._getSeparator(canDepositWithdraw || hasBalance)}
-                            <a className={!canWithdraw ? "disabled" : ""} onClick={canWithdraw ? this._showDepositWithdraw.bind(this, "withdraw_modal", assetName) : () => {}}>
+                            <a className={!canWithdraw ? "disabled" : ""} onClick={canWithdraw ? this._showDepositWithdraw.bind(this, "withdraw_modal", assetName, fiatModal) : () => {}}>
                                 <Translate content="modal.withdraw.submit" />
                             </a>
                         </span>
@@ -202,11 +212,11 @@ class DashboardAssetList extends React.Component {
         });
     }
 
-    _showDepositWithdraw(action, asset, e) {
+    _showDepositWithdraw(action, asset, fiatModal, e) {
         e.preventDefault();
-        console.log(action, asset);
         this.setState({
-            [action === "deposit_modal" ? "depositAsset" : "withdrawAsset"]: asset
+            [action === "deposit_modal" ? "depositAsset" : "withdrawAsset"]: asset,
+            fiatModal
         }, () => {
             this.refs[action].show();
         });
@@ -412,6 +422,8 @@ class DashboardAssetList extends React.Component {
                 <SimpleDepositWithdraw
                     ref="deposit_modal"
                     action="deposit"
+                    fiatModal={this.state.fiatModal}
+                    account={this.props.account.get('name')}
                     sender={this.props.account.get("id")}
                     asset={this.state.depositAsset}
                     modalId="simple_deposit_modal"
@@ -423,6 +435,8 @@ class DashboardAssetList extends React.Component {
                 <SimpleDepositWithdraw
                     ref="withdraw_modal"
                     action="withdraw"
+                    fiatModal={this.state.fiatModal}
+                    account={this.props.account.get('name')}
                     sender={this.props.account.get("id")}
                     asset={this.state.withdrawAsset}
                     modalId="simple_withdraw_modal"
@@ -446,16 +460,46 @@ export default class ListWrapper extends React.Component {
 
         this.state = {
             openLedgerCoins: [],
-            openLedgerBackedCoins: []
+            openLedgerBackedCoins: [],
+            openLedgerBackedFiatCoins: []
         };
     }
 
     componentWillMount() {
-        fetchCoins().then(result => {
-            this.setState({
-                openLedgerBackedCoins: getBackedCoins({allCoins: result, backer: "OPEN"})
+        let openLedgerBackedCoins;
+        let openLedgerBackedFiatCoins;
+
+        console.log()
+        let json_rpc_request = { "jsonrpc": "2.0", "id": 1, "method": "isValidatedForFiat", "params": {"bitsharesAccountName": this.props.account.get('name')}};
+
+        fetchCoins()
+            .then(result => {
+                openLedgerBackedCoins = getBackedCoins({ allCoins: result, backer: "OPEN" }).concat(SettingsStore.fiatAssets);
+                return fetch(SettingsStore.rpc_url, {
+                    method: 'POST',
+                    headers: new Headers({
+                        "Accept": "application/json",
+                        "content-type": "application/x-www-form-urlencoded"
+                    }),
+                    body: 'rq=' + encodeURIComponent(JSON.stringify(json_rpc_request))
+                });
+            })
+            .then(response => response.json())
+            .then((json_response) => {
+                if ('result' in json_response){
+                    this.setState({
+                        openLedgerBackedCoins,
+                        openLedgerBackedFiatCoins: json_response.result 
+                    });
+                }else{
+                    this.setState({
+                        openLedgerBackedCoins
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);                
             });
-        });
     }
 
     render() {
