@@ -89,8 +89,8 @@ function CreateWebpackConfig(type) {
             test: /\.json/,
             loader: "json",
             exclude: [
-                path.resolve(__dirname, "../dl/src/common"),
-                path.resolve(__dirname, "../web/app/assets/locales")
+                path.resolve(__dirname, "./lib/common"),
+                path.resolve(__dirname, "./app/assets/locales")
             ]
         });
 
