@@ -1,12 +1,12 @@
 import React from "react";
 import AccountStore from "stores/AccountStore";
-import AssetStore from "stores/AssetStore";
 import SettingsStore from "stores/SettingsStore";
 
 import AltContainer from "alt-container";
 import Dashboard from "./Dashboard";
+
 import SimpleDashboard from "./SimpleDashboard";
-import Immutable from "immutable";
+
 
 class Content extends React.Component {
 

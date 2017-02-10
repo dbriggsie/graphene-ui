@@ -1,17 +1,15 @@
 import React from "react";
-import {Link} from "react-router";
+import {Link} from "react-router/es";
 import AccountSelector from "./AccountSelector";
 import Translate from "react-translate-component";
-import Immutable from "immutable";
 import AccountImage from "./AccountImage";
-import {ChainStore} from "graphenejs-lib";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import Icon from "../Icon/Icon";
-import PrivateKeyView from "components/PrivateKeyView"
+import PrivateKeyView from "components/PrivateKeyView";
 import counterpart from "counterpart";
 import utils from "common/utils";
-import AddressIndex from "stores/AddressIndex"
+import AddressIndex from "stores/AddressIndex";
 
 class AccountPermissionRow extends React.Component {
     static propTypes = {
@@ -36,7 +34,7 @@ class AccountPermissionRow extends React.Component {
     render() {
         let name, item_id, name_or_key;
         let suffix = "_accounts";
-        let pubKey = this.props.pubkey;;
+        let pubKey = this.props.pubkey;
 
         if (this.props.account) {
             name = this.props.account.get("name");
@@ -77,7 +75,6 @@ class AccountPermissionRow extends React.Component {
     }
 }
 
-@BindToChainState({keep_updating: true})
 class AccountPermissionsList extends React.Component {
 
     static propTypes = {
@@ -219,4 +216,4 @@ class AccountPermissionsList extends React.Component {
 
 }
 
-export default AccountPermissionsList;
+export default BindToChainState(AccountPermissionsList, {keep_updating: true});

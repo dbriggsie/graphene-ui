@@ -1,4 +1,4 @@
-var t = require("tcomb");
+import t from "tcomb";
 
 let Asset = t.struct({
     bitasset_data_id: t.maybe(t.Str),
@@ -86,14 +86,14 @@ let CallOrder = t.struct({
 }, "CallOrder");
 
 
-module.exports = {
-    Asset: Asset,
-    Block: Block,
-    WalletTcomb: WalletTcomb,
+export {
+    Asset,
+    Block,
+    WalletTcomb,
     //PublicKeyTcomb: PublicKeyTcomb,
-    PrivateKeyTcomb: PrivateKeyTcomb,
-    LimitOrder: LimitOrder,
-    ShortOrder: ShortOrder,
-    CallOrder: CallOrder,
-    SettleOrder: SettleOrder
+    PrivateKeyTcomb,
+    LimitOrder,
+    ShortOrder,
+    CallOrder,
+    SettleOrder
 };

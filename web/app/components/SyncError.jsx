@@ -1,32 +1,16 @@
 import React from "react";
-import connectToStores from "alt/utils/connectToStores";
-import HelpContent from "./Utility/HelpContent";
+import { connect } from "alt-react";
 import BlockchainStore from "stores/BlockchainStore";
 import SettingsStore from "stores/SettingsStore";
 import Translate from "react-translate-component";
 import SettingsActions from "actions/SettingsActions";
-import {Apis} from "graphenejs-ws";
+import {Apis} from "bitsharesjs-ws";
 import Icon from "./Icon/Icon";
 import WebsocketAddModal from "./Settings/WebsocketAddModal";
 
-@connectToStores
-class InitError extends React.Component {
-
-    static getStores() {
-        return [BlockchainStore, SettingsStore]
-    }
-
-    static getPropsFromStores() {
-        return {
-            rpc_connection_status: BlockchainStore.getState().rpc_connection_status,
-            apis: SettingsStore.getState().defaults.apiServer,
-            apiServer: SettingsStore.getState().settings.get("apiServer"),
-            defaultConnection: SettingsStore.getState().defaultSettings.get("apiServer"),
-        }
-    }
+class SyncError extends React.Component {
 
     triggerModal(e) {
-        console.log("triggerModal:");
         this.refs.ws_modal.show(e);
     }
 
@@ -75,7 +59,7 @@ class InitError extends React.Component {
                 </div>
                 <div className="grid-container text-center" style={{ maxWidth: "40rem"}}>
                 <section className="block-list">
-                    <header><Translate component="span" content={`settings.connection`} /></header>
+                    <header><Translate component="span" content={`settings.apiServer`} /></header>
                     <ul>
                         <li className="with-dropdown">
 
@@ -118,4 +102,18 @@ class InitError extends React.Component {
     }
 }
 
-export default InitError;
+SyncError = connect(SyncError, {
+    listenTo() {
+        return [BlockchainStore, SettingsStore];
+    },
+    getProps() {
+        return {
+            rpc_connection_status: BlockchainStore.getState().rpc_connection_status,
+            apis: SettingsStore.getState().defaults.apiServer,
+            apiServer: SettingsStore.getState().settings.get("apiServer"),
+            defaultConnection: SettingsStore.getState().defaultSettings.get("apiServer"),
+        };
+    }
+});
+
+export default SyncError;

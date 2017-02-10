@@ -2,7 +2,7 @@ var numeral = require("numeral");
 
 let id_regex = /\b\d+\.\d+\.(\d+)\b/;
 
-import {ChainTypes} from "graphenejs-lib";
+import {ChainTypes} from "bitsharesjs/es";
 var {object_type, operations} = ChainTypes;
 
 var Utils = {
@@ -268,6 +268,9 @@ var Utils = {
     },
 
     are_equal_shallow: function(a, b) {
+        if (!a && b || a && !b) {
+            return false;
+        }
         if (Array.isArray(a) && Array.isArray(a)) {
             if (a.length > b.length) {
                 return false;
@@ -486,24 +489,7 @@ var Utils = {
         let toReplace = {};
         let re = /{(.*?)}/g;
         let interpolators = str.split(re);
-        // console.log("split:", str.split(re));
         return str.split(re);
-        // var str = '{{azazdaz}} {{azdazd}}';
-        // var m;
-
-        // while ((m = re.exec(str)) !== null) {
-        //     if (m.index === re.lastIndex) {
-        //         re.lastIndex++;
-        //     }
-        //     console.log("m:", m);
-        //     // View your result using the m-variable.
-        //     // eg m[0] etc.
-        //     //
-        //     toReplace[m[1]] = m[0]
-        //     result.push(m[1])
-        // }
-
-        // return result;
     },
 
     get_percentage(a, b) {
@@ -512,17 +498,17 @@ var Utils = {
 
     replaceName(name, returnFull = false) {
 
-        let replacedName ='';
+        let replaceName ='';
         let prefix ='';
         let partNames = name.split('.');
 
         //if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){
         if(~name.indexOf("OPEN.")){
-            replacedName = partNames[1]
+            replaceName = partNames[1]
             prefix = (partNames[0]+'.').toLowerCase();
             prefix = ''; //hard remove prefix
         }else{
-            replacedName = name;
+            replaceName = name;
             prefix = '';
         }
 
@@ -531,12 +517,8 @@ var Utils = {
             prefix='bit';
         }
 
-        if (returnFull) {
-            return prefix + replacedName;
-        }
-
         return {
-            name:replacedName,
+            replaceName,
             prefix: prefix
         };
     }

@@ -4,10 +4,12 @@ import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
 import utils from "common/utils";
 import MarketsActions from "actions/MarketsActions";
-import {ChainStore} from "graphenejs-lib";
-import connectToStores from "alt/utils/connectToStores";
+import {ChainStore} from "bitsharesjs/es";
+import { connect } from "alt-react";
 import MarketsStore from "stores/MarketsStore";
 import Translate from "react-translate-component";
+import counterpart from "counterpart";
+import ReactTooltip from "react-tooltip";
 
 /**
  *  Given an asset amount, displays the equivalent value in baseAsset if possible
@@ -19,7 +21,6 @@ import Translate from "react-translate-component";
  *  -'fullPrecision' boolean to tell if the amount uses the full precision of the asset
  */
 
-@BindToChainState({keep_updating: true})
 class ValueComponent extends React.Component {
 
     static propTypes = {
@@ -63,6 +64,10 @@ class ValueComponent extends React.Component {
     componentWillUnmount() {
         clearInterval(this.fromStatsInterval);
         clearInterval(this.toStatsInterval);
+    }
+
+    componentDidMount() {
+        ReactTooltip.rebuild();
     }
 
     getValue() {
@@ -125,32 +130,31 @@ class ValueComponent extends React.Component {
         let eqValue = price ? utils.convertValue(price, amount, fromAsset, toAsset) : null;
 
         if (!eqValue) {
-            return <span style={{fontSize: "0.9rem"}}><Translate content="account.no_price" /></span>;
+            return <div className="tooltip inline-block" data-place="bottom" data-tip={counterpart.translate("tooltip.no_price")} style={{fontSize: "0.9rem"}}><Translate content="account.no_price" /></div>;
         }
 
-        return <FormattedAsset amount={eqValue} asset={toID} decimalOffset={toSymbol.indexOf("BTC") !== -1 ? 4 : this.props.noDecimals ? toAsset.get("precision") : 0}/>;
+        return <FormattedAsset noPrefix amount={eqValue} asset={toID} decimalOffset={toSymbol.indexOf("BTC") !== -1 ? 4 : this.props.noDecimals ? toAsset.get("precision") : 0}/>;
+    }
+}
+ValueComponent = BindToChainState(ValueComponent, {keep_updating: true});
+
+class EquivalentValueComponent extends React.Component {
+    render() {
+        return <ValueComponent {...this.props} />;
     }
 }
 
-@connectToStores
-class ValueStoreWrapper extends React.Component {
-    static getStores() {
-        return [MarketsStore]
-    };
-
-    static getPropsFromStores() {
+EquivalentValueComponent = connect(EquivalentValueComponent, {
+    listenTo() {
+        return [MarketsStore];
+    },
+    getProps() {
         return {
             marketStats: MarketsStore.getState().allMarketStats
-        }
-    };
-
-    render() {
-        return <ValueComponent {...this.props} />
+        };
     }
-}
+});
 
-
-@BindToChainState({keep_updating: true})
 class BalanceValueComponent extends React.Component {
 
     static propTypes = {
@@ -161,10 +165,9 @@ class BalanceValueComponent extends React.Component {
         let amount = Number(this.props.balance.get("balance"));
         let fromAsset = this.props.balance.get("asset_type");
 
-        return <ValueStoreWrapper amount={amount} fromAsset={fromAsset} noDecimals={true} toAsset={this.props.toAsset}/>;
+        return <EquivalentValueComponent amount={amount} fromAsset={fromAsset} noDecimals={true} toAsset={this.props.toAsset}/>;
     }
 }
 
-export {BalanceValueComponent};
-
-export default ValueStoreWrapper
+BalanceValueComponent = BindToChainState(BalanceValueComponent, {keep_updating: true});
+export {EquivalentValueComponent, BalanceValueComponent};

@@ -1,6 +1,6 @@
 import BaseStore from "./BaseStore";
 import Immutable from "immutable";
-import alt from "../alt-instance";
+import alt from "alt-instance";
 import AssetActions from "actions/AssetActions";
 import {Asset} from "./tcomb_structs";
 import utils from "common/utils";

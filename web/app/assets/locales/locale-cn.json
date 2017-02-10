@@ -8,8 +8,14 @@
     "es": "Español",
     "tr": "Turkish"
   },
+  "sync_fail": {
+    "title": "无法与API服务器同步连接",
+    "sub_text_1": "请确认你的计算机系统时钟正确。",
+    "sub_text_2": "同步你的计算机时钟后，请刷新本页面。如果你的时钟正确，那你连接的API服务器可能与区块链数据不同步，这种情况下，可尝试使用其他API服务器进行连接。"
+},
   "header": {
     "title": "Openledger (石墨烯)钱包",
+    "account": "账户",
     "dashboard": "概览",
     "explorer": "浏览",
     "exchange": "交易",
@@ -19,9 +25,9 @@
     "current": "当前账户",
     "create_account": "创建账户",
     "create_asset": "创建资产",
+    "update_asset": "更新资产",
     "lock": "锁定钱包",
     "unlock": "解锁",
-    "account": "账户",
     "help": "帮助",
     "locked_tip": "钱包已锁定，点击解锁。",
     "unlocked_tip": "钱包已解锁，点击锁定。",
@@ -47,10 +53,36 @@
     "pin": "点击为了别住这个资产",
     "unpin": "点击为了拔去这个资产",
     "asset_dropdown": "自资产清单选择",
-    "cant_buy": "您没有数量为了买这个资产"
+    "cant_buy": "您没有数量为了买这个资产",
+    "call_limit": "市场中最少抵押率头寸的平仓价",
+    "margin_price": "This is the maximum price that a margin called position can be made to pay. It also called the Squeeze Price.",
+    "settle_price": "清算单执行时将使用的价格",
+    "sign_owner": "如果你是账户的所有人，请检查签名是否正确。这只有在你使用所有者账户，而该账户未包括与活跃权限时需要关注。",
+    "latest_price": "市场最近的成交价",
+    "no_price": "未找到该资产最近的成交价来评估价值",
+    "hide_asset": "从列表中隐藏资产",
+    "show_asset": "在主列表中显示资产",
+    "settle": "使用清算你可以在24小时后以当时的喂价转换你的 %(asset)s 资产为 BTS",
+    "filter_ops": "根据操作类型过滤交易历史",
+    "show_block": "显示收录交易的区块信息 #%(block)s ",
+    "coll_ratio": "头寸抵押率计算公式为：抵押量 * 喂价 / 债务",
+    "call_price": "头寸平仓价。如果喂价低于该价格，头寸将被强制平仓。",
+    "close_position": "平仓。你至少需要 %(amount)s %(asset)s 进行平仓",
+    "update_position": "更新头寸。你可随时更新借款及抵押水平。",
+    "cr_danger": "该头寸目前抵押率不足。请考虑补仓已提高抵押率至少至 %(mr)s 或进行平仓。",
+    "cr_warning": "该头寸接近强制平仓价，如果抵押率低于 %(mr)s，将被强制平仓，请考虑补仓或平仓。",
+    "propose_scam": "该提案发起人是已知的诈骗嫌疑人，请不要批准该提案！",
+    "login": "钱包并不提供传统的登录，而是通过锁定和解锁<b>只</b>存储于用户浏览器中的钱包。<br/><br/>当你关闭钱包时，钱包文件即被锁定，也就相当于登出了系统。",
+    "buy_min": "You will receive at minimum this amount. If there are matching orders with a cheaper price than you specified, you will receive more than this amount.",
+    "borrow": "Borrow %(asset)s from the network. This creates a smart contract that locks your collateral until you either modify the position or a margin call is required."
   },
   "account": {
     "welcome": "欢迎使用 Openledger (石墨烯)系统",
+    "unlocked_tip": "钱包已解锁，点击锁定。",
+    "in_open": "This is the amount of %(asset)s you have in open orders.",
+    "total_estimate": "This is the estimated value of all your assets, including any hidden assets, open orders, debt and collateral. The estimate is done using only live blockchain data and may not be perfectly accurate.",
+    "trade": "交易",
+    "welcome": "欢迎使用 BitShares (石墨烯)系统",
     "assets": "资产",
     "market_value": "市值",
     "hour_24": "日涨跌幅%",
@@ -183,9 +215,11 @@
       "private": "私钥(WIF - 钱包导入格式)",
       "show": "显示",
       "brain": "脑钱包位置",
-      "from": "已从账户导入"
+      "from": "已从账户导入",
+      "sign_owner": "已所有者身份签名"
     },
     "votes": {
+      "proxy_current": "Your current proxy is",
       "proxy_short": "代理投票",
       "workers_short": "预算项目",
       "proxy": "代理投票账户",
@@ -757,7 +791,8 @@
     "lookup_text": "查看来自BTS 1.0的未领取余额",
     "delete_select": "选择要删除的钱包",
     "restore_brainkey_text": "从脑钱包恢复前，你需要新建一个新的钱包。你为新钱包提供一个密码，然后输入你的脑钱包密钥。",
-    "restore_key_count": "# of 密钥"
+    "restore_key_count": "# of 密钥",
+    "restore_default_success": "Settings have been reset successfully"
   },
   "pagination": {
     "newer": "更近",
@@ -773,6 +808,23 @@
     "brainkey": "建议备份脑钱包密钥"
   },
   "exchange": {
+    "chart_options": {
+        "tools": "Tools",
+        "title": "Indicators",
+        "sma": "SMA",
+        "ema1": "EMA 1",
+        "ema2": "EMA 2",
+        "smaVolume": "SMA",
+        "macd": "MACD chart",
+        "bb": "Bollinger Bands",
+        "fib": "Draw Fibonacci retracement",
+        "trendline": "Draw trend line",
+        "volume": "Show volume chart",
+        "period": "Period",
+        "height": "Chart height",
+        "price_title": "Price indicators",
+        "volume_title": "Volume indicators"
+    },
     "price_history": "价格历史",
     "order_depth": "市场深度",
     "market_history": "市场历史",
@@ -788,9 +840,10 @@
     "spread": "买卖价差",
     "quantity": "数量",
     "buy": "买入",
+    "buy_min": "Buy at least",
     "sell": "卖出",
-    "confirm_buy": "确认订单: 以 %(price_amount)s %(price_symbol)s 的价格，买入 %(buy_amount)s %(buy_symbol)s ",
-    "confirm_sell": "确认订单: 以 %(price_amount)s %(price_symbol)s 的价格，卖出 %(sell_amount)s %(sell_symbol)s ",
+    "confirm_buy": "你的订单价格超出最低卖出价 %(diff)s 倍，你确定么？",
+    "confirm_sell": "你的订单价低于最高买入价 %(diff)s 倍，你确定么？",
     "settle": "喂价",
     "core_rate": "转账手续费汇率",
     "squeeze": "强制平仓价",
@@ -843,7 +896,8 @@
     "zoom_all": "显示全部",
     "settings": "图表选项",
     "featured": "热门市场",
-    "new": "新增"
+    "new": "新增",
+    "market_frozen": "%(asset)s 资产发行人已禁用该资产的市场交易"
   },
   "markets": {
     "title": "交易所",
@@ -911,7 +965,6 @@
     "unclaimed": "未导入余额",
     "unclaimed_vesting": "未导入余额 (解冻中)",
     "no_accounts": "没有账户",
-    "brainkey_no_match": "脑钱包密钥不匹配，请重试",
     "reenter_brainkey": "请再输入一遍脑钱包密钥",
     "pwd4brainkey": "输入密码后显示脑钱包密钥",
     "show_brainkey": "显示脑钱包密钥",
@@ -990,6 +1043,8 @@
     "adjust": "调整头寸",
     "errors": {
       "below": "保证金率低于维持保证金要求",
+      "close": "你的抵押率已接近 %(mr)s ，这意味着如果价格继续下跌你的头寸将被强制平仓。",
+      "close": "Your collateral ratio is close to %(mr)s which means this position is in danger of being margin called if the price drops.",
       "collateral": "可用保证金不足"
     },
     "close": "平仓",

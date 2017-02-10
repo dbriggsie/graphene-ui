@@ -1,6 +1,6 @@
 import React from "react";
-import {Link, PropTypes} from "react-router";
-import connectToStores from "alt/utils/connectToStores";
+import {Link} from "react-router/es";
+import { connect } from "alt-react";
 import ActionSheet from "react-foundation-apps/src/action-sheet";
 import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
@@ -17,10 +17,10 @@ import WalletUnlockActions from "actions/WalletUnlockActions";
 import WalletManagerStore from "stores/WalletManagerStore";
 import cnames from "classnames";
 import TotalBalanceValue from "../Utility/TotalBalanceValue";
-import Immutable from "immutable";
-import {ChainStore} from "graphenejs-lib";
+import ReactTooltip from "react-tooltip";
+import {ChainStore} from "bitsharesjs/es";
 
-@connectToStores
+
 class Header extends React.Component {
 
     static getStores() {
@@ -35,13 +35,13 @@ class Header extends React.Component {
             current_wallet: WalletManagerStore.getState().current_wallet,
             lastMarket: SettingsStore.getState().viewSettings.get("lastMarket"),
             starredAccounts: SettingsStore.getState().starredAccounts,
-            traderMode: SettingsStore.getState().settings.get("traderMode"),
+            traderMode: SettingsStore.getState().settings.get("traderMode")
         };
     }
 
     static contextTypes = {
-        location: React.PropTypes.object,
-        history: PropTypes.history
+        location: React.PropTypes.object.isRequired,
+        router: React.PropTypes.object.isRequired
     };
 
     constructor(props, context) {
@@ -54,15 +54,21 @@ class Header extends React.Component {
     }
 
     componentWillMount() {
-        this.unlisten = this.context.history.listen((err, newState) => {
+        this.unlisten = this.context.router.listen((newState, err) => {
             if (!err) {
-                if (this.unlisten && this.state.active !== newState.location.pathname) {
+                if (this.unlisten && this.state.active !== newState.pathname) {
                     this.setState({
-                        active: newState.location.pathname
+                        active: newState.pathname
                     });
                 }
             }
         });
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            ReactTooltip.rebuild();
+        }, 1250);
     }
 
     componentWillUnmount() {
@@ -87,9 +93,9 @@ class Header extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.traderMode && !this.props.traderMode) {
-            this.context.history.pushState(null, "/dashboard");
+            this.context.router.push("/dashboard");
         }else if(!nextProps.traderMode && this.props.traderMode){
-            this.context.history.pushState(null, "/dashboard");
+            this.context.router.push("/dashboard");
         }
     }
 
@@ -106,7 +112,7 @@ class Header extends React.Component {
 
     _onNavigate(route, e) {
         e.preventDefault();
-        this.context.history.pushState(null, route);
+        this.context.router.push(route);
     }
 
     _onGoBack(e) {
@@ -129,11 +135,10 @@ class Header extends React.Component {
         e.stopPropagation();
         e.preventDefault();
 
-        this.context.history.pushState(null, `/account/${account}/overview`);
+        this.context.router.push(`/account/${account}/overview`);
     }
 
     onSwitchTraderMode() {
-
         if(SettingsStore.getState().settings.get("traderMode")){
             SettingsActions.changeSetting({setting: "traderMode", value: false});
         }else{
@@ -148,8 +153,11 @@ class Header extends React.Component {
     }
 
     render() {
+
+
         let {active} = this.state;
         let {linkedAccounts, currentAccount, starredAccounts, traderMode} = this.props;
+
         let settings = counterpart.translate("header.settings");
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
@@ -204,8 +212,8 @@ class Header extends React.Component {
         let lock_unlock = (this.props.current_wallet && myAccountCount) ? (
             <div className="grp-menu-item" >
             { this.props.locked ?
-                <a style={{padding: "1rem"}} href onClick={this._toggleLock.bind(this)} data-tip={locked_tip} data-place="bottom" data-type="light" data-html><Icon className="icon-14px" name="locked"/></a>
-                : <a href onClick={this._toggleLock.bind(this)} data-tip={unlocked_tip} data-place="bottom" data-type="light" data-html><Icon className="icon-14px" name="unlocked"/></a> }
+                <a style={{padding: "1rem"}} href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={locked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="locked"/></a>
+                : <a href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={unlocked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="unlocked"/></a> }
             </div>
         ) : null;
 
@@ -246,7 +254,6 @@ class Header extends React.Component {
                     });
 
                 let options = [
-                    {to: "/settings", text: "header.settings"},
                     {to: "/help", text: "header.help"},
                     {to: "/explorer", text: "header.explorer"}
                 ].map(entry => {
@@ -289,10 +296,18 @@ class Header extends React.Component {
                         <li><a href onClick={this._triggerMenu}><Icon className="icon-14px" name="menu"/></a></li>
                     </ul>
                 </div>
-                {window.electron ? <div className="grid-block show-for-medium shrink">
+                {__ELECTRON__ ? <div className="grid-block show-for-medium shrink">
                     <ul className="menu-bar">
-                        <li><div style={{marginLeft: "1rem", height: "3rem"}}><div style={{marginTop: "0.5rem"}} onClick={this._onGoBack.bind(this)} className="button outline">{"<"}</div></div></li>
-                        <li><div style={{height: "3rem"}}><div style={{marginTop: "0.5rem"}} onClick={this._onGoForward.bind(this)} className="button outline">></div></div></li>
+                        <li>
+                            <div style={{marginLeft: "1rem", height: "3rem"}}>
+                                <div style={{marginTop: "0.5rem"}} onClick={this._onGoBack.bind(this)} className="button outline small">{"<"}</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div style={{height: "3rem", marginLeft: "0.5rem", marginRight: "0.75rem"}}>
+                                <div style={{marginTop: "0.5rem"}} onClick={this._onGoForward.bind(this)} className="button outline small">></div>
+                            </div>
+                        </li>
                     </ul>
                 </div> : null}
                 <div className="grid-block show-for-medium">
@@ -307,6 +322,7 @@ class Header extends React.Component {
                 </div>
                 <div className="grid-block show-for-medium shrink menu-bar">
                     <div className="grp-menu-items-group header-right-menu">
+
                         {!traderMode ? null : walletBalance}
 
                         <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
@@ -318,12 +334,10 @@ class Header extends React.Component {
                         <div className="grid-block shrink overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>
+                        <div className="grp-menu-item" >
+                            <Link style={{padding: "1rem"}} to="/settings" data-tip={settings} data-place="bottom"><Icon className="icon-14px" name="cog"/></Link>
+                        </div>
                         {lock_unlock}
-                        {myAccountCount === 0 && !tradingAccounts.length ? (
-                            <div className="grp-menu-item" >
-                                <Link style={{padding: "1rem"}} to="/settings" data-tip={settings} data-place="bottom" data-type="light"><Icon className="icon-14px" name="cog"/></Link>
-                            </div>
-                        ) : null}
                         {createAccountLink}
                     </div>
                 </div>
@@ -332,4 +346,19 @@ class Header extends React.Component {
     }
 }
 
-export default Header;
+export default connect(Header, {
+    listenTo() {
+        return [AccountStore, WalletUnlockStore, WalletManagerStore, SettingsStore];
+    },
+    getProps() {
+        return {
+            linkedAccounts: AccountStore.getState().linkedAccounts,
+            currentAccount: AccountStore.getState().currentAccount,
+            locked: WalletUnlockStore.getState().locked,
+            current_wallet: WalletManagerStore.getState().current_wallet,
+            lastMarket: SettingsStore.getState().viewSettings.get("lastMarket"),
+            starredAccounts: SettingsStore.getState().starredAccounts,
+            traderMode: SettingsStore.getState().settings.get("traderMode")
+        };
+    }
+});

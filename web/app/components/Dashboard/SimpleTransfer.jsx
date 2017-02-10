@@ -8,7 +8,7 @@ import AssetName from "../Utility/AssetName";
 import FormattedFee from "../Utility/FormattedFee";
 import BalanceComponent from "../Utility/BalanceComponent";
 import FormattedAsset from "../Utility/FormattedAsset";
-import {ChainStore, FetchChainObjects} from "graphenejs-lib";
+import {ChainStore, FetchChainObjects} from "bitsharesjs/es";
 import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
 import utils from "common/utils";
 import BindToChainState from "../Utility/BindToChainState";
@@ -17,7 +17,6 @@ import AccountApi from "api/accountApi";
 import AccountActions from "actions/AccountActions";
 import AccountSelector from "../Account/AccountSelector";
 
-@BindToChainState()
 class SimpleTransferContent extends React.Component {
 
     static propTypes = {
@@ -173,7 +172,7 @@ class SimpleTransferContent extends React.Component {
             <FormattedAsset amount={currentBalance.get("balance")} asset={currentBalance.get("asset_type")} />
         </div> : null;
 
-        const assetName = utils.replaceName(asset.get("symbol"), true);
+        const {replaceName:assetName}  = utils.replaceName(asset.get("symbol"), true);
 
         let tabIndex = 1;
 
@@ -303,6 +302,7 @@ class SimpleTransferContent extends React.Component {
         );
     }
 }
+SimpleTransferContent = BindToChainState(SimpleTransferContent);
 
 export default class SimpleTransferModal extends React.Component {
     constructor() {

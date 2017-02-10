@@ -1,6 +1,6 @@
 import React from "react";
 import Translate from "react-translate-component";
-import {ChainStore} from "graphenejs-lib";
+import {ChainStore} from "bitsharesjs/es";
 import ChainTypes from "components/Utility/ChainTypes";
 import BindToChainState from "components/Utility/BindToChainState";
 import WithdrawModalBlocktrades from "./WithdrawModalBlocktrades";
@@ -8,14 +8,11 @@ import Modal from "react-foundation-apps/src/modal";
 import Trigger from "react-foundation-apps/src/trigger";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import AccountBalance from "../../Account/AccountBalance";
-import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
-import blockTradesMethods from "common/blockTradesMethods";
-import Post from "common/formPost";
+import BlockTradesDepositAddressCache from "./BlockTradesDepositAddressCache";
 import AssetName from "components/Utility/AssetName";
 import LinkToAccountById from "components/Blockchain/LinkToAccountById";
 
-@BindToChainState({keep_updating:true})
-export default class BlockTradesGatewayDepositRequest extends React.Component {
+class BlockTradesGatewayDepositRequest extends React.Component {
     static propTypes = {
         url:               React.PropTypes.string,
         gateway:           React.PropTypes.string,
@@ -40,7 +37,7 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
 
         let urls = {
             blocktrades: "https://api.blocktrades.us/v2",
-            openledger: "https://bitshares.openledger.info/depositwithdraw/api/v2"
+            openledger: "https://api.blocktrades.us/ol/v2"
         }
 
         this.state = {
@@ -48,7 +45,8 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
             url: props.url || urls[props.gateway]
         };
 
-        this.addDepositAddress = this.addDepositAddress.bind(this);
+        this._copy = this._copy.bind(this);
+        document.addEventListener("copy", this._copy);
     }
 
     _copy(e) {
@@ -60,23 +58,42 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
         }
     }
 
-    _getDepositObject() {
-        return {
-            inputCoinType: this.props.deposit_coin_type,
-            outputCoinType: this.props.receive_coin_type,
-            outputAddress: this.props.account.get("name"),
-            url: this.state.url,
-            stateCallback: this.addDepositAddress
-        };
-    }
-
     componentWillMount() {
-        let account_name = this.props.account.get("name");
+        let account_name = this.props.account.get('name');
         let receive_address = this.deposit_address_cache.getCachedInputAddress(this.props.gateway, account_name, this.props.deposit_coin_type, this.props.receive_coin_type);
 
         if (!receive_address) {
-            blockTradesMethods.requestDepositAddress(this._getDepositObject());
+            this.requestDepositAddress();
         }
+    }
+
+    requestDepositAddress() {
+        let body = {
+            inputCoinType: this.props.deposit_coin_type,
+            outputCoinType: this.props.receive_coin_type,
+            outputAddress: this.props.account.get('name')
+        };
+
+        let body_string = JSON.stringify(body);
+
+        fetch( this.state.url + '/simple-api/initiate-trade', {
+            method:'post',
+            headers: new Headers( { "Accept": "application/json", "Content-Type":"application/json" } ),
+            body: body_string
+        }).then( reply => { reply.json().then( json => {
+                // console.log( "reply: ", json )
+                let address = {"address": json.inputAddress || "unknown", "memo": json.inputMemo};
+                this.addDepositAddress(address);
+            }, error => {
+                // console.log( "error: ",error  );
+                this.addDepositAddress({"address": "unknown", "memo": null});
+            }
+        )
+        }, error => {
+            // console.log( "error: ",error  );
+            this.addDepositAddress({"address": "unknown", "memo": null});
+        });
+
     }
 
     addDepositAddress( receive_address ) {
@@ -97,13 +114,11 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
 
     toClipboard(clipboardText) {
         try {
-            this.refs.deposit_address.select();
-            var successful = document.execCommand('copy');
-            var msg = successful ? 'successful' : 'unsuccessful';
-            console.log('coppyng text command was ' + msg);
-            this.setState({clipboardText});
+            this.setState({clipboardText}, () => {
+                document.execCommand("copy");
+            });
         } catch(err) {
-            console.log('Oops, unable to copy',err);
+            console.error(err);
         }
     }
 
@@ -151,7 +166,7 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
         }
 
         if( !receive_address ) {
-            blockTradesMethods.requestDepositAddress(this._getDepositObject());
+            this.requestDepositAddress();
             return emptyRow;
         }
 
@@ -187,7 +202,7 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
             {
                 // This is a client that uses unique deposit addresses to select the output
                 clipboardText = receive_address.address;
-                deposit_address_fragment = (<input ref='deposit_address' type="text" readOnly="true" className="receive_address" value={receive_address.address} />);
+                deposit_address_fragment = (<span>{receive_address.address}</span>);
             }
             var withdraw_memo_prefix = '';
         }
@@ -241,7 +256,7 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
                             <div className="button-group" style={{paddingTop: 10}}>
                                 {deposit_address_fragment ? <div className="button" onClick={this.toClipboard.bind(this, clipboardText)}>Copy address</div> : null}
                                 {memoText ? <div className="button" onClick={this.toClipboard.bind(this, memoText)}>Copy memo</div> : null}
-                                <button className={"button"} onClick={blockTradesMethods.requestDepositAddress.bind(null, this._getDepositObject())}><Translate content="gateway.generate_new" /></button>
+                                <button className={"button"} onClick={this.requestDepositAddress.bind(this)}><Translate content="gateway.generate_new" /></button>
                             </div>
                         </div>
                     </div>
@@ -305,7 +320,7 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
                                 output_coin_symbol={this.props.deposit_asset}
                                 output_coin_type={this.props.deposit_coin_type}
                                 output_wallet_type={this.props.deposit_wallet_type}
-								output_supports_memos={this.props.supports_output_memos}
+                                output_supports_memos={this.props.supports_output_memos}
                                 memo_prefix={withdraw_memo_prefix}
                                 modal_id={withdraw_modal_id} />
                         </div>
@@ -315,3 +330,5 @@ export default class BlockTradesGatewayDepositRequest extends React.Component {
         }
     }
 };
+
+export default BindToChainState(BlockTradesGatewayDepositRequest, {keep_updating:true});

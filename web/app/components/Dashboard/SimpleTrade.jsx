@@ -12,14 +12,14 @@ import AssetName from "../Utility/AssetName";
 import FormattedFee from "../Utility/FormattedFee";
 import BalanceComponent from "../Utility/BalanceComponent";
 import FormattedAsset from "../Utility/FormattedAsset";
-import {ChainStore, FetchChainObjects} from "graphenejs-lib";
-import connectToStores from "alt/utils/connectToStores";
+import {ChainStore, FetchChainObjects} from "bitsharesjs/es";
 import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
 import OrderBook from "../Exchange/OrderBook";
 import utils from "common/utils";
 import counterpart from "counterpart";
 import Icon from "../Icon/Icon";
 import ReactTooltip from "react-tooltip";
+import { connect } from "alt-react";
 
 // These are the preferred assets chosen by default if the the user either
 // doesn't have a balance in the currently selected asset anymore, or if he
@@ -31,7 +31,6 @@ const preferredAssets = [
     "1.3.113" // bitCNY
 ];
 
-@connectToStores
 class SimpleTradeContent extends React.Component {
 
     static getStores() {
@@ -421,7 +420,7 @@ class SimpleTradeContent extends React.Component {
 
         let currentBalance = isBuy ? this.props.assets.find(a => a.get("asset_type") === this.state.activeAssetId) : this.props.currentBalance;
         let currentAsset = ChainStore.getAsset(currentBalance.get("asset_type"));
-        const assetName = utils.replaceName(currentAsset.get("symbol"), true);
+        const {replaceName:assetName} = utils.replaceName(currentAsset.get("symbol"), true);
 
         console.log("isBuy", isBuy, this.state.activeAssetId);
         let asset = new Asset({
@@ -532,8 +531,8 @@ class SimpleTradeContent extends React.Component {
             return null;
         }
 
-        const activeAssetName = utils.replaceName(activeAsset.get("symbol"), true);
-        const assetName = utils.replaceName(asset, true);
+        const {replaceName:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true); 
+        const {replaceName:assetName} = utils.replaceName(asset, true);
 
         const marketID = isBuy ?
             this.props.currentAsset.get("id") + "_" + activeAsset.get("id") :
@@ -702,6 +701,7 @@ class SimpleTradeContent extends React.Component {
         );
     }
 }
+SimpleTradeContent = connect(SimpleTradeContent);
 
 export default class SimpleTradeModal extends React.Component {
     constructor() {

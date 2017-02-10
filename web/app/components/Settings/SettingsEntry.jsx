@@ -6,6 +6,14 @@ import {Link} from "react-router";
 
 export default class SettingsEntry extends React.Component {
 
+    constructor() {
+        super();
+
+        this.state = {
+            message: null
+        };
+    }
+
     _onConfirm() {
         SettingsActions.changeSetting({setting: "apiServer", value: this.props.apiServer });
         setTimeout(this._onReloadClick, 250);
@@ -16,14 +24,26 @@ export default class SettingsEntry extends React.Component {
             window.location.hash = "";
             window.remote.getCurrentWindow().reload();
         }
-        else window.location.href = "/";
+        else window.location.href = __BASE_URL__ + "/";
+    }
+
+    _setMessage(key) {
+        this.setState({
+            message: counterpart.translate(key)
+        });
+
+        this.timer = setTimeout(() => {
+            this.setState({message: null});
+        }, 4000);
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timer);
     }
 
     render() {
         let {defaults, setting, settings, apiServer} = this.props;
         let options, optional, confirmButton, value, input, selected = settings.get(setting);
-
-        let myLocale = counterpart.getLocale();
         let noHeader = false;
 
         switch (setting) {
@@ -66,7 +86,7 @@ export default class SettingsEntry extends React.Component {
                 return <option value={option.url} key={key.url}>{option.location || option.url} {option.location ? `(${option.url})` : null}</option>;
             });
 
-            let confirmButton = (
+            confirmButton = (
                 <div className="button-group" style={{padding: "10px"}}>
                     <div onClick={this._onConfirm.bind(this)} className="button outline">
                         <Translate content="transfer.confirm" />
@@ -162,10 +182,7 @@ export default class SettingsEntry extends React.Component {
                 input = <input type="text" defaultValue={value} onBlur={this.props.onChange.bind(this, setting)}/>;
             }
             break;
-
         }
-
-
 
         if (!value && !options) return null;
 
@@ -175,7 +192,7 @@ export default class SettingsEntry extends React.Component {
 
         return (
             <section className="block-list">
-                {noHeader ? null :<header><Translate component="span" content={`settings.${setting}`} /></header>}
+                {noHeader ? null : <header><Translate component="span" content={`settings.${setting}`} /></header>}
                 {options ? <ul>
                     <li className="with-dropdown">
                         {optional}
@@ -186,6 +203,8 @@ export default class SettingsEntry extends React.Component {
                     </li>
                 </ul> : null}
                 {input ? <ul><li>{input}</li></ul> : null}
+
+                <div className="facolor-success">{this.state.message}</div>
             </section>
         );
     }

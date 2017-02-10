@@ -8,7 +8,7 @@ import AssetName from "../Utility/AssetName";
 import FormattedFee from "../Utility/FormattedFee";
 import BalanceComponent from "../Utility/BalanceComponent";
 import FormattedAsset from "../Utility/FormattedAsset";
-import {ChainStore, FetchChainObjects} from "graphenejs-lib";
+import {ChainStore, FetchChainObjects} from "bitsharesjs/es";
 import {LimitOrderCreate, Price, Asset} from "common/MarketClasses";
 import utils from "common/utils";
 import BindToChainState from "../Utility/BindToChainState";
@@ -28,8 +28,6 @@ import SettingsStore from "stores/SettingsStore";
 import DepositFiatOpenLedger from "components/DepositWithdraw/openledger/DepositFiatOpenLedger";
 import WithdrawFiatOpenLedger from "components/DepositWithdraw/openledger/WithdrawFiatOpenLedger";
 
-
-@BindToChainState()
 class DepositWithdrawContent extends React.Component {
 
     static propTypes = {
@@ -221,7 +219,7 @@ class DepositWithdrawContent extends React.Component {
     }
 
     _renderWithdraw() {
-        const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
+        const {replaceName:assetName} = utils.replaceName(this.props.asset.get("symbol"), true);
         let tabIndex = 1;
         const {supportsMemos} = this.props;
 
@@ -290,7 +288,7 @@ class DepositWithdrawContent extends React.Component {
 
     _renderDeposit() {
         const {receive_address} = this.state;
-        const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
+        const {replaceName:assetName} = utils.replaceName(this.props.asset.get("symbol"), true);
         const hasMemo = receive_address && "memo" in receive_address && receive_address.memo;
         const addressValue = receive_address && receive_address.address || "";
         let tabIndex = 1;
@@ -351,7 +349,7 @@ class DepositWithdrawContent extends React.Component {
     }
 
     _renderCurrentBalance() {
-        const assetName = utils.replaceName(this.props.asset.get("symbol"), true);
+        const {replaceName:assetName} = utils.replaceName(this.props.asset.get("symbol"), true);
         const isDeposit = this.props.action === "deposit";
 
         let currentBalance = this.props.balances.find(b => {
@@ -410,7 +408,7 @@ class DepositWithdrawContent extends React.Component {
             return null;
         }
 
-        const assetName = utils.replaceName(asset.get("symbol"), true);
+        const {replaceName:assetName} = utils.replaceName(asset.get("symbol"), true);
 
         return (
             <div className="SimpleTrade__modal">
@@ -434,6 +432,7 @@ class DepositWithdrawContent extends React.Component {
         );
     }
 }
+DepositWithdrawContent = BindToChainState(DepositWithdrawContent);
 
 export default class SimpleDepositWithdrawModal extends React.Component {
     constructor() {

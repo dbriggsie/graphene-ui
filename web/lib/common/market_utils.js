@@ -1,36 +1,32 @@
 import utils from "./utils";
-import {ChainStore, ChainTypes} from "graphenejs-lib";
+import {ChainStore, ChainTypes} from "bitsharesjs/es";
 let {object_type} = ChainTypes;
 let opTypes = Object.keys(object_type);
 
-class MarketUtils {
-    constructor() {
-        this.order_type = this.order_type.bind(this);
-    }
-
-    static order_type(id) {
+const MarketUtils = {
+    order_type(id) {
         if (typeof id !== "string") {
             return false;
         }
         let type = id.split(".")[1];
         return opTypes[type];
-    }
+    },
 
-    static isAsk(order, base) {
-        let baseId = base.toJS ? base.get("id") : base.id;;
+    isAsk(order, base) {
+        let baseId = base.toJS ? base.get("id") : base.id;
 
         if (order.sell_price) {
             return order.sell_price.quote.asset_id === baseId;
         } else if (order.call_price) {
             return order.call_price.quote.asset_id === baseId;
         }
-    }
+    },
 
-    static isAskOp(op) {
+    isAskOp(op) {
         return op.amount_to_sell.asset_id !== op.fee.asset_id;
-    }
+    },
 
-    static limitByPrecision(value, asset, floor = true) {
+    limitByPrecision(value, asset, floor = true) {
         let assetPrecision = asset.toJS ? asset.get("precision") : asset.precision;
         let valueString = value.toString();
         let splitString = valueString.split(".");
@@ -43,9 +39,9 @@ class MarketUtils {
             return 0;
         }
         return value;
-    }
+    },
 
-    static getFeedPrice(settlement_price, invert = false) {
+    getFeedPrice(settlement_price, invert = false) {
         let quoteAsset = ChainStore.getAsset(settlement_price.getIn(["quote", "asset_id"]));
         let baseAsset = ChainStore.getAsset(settlement_price.getIn(["base", "asset_id"]));
 
@@ -54,16 +50,16 @@ class MarketUtils {
             quoteAsset,
             settlement_price.getIn(["base", "amount"]),
             baseAsset
-        )
+        );
 
         if (invert) {
             return 1 / price;
         } else {
             return price;
         }
-    }
+    },
 
-    static parseOrder(order, base, quote, invert = false) {
+    parseOrder(order, base, quote, invert = false) {
         let ask = this.isAsk(order, base);
 
         let quotePrecision = utils.get_asset_precision(quote.toJS ? quote.get("precision") : quote.precision);
@@ -139,9 +135,9 @@ class MarketUtils {
             price: price,
             amount: amount
         };
-    }
+    },
 
-    static parse_order_history(order, paysAsset, receivesAsset, isAsk, flipped) {
+    parse_order_history(order, paysAsset, receivesAsset, isAsk, flipped) {
         let isCall = order.order_id.split(".")[1] == object_type.limit_order ? false : true;
         let receivePrecision = utils.get_asset_precision(receivesAsset.get("precision"));
         let payPrecision = utils.get_asset_precision(paysAsset.get("precision"));
@@ -153,10 +149,10 @@ class MarketUtils {
         let price_full = utils.get_asset_price(order.receives.amount, receivesAsset, order.pays.amount, paysAsset, isAsk);
         // price_full = !flipped ? (1 / price_full) : price_full;
         // let {int, dec} = this.split_price(price_full, isAsk ? receivesAsset.get("precision") : paysAsset.get("precision"));
-        
+
         let {int, dec, trailing} = utils.price_to_text(price_full, isAsk ? receivesAsset : paysAsset, isAsk ? paysAsset : receivesAsset);
         let className = isCall ? "orderHistoryCall" : isAsk ? "orderHistoryBid" : "orderHistoryAsk";
-        
+
         let time;
         if (order.time) {
             time = order.time.split("T")[1];
@@ -187,17 +183,17 @@ class MarketUtils {
             className: className,
             time: time
         };
-    }
+    },
 
-    static split_price(price, pricePrecision) {
+    split_price(price, pricePrecision) {
         // We need to figure out a better way to set the number of decimals
         let price_split = utils.format_number(price, Math.max(5, pricePrecision)).split(".");
         let int = price_split[0];
         let dec = price_split[1];
         return {int: int, dec: dec};
-    }
+    },
 
-    // static flatten_orderbookchart(array, sumBoolean, inverse, precision) {
+    // flatten_orderbookchart(array, sumBoolean, inverse, precision) {
     //     inverse = inverse === undefined ? false : inverse;
     //     let orderBookArray = [];
     //     let maxStep, arrayLength = array.length;
@@ -276,7 +272,7 @@ class MarketUtils {
     //     return orderBookArray;
     // }
 
-    static flatten_orderbookchart_highcharts(array, sumBoolean, inverse, precision) {
+    flatten_orderbookchart_highcharts(array, sumBoolean, inverse, precision) {
         inverse = inverse === undefined ? false : inverse;
         let orderBookArray = [];
         let arrayLength;
@@ -313,9 +309,9 @@ class MarketUtils {
             }
         }
         return orderBookArray;
-    }
+    },
 
-    static priceToObject(x, type) {
+    priceToObject(x, type) {
         let tolerance = 1.0E-8;
         let h1=1; let h2=0;
         let k1=0; let k2=1;
@@ -334,14 +330,14 @@ class MarketUtils {
         } else {
             throw "Unknown type";
         }
-    }
+    },
 
-    static isMarketAsset(quote, base) {
+    isMarketAsset(quote, base) {
         let isMarketAsset = false, marketAsset, inverted = false;
 
         if (quote.get("bitasset") && base.get("id") === quote.getIn(["bitasset", "options", "short_backing_asset"])) {
             isMarketAsset = true;
-            marketAsset = {id: quote.get("id")}
+            marketAsset = {id: quote.get("id")};
         } else if (base.get("bitasset") && quote.get("id") === base.getIn(["bitasset", "options", "short_backing_asset"])) {
             inverted = true;
             isMarketAsset = true;
@@ -354,7 +350,6 @@ class MarketUtils {
             inverted
         };
     }
-
-}
+};
 
 export default MarketUtils;

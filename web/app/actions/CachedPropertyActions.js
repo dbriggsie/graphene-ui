@@ -1,20 +1,19 @@
-import alt from "alt-instance"
+import alt from "alt-instance";
 
 class CachedPropertyActions {
-    
+
     set(name, value) {
-        this.dispatch({ name, value })
+        return { name, value };
     }
-    
+
     get(name) {
-        this.dispatch({ name })
+        return { name };
     }
-    
+
     reset() {
-        this.dispatch()
+        return true;
     }
-    
 }
 
-var CachedPropertyActionsWrapped = alt.createActions(CachedPropertyActions)
-export default CachedPropertyActionsWrapped
+var CachedPropertyActionsWrapped = alt.createActions(CachedPropertyActions);
+export default CachedPropertyActionsWrapped;

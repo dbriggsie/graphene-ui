@@ -1,9 +1,9 @@
-var alt = require("../alt-instance");
+import alt from "alt-instance";
 
 var locales = {};
 if (__ELECTRON__) {
-    ["cn", "de", "es", "fr", "ko", "tr"].forEach(locale => {
-        locales[locale] = require("json!assets/locales/locale-" + locale + ".json");
+    ["cn", "de", "es", "fr", "ko", "tr", "ru"].forEach(locale => {
+        locales[locale] = require("json-loader!assets/locales/locale-" + locale + ".json");
     });
 }
 
@@ -11,33 +11,36 @@ class IntlActions {
 
     switchLocale(locale) {
         if (locale === "en") {
-            return this.dispatch({locale});
+            return {locale};
         }
         if (__ELECTRON__) {
-            this.dispatch({
+            return {
                 locale: locale,
                 localeData: locales[locale]
-            });
+            };
         } else {
-        	fetch("/locale-" + locale + ".json").then( (reply) => {
-                return reply.json().then(result => {
-                    this.dispatch({
-                    	locale: locale,
-                    	localeData: result
+            return (dispatch) => {
+                fetch("locale-" + locale + ".json").then( (reply) => {
+                    return reply.json().then(result => {
+                        dispatch({
+                            locale,
+                            localeData: result
+                        });
                     });
-            })})
-            .catch(err => {
-                console.log("fetch locale error:", err);
-                this.dispatch({locale: "en"});
-            });
-        }
+                }).catch(err => {
+                    console.log("fetch locale error:", err);
+                    return (dispatch) => {
+                        dispatch({locale: "en"});
+                    };
+                });
+            };
 
+        }
     }
 
     getLocale(locale) {
-        this.dispatch(locale);
+        return locale;
     }
-
 }
 
-module.exports = alt.createActions(IntlActions);
+export default alt.createActions(IntlActions);

@@ -1,5 +1,5 @@
 import React from "react";
-import connectToStores from "alt/utils/connectToStores";
+import { connect } from "alt-react";
 import accountUtils from "common/account_utils";
 import utils from "common/utils";
 import Translate from "react-translate-component";
@@ -17,7 +17,6 @@ import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
 import {fetchCoins, getBackedCoins} from "common/blockTradesMethods";
 
-@BindToChainState()
 class AccountDepositWithdraw extends React.Component {
 
     static propTypes = {
@@ -282,21 +281,22 @@ class AccountDepositWithdraw extends React.Component {
     );
     }
 };
+AccountDepositWithdraw = BindToChainState(AccountDepositWithdraw);
 
-@connectToStores
-export default class DepositStoreWrapper extends React.Component {
-    static getStores() {
-        return [AccountStore, SettingsStore]
-    };
+class DepositStoreWrapper extends React.Component {
+    render () {
+        return <AccountDepositWithdraw {...this.props}/>;
+    }
+}
 
-    static getPropsFromStores() {
+export default connect(DepositStoreWrapper, {
+    listenTo() {
+        return [AccountStore, SettingsStore];
+    },
+    getProps() {
         return {
             account: AccountStore.getState().currentAccount,
             viewSettings: SettingsStore.getState().viewSettings
-        }
-    };
-
-    render () {
-        return <AccountDepositWithdraw {...this.props}/>
+        };
     }
-}
+});

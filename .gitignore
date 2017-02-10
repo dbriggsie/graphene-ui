@@ -8,8 +8,8 @@ cli/bundle
 cli/examples.txt
 dist
 
-
+web/electron
 cli/bundle.js
 web/dist-prod
-plasma
 web/stats*
+web/hash-history

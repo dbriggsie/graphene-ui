@@ -1,8 +1,8 @@
-import alt from "alt-instance"
-import TransactionConfirmActions from "actions/TransactionConfirmActions"
+import alt from "alt-instance";
+import TransactionConfirmActions from "actions/TransactionConfirmActions";
 
 class TransactionConfirmStore {
-    
+
     constructor() {
         this.bindActions(TransactionConfirmActions);
         this.state = this.getInitialState();
@@ -34,26 +34,27 @@ class TransactionConfirmStore {
     }
 
     onClose() {
-        let state = this.state;
         //console.log("-- TransactionConfirmStore.onClose -->", state);
         this.setState({closed: true});
     }
 
-    onBroadcast() {
-        let state = this.state;
+    onBroadcast(payload) {
         //console.log("-- TransactionConfirmStore.onBroadcast -->", state);
-        this.setState({broadcasting: true});
+        this.setState(payload);
+        if (payload.broadcasted_transaction) {
+            this.setState({
+                broadcasted_transaction: this.state.transaction
+            });
+        }
     }
 
     onWasBroadcast(res) {
-        let state = this.state;
         //console.log("-- TransactionConfirmStore.onWasBroadcast -->", state);
         this.setState({broadcasting: false, broadcast: true});
     }
 
     onWasIncluded(res) {
         //console.log("-- TransactionConfirmStore.onWasIncluded -->", this.state);
-        let state = this.state;
         this.setState({
             error: null,
             broadcasting: false,
@@ -61,20 +62,20 @@ class TransactionConfirmStore {
             included: true,
             trx_id: res[0].id,
             trx_block_num: res[0].block_num,
-            broadcasted_transaction: this.state.transaction});
+            broadcasted_transaction: this.state.transaction
+        });
     }
 
     onError({ error }) {
-        let state = this.state;
         this.setState({broadcast: false, broadcasting: false, error});
     }
-    
+
     onTogglePropose() {
-        this.setState({ propose: ! this.state.propose })
+        this.setState({ propose: ! this.state.propose });
     }
-    
+
     onProposeFeePayingAccount(fee_paying_account) {
-        this.setState({ fee_paying_account })
+        this.setState({ fee_paying_account });
     }
 
     reset() {

@@ -8,11 +8,10 @@ import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import LinkToAccountById from "../Blockchain/LinkToAccountById";
 import WalletApi from "api/WalletApi";
-import WalletDb from "stores/WalletDb.js"
+import WalletDb from "stores/WalletDb.js";
 
 let wallet_api = new WalletApi();
 
-@BindToChainState()
 class AccountRow extends React.Component {
 
     static propTypes = {
@@ -36,6 +35,7 @@ class AccountRow extends React.Component {
         );
     }
 }
+AccountRow = BindToChainState(AccountRow);
 
 class AccountList extends React.Component {
 

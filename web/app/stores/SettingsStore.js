@@ -1,8 +1,8 @@
-var alt = require("../alt-instance");
-var SettingsActions = require("../actions/SettingsActions");
-var IntlActions = require("../actions/IntlActions");
-var Immutable = require("immutable");
-import { merge } from "lodash";
+import alt from "alt-instance";
+import SettingsActions from "actions/SettingsActions";
+import IntlActions from "actions/IntlActions";
+import Immutable from "immutable";
+import {merge} from "lodash";
 import ls from "common/localStorage";
 
 const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when used with BTS chain which is the most usual case currently
@@ -115,7 +115,8 @@ class SettingsStore {
                 "ko",
                 "de",
                 "es",
-                "tr"
+                "tr",
+                "ru"
             ],
             apiServer: [],
             unit: [
@@ -173,7 +174,6 @@ class SettingsStore {
         this.marketsString = "markets";
         this.staticDefaultMarkets = Immutable.Map(ss.get([], defaultMarkets));
         this.starredMarkets = Immutable.Map(ss.get(this.marketsString, []));
-
         this.starredAccounts = Immutable.Map(ss.get("starredAccounts"));
 
         let savedDefaults = ss.get("defaults_v1", {});
@@ -326,14 +326,14 @@ class SettingsStore {
         }
     }
 
-    onClearSettings() {
+    onClearSettings(resolve) {
         ss.remove("settings_v3");
         this.settings = this.defaultSettings;
 
         ss.set("settings_v3", this.settings.toJS());
 
-        if (window && window.location) {
-            // window.location.reload();
+        if (resolve) {
+            resolve();
         }
     }
 
@@ -375,4 +375,4 @@ set_obj.marketsOpenList = marketsList.filter(e => {
     return e.indexOf("OPEN.") === 0;
 }).map(e => e.split("OPEN.").join(""));
 
-module.exports = set_obj;
+export default set_obj

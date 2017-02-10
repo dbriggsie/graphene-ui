@@ -1,17 +1,15 @@
-var Immutable = require("immutable");
-var alt = require("../alt-instance");
-import BlockchainActions from "../actions/BlockchainActions";
-import BaseStore from "./BaseStore";
-import {ChainStore} from "graphenejs-lib";
+import Immutable from "immutable";
+import alt from "alt-instance";
+import BlockchainActions from "actions/BlockchainActions";
+import {ChainStore} from "bitsharesjs/es";
 
 import {
     Block
 }
 from "./tcomb_structs";
 
-class BlockchainStore extends BaseStore{
+class BlockchainStore {
     constructor() {
-        super();
         // This might not need to be an immutable map, a normal structure might suffice..
         this.blocks = Immutable.Map();
         this.latestBlocks = Immutable.List();
@@ -49,13 +47,13 @@ class BlockchainStore extends BaseStore{
             if (this.latestBlocks.size > this.maxBlocks) {
                 this.latestBlocks = this.latestBlocks.pop();
             }
-            
+
 
             if (block.transactions.length > 0) {
                 block.transactions.forEach(trx => {
                     trx.block_num = block.id;
                     this.latestTransactions = this.latestTransactions.unshift(trx);
-                })
+                });
             }
 
             if (this.latestTransactions.size > this.maxBlocks) {

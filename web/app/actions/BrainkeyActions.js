@@ -1,12 +1,12 @@
-import alt from "alt-instance"
+import alt from "alt-instance";
 
 class BrainkeyActions {
-    
+
     setBrainkey(brnkey) {
-        this.dispatch(brnkey)
+        return brnkey;
     }
-    
+
 }
 
-var BrainkeyActionsWrapped = alt.createActions(BrainkeyActions)
-export default BrainkeyActionsWrapped
+var BrainkeyActionsWrapped = alt.createActions(BrainkeyActions);
+export default BrainkeyActionsWrapped;

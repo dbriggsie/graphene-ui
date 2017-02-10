@@ -2,7 +2,7 @@ import React from "react";
 import utils from "common/utils";
 import AccountImage from "../Account/AccountImage";
 import Translate from "react-translate-component";
-import {ChainStore, PublicKey, ChainValidation} from "graphenejs-lib";
+import {ChainStore, PublicKey, ChainValidation} from "bitsharesjs/es";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import classnames from "classnames";
@@ -17,7 +17,6 @@ import Icon from "../Icon/Icon";
  *
  */
 
-@BindToChainState({keep_updating: true})
 class AccountSelector extends React.Component {
 
     static propTypes = {
@@ -169,17 +168,14 @@ class AccountSelector extends React.Component {
                         <span>{error}</span>
                     </div>
                 </div>
-                {noImage ? null : type === "pubkey" ?
-                    <div className="account-image"><Icon name="key" size="4x"/></div> :
-                    <AccountImage
-                        size={{height: this.props.size || 80, width: this.props.size || 80}}
-                        account={this.props.account ? this.props.account.get('name') : null}
-                        custom_image={null}
-                    />}
+
+                {type === "pubkey" ? <div className="account-image"><Icon name="key" size="4x"/></div> :
+                <AccountImage size={{height: this.props.size || 80, width: this.props.size || 80}}
+                              account={this.props.account ? this.props.account.get("name") : null} custom_image={null}/>}
             </div>
-        )
+        );
 
     }
-
 }
-export default AccountSelector;
+
+export default BindToChainState(AccountSelector, {keep_updating: true});

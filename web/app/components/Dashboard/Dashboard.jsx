@@ -1,33 +1,57 @@
 import React from "react";
 import Immutable from "immutable";
 import DashboardList from "./DashboardList";
-import RecentTransactions from "../Account/RecentTransactions";
+import { RecentTransactions } from "../Account/RecentTransactions";
 import Translate from "react-translate-component";
-import ps from "perfect-scrollbar";
-import AssetName from "../Utility/AssetName";
-import assetUtils from "common/asset_utils";
 import MarketCard from "./MarketCard";
-
+import utils from "common/utils";
+// import { Apis } from "bitsharesjs-ws";
 class Dashboard extends React.Component {
-
 
     constructor() {
         super();
         this.state = {
             width: null,
-            height: null,
-            showIgnored: false
+            showIgnored: false,
+            featuredMarkets: [
+                ["OPEN.BTC", "BTS", false],
+                ["OPEN.BTC", "OPEN.ETH"],
+                ["OPEN.BTC", "OPEN.STEEM"],
+                ["OPEN.BTC", "OPEN.DGD"],
+                ["OPEN.BTC", "BLOCKPAY"],
+                ["OPEN.BTC", "ICOO"],
+                ["BTS", "OBITS"],
+                ["BTS", "BTSR"],
+                ["OPEN.EUR", "OPEN.BTC"],
+                ["OPEN.BTC", "OPEN.DCT"],
+                ["OPEN.BTC", "OPEN.INCNT"],
+                ["OPEN.BTC", "OPEN.NXC"],
+                ["BTS", "USD"],
+                ["BTS", "CNY"],
+                ["BTS", "EUR"],
+                ["BTS", "GOLD"]
+            ],
+            newAssets: [
+
+            ]
         };
 
         this._setDimensions = this._setDimensions.bind(this);
     }
 
+    componentDidMount() {
+        this._setDimensions();
+
+        window.addEventListener("resize", this._setDimensions, false);
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
         return (
+            !utils.are_equal_shallow(nextState.featuredMarkets, this.state.featuredMarkets) ||
+            !utils.are_equal_shallow(nextState.newAssets, this.state.newAssets) ||
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
             nextProps.ignoredAccounts !== this.props.ignoredAccounts ||
             nextState.width !== this.state.width ||
-            nextState.height !== this.state.height ||
             nextState.showIgnored !== this.state.showIgnored
         );
     }
@@ -36,28 +60,11 @@ class Dashboard extends React.Component {
         window.removeEventListener("resize", this._setDimensions, false);
     }
 
-    componentDidMount() {
-        // let c = ReactDOM.findDOMNode(this.refs.container);
-        // ps.initialize(c);
-
-        this._setDimensions();
-
-        window.addEventListener("resize", this._setDimensions, false);
-    }
-
-
-    // componentDidUpdate() {
-    //     let c = ReactDOM.findDOMNode(this.refs.container);
-    //     ps.update(c);
-    // }
-
-
     _setDimensions() {
         let width = window.innerWidth;
-        let height = this.refs.wrapper.offsetHeight;
 
-        if (width !== this.state.width || height !== this.state.height) {
-            this.setState({width, height});
+        if (width !== this.state.width) {
+            this.setState({width});
         }
     }
 
@@ -69,36 +76,12 @@ class Dashboard extends React.Component {
 
     render() {
         let {linkedAccounts, myIgnoredAccounts} = this.props;
-        let {width, height, showIgnored} = this.state;
+        let {width, showIgnored, featuredMarkets, newAssets} = this.state;
 
         let names = linkedAccounts.toArray().sort();
         let ignored = myIgnoredAccounts.toArray().sort();
 
         let accountCount = linkedAccounts.size + myIgnoredAccounts.size;
-
-        let featuredMarkets = [
-            ["OPEN.BTC", "BTS", false],
-            ["OPEN.BTC", "OPEN.ETH"],
-            ["OPEN.BTC", "OPEN.STEEM"],
-            ["OPEN.BTC", "OPEN.DGD"],
-            ["OPEN.BTC", "BLOCKPAY"],
-            ["OPEN.BTC", "ICOO"],
-            ["BTS", "OBITS"],
-            ["BTS", "BTSR"],
-            ["OPEN.EUR", "OPEN.BTC"],
-            ["OPEN.BTC", "OPEN.DCT"],
-            ["OPEN.BTC", "OPEN.INCNT"],
-            ["OPEN.BTC", "OPEN.NXC"],
-            ["BTS", "USD"],
-            ["BTS", "CNY"],
-            ["BTS", "EUR"],
-            ["BTS", "GOLD"]
-        ];
-
-        let newAssets = [
-            "OPEN.USDT",
-            "OPEN.EURT"
-        ];
 
         let markets = featuredMarkets.map((pair, index) => {
 
@@ -134,20 +117,14 @@ class Dashboard extends React.Component {
                         
                         <Translate content="account.accounts" component="h4" />                        
                         <div className="box-content">
-                            <DashboardList accounts={Immutable.List(names)} width={width} />
-                            {myIgnoredAccounts.size ?
-                                <table className="table table-hover" style={{fontSize: "0.85rem"}}>
-                                    <tbody>
-                                        <tr>
-                                            <td colSpan={width < 750 ? "3" : "4"} style={{textAlign: "right"}}>
-                                                <div onClick={this._onToggleIgnored.bind(this)}className="button outline">
-                                                    <Translate content={`account.${ showIgnored ? "hide_ignored" : "show_ignored" }`} />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table> : null}
-                            {showIgnored ? <DashboardList compact accounts={Immutable.List(ignored)} width={width} /> : null}
+                            <DashboardList
+                                accounts={Immutable.List(names)}
+                                ignoredAccounts={Immutable.List(ignored)}
+                                width={width}
+                                onToggleIgnored={this._onToggleIgnored.bind(this)}
+                                showIgnored={showIgnored}
+                            />
+                            {/* {showIgnored ? <DashboardList accounts={Immutable.List(ignored)} width={width} /> : null} */}
                         </div>
                     </div> : null}
 

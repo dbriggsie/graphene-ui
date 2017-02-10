@@ -1,4 +1,6 @@
 class BaseStore {
+    constructor() {
+    }
 
     _export(...methods) {
         let publicMethods = {};

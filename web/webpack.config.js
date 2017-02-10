@@ -1,182 +1,240 @@
-'use strict';
-const NODE_ENV = process.env.NODE_ENV || 'development';
-const webpack = require('webpack');
-const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const fs = require('fs');
-const git = require('git-rev-sync');
-const exec = require('child_process').exec;
+var path = require("path");
+var webpack = require("webpack");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var Clean = require("clean-webpack-plugin");
+var git = require("git-rev-sync");
+require("es6-promise").polyfill();
+NODE_ENV='development';
+// BASE APP DIR
+var root_dir = path.resolve(__dirname);
 
-exec(`rm -fr ${__dirname}/dist/*`, (err, stdout, stderr) => {
-    if (err) {
-        console.error(err);
-        return;
+let env = { dev: true };
+
+
+module.exports = function() {
+    if (!env.profile) {
+        console.log("env:", env);
     }
-    console.log(stdout);
-});
-
-function CreateWebpackConfig(type) {
-
-    let ext = (type == 'js' && 'js' || type == 'scss' && 'css' || type == 'html' && 'html');
-
-    this.entry = {};
-    //custom files input
-    if (type == 'js') {
-        this.entry['app'] = path.join(__dirname, 'app', 'Main');
-        //this.entry['app'] = path.join(__dirname, 'app', 'a11');
-    } else if (type == 'scss') {
-        this.entry['files'] = path.join(__dirname, 'app', 'assets', 'files');
-        this.entry['app'] = path.join(__dirname, 'app', 'assets', 'stylesheets', 'app');
-        //this.entry['file1'] = path.join(__dirname, folder, 'file1');
-    } else if (type == 'html') {
-        this.entry['index'] = path.join(__dirname, 'app', 'assets', 'index');
-    }
-
-    this.output = {
-        filename: '[name].' + ext,
-        path: path.join(__dirname, 'dist'),
-        publicPath: ''
-    }; //publicPath !!
-
-    let outputfile = path.join(this.output.path, `index.${ext}`);
-
-    this.resolve = {
-        extensions: ['']
-    };
-
-    this.resolve.extensions.push(`.${type}`);
-
-    this.module = {
-        loaders: []
-    };
-
-    if (type == 'js') {
-
-        this.resolve.extensions.push(".jsx");
-        this.resolve.extensions.push(".coffee");
-        this.resolve.extensions.push(".json");
-
-        this.resolve.root = [path.resolve(__dirname, "./app"), path.resolve(__dirname, "./lib")];
-        this.resolve.modulesDirectories = ["../node_modules"];
-        this.resolve.fallback = [path.resolve(__dirname, "../node_modules")];
-        this.resolveLoader = {
-            root: path.join(__dirname, "../node_modules"),
-            fallback: [path.resolve(__dirname, "../node_modules")]
-        };
-
-        this.module.loaders.push({
-            test: /\.md/,
-            loader: 'html?removeAttributeQuotes=false!remarkable'
-        });
-
-        this.remarkable = {
-            preset: "full",
-            typographer: true
-        };
-
-        this.module.loaders.push({
-            test: /\.jsx{0,1}$/i,
-            exclude: /node_modules\/(?!(react-foundation-apps)\/).*/,  
-            //include: ["../node_modules/react-foundation-apps"],
-            loader: 'babel',
-            query: {
-                presets: ["react", "es2015", "stage-0"],
-                plugins: ["transform-decorators-legacy", "transform-decorators"]
-            }
-        });
-
-        this.module.loaders.push({
-            test: /\.json/,
-            loader: "json",
-            exclude: [
-                path.resolve(__dirname, "./lib/common"),
-                path.resolve(__dirname, "./app/assets/locales")
-            ]
-        });
-
-        this.module.loaders.push({
-            test: /\.coffee$/,
-            loader: "coffee-loader"
-        });
-
-        this.module.loaders.push({
-            test: /\.(coffee\.md|litcoffee)$/,
-            loader: "coffee-loader?literate"
-        });
-
-    } else if (type == 'scss') {
-
-        this.module.loaders.push({
-            test: /\.scss$/,
-            loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true')
-        });
-
-        this.module.loaders.push({
-            test: /\.(jpe?g|png|gif|svg|ttf|eot|woff|woff2)$/i,
-            loader: 'file?name=[path][name].[ext]'
-        });
-
-        this.module.loaders.push({
-            test: /\.md/,
-            loader: 'html?removeAttributeQuotes=false!remarkable'
-        });
-
-        this.module.postcss = function() {
-            return [precss, autoprefixer];
-        };
-
-    } else if (type == 'html') {
-
-        this.module.loaders.push({
-            test: /\.html$/,
-            loader: ExtractTextPlugin.extract('html?minimize=false')
-        });
-    }
-
-    this.plugins = [
-        new webpack.DefinePlugin({
-            NODE_ENV: JSON.stringify(NODE_ENV),
-            APP_VERSION: JSON.stringify(git.tag()),
-            __ELECTRON__: false
-        }),
-        new webpack.NoErrorsPlugin(),
-        function() {
-            this.plugin("done", function(stats) {
-                if (stats.compilation.errors && stats.compilation.errors.length) {
-                    console.log(stats.compilation.errors[0].error);
-                    if (fs.existsSync(outputfile)) {
-                        fs.writeFileSync(outputfile, JSON.stringify(stats.compilation.errors[0].error.details), 'utf8');
-                    }
-                }
-            });
+    // console.log(env.prod ? "Using PRODUCTION options\n" : "Using DEV options\n");
+    // STYLE LOADERS
+    var cssLoaders = [
+        {
+            loader: "style-loader"
+        },
+        {
+            loader: "css-loader"
+        },
+        {
+            loader: "postcss-loader"
         }
     ];
 
-    if (type == 'scss' || type == 'html') {
-        this.plugins.push(new ExtractTextPlugin(`[name].${ext}`))
-    }
-
-    this.devtool = (NODE_ENV == 'development' ? "inline-source-map" : '');
-
-    if (NODE_ENV == 'production') {
-        this.plugins.push(new webpack.optimize.UglifyJsPlugin({
-            beautify: false,
-            comments: false,
-            compress: {
-                sequences: true,
-                booleans: true,
-                loops: true,
-                unused: true,
-                warnings: false,
-                drop_console: true,
-                unsafe: true
+    var scssLoaders =  [
+        {
+            loader: "style-loader"
+        },
+        {
+            loader: "css-loader"
+        },
+        {
+            loader: "postcss-loader",
+            options: {
+                plugins: [require("autoprefixer")]
             }
-        }));
-    }
-}
+        },
+        {
+            loader: "sass-loader",
+            options: {
+                outputStyle: "expanded"
+            }
+        }
+    ];
 
-module.exports = [
-   new CreateWebpackConfig('js'),
-   new CreateWebpackConfig('scss'),
-   new CreateWebpackConfig('html')
-];
+    // OUTPUT PATH
+    var outputPath = path.join(root_dir, "dist");
+
+    // COMMON PLUGINS
+    var plugins = [
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.DefinePlugin({
+            APP_VERSION: JSON.stringify(git.tag()),
+            __ELECTRON__: !!env.electron,
+            __HASH_HISTORY__: !!env.hash,
+            __BASE_URL__: JSON.stringify(env.baseUrl || ""),
+            __UI_API__: JSON.stringify(env.apiUrl || "https://ui.bitshares.eu/api")
+        })
+    ];
+
+    if (!"prod") {
+        // PROD OUTPUT PATH
+        let outputDir = env.electron ? "electron" : env.hash ? "hash-history" : "dist";
+        outputPath = path.join(root_dir, outputDir);
+
+        // DIRECTORY CLEANER
+        var cleanDirectories = [outputDir];
+
+        // WRAP INTO CSS FILE
+        const extractCSS = new ExtractTextPlugin("app.css");
+        cssLoaders = extractCSS.extract({fallbackLoader: "style-loader",
+            loader: [{loader: "css-loader"}, {loader: "postcss-loader", options: {
+                plugins: [require("autoprefixer")]
+            }}]}
+        );
+        scssLoaders = extractCSS.extract({fallbackLoader: "style-loader",
+            loader: [{loader: "css-loader"}, {loader: "postcss-loader", options: {
+                plugins: [require("autoprefixer")]
+            }}, {loader: "sass-loader", options: {outputStyle: "expanded"}}]}
+        );
+
+        // PROD PLUGINS
+        plugins.push(new Clean(cleanDirectories, {root: root_dir}));
+        plugins.push(new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}}));
+        plugins.push(extractCSS);
+        plugins.push(new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: false
+        }));
+        if (!env.noUgly) {
+
+            plugins.push(new webpack.optimize.UglifyJsPlugin({
+                sourceMap: true,
+                compress: {
+                    warnings: true
+                },
+                output: {
+                    screw_ie8: true
+                }
+            }));
+        }
+    } else {
+        // plugins.push(new webpack.optimize.OccurenceOrderPlugin());
+        plugins.push(new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("development")}}));
+        plugins.push(new webpack.HotModuleReplacementPlugin());
+        plugins.push(new webpack.NoEmitOnErrorsPlugin());
+    }
+
+    var config = {
+        entry: {
+            // vendor: ["react", "react-dom", "highcharts/highstock", "bitsharesjs", "lodash"],
+            app:  path.resolve(root_dir, "app/Main.js")
+        },
+        output: {
+            publicPath: "",
+            path: outputPath,
+            filename: "[name].js",
+            pathinfo: !env.prod,
+            sourceMapFilename: "[name].js.map"
+        },
+        devtool: "devtool",
+        module: {
+            rules: [
+                {
+                    test: /\.jsx$/,
+                    include: [path.join(root_dir, "app"), path.join(root_dir, "node_modules/react-foundation-apps")],
+                    use: [
+                        {
+                            loader: "babel-loader",
+                            options: {
+                                cacheDirectory: env.prod ? false : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    test: /\.js$/,
+                    exclude: [/node_modules/],
+                    loader: "babel-loader",
+                    options: {compact: false, cacheDirectory: true}
+                },
+                {
+                    test: /\.json/, loader: "json-loader",
+                    exclude: [
+                        path.resolve(root_dir, "lib/common"),
+                        path.resolve(root_dir, "app/assets/locales")
+                    ]
+                },
+                { test: /\.coffee$/, loader: "coffee-loader" },
+                { test: /\.(coffee\.md|litcoffee)$/, loader: "coffee-loader?literate" },
+                {
+                    test: /\.css$/,
+                    loader: cssLoaders
+                },
+
+                // var cssLoaders = "style-loader!css-loader!postcss-loader",
+                //   scssLoaders =  "style-loader!css-loader!postcss-loader!sass-loader?outputStyle=expanded";
+
+                {
+                    test: /\.scss$/,
+                    loader: scssLoaders
+                },
+                {
+                    test: /\.png$/,
+                    exclude:[path.resolve(root_dir, "app/assets/asset-symbols")],
+                    use: [
+                        {
+                            loader: "url-loader",
+                            options: {
+                                limit: 100000
+                            }
+                        }
+                    ]
+                },
+
+                {
+                    test: /\.woff$/,
+                    use: [
+                        {
+                            loader: "url-loader",
+                            options: {
+                                limit: 100000,
+                                mimetype: "application/font-woff"
+                            }
+                        }
+                    ]
+                },
+                { test: /.*\.svg$/, loaders: ["svg-inline-loader", "svgo-loader"] },
+                {
+                    test: /\.md/,
+                    use: [
+                        {
+                            loader: "html-loader",
+                            options: {
+                                removeAttributeQuotes: false
+                            }
+                        },
+                        {
+                            loader: "remarkable-loader",
+                            options: {
+                                preset: "full",
+                                typographer: true
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        resolve: {
+            modules: [
+                path.resolve(root_dir, "app"),
+                path.resolve(root_dir, "lib"),
+                "node_modules"
+            ],
+            extensions: [".js", ".jsx", ".coffee", ".json"],
+            // fallback: [path.resolve(root_dir, "./node_modules")]
+        },
+        resolveLoader: {
+            modules: [path.join(root_dir, "node_modules")],
+            // fallback: [path.resolve(root_dir, "./node_modules")]
+        },
+        plugins: plugins
+    };
+
+    // if(env.prod) config.entry.vendors = [
+    //     "classnames", "react-router", "highcharts/highstock", "counterpart", "react-translate-component",
+    //     "perfect-scrollbar", "jdenticon", "react-notification-system", "react-tooltip",
+    //     "whatwg-fetch", "alt", "react-json-inspector",
+    //     "immutable", "bitsharesjs"
+    // ];
+
+    return config;
+};

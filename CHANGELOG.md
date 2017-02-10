@@ -1,4 +1,97 @@
 ---------------------------------------------------------------------
+Release 2.0.170201
+---------------------------------------------------------------------
+New features
+- Charting revamp: new charts using [react-stockchart](https://github.com/rrag/react-stockcharts)
+- Russian language translation thanks to @testzcrypto
+- Add brainkey restoration to create-account, improve brainkey restoration
+- All open orders, collateral and debt are now included when estimating total account value on the account screen
+- A 'Borrow' action added to the account assets table
+- A 'Reset settings' button added to the Settings page
+- Dates have been added to the Chat (requires implementation by other clients like Openledger also)
+- Hide 'OPEN.' prefix from Openledger assets
+- The dashboard market cards have been modified to be more clear
+
+- Hempsweet UIA symbol added ahead of their launch
+
+Bug fixes
+--------
+- Many tweaks and fixes to colors, positioning and more
+- Make sure transfer asset stays synced
+- Fix bug in CER input during asset creation
+- Move 'show hidden accounts' inside DashboardList, improve the layout
+
+---------------------------------------------------------------------
+Release 2.0.170123
+---------------------------------------------------------------------
+Bug fixes
+--------
+- Use relative paths for fetching assets, fixed wallet creation issues
+- Fix some links in the light wallets
+- Fix market flipping for UIAs
+- Fix several bugs related to hash-history react router config
+- Change Graphene to BitShares
+- Replace graphenejs-lib with bitsharesjs
+- Fix npm errors
+- Fix line breaks for memos with very long words
+- Make sure asset actions render properly in AccountOverview
+- Ensure proxy accounts get resolved properly in Voting
+
+---------------------------------------------------------------------
+Release 2.0.170118
+---------------------------------------------------------------------
+
+New features
+--------
+- Helpul tooltips have been added in multiple locations, such as login/unlock, margin mechanics ++
+- Proposed transaction summaries added to transaction history lists
+- Always display settings cog in header
+
+Bug fixes
+--------
+- Fix display of asset page for bit assets with no valid feeds
+- Remove maximum_short_squeeze_ratio requirement for minimum collateral
+- Base Call Order forSale/toReceive calculation on debt instead of collateral
+- Fix TimeAgo tooltip positioning
+- Hide 'show hidden assets' button when no assets are hidden
+- Update Chinese translations
+- Set depth chart xaxis properly when no asks are present
+- Fix price being set when clicking on orderbook order
+- Add a tooltip explaning that buy amounts are minimum to receive
+- Filter call orders on feed update
+
+---------------------------------------------------------------------
+Release 2.0.170116-rc1
+---------------------------------------------------------------------
+
+New features
+--------
+- Major refactor of market handling: improved order matching and market data processing
+- Upgrade to Webpack 2, add ES6 code splitting and dynamic route loading
+- [Blocktrades] Add internal conversion
+- Major package upgrades: react, react-router, alt, file-saver ++
+- Use Roboto font everywhere by default
+- Add Equivalent values to Worker table, improve layout
+- Add a warning for disabled markets and disable buy/sell
+- Only redirect to account creation on direct navigation to "/"
+- Update default markets and add some asset symbols
+
+Bug fixes
+--------
+- [Blocktrades] Fix 'Calculating Internal Server Error'
+- [Blocktrades] Fix displaying 'Deposit limit' for 'Internal conversion'
+- [Blocktrades] Fix copy/paste for memo
+- Fix dropdown font colors
+- Fix missing connection translation key
+- Improve multi-sig signing handling, exclude owner keys if not needed
+- Hide tooltips on navigation
+- Fix Account active state in Header
+- Change 'No price available' to 'Unknown', and add a tooltip
+- Fix account creation and dictionary loading
+- Fix orderbook show more button
+- Fix some invalid JSON
+
+---------------------------------------------------------------------
 Release 2.0.161031
 ---------------------------------------------------------------------
 
@@ -13,7 +106,7 @@ New features
 
 Bug fixes
 --------
-- Add Bitshares bloom filter for BTS 1 account imports
+- Add BitShares bloom filter for BTS 1 account imports
 - Fix a GenesisFilter bug and update ImportKeys flow slightly
 - Fix input of uppercase characters in AccountPermissions
 - Fix Highcharts build issues

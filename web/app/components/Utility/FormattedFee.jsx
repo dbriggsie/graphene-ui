@@ -3,7 +3,7 @@ import FormattedAsset from "./FormattedAsset";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
 import utils from "common/utils";
-import {ChainStore} from "graphenejs-lib";
+import {ChainStore} from "bitsharesjs/es";
 
 /**
  *
@@ -11,7 +11,6 @@ import {ChainStore} from "graphenejs-lib";
  *
  */
 
-@BindToChainState({keep_updating: true})
 class FormattedFee extends React.Component {
 
     static propTypes = {
@@ -56,4 +55,4 @@ class FormattedFee extends React.Component {
     }
 }
 
-export default FormattedFee;
+export default BindToChainState(FormattedFee, {keep_updating: true});

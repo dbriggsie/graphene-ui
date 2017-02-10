@@ -3,11 +3,6 @@
     #content-wrapper {
         @include color($primary-text-color, $bg-color);
     }
-    h4 {
-        padding: 30px 0 10px 0;
-        border-bottom: 1px solid $dark-text-color;
-        margin: 0 0 35px 0;
-    }
     hr {
         border-color: $dark-text-color;
         background-color: $dark-text-color !important;
@@ -25,7 +20,7 @@
         color: $primary-text-color;
     }
     // select:hover {
-    //   background-color: $panel-bg-color;;
+    //   background-color: $panel-bg-color;
     // }
     .label.success {
         color: $success-color;
@@ -136,6 +131,9 @@
     }
     .footer {
         @include color($secondary-text-color, $panel-bg-color);
+        svg > path {
+            fill: $secondary-text-color;
+        }
         .logo .version {
             color: darken($secondary-text-color, 10%);
         }
@@ -216,7 +214,7 @@
         &:hover,
         &:focus,
         &:active {
-            background-color: #4c4c4c !important;
+            background-color: $light-panel-bg-color !important;
         }
     }
     .header .logo {
@@ -229,14 +227,19 @@
         a > span {
             color: $secondary-text-color;
         }
-        .icon {
-            background-color: $secondary-text-color;
-            &:hover {
-                background-color: $primary-text-color;
-            }
+        svg > path {
+            fill: $secondary-text-color;
         }
         a:hover > span {
             color: $primary-text-color;
+        }
+        svg:hover > path {
+            fill: $primary-text-color;
+        }
+    }
+    .settings-cog {
+        svg > path {
+            fill: $secondary-text-color;
         }
     }
     // cards
@@ -277,16 +280,6 @@
         }
         > tbody > tr > td {
             border-bottom-color: $dark-text-color;
-            .receive_address {
-                background: transparent;
-                border: none;
-                color: $secondary-text-color;
-                text-indent: 0;
-                padding: 0;
-                &::selection {
-                    background: transparent;
-                }
-            }
         }
         &.table-hover > tbody > tr:hover > td,
         .table-hover > tbody > tr:hover > th {
@@ -322,6 +315,11 @@
     div.has-error > label > span {
         color: $error-text-color;
     }
+    .has-warning,
+    div.has-warning > label,
+    div.has-warning > label > span {
+        color: $warning-color;
+    }
     div.has-error > input,
     div.has-error > input:hover,
     div.has-error > input:focus {
@@ -338,12 +336,14 @@
     input[type="number"],
     input[type="search"],
     textarea {
-        background-color: rgba(0, 0, 0, 0.2);
-        color: $secondary-text-color;
-        text-indent: 6px;
+        background-color: #ddd;
+        &:hover,
         &:focus,
-        &:active &:focus {
-            background-color: rgba(0, 0, 0, 1);
+        &:active {
+            background-color: #ddd;
+        }
+        &:focus {
+            border-color: #aaa;
         }
     }
     // Tabs
@@ -372,6 +372,31 @@
             color: #FFF;
         }
     }
+    .bid-total {
+        color: $bid-color !important;
+    }
+    .ask-total {
+        color: $ask-color !important;
+    }
+    .stats .stat .negative {
+        color: $negative-color !important;
+    }
+    .stats .stat .positive {
+        color: $positive-color !important;
+    }
+    .active-bucket {
+        background-color: lighten($light-panel-bg-color, 12%);
+    }
+    .bucket-option:hover {
+        background-color: $panel-bg-color;
+    }
+    .buy-sell-box {
+        background-color: lighten($light-panel-bg-color, 12%);
+        > select {
+            background-color: lighten($light-panel-bg-color, 12%);
+            background: lighten($light-panel-bg-color, 12%) url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20version%3D%221.1%22%20width%3D%2232%22%20height%3D%2224%22%20viewBox%3D%220%200%2032%2024%22%3E%3Cpolygon%20points%3D%220%2C0%2032%2C0%2016%2C24%22%20style%3D%22fill%3A%20black%22%3E%3C/polygon%3E%3C/svg%3E") right 10px center no-repeat;
+        }
+    }
     // Account page
     .account-left-panel {
         h5 {
@@ -394,12 +419,12 @@
         > li > label:hover,
         > li select:hover {
             color: $light-text-color;
-            background-color: $panel-bg-color;
+            background-color: lighten($panel-bg-color, 5%);
         }
         > li > a.active {
             color: $light-text-color;
             background-color: lighten($panel-bg-color, 4%);
-            border-left-color: darken($button-bg-color, 4%);
+            border-right-color: darken($button-bg-color, 4%);
         }
     }
     .pagination {
@@ -429,10 +454,6 @@
     .facolor-fee {
         color: $fee-color;
     }
-    // Error test
-    .error {
-        color: $error-text-color;
-    }
     // AccountSelector component
     .account-selector {
         .error-area {
@@ -444,11 +465,15 @@
     }
     .icon.success {
         padding-right: 1rem;
-        background-color: $success-color;
+        > svg > path {
+            fill: $success-color;
+        }
     }
     .icon.error {
         padding-right: 1rem;
-        background-color: $warning-color;
+        > svg > path {
+            fill: $warning-color;
+        }
     }
     .circle-wrapper {
         .circle:before {
@@ -549,9 +574,6 @@
     .menu-group.primary,
     .menu-group.primary .menu-bar {
         background-color: $panel-bg-color;
-        .menu-bar .grp-menu-item .button {
-            color: $primary-text-color;
-        }
         .menu-bar > li {
             > a {
                 color: $primary-text-color;
@@ -672,9 +694,6 @@
         color: #4C85D8;
         background-color: $header-color;
     }
-    tr.marketColorize {
-        color: #c4e811;
-    }
     .market-stats .stat .value {
         color: $primary-text-color;
     }
@@ -683,8 +702,13 @@
             > span:first-of-type {
                 color: $primary-text-color;
             }
-            > span:last-of-type {
+            > span.symbol-text {
                 color: #468EDE;
+            }
+        }
+        &.is-call {
+            >span > b {
+                color: $call-color;
             }
         }
     }
@@ -700,23 +724,16 @@
             background-size: 8px 8px;
             background-color: $header-color;
             font-size: 12px;
+            > option {
+                color: $chat-text-color;
+            }
         }
     }
     .change-up {
         color: $positive-color !important;
-        span {
-            font-size: 1.2em;
-            font-weight: 700;
-            line-height: 1em;
-        }
     }
     .change-down {
         color: $negative-color !important;
-        span {
-            font-size: 1.2em;
-            font-weight: 700;
-            line-height: 1em;
-        }
     }
     .header-sub-title {
         font-size: 80%;
@@ -741,36 +758,51 @@
     }
     //bottom stats
     .bucket-option {
-        @include button-focus($secondary-text-color, $panel-bg-color, 0);
+        @include button-focus($secondary-text-color,
+        $panel-bg-color,
+        0);
         &:hover {
-            @include button-focus($primary-text-color, $panel-bg-color, 10);
+            @include button-focus($primary-text-color,
+            $panel-bg-color,
+            10);
         }
     }
     .active-bucket {
-        @include button-focus($primary-text-color, $panel-bg-color, 10);
+        @include button-focus($primary-text-color,
+        $panel-bg-color,
+        10);
     }
     .indicators,
     li.stat.clickable {
         color: $secondary-text-color;
-        &:hover {
-            @include button-focus($primary-text-color, $panel-bg-color, 10);
-        }
+        // &:hover{
+        //   @include button-focus($primary-text-color, $panel-bg-color, 10);
+        // }
     }
     .mymarkets-tabs {
         > li {
-            @include button-focus($secondary-text-color, $panel-bg-color, 0);
+            @include button-focus($secondary-text-color,
+            $panel-bg-color,
+            0);
             &:hover {
-                @include button-focus($primary-text-color, $panel-bg-color, 10);
+                @include button-focus($primary-text-color,
+                $panel-bg-color,
+                10);
             }
             &.active {
-                @include button-focus($primary-text-color, $panel-bg-color, 10);
+                @include button-focus($primary-text-color,
+                $panel-bg-color,
+                10);
             }
         }
     }
     .mymarkets-list {
         border-top: 2px solid $panel-bg-color;
     }
-    select.bts-select {
+    select.bts-select,
+    select.native-coin-types,
+    ,
+    select.external-coin-types {
         color: $secondary-text-color;
         > option {
             color: $chat-text-color;
@@ -807,177 +839,65 @@
             }
         }
     }
-    .lifetime {
-        background: url("../fresh-bolt2.png") no-repeat 100% 50%;
-        background-size: auto 80%;
-        padding-right: 0.75rem;
-    }
-    .bottom-border {
-        border-bottom: 1px solid #444;
-    }
-    .symbols_input {
-        text-align: center;
-        position: relative;
-        input[type='text'] {
-            text-align: left;
-            display: block;
-            background: none;
-            z-index: 10;
-            color: #000;
-            position: relative;
+    a {
+        &.order-cancel > .icon > svg {
+            > path {
+                fill: $negative-color;
+            }
         }
-        div {
-            position: relative;
-            display: inline-block;
-            width: 130px;
-            margin: 10px 10px;
-            &> .hide_tooltip {
-                background: rgba(2, 0, 0, 0.1);
-                z-index: 0;
-                background: #fff;
-                position: absolute;
-                color: #aaa;
+        &.action-plus > .icon > svg {
+            > path {
+                fill: $positive-color;
             }
         }
     }
-    .buy-text {
-        color: $bid-color;
-        &.inactive {
-            color: grey;
+    tr.margin-row {
+        > td.danger {
+            background-color: darken($alert-color, 15%) !important;
+            color: $dark-text-color;
+            font-weight: bold;
+        }
+        > td.warning {
+            background-color: darken($warning-color, 15%) !important;
+            color: $dark-text-color;
+            font-weight: bold;
         }
     }
-    .sell-text {
-        color: $ask-color;
-        &.inactive {
-            color: grey;
-        }
+    .react-stockcharts-tooltip {
+        fill: $primary-text-color;
     }
-    .orders-switch input:checked + label {
-        background: $ask-color;
-        &::after {
-            border-color: $ask-color;
-        }
+    .react-stockcharts-tooltip-label {
+        fill: $link-text-color;
     }
-    .orders-switch input + label {
-        background: $bid-color;
-        &::after {
-            border-color: $bid-color;
-        }
-    }
-    // SimpleTrade mode
-    .SimpleTrade__modal {
-        > div.Modal__header {
-            background-color: $header-color;
-        }
-    }
-    .balance-row {
-        &.active {
-            background-color: $row-accent-color;
-        }
-        &:hover {
-            background-color: $row-accent-color;
-        }
-    }
-    .balance-row {
-        margin-left: -10px;
-        margin-right: -10px;
-        padding: 10px 20px;
-        &:hover {
-            cursor: pointer;
-        }
-    }
-    .SimpleTrade__help-text {
-        font-style: italic;
-        padding-top: 5px;
-        font-size: 95%;
-    }
-    .SimpleTrade__modal {
-        overflow: auto;
-        > div.Modal__header {
-            padding: 20px 2rem;
-        }
-        > div.Modal__divider {
-            margin: 0px;
-            border-bottom: 2px solid rgb(2, 2, 2);
-        }
-    }
-    .SimpleTrade__hide-zero {
-        position: relative;
-        top: -3px;
-        cursor: pointer;
-    }
-    #simple_transfer_modal {
-        max-width: 650px;
-    }
-    #simple_transfer_modal,
-    #simple_deposit_modal,
-    #simple_withdraw_modal {
-        padding: 0;
-    }
-    #simple_deposit_modal,
-    #simple_withdraw_modal {
-        overflow: auto !important;
-        max-width: 500px;
-        label {
-            text-transform: none !important;
-        }
-    }
-    #simple_buy_modal,
-    #simple_sell_modal {
-        overflow: auto !important;
-        padding: 0;
-    }
-    a.disabled {
-        color: grey !important;
-        cursor: default !important;
-    }
-    .help-tooltip {
-        padding-bottom: 1px;
-        border-bottom: 2px dotted #ccc;
-        cursor: help;
-    }
-    .deposit-address {
-        font-size: 1.1rem;
-        font-weight: bold;
-        padding-bottom: 10px;
-    }
-    .clip-button {
-        border: none !important;
-    }
-    .SimpleTrade__withdraw-row {
-        padding: 10px 0;
-    }
-    .responsive-text {
-        font-size: 80%;
-    }
-    @include breakpoint(medium) {
-        .responsive-text {
-            font-size: inherit;
-        }
-    }
-    .inside_content {
-        position: relative;
-        display: flex;
-        .fm-container {
-            flex-direction: row;
-            padding: 0;
-            min-width: 10.9rem;
-            .fm-volume {
-                display: none;
+    div.custom-dropdown-content {
+        background: $panel-bg-color;
+        color: $primary-text-color;
+        > ul > li {
+            &.clickable:hover {
+                background-color: lighten($panel-bg-color, 5%);
+            }
+            > div.clickable:hover {
+                background-color: lighten($panel-bg-color, 5%);
             }
         }
     }
-    .simple-td-name {
-        min-width: 250px;
-    }
-
-    .simpe_overview{
-        h3{
-            display: none;
+    .blocktrades-bridge input,
+    .blocktrades-bridge select {
+        color: $secondary-text-color;
+        border: 1px solid $secondary-text-color;
+        background-color: $panel-bg-color !important;
+        &.native-coin-types,
+        &.external-coin-types {
+            background-color: transparent !important;
         }
-
-        .simpe_buy_sell {
-            display: none;
+        > option {
+            background-color: white !important;
+        }
+        &:hover,
+        &:focus {
+            color: $primary-text-color;
+            //box-shadow: 1px 2px 3px #000;
+            border: 2px solid $primary-text-color;
         }
     }
 }

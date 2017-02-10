@@ -1,9 +1,9 @@
 import React from "react";
-import connectToStores from "alt/utils/connectToStores";
+import { connect } from "alt-react";
 import AccountStore from "stores/AccountStore";
 import Translate from "react-translate-component";
 import Icon from "../Icon/Icon";
-import {ChainStore} from "graphenejs-lib";
+import {ChainStore} from "bitsharesjs/es";
 import {debounce} from "lodash";
 import SettingsActions from "actions/SettingsActions";
 import SettingsStore from "stores/SettingsStore";
@@ -13,8 +13,8 @@ import counterpart from "counterpart";
 import LoadingIndicator from "../LoadingIndicator";
 import AccountActions from "actions/AccountActions";
 import TransactionConfirmStore from "stores/TransactionConfirmStore";
-import {FetchChainObjects} from "graphenejs-lib";;
-
+import {FetchChainObjects} from "bitsharesjs/es";
+import TimeAgo from "../Utility/TimeAgo";
 
 const PROD = true;
 const hostConfig = PROD ? { // Prod config
@@ -37,40 +37,34 @@ class Comment extends React.Component {
     }
 
     render() {
-        let {comment, user, color} = this.props;
+        let {comment, date, user, color} = this.props;
         let systemUsers = [counterpart.translate("chat.welcome_user"), "SYSTEM"];
         return (
             <div style={{padding: "3px 1px"}}>
-                <span
-                    className="clickable"
-                    onClick={this.props.onSelectUser.bind(this, user)}
-                    style={{
-                        fontWeight: "bold",
-                        color: color
-                    }}>
-                        {user}:&nbsp;
-                </span>
-                <span className="chat-text">{systemUsers.indexOf(user) !== -1 ? comment : comment.substr(0, 140)}</span>
+                {date ?
+                <div style={{paddingTop: 2, fontSize: "90%"}}>
+                    <TimeAgo time={new Date(date)} />
+                </div> : null}
+                <div>
+                    <span
+                        className="clickable"
+                        onClick={this.props.onSelectUser.bind(this, user)}
+                        style={{
+                            fontWeight: "bold",
+                            color: color
+                        }}>
+                            {user}:&nbsp;
+                    </span>
+                    <span className="chat-text">
+                        {systemUsers.indexOf(user) !== -1 ? comment : comment.substr(0, 140)}
+                    </span>
+                </div>
             </div>
         );
     }
 }
 
-
-@connectToStores
-export default class Chat extends React.Component {
-    static getStores() {
-        return [AccountStore, SettingsStore];
-    };
-
-    static getPropsFromStores() {
-        return {
-            currentAccount: AccountStore.getState().currentAccount,
-            linkedAccounts: AccountStore.getState().linkedAccounts,
-            viewSettings: SettingsStore.getState().viewSettings
-        };
-    };
-
+class Chat extends React.Component {
     constructor(props) {
         super(props);
 
@@ -112,7 +106,7 @@ export default class Chat extends React.Component {
         );
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.footerVisible !== prevProps.footerVisible) {
             this._scrollToBottom();
         }
@@ -153,7 +147,6 @@ export default class Chat extends React.Component {
                     open: false
                 });
             }
-
             if (err.message.indexOf("Could not get an ID from the server") !== -1) {
                 this.setState({
                     open: false,
@@ -219,7 +212,8 @@ export default class Chat extends React.Component {
             this.setState({
                 fetchingHistory: true
             });
-            return this.connections.get(data.id).send({requestHistory: this._myID});
+            let c = this.connections.get(data.id);
+            return c ? c.send({requestHistory: this._myID}) : null;
         }
 
         if ("history" in data && data.history.length) {
@@ -230,13 +224,14 @@ export default class Chat extends React.Component {
 
             data.history.filter(a => {
                 return (
-                    a.user !== "Welcome to Bitshares" &&
+                    a.user !== "Welcome to BitShares" &&
                     a.user !== "Welcome to Openledger"
                 );
             }).forEach(msg => {
                 this.state.messages.push(msg);
             });
             this.forceUpdate();
+
             this._scrollToBottom();
         }
 
@@ -269,7 +264,7 @@ export default class Chat extends React.Component {
     }
 
     sendHistory(c) {
-        c.send({history: this.state.messages.filter((msg) => {return msg.user !== "SYSTEM" && msg.user !== "Welcome to Bitshares";})});
+        c.send({history: this.state.messages.filter((msg) => {return msg.user !== "SYSTEM" && msg.user !== "Welcome to BitShares";})});
     }
 
     onConnection(c) {
@@ -418,7 +413,8 @@ export default class Chat extends React.Component {
         let message = {
             user: this.state.userName,
             message: this.refs.input.value.substr(0, 140),
-            color: this.state.myColor || "#ffffff"
+            color: this.state.myColor || "#ffffff",
+            date: new Date().toISOString()
         };
 
         // Public and local broadcast
@@ -531,13 +527,13 @@ export default class Chat extends React.Component {
                 return null;
             }
             let isMine = msg.user === userName || msg.user === this._myID;
-
             return (
                 <Comment
                     onSelectUser={this._onSelectUser.bind(this)}
                     key={index}
                     user={msg.user}
                     comment={msg.message}
+                    date={msg.date}
                     color={msg.color}
                     isMine={isMine}
                 />
@@ -645,6 +641,7 @@ export default class Chat extends React.Component {
                                 </div>
                             </div>
                         </div>) : (
+
                         <div className="grid-block vertical no-overflow chatbox-content"  onScroll={this._onScroll.bind(this)}>
                             <div className="grid-content" ref="chatbox">
                                 {!showSettings ? <div>{messages}</div> : settings}
@@ -666,3 +663,16 @@ export default class Chat extends React.Component {
         );
     }
 }
+
+export default connect(Chat, {
+    listenTo() {
+        return [AccountStore, SettingsStore];
+    },
+    getProps() {
+        return {
+            currentAccount: AccountStore.getState().currentAccount,
+            linkedAccounts: AccountStore.getState().linkedAccounts,
+            viewSettings: SettingsStore.getState().viewSettings
+        };
+    }
+});

@@ -1,20 +1,20 @@
-import alt from "alt-instance"
+import alt from "alt-instance";
 
 class BalanceClaimActiveActions {
-    
+
     setPubkeys(pubkeys) {
-        this.dispatch(pubkeys)
+        return pubkeys;
     }
-    
+
     setSelectedBalanceClaims(selected_balances) {
-        this.dispatch(selected_balances)
+        return selected_balances;
     }
-    
+
     claimAccountChange(claim_account_name) {
-        this.dispatch(claim_account_name)
+        return claim_account_name;
     }
 
 }
 
-var BalanceClaimActiveActionsWrapped = alt.createActions(BalanceClaimActiveActions)
-export default BalanceClaimActiveActionsWrapped
+const BalanceClaimActiveActionsWrapped = alt.createActions(BalanceClaimActiveActions);
+export default BalanceClaimActiveActionsWrapped;

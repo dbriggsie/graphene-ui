@@ -6,7 +6,6 @@ import BindToChainState from "./BindToChainState";
 import Popover from "react-popover";
 import AssetImage from "../Utility/AssetImage";
 
-@BindToChainState()
 class AssetName extends React.Component {
 
 	static propTypes = {
@@ -37,7 +36,7 @@ class AssetName extends React.Component {
 
 	render() {
 		let {name, replace, asset, popover} = this.props;
-		let {name: replacedName, prefix} = utils.replaceName(name);
+		let {replaceName, prefix} = utils.replaceName(name);
 
 		if (popover) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
@@ -47,7 +46,7 @@ class AssetName extends React.Component {
 					onOuterAction={() => {this.setState({isPopoverOpen: false});}}
 					body={(
 						<div >
-							<h3>{prefix}{replacedName}</h3>
+							<h3>{prefix}{replaceName}</h3>
 							<div style={{width:'70%',float:'left',padding: '0 15px 0 0'}} >{desc.short ? desc.short : desc.main}</div>
 
 							<AssetImage assetName={asset.get("symbol")} />
@@ -58,25 +57,33 @@ class AssetName extends React.Component {
 				>
 					<span className="help-tooltip" onClick={() => {this.setState({isPopoverOpen: !this.state.isPopoverOpen});}} >
 						<span className="asset-prefix-replaced">{prefix}</span>
-						<span>{replacedName}</span>
+						<span>{replaceName}</span>
 					</span>
 				</Popover>
 			);
 		}
 
-		if (replace && replacedName !== this.props.name) {
+		if (replace && replaceName !== this.props.name) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
+			let tooltip = `<div><strong>${this.props.name}</strong><br />${desc.short ? desc.short : desc.main}</div>`;
 			return (
-				<span>
-					<span className="asset-prefix-replaced">{prefix}</span><span>{replacedName}</span>
-				</span>
+				<div
+					className="tooltip inline-block"
+					data-tip={tooltip}
+					data-place="bottom"
+					data-html={true}
+				>
+					<span className="asset-prefix-replaced">{prefix}</span><span>{replaceName}</span>
+				</div>
 			);
 		} else {
-			return <span>{prefix}<span>{replacedName}</span></span>
+			return <span>{prefix}<span>{replaceName}</span></span>
 		}
 
 	}
 }
+
+AssetName = BindToChainState(AssetName);
 
 export default class AssetNameWrapper extends React.Component {
 

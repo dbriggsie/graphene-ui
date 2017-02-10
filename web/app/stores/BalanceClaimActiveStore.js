@@ -1,13 +1,11 @@
-import alt from "alt-instance"
-import Immutable from "immutable"
-import BaseStore from "stores/BaseStore"
-import {Address, PublicKey, key, ChainStore} from "graphenejs-lib";
-import {Apis} from "graphenejs-ws";
-import iDB from "idb-instance"
-import PrivateKeyStore from "stores/PrivateKeyStore"
-import BalanceClaimActiveActions from "actions/BalanceClaimActiveActions"
-import TransactionConfirmActions from "actions/TransactionConfirmActions"
-import WalletActions from "actions/WalletActions"
+import alt from "alt-instance";
+import Immutable from "immutable";
+import BaseStore from "stores/BaseStore";
+import {key} from "bitsharesjs/es";
+import {Apis} from "bitsharesjs-ws";
+import iDB from "idb-instance";
+import BalanceClaimActiveActions from "actions/BalanceClaimActiveActions";
+import TransactionConfirmActions from "actions/TransactionConfirmActions";
 
 class BalanceClaimActiveStore extends BaseStore {
 

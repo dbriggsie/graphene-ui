@@ -1,5 +1,5 @@
 module.exports = {
-  permission_flags: {
+    permission_flags: {
         charge_market_fee    : 0x01, /**< an issuer-specified percentage of all market trades in this asset is paid to the issuer */
         white_list           : 0x02, /**< accounts must be whitelisted in order to hold this asset */
         override_authority   : 0x04, /**< issuer may transfer asset back to himself */
@@ -19,7 +19,8 @@ module.exports = {
     ],
     GRAPHENE_100_PERCENT: 10000,
     GRAPHENE_1_PERCENT: 10000 / 100
-}
+};
+
 
 /*
 

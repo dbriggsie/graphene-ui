@@ -8,18 +8,17 @@ import counterpart from "counterpart";
 import MarketsActions from "actions/MarketsActions";
 import SettingsActions from "actions/SettingsActions";
 import LoadingIndicator from "../LoadingIndicator";
-import {ChainStore} from "graphenejs-lib";
+import {ChainStore} from "bitsharesjs/es";
 import MarketLink from "../Utility/MarketLink";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
-import connectToStores from "alt/utils/connectToStores";
+import { connect } from "alt-react";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import RecentTransactions from "../Account/RecentTransactions";
 import Immutable from "immutable";
 import FormattedAsset from "../Utility/FormattedAsset";
 
-@BindToChainState()
 class MyOrders extends React.Component {
 
     static propTypes = {
@@ -210,14 +209,15 @@ class MyOrders extends React.Component {
         );
     }
 }
+MyOrders = BindToChainState(MyOrders);
 
-@connectToStores
-export default class MyOrdersWrapper extends React.Component {
+class MyOrdersWrapper extends React.Component {
     static getStores() {
         return [AccountStore, SettingsStore];
     };
 
     static getPropsFromStores() {
+        console.log('@>',SettingsStore.getState().viewSettings)
         return {
             currentAccount: AccountStore.getState().currentAccount,
             myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true)
@@ -228,3 +228,5 @@ export default class MyOrdersWrapper extends React.Component {
         return <MyOrders account={this.props.currentAccount} myOrdersBuys={this.props.myOrdersBuys}/>;
     }
 }
+
+export default connect(MyOrdersWrapper);

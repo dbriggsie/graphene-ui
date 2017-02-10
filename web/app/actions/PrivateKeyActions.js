@@ -1,21 +1,26 @@
-var alt = require("../alt-instance");
+import alt from "alt-instance";
 
 class PrivateKeyActions {
 
     addKey(private_key_object, transaction) {
         // returned promise is deprecated
-        return new Promise( resolve => {
-            this.dispatch({private_key_object, transaction, resolve})
-        })
+        return (dispatch) => {
+            return new Promise( resolve => {
+                dispatch({private_key_object, transaction, resolve});
+            });
+        };
     }
-    
+
     loadDbData() {
         // returned promise is deprecated
-        return new Promise( resolve => {
-            this.dispatch(resolve)
-        })
+        return (dispatch) => {
+            return new Promise( resolve => {
+                dispatch(resolve);
+            });
+        };
+
     }
 
 }
 
-module.exports = alt.createActions(PrivateKeyActions);
+export default alt.createActions(PrivateKeyActions);

@@ -3,14 +3,12 @@ import {FormattedNumber} from "react-intl";
 import utils from "common/utils";
 import assetUtils from "common/asset_utils";
 import {PropTypes} from "react";
-import {Link} from "react-router";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
 import Popover from "react-popover";
-import MarketLink from "./MarketLink";
 import HelpContent from "./HelpContent";
 import AssetName from "./AssetName";
-import {ChainStore} from "graphenejs-lib";
+import {ChainStore} from "bitsharesjs/es";
 
 /**
  *  Given an amount and an asset, render it with proper precision
@@ -21,7 +19,6 @@ import {ChainStore} from "graphenejs-lib";
  *
  */
 
-@BindToChainState()
 class FormattedAsset extends React.Component {
 
     static propTypes = {
@@ -42,11 +39,8 @@ class FormattedAsset extends React.Component {
         hide_asset: false,
         hide_amount: false,
         asPercentage: false,
-        assetInfo: null
-    };
-
-    static contextTypes = {
-        history: React.PropTypes.object
+        assetInfo: null,
+        replace: true
     };
 
     constructor(props) {
@@ -130,5 +124,6 @@ class FormattedAsset extends React.Component {
         );
     }
 }
+FormattedAsset = BindToChainState(FormattedAsset);
 
 export default FormattedAsset;

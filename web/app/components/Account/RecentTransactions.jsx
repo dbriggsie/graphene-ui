@@ -1,16 +1,16 @@
 import React from "react";
-import {IntlProvider} from "react-intl";
-import intlData from "../Utility/intlData";
 import Translate from "react-translate-component";
-import {saveAs} from "common/filesaver.js";
+import {saveAs} from "file-saver";
 import Operation from "../Blockchain/Operation";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import utils from "common/utils";
-let {operations} = require("graphenejs-lib").ChainTypes;
+import {ChainTypes as grapheneChainTypes} from "bitsharesjs/es";
 import TransitionWrapper from "../Utility/TransitionWrapper";
 import ps from "perfect-scrollbar";
 import counterpart from "counterpart";
+
+const {operations} = grapheneChainTypes;
 
 function compareOps(b, a) {
     if (a.block_num === b.block_num) {
@@ -24,7 +24,6 @@ function textContent(n) {
     return n ? `"${n.textContent.replace(/[\s\t\r\n]/gi, " ")}"` : "";
 }
 
-@BindToChainState({keep_updating: true})
 class RecentTransactions extends React.Component {
 
     static propTypes = {
@@ -233,13 +232,13 @@ class RecentTransactions extends React.Component {
                             <h4>{this.props.title ? this.props.title : <Translate content="account.recent" />}</h4>
 
                             {historyCount > 0 ?
-                            <span style={{fontSize: "60%"}}>
-                                &nbsp;
-                                    <a
+                            <span style={{fontSize: "60%", textTransform: "lowercase"}}>
+                                &nbsp;(
+                                <a
+                                    className="inline-block"
                                     onClick={this._downloadCSV.bind(this)}
                                     data-tip={counterpart.translate("transaction.csv_tip")}
                                     data-place="bottom"
-                                    data-type="light"
                                 >
                                     <Translate content="transaction.csv" />
                                 </a>                                
@@ -247,18 +246,16 @@ class RecentTransactions extends React.Component {
 
                             {this.props.showFilters ? (
                             <div className="float-right">
-                                <div>
-                                    <select style={{position: "relative", top: -10, marginBottom: 0}} className="bts-select" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
-                                </div>
+                                <select data-place="left" data-tip={counterpart.translate("tooltip.filter_ops")} style={{paddingTop: 0}} className="bts-select" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
                             </div>) : null}
                         </div>
 
                         <table className={"table" + (compactView ? " compact" : "")}>
                             <thead>
-                            <tr>
-                                {compactView ? null : <th style={{width: "20%"}}><Translate content="explorer.block.op" /></th>}
-                                <th><Translate content="account.votes.info" /></th>
-                            </tr>
+                                <tr>
+                                    {compactView ? null : <th className="column-hide-tiny" style={{width: "20%"}}><Translate content="explorer.block.op" /></th>}
+                                    <th><Translate content="account.votes.info" /></th>
+                                </tr>
                             </thead>
                         </table>
                     </div>
@@ -306,7 +303,7 @@ class RecentTransactions extends React.Component {
                 </div>
                 {this.props.showMore && historyCount > this.props.limit || 20 && limit < historyCount ? (
                     <div className="account-info more-button">
-                        <button className="button outline" onClick={this._onIncreaseLimit.bind(this)}>
+                        <button className="button outline small" onClick={this._onIncreaseLimit.bind(this)}>
                             <Translate content="account.more" />
                         </button>
                     </div>
@@ -315,8 +312,8 @@ class RecentTransactions extends React.Component {
         );
     }
 }
+RecentTransactions = BindToChainState(RecentTransactions, {keep_updating: true});
 
-@BindToChainState()
 class TransactionWrapper extends React.Component {
 
     static propTypes = {
@@ -332,9 +329,8 @@ class TransactionWrapper extends React.Component {
     render() {
         return <span className="wrapper">{this.props.children(this.props)}</span>;
     }
-
 }
+TransactionWrapper = BindToChainState(TransactionWrapper);
 
-export {TransactionWrapper};
+export {RecentTransactions, TransactionWrapper};
 
-export default RecentTransactions;

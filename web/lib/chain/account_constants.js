@@ -5,4 +5,4 @@ module.exports = {
         black_listed: 0x2, ///< This account is blacklisted, but not whitelisted
         white_and_black_listed: 0x1 | 0x2 ///< This account is both whitelisted and blacklisted
     }
-}
+};

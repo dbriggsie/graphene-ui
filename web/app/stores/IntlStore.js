@@ -1,30 +1,24 @@
-import React, { Component, PropTypes } from 'react';
-import { render } from 'react-dom';
-
-var alt = require("../alt-instance");
-var IntlActions = require("../actions/IntlActions");
-var SettingsActions = require("../actions/SettingsActions");
-var SettingsStore = require("./SettingsStore");
-import BaseStore from "./BaseStore";
-import counterpart from "counterpart-instance";
-
-var locale_en = require("json!assets/locales/locale-en");
-var ls = require("common/localStorage");
+import alt from "alt-instance";
+import IntlActions from "actions/IntlActions";
+import SettingsActions from "actions/SettingsActions";
+import counterpart from "counterpart";
+var locale_en = require("json-loader!assets/locales/locale-en");
+import ls from "common/localStorage";
 let ss = new ls("__graphene__");
 
 counterpart.registerTranslations("en", locale_en);
 counterpart.setFallbackLocale("en");
 
-import {addLocaleData} from 'react-intl';
+import {addLocaleData} from "react-intl";
 
-import en from 'react-intl/locale-data/en';
-import es from 'react-intl/locale-data/es';
-import fr from 'react-intl/locale-data/fr';
-import ko from 'react-intl/locale-data/ko';
-import zh from 'react-intl/locale-data/zh';
-import de from 'react-intl/locale-data/de';
-import tr from 'react-intl/locale-data/tr';
-
+import en from "react-intl/locale-data/en";
+import es from "react-intl/locale-data/es";
+import fr from "react-intl/locale-data/fr";
+import ko from "react-intl/locale-data/ko";
+import zh from "react-intl/locale-data/zh";
+import de from "react-intl/locale-data/de";
+import tr from "react-intl/locale-data/tr";
+import ru from "react-intl/locale-data/ru";
 
 addLocaleData(en);
 addLocaleData(es);
@@ -33,12 +27,12 @@ addLocaleData(ko);
 addLocaleData(zh);
 addLocaleData(de);
 addLocaleData(tr);
+addLocaleData(ru);
 
-class IntlStore extends BaseStore {
+class IntlStore {
     constructor() {
-        super();
-        //this.currentLocale = ss.has("viewSettings_v1") ? ss.get("viewSettings_v1").locale : SettingsStore.getSetting('locale');
-        this.currentLocale = ss.has("settings_v3") ? ss.get("settings_v3").locale : SettingsStore.lang.locale;
+        this.currentLocale = ss.has("settings_v3") ? ss.get("settings_v3").locale : "en";
+
         this.locales = ["en"];
         this.localesObject = {en: locale_en};
 
@@ -47,8 +41,6 @@ class IntlStore extends BaseStore {
             onGetLocale: IntlActions.getLocale,
             onClearSettings: SettingsActions.clearSettings
         });
-
-        this._export("getCurrentLocale", "hasLocale");
     }
 
     hasLocale(locale) {
@@ -61,18 +53,13 @@ class IntlStore extends BaseStore {
 
     onSwitchLocale({locale, localeData}) {
         switch (locale) {
-            case "en":
-                counterpart.registerTranslations("en", this.localesObject.en);
-                break;
+        case "en":
+            counterpart.registerTranslations("en", this.localesObject.en);
+            break;
 
-            default:
-                // let newLocale = this.localesObject[locale];
-                // if (!newLocale) {
-                    // newLocale = require("assets/locales/locale-" + locale);
-                //     this.localesObject[locale] = newLocale;
-                // }
-                counterpart.registerTranslations(locale, localeData);
-                break;
+        default:
+            counterpart.registerTranslations(locale, localeData);
+            break;
         }
 
         counterpart.setLocale(locale);
@@ -86,8 +73,8 @@ class IntlStore extends BaseStore {
     }
 
     onClearSettings() {
-        this.onSwitchLocale("en");
+        this.onSwitchLocale({locale: "en"});
     }
 }
 
-module.exports = alt.createStore(IntlStore, "IntlStore");
+export default alt.createStore(IntlStore, "IntlStore");

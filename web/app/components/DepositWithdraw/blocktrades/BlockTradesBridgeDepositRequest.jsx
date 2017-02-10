@@ -1,5 +1,4 @@
 import React from "react";
-import {Link} from "react-router";
 import Translate from "react-translate-component";
 import ChainTypes from "components/Utility/ChainTypes";
 import BindToChainState from "components/Utility/BindToChainState";
@@ -9,11 +8,9 @@ import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import AccountBalance from "../../Account/AccountBalance";
 import WithdrawModalBlocktrades from "./WithdrawModalBlocktrades";
 import ConvertModalBlocktrades from "./ConvertModalBlocktrades";
-import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
-import Post from "common/formPost";
+import BlockTradesDepositAddressCache from "./BlockTradesDepositAddressCache";
 import utils from "common/utils";
 
-@BindToChainState({keep_updating:true})
 class BlockTradesBridgeDepositRequest extends React.Component {
     static propTypes = {
         url:               React.PropTypes.string,
@@ -99,42 +96,6 @@ class BlockTradesBridgeDepositRequest extends React.Component {
 			allowed_mappings_for_conversion: null,
 			conversion_memo: null
         };
-
-		// check api.blocktrades.us/v2
-		let checkUrl = "https://api.blocktrades.us/v2";
-		this.urlConnection(checkUrl, 0);
-		let coin_types_promisecheck = fetch(checkUrl + "/coins",
-                                        {method: 'get', headers: new Headers({"Accept": "application/json"})})
-                                    .then(response => response.json());
-        let trading_pairs_promisecheck = fetch(checkUrl + "/trading-pairs",
-                                        {method: 'get', headers: new Headers({"Accept": "application/json"})})
-                                    .then(response => response.json());
-        let active_wallets_promisecheck = fetch(checkUrl + "/active-wallets",
-                                        {method: 'get', headers: new Headers({"Accept": "application/json"})})
-                                    .then(response => response.json());
-        Promise.all([coin_types_promisecheck,  trading_pairs_promisecheck, active_wallets_promisecheck])
-        .then((json_responses) => {
-            let [coin_types, trading_pairs, active_wallets] = json_responses;
-            let coins_by_type = {};
-            coin_types.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
-            trading_pairs.forEach(pair => {
-                let input_coin_info = coins_by_type[pair.inputCoinType];
-                let output_coin_info = coins_by_type[pair.outputCoinType];
-                if ((input_coin_info.backingCoinType != pair.outputCoinType) && (output_coin_info.backingCoinType != pair.inputCoinType)) {
-                    if ((active_wallets.indexOf(input_coin_info.walletType) != -1) && (active_wallets.indexOf(output_coin_info.walletType) != -1)) {
-                    }
-                }
-            });
-        }).catch((error) => {
-			this.urlConnection("https://api.blocktrades.info/v2", 2);
-            this.setState( {
-                coin_info_request_state: 0,
-                coins_by_type: null,
-                allowed_mappings_for_deposit: null,
-                allowed_mappings_for_withdraw: null,
-				allowed_mappings_for_conversion: null
-            });
-		});
     }
 
 	urlConnection(checkUrl, state_coin_info)
@@ -371,6 +332,44 @@ class BlockTradesBridgeDepositRequest extends React.Component {
 				conversion_estimated_output_amount: new_conversion_estimated_output_amount
             });
         }
+    }
+
+    componentWillMount() {
+        // check api.blocktrades.us/v2
+        let checkUrl = "https://api.blocktrades.us/v2";
+        this.urlConnection(checkUrl, 0);
+        let coin_types_promisecheck = fetch(checkUrl + "/coins",
+                                        {method: 'get', headers: new Headers({"Accept": "application/json"})})
+                                    .then(response => response.json());
+        let trading_pairs_promisecheck = fetch(checkUrl + "/trading-pairs",
+                                        {method: 'get', headers: new Headers({"Accept": "application/json"})})
+                                    .then(response => response.json());
+        let active_wallets_promisecheck = fetch(checkUrl + "/active-wallets",
+                                        {method: 'get', headers: new Headers({"Accept": "application/json"})})
+                                    .then(response => response.json());
+        Promise.all([coin_types_promisecheck,  trading_pairs_promisecheck, active_wallets_promisecheck])
+        .then((json_responses) => {
+            let [coin_types, trading_pairs, active_wallets] = json_responses;
+            let coins_by_type = {};
+            coin_types.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
+            trading_pairs.forEach(pair => {
+                let input_coin_info = coins_by_type[pair.inputCoinType];
+                let output_coin_info = coins_by_type[pair.outputCoinType];
+                if ((input_coin_info.backingCoinType != pair.outputCoinType) && (output_coin_info.backingCoinType != pair.inputCoinType)) {
+                    if ((active_wallets.indexOf(input_coin_info.walletType) != -1) && (active_wallets.indexOf(output_coin_info.walletType) != -1)) {
+                    }
+                }
+            });
+        }).catch((error) => {
+            this.urlConnection("https://api.blocktrades.info/v2", 2);
+            this.setState( {
+                coin_info_request_state: 0,
+                coins_by_type: null,
+                allowed_mappings_for_deposit: null,
+                allowed_mappings_for_withdraw: null,
+                allowed_mappings_for_conversion: null
+            });
+        });
     }
 
     componentDidMount()
@@ -838,12 +837,12 @@ class BlockTradesBridgeDepositRequest extends React.Component {
                     <tbody>
                         <tr>
                             <td>
-                                <div style={{display: "inline-block"}}>
+                                <div className="inline-block">
                                     <div>{deposit_input_coin_type_select}</div>
                                     <div>{deposit_input_amount_edit_box}</div>
                                 </div>
                                 &rarr;
-                                <div style={{display: "inline-block"}}>
+                                <div className="inline-block">
                                     <div>{deposit_output_coin_type_select}</div>
                                     <div>{deposit_output_amount_edit_box}</div>
                                 </div>
@@ -931,12 +930,12 @@ class BlockTradesBridgeDepositRequest extends React.Component {
                 <tbody>
                     <tr>
                         <td>
-                            <div style={{display: "inline-block"}}>
+                            <div className="inline-block">
                                 <div>{withdraw_input_coin_type_select}</div>
                                 <div>{withdraw_input_amount_edit_box}</div>
                             </div>
                             &rarr;
-                            <div style={{display: "inline-block"}}>
+                            <div className="inline-block">
                                 <div>{withdraw_output_coin_type_select}</div>
                                 <div>{withdraw_output_amount_edit_box}</div>
                             </div>
@@ -1024,12 +1023,12 @@ class BlockTradesBridgeDepositRequest extends React.Component {
                 <tbody>
                     <tr>
                         <td>
-                            <div style={{display: "inline-block"}}>
+                            <div className="inline-block">
                                 <div>{conversion_input_coin_type_select}</div>
                                 <div>{conversion_input_amount_edit_box}</div>
                             </div>
                             &rarr;
-                            <div style={{display: "inline-block"}}>
+                            <div className="inline-block">
                                 <div>{conversion_output_coin_type_select}</div>
                                 <div>{conversion_output_amount_edit_box}</div>
                             </div>
@@ -1105,4 +1104,4 @@ class BlockTradesBridgeDepositRequest extends React.Component {
     }
 }; // BlockTradesBridgeDepositRequest
 
-export default BlockTradesBridgeDepositRequest;
+export default BindToChainState(BlockTradesBridgeDepositRequest, {keep_updating:true});

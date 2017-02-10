@@ -1,5 +1,5 @@
 import React from "react";
-import {ChainStore} from "graphenejs-lib";
+import {ChainStore} from "bitsharesjs/es";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import Immutable from "immutable";
@@ -12,7 +12,7 @@ import utils from "common/utils";
 import SimpleTrade from "./SimpleTrade";
 import SimpleTransfer from "./SimpleTransfer";
 import SimpleDepositWithdraw from "./SimpleDepositWithdraw";
-import EquivalentValueComponent from "../Utility/EquivalentValueComponent";
+import {EquivalentValueComponent} from "../Utility/EquivalentValueComponent";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import { fetchCoins,getBackedCoins } from "common/blockTradesMethods"; 
@@ -20,7 +20,6 @@ import ReactTooltip from "react-tooltip";
 import MarketCard from "./MarketCard";
 import SettingsStore from "stores/SettingsStore";
 
-@BindToChainState()
 class DashboardAssetList extends React.Component {
 
     static propTypes = {
@@ -447,9 +446,10 @@ class DashboardAssetList extends React.Component {
         );
     }
 }
+DashboardAssetList = BindToChainState(DashboardAssetList);
 
-@BindToChainState()
-export default class ListWrapper extends React.Component {
+
+class ListWrapper extends React.Component {
 
     static propTypes = {
         account: ChainTypes.ChainAccount.isRequired
@@ -527,3 +527,4 @@ export default class ListWrapper extends React.Component {
         );
     }
 }
+export default BindToChainState(ListWrapper);

@@ -1,34 +1,20 @@
 import React from "react";
 import Modal from "react-foundation-apps/src/modal";
-import Trigger from "react-foundation-apps/src/trigger";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import Transaction from "./Transaction";
 import Translate from "react-translate-component";
-import counterpart from "counterpart";
 import TransactionConfirmActions from "actions/TransactionConfirmActions";
 import TransactionConfirmStore from "stores/TransactionConfirmStore";
-import SettingsStore from "stores/SettingsStore";
-import connectToStores from "alt/utils/connectToStores";
+import { connect } from "alt-react";
 import Icon from "../Icon/Icon";
 import LoadingIndicator from "../LoadingIndicator";
 import WalletDb from "stores/WalletDb";
 import AccountStore from "stores/AccountStore";
 import AccountSelect from "components/Forms/AccountSelect";
-import {ChainStore} from "graphenejs-lib";
+import {ChainStore} from "bitsharesjs/es";
 import utils from "common/utils";
 
-@connectToStores
 class TransactionConfirm extends React.Component {
-
-    static getStores() {
-        return [TransactionConfirmStore, SettingsStore]
-    };
-
-    static getPropsFromStores() {
-        let state = TransactionConfirmStore.getState();
-        state.traderMode = SettingsStore.getState().settings.get("traderMode");
-        return state;
-    };
 
     shouldComponentUpdate(nextProps) {
         if (!nextProps.transaction) {
@@ -53,10 +39,12 @@ class TransactionConfirm extends React.Component {
 
         if(this.props.propose) {
             TransactionConfirmActions.close();
-            var propose_options = {
+            const propose_options = {
                 fee_paying_account: ChainStore.getAccount(this.props.fee_paying_account).get("id")
-            }
-            WalletDb.process_transaction(this.props.transaction.propose(propose_options), null, true)
+            };
+            this.props.transaction.update_head_block().then(() => {
+                WalletDb.process_transaction(this.props.transaction.propose(propose_options), null, true);
+            });
         } else
             TransactionConfirmActions.broadcast(this.props.transaction);
     }
@@ -194,5 +182,14 @@ class TransactionConfirm extends React.Component {
         );
     }
 }
+
+TransactionConfirm = connect(TransactionConfirm, {
+    listenTo() {
+        return [TransactionConfirmStore];
+    },
+    getProps() {
+        return TransactionConfirmStore.getState();
+    }
+});
 
 export default TransactionConfirm;

@@ -1,6 +1,6 @@
-import alt from "../alt-instance";
+import alt from "alt-instance";
 import WalletApi from "api/WalletApi";
-import {cloneDeep} from "lodash"
+import {cloneDeep} from "lodash";
 import WalletDb from "stores/WalletDb";
 
 let wallet_api = new WalletApi();
@@ -40,4 +40,4 @@ class VoteActions {
 
 }
 
-module.exports = alt.createActions(VoteActions);
+export default alt.createActions(VoteActions);

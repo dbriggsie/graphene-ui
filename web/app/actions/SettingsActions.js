@@ -1,54 +1,55 @@
-var alt = require("../alt-instance");
+import alt from "alt-instance";
 
 class SettingsActions {
 
     changeSetting(value) {
-        this.dispatch(value);        
+        return value;
     }
 
     changeViewSetting(value) {
-        this.dispatch(value);
+        return value;
     }
 
     changeMarketDirection(value) {
-        this.dispatch(value);
+        return value;
     }
 
     addStarMarket(quote, base) {
-        this.dispatch({quote, base});
+        return {quote, base};
     }
 
     removeStarMarket(quote, base) {
-        this.dispatch({quote, base});
+        return {quote, base};
     }
 
     addStarAccount(account) {
-        this.dispatch(account);
+        return account;
     }
 
     removeStarAccount(account) {
-        this.dispatch(account);
+        return account;
     }
 
     addWS(ws) {
-        this.dispatch(ws);
+        return ws;
     }
 
     removeWS(index) {
-        this.dispatch(index);
+        return index;
     }
 
     hideAsset(id, status) {
 
-        this.dispatch({id, status});
+        return {id, status};
     }
 
     clearSettings() {
-        this.dispatch();
+        return (dispatch) => {
+            return new Promise((resolve) => {
+                dispatch(resolve);
+            });
+        };
     }
-    // changeBase(index, value) {
-    //     this.dispatch({index, value});
-    // }
 }
 
-module.exports = alt.createActions(SettingsActions);
+export default alt.createActions(SettingsActions);

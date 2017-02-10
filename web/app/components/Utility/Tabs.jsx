@@ -22,15 +22,31 @@ import SettingsStore from "stores/SettingsStore";
  *
  */
 
-const Tab = ({isActive = false, index = 0, changeTab, title}) => {
+class Tab extends React.Component {
 
-    const c = cnames("tab-item", {"is-active": isActive});
-    return (
-        <div className={c} onClick={changeTab.bind(this, index)}>
-            {title.indexOf(".") > 0 ? <Translate content={title} /> : title}
-        </div>
-    );
-};
+    static propTypes = {
+        title: PropTypes.string.isRequired,
+        changeTab: PropTypes.func,
+        isActive: PropTypes.bool.isRequired,
+        index: PropTypes.number.isRequired
+    };
+
+    static defaultProps = {
+        isActive: false,
+        index: 0
+    };
+
+    render() {
+        let {isActive, index, changeTab, title} = this.props;
+        let c = cnames("tab-item", {"is-active": isActive});
+
+        return (
+            <div className={c} onClick={changeTab.bind(this, index)}>
+                {title.indexOf(".") > 0 ? <Translate content={title} /> : title}
+            </div>
+        );
+    }
+}
 
 class Tabs extends React.Component {
 
