@@ -96,7 +96,7 @@ function CreateWebpackConfig(type) {
     this.output = {
         filename: '[name].' + ext,
         path: path.join(__dirname, 'dist'),
-        publicPath: ''
+        publicPath: '/'
     }; //publicPath !!
 
 

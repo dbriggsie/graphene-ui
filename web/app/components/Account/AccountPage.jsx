@@ -33,6 +33,8 @@ class AccountPage extends React.Component {
 
         let isMyAccount = AccountStore.isMyAccount(account);
 
+        console.log('@>acc',this.props.account)
+
         return (
             <div className="grid-block page-layout">
                 <div className="show-for-medium grid-block shrink left-column no-padding" style={{minWidth: 250}}>

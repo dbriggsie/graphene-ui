@@ -50,12 +50,6 @@ class AccountLeftPanel extends React.Component {
         AccountActions.unlinkAccount(this.props.account.get("name"));
     }
 
-    onCreateAccountClick(e) {
-        e.preventDefault();
-        ReactTooltip.hide();
-        this.context.history.pushState(null, "/create-account");
-    }
-
     _toggleAdvanced() {
         let newState = !this.state.showAdvanced;
         this.setState({
@@ -115,7 +109,7 @@ class AccountLeftPanel extends React.Component {
                 </div>
                 {isMyAccount ?
                 <div className="bottom_plus">                    
-                    <a href data-tip={counterpart.translate("account.create_new")} data-place="top" onClick={this.onCreateAccountClick.bind(this)}><Icon name="plus-circle"/></a>
+                        <div className="inline-block" data-tip={counterpart.translate("account.create_new")} data-place="top"><Link to="/create-account"><Icon name="plus-circle"/></Link></div>
                 </div> : null}
             </div>
         );

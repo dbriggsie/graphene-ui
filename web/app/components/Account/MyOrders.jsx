@@ -35,11 +35,12 @@ class MyOrders extends React.Component {
     }
 
     componentDidMount() {
-        ChainStore.subscribe(this.forceUpdate);
+         console.log('@>32423423',this.store.account)
+        //ChainStore.subscribe(this.forceUpdate);
     }
 
     componentWillUnmount() {
-        ChainStore.unsubscribe(this.forceUpdate);
+        //ChainStore.unsubscribe(this.forceUpdate);
     }
 
 
@@ -65,12 +66,20 @@ class MyOrders extends React.Component {
     }
 
     render() {
+        console.log('@>32423423')
+
+         /*currentAccount: AccountStore.getState().currentAccount,
+            myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true) */
+
+        return (<p>noqweqweqweqw</p>);
+
         let {account, myOrdersBuys} = this.props;
         let {filterId} = this.state;
         let cancel = counterpart.translate("account.perm.cancel");
         let markets = {};
 
         let marketOrders ={};
+
 
         if (!account.get("orders")) {
             return null;
@@ -212,21 +221,35 @@ class MyOrders extends React.Component {
 MyOrders = BindToChainState(MyOrders);
 
 class MyOrdersWrapper extends React.Component {
-    static getStores() {
-        return [AccountStore, SettingsStore];
-    };
-
-    static getPropsFromStores() {
-        console.log('@>',SettingsStore.getState().viewSettings)
-        return {
-            currentAccount: AccountStore.getState().currentAccount,
-            myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true)
-        };
-    };
-
     render() {
+        console.log('@>11',AccountStore.getState())
+        console.log('@>11',SettingsStore.getState().viewSettings.get("myOrdersBuys", true))
+        console.log('@>11',this.props.currentAccount)
+
         return <MyOrders account={this.props.currentAccount} myOrdersBuys={this.props.myOrdersBuys}/>;
     }
 }
 
-export default connect(MyOrdersWrapper);
+export default connect(MyOrdersWrapper, {
+    
+    getPropsFromStores() {
+        console.log('@>', AccountStore.getState())
+        return {
+            currentAccount: AccountStore.getState().currentAccount,
+            myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true)
+        };
+    },
+
+    getProps() {
+        return {
+            settings: SettingsStore.getState().settings,
+            myAccounts:  AccountStore.getState().myAccounts,
+            viewSettings: SettingsStore.getState().viewSettings
+        };
+    },
+
+    getStores() {
+        return [AccountStore, SettingsStore];
+    }
+
+});

@@ -27,6 +27,8 @@ class AccountOrders extends React.Component {
 
         let marketOrders ={};
 
+        console.log('@>22',this.props)
+
         if (!account.get("orders")) {
             return null;
         }
