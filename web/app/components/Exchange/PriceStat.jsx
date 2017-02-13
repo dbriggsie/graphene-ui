@@ -57,7 +57,6 @@ export default class PriceStat extends React.Component {
             <li className={cnames("stat", this.props.className)} data-place="bottom" data-tip={toolTip}>
                 <span>
                     {content ? <span><Translate content={content} />:</span> : null}
-                    <br/>
                     <b className="value stat-primary">
                         {!ready ? 0 : value}&nbsp;
                         {changeComp}

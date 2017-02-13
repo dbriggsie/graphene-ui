@@ -229,7 +229,9 @@ export default class ButtonsForGraphics extends React.Component {
 									<span>{bucketOptions}</span>
 								</span>
 							</li>) : null}
+						</ul>
 
+						<ul className="market-stats stats bottom-stats">
 						{showIndicators ?
 								<li className="stat custom-dropdown">
 									<div className="indicators clickable" onClick={this._toggleDropdown.bind(this, "settings")}>
@@ -256,6 +258,7 @@ export default class ButtonsForGraphics extends React.Component {
 								</div> : null}
 							</li>) : null}
 
+
 						{showIndicators ? (
 							<li className="stat custom-dropdown">
 								<div className="indicators label bucket-option clickable" onClick={this._toggleDropdown.bind(this, "indicators")}>
@@ -271,8 +274,7 @@ export default class ButtonsForGraphics extends React.Component {
 										{indicatorOptionsVolume}
 									</ul>
 								</div> : null}
-							</li>) : null}
-
+							</li>) : null}						
 						{/* Borrow buttons */}
 						{onBorrowQuote ? <li className="stat clickable" onClick={onBorrowQuote}>
 								<div className="indicators label bucket-option">

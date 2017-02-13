@@ -218,7 +218,7 @@ class MyOrders extends React.Component {
         );
     }
 }
-//MyOrders = BindToChainState(MyOrders);
+MyOrders = BindToChainState(MyOrders);
 
 class MyOrdersWrapper extends React.Component {
     render() {

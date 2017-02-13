@@ -66,7 +66,7 @@ export default class ExchangeHeader extends React.Component {
 						</span>
 						{!hasPrediction ? (
 						<Link onClick={() => {MarketsActions.switchMarket();}} className="market-symbol" to={`/market/${baseSymbol}_${quoteSymbol}`}>
-							<span><AssetName name={quoteSymbol} replace={true} /> : <AssetName name={baseSymbol} replace={true} /></span>
+							<span><AssetName name={quoteSymbol} replace={true} /> &#8660; <AssetName name={baseSymbol} replace={true} /></span>
 						</Link>) : (
 						<a className="market-symbol">
 							<span>{`${quoteSymbol} : ${baseSymbol}`}</span>
@@ -77,13 +77,10 @@ export default class ExchangeHeader extends React.Component {
 					<div className="grid-block vertical" >
 						<div className="grid-block show-for-medium wrap" >
 							<ul className="market-stats stats top-stats">
-								{latestPrice ?
-									<PriceStat ready={marketReady} price={latestPrice.full} quote={quoteAsset} base={baseAsset} content="exchange.latest"/> : null}
-
+								{latestPrice ? <PriceStat ready={marketReady} price={latestPrice.full} quote={quoteAsset} base={baseAsset} content="exchange.latest"/> : null}
 								<li className="stat">
 									<span>
 										<Translate component="span" content="account.hour_24" />
-										<br />
 										<b className={"value " + dayChangeClass}>{marketReady ? dayChange : 0}<span className={dayChangeArrow}>&nbsp;{dayChangeArrow === "" ? null : dayChangeArrow === "change-up" ? <span>&#8593;</span> : <span>&#8595;</span>}</span></b>
 										<span>%</span>
 									</span>
@@ -100,13 +97,7 @@ export default class ExchangeHeader extends React.Component {
 								{feedPrice && showCallLimit ?
 									<PriceStat toolTip={counterpart.translate("tooltip.margin_price")} ready={marketReady} className="column-hide-medium is-call" price={feedPrice.getSqueezePrice({real: true})} quote={quoteAsset} base={baseAsset} content="exchange.squeeze"/> : null}
 							</ul>
-
 						</div>
-
-
-
-
-
 					</div>
 				</div>
 			</div>

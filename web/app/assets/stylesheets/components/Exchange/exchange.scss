@@ -193,11 +193,8 @@ a.order-cancel {
     margin: 0;
 }
 
-.stats {
-    overflow: visible;
-}
-
 .market-stats {
+    margin:0;
     > li {
         display: inline-block;
     }
@@ -217,10 +214,6 @@ a.order-cancel {
     font-size: 0.75rem;
     color: #000;
     letter-spacing: normal;
-}
-
-.stats {
-    margin: 0px;
 }
 
 .top-stats {
