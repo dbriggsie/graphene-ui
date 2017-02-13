@@ -17,12 +17,12 @@ app.use(webpackDevMiddleware(compiler, {
 }));
 
 
-app.get("/([a-z,A-Z,0-9\-\/]+)", function(req, res) {
+app.get("/([a-z,A-Z,_0-9\-\/]+)", function(req, res) {
   res.sendFile(__dirname + '/app/assets/index.html')
 })
 app.listen(8080, function(err) {
     if (err) {
         return console.error(err);
     }
-    console.log("Listening on port 3000!");
+    console.log("http://127.0.0.1:8080");
 });

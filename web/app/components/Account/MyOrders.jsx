@@ -35,7 +35,7 @@ class MyOrders extends React.Component {
     }
 
     componentDidMount() {
-         console.log('@>32423423',this.store.account)
+         console.log('@>account',this.props.account)
         //ChainStore.subscribe(this.forceUpdate);
     }
 
@@ -71,7 +71,7 @@ class MyOrders extends React.Component {
          /*currentAccount: AccountStore.getState().currentAccount,
             myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true) */
 
-        return (<p>noqweqweqweqw</p>);
+        return (<p>this text dont wanna render if add BindToChainState</p>);
 
         let {account, myOrdersBuys} = this.props;
         let {filterId} = this.state;
@@ -218,7 +218,7 @@ class MyOrders extends React.Component {
         );
     }
 }
-MyOrders = BindToChainState(MyOrders);
+//MyOrders = BindToChainState(MyOrders);
 
 class MyOrdersWrapper extends React.Component {
     render() {

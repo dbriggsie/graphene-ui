@@ -206,7 +206,6 @@ a.order-cancel {
 .market-stats .stat {
     text-align: left;
     font-size: 1rem;
-    margin: 0 0 0 4px;
     span {
         span {
             font-weight: bold;
@@ -542,4 +541,57 @@ a.order-cancel > .icon {
     float: right;
     color: red;
     text-decoration: none
+}
+
+.custom-dropdown {
+    position: relative;
+    overflow: visible !important;
+    z-index: 9;
+
+    > div.custom-dropdown-content {
+        position: absolute;
+        z-index: 99;
+        top: 29px;
+        left: 0;
+        right: auto;
+        min-width: 15rem;
+        > ul {
+            margin: 0;
+            list-style: none;
+            text-align: left;
+            font-size: 0.75rem;
+
+            input {
+                font-size: 0.8rem;
+                height: 1.25rem;
+                max-width: 40px;
+                display: inline-block;
+            }
+            > li {
+                position: relative;
+                &.indicator-title {
+                    text-transform: uppercase;
+                }
+                padding: 5px;
+                min-width: 5rem;
+                border: none;
+                &.indicator {
+                    > div:first-of-type {
+                        display: inline-block;
+                        padding-left: 25px;
+                        width: 60%;
+                    }
+                    > div:nth-of-type(2) {
+                        width: 40%;
+                        text-align: right;
+                        display: inline-block;
+                    }
+                }
+                > input {
+                    position: absolute;
+                    top: 5px;
+                }
+            }
+        }
+    }
 }
