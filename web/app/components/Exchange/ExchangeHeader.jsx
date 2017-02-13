@@ -60,7 +60,7 @@ export default class ExchangeHeader extends React.Component {
         return (
             <div className="grid-block shrink no-padding overflow-visible top-bar">
 				<div className="grid-block overflow-visible">
-					<div className="grid-block shrink" style={{borderRight: "1px solid grey"}}>
+					<div className="grid-block shrink" >
 						<span style={{paddingRight: 0}} onClick={this._addMarket.bind(this, quoteSymbol, baseSymbol)} className="market-symbol">
 							<Icon className={starClass} name="fi-star"/>
 						</span>
@@ -74,8 +74,8 @@ export default class ExchangeHeader extends React.Component {
 						)}
 					</div>
 
-					<div className="grid-block vertical" style={{overflow: "visible"}}>
-						<div className="grid-block show-for-medium wrap" style={{borderBottom: "1px solid grey"}}>
+					<div className="grid-block vertical" >
+						<div className="grid-block show-for-medium wrap" >
 							<ul className="market-stats stats top-stats">
 								{latestPrice ?
 									<PriceStat ready={marketReady} price={latestPrice.full} quote={quoteAsset} base={baseAsset} content="exchange.latest"/> : null}
