@@ -35,12 +35,12 @@ class MyOrders extends React.Component {
     }
 
     componentDidMount() {
-         console.log('@>account',this.props.account)
-        //ChainStore.subscribe(this.forceUpdate);
+        console.log('@>account',this.props.account)
+        ChainStore.subscribe(this.forceUpdate);
     }
 
     componentWillUnmount() {
-        //ChainStore.unsubscribe(this.forceUpdate);
+        ChainStore.unsubscribe(this.forceUpdate);
     }
 
 
@@ -218,7 +218,7 @@ class MyOrders extends React.Component {
         );
     }
 }
-MyOrders = BindToChainState(MyOrders);
+//MyOrders = BindToChainState(MyOrders);
 
 class MyOrdersWrapper extends React.Component {
     render() {
