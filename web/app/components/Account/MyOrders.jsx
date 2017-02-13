@@ -66,9 +66,9 @@ class MyOrders extends React.Component {
     }
 
     render() {
-        console.log('@>32423423')
+        console.log('@>MyOrders this.props.account',this.props.account)
 
-         /*currentAccount: AccountStore.getState().currentAccount,
+        /*currentAccount: AccountStore.getState().currentAccount,
             myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true) */
 
         return (<p>this text dont wanna render if add BindToChainState</p>);
@@ -248,7 +248,7 @@ export default connect(MyOrdersWrapper, {
         };
     },
 
-    getStores() {
+    listenTo() {
         return [AccountStore, SettingsStore];
     }
 
