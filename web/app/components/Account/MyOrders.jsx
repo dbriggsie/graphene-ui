@@ -1,21 +1,21 @@
 import React from "react";
-import {PropTypes} from "react";
-import {Link} from "react-router";
+import { PropTypes } from "react";
+import { Link } from "react-router";
 import Translate from "react-translate-component";
-import {OrderRow, TableHeader} from "../Exchange/MyOpenOrders";
+import { OrderRow, TableHeader } from "../Exchange/MyOpenOrders";
 import market_utils from "common/market_utils";
 import counterpart from "counterpart";
 import MarketsActions from "actions/MarketsActions";
 import SettingsActions from "actions/SettingsActions";
 import LoadingIndicator from "../LoadingIndicator";
-import {ChainStore} from "bitsharesjs/es";
+import { ChainStore } from "bitsharesjs/es";
 import MarketLink from "../Utility/MarketLink";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import { connect } from "alt-react";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
-import RecentTransactions from "../Account/RecentTransactions";
+import {RecentTransactions} from "./RecentTransactions";
 import Immutable from "immutable";
 import FormattedAsset from "../Utility/FormattedAsset";
 
@@ -35,7 +35,6 @@ class MyOrders extends React.Component {
     }
 
     componentDidMount() {
-        console.log('@>account',this.props.account)
         ChainStore.subscribe(this.forceUpdate);
     }
 
@@ -56,7 +55,7 @@ class MyOrders extends React.Component {
     }
 
     _onToggleBids() {
-        SettingsActions.changeViewSetting({myOrdersBuys: !this.props.myOrdersBuys});
+        SettingsActions.changeViewSetting({ myOrdersBuys: !this.props.myOrdersBuys });
     }
 
     _setAssetFilter(e) {
@@ -65,20 +64,14 @@ class MyOrders extends React.Component {
         });
     }
 
-    render() {
-        console.log('@>MyOrders this.props.account',this.props.account)
+    render() {   
 
-        /*currentAccount: AccountStore.getState().currentAccount,
-            myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true) */
-
-        return (<p>this text dont wanna render if add BindToChainState</p>);
-
-        let {account, myOrdersBuys} = this.props;
-        let {filterId} = this.state;
+        let { account, myOrdersBuys } = this.props;
+        let { filterId } = this.state;
         let cancel = counterpart.translate("account.perm.cancel");
         let markets = {};
 
-        let marketOrders ={};
+        let marketOrders = {};
 
 
         if (!account.get("orders")) {
@@ -107,13 +100,13 @@ class MyOrders extends React.Component {
                 if (!markets[marketID]) {
                     if (quoteID > baseID) {
                         markets[marketID] = {
-                            base: {id: base.get("id"), symbol: base.get("symbol"), precision: base.get("precision")},
-                            quote: {id: quote.get("id"), symbol: quote.get("symbol"), precision: quote.get("precision")}
+                            base: { id: base.get("id"), symbol: base.get("symbol"), precision: base.get("precision") },
+                            quote: { id: quote.get("id"), symbol: quote.get("symbol"), precision: quote.get("precision") }
                         };
                     } else {
                         markets[marketID] = {
-                            base: {id: quote.get("id"), symbol: quote.get("symbol"), precision: quote.get("precision")},
-                            quote: {id: base.get("id"), symbol: base.get("symbol"), precision: base.get("precision")}
+                            base: { id: quote.get("id"), symbol: quote.get("symbol"), precision: quote.get("precision") },
+                            quote: { id: base.get("id"), symbol: base.get("symbol"), precision: base.get("precision") }
                         };
                     }
                 }
@@ -125,7 +118,7 @@ class MyOrders extends React.Component {
                     marketOrders[marketID] = [];
                 }
 
-                let {price} = market_utils.parseOrder(order, marketBase, marketQuote);
+                let { price } = market_utils.parseOrder(order, marketBase, marketQuote);
 
                 let isAskOrder = market_utils.isAsk(order, marketBase);
 
@@ -149,6 +142,8 @@ class MyOrders extends React.Component {
                 }
             }
         });
+
+
 
         let tables = [];
 
@@ -218,33 +213,22 @@ class MyOrders extends React.Component {
         );
     }
 }
-//MyOrders = BindToChainState(MyOrders);
+MyOrders = BindToChainState(MyOrders);
 
 class MyOrdersWrapper extends React.Component {
     render() {
-        console.log('@>11',AccountStore.getState())
-        console.log('@>11',SettingsStore.getState().viewSettings.get("myOrdersBuys", true))
-        console.log('@>11',this.props.currentAccount)
-
         return <MyOrders account={this.props.currentAccount} myOrdersBuys={this.props.myOrdersBuys}/>;
     }
 }
 
 export default connect(MyOrdersWrapper, {
-    
-    getPropsFromStores() {
-        console.log('@>', AccountStore.getState())
-        return {
-            currentAccount: AccountStore.getState().currentAccount,
-            myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true)
-        };
-    },
-
     getProps() {
         return {
             settings: SettingsStore.getState().settings,
-            myAccounts:  AccountStore.getState().myAccounts,
-            viewSettings: SettingsStore.getState().viewSettings
+            myAccounts: AccountStore.getState().myAccounts,
+            viewSettings: SettingsStore.getState().viewSettings,
+            currentAccount: AccountStore.getState().currentAccount,
+            myOrdersBuys: SettingsStore.getState().viewSettings.get("myOrdersBuys", true)
         };
     },
 

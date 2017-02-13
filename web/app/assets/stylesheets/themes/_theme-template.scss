@@ -925,4 +925,18 @@
             border: 2px solid $primary-text-color;
         }
     }
+    .orders-switch input+label {
+        background: #50d2c2;
+        border-color: #50d2c2;
+    }
+    .orders-switch input:checked+label {
+        background: #e3745b;
+        border-color: #e3745b;
+    }
+    .orders-switch input+label:after {
+        border-color: #50d2c2;
+    }
+    .switch input:checked + label::after {
+        border-color: inherit;
+    }
 }
