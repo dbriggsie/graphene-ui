@@ -70,7 +70,6 @@ export default class ButtonsForGraphics extends React.Component {
     }
 
     render() {
-
         let {
         	quoteAsset,
         	baseAsset,
@@ -91,8 +90,6 @@ export default class ButtonsForGraphics extends React.Component {
         } = this.props;
 
         const {dropdowns} = this.state;
-
-        //console.log("@>", this.props);
 
         // Lower bar
         let bucketText = function(size) {
@@ -212,28 +209,28 @@ export default class ButtonsForGraphics extends React.Component {
 
        // return null;
         return (
-            <div className="" >
-					<ul className="market-stats stats bottom-stats">
+            <div className="grid-block shrink" >
+					<ul className="grid-block market-stats stats bottom-stats">
 						{/* Chart controls */}
 						{!showDepthChart ? (
 							<li className="stat">
 								<span>
-									<span><Translate content="exchange.zoom" />:</span>
+									<span><Translate content="exchange.zoom" />:&nbsp;</span>
 									<span>{zoomOptions}</span>
 								</span>
 							</li>) : null}
 						{!showDepthChart ? (
 							<li className="stat">
 								<span>
-									<span><Translate content="exchange.time" />:</span>
+									<span><Translate content="exchange.time" />:&nbsp;</span>
 									<span>{bucketOptions}</span>
 								</span>
 							</li>) : null}
 						</ul>
 
-						<ul className="market-stats stats bottom-stats">
+						<ul className="grid-block market-stats stats bottom-stats no-over" style={{ "justifyContent": "flex-end",overflow:"visible",margin:"0 20px 0 0"}}>
 						{showIndicators ?
-								<li className="stat custom-dropdown">
+								<li className="stat custom-dropdown" style={{margin:"0 10px"}}>
 									<div className="indicators clickable" onClick={this._toggleDropdown.bind(this, "settings")}>
 										<Icon className="icon-14px settings-cog" name="cog"/>
 									</div>
@@ -282,12 +279,11 @@ export default class ButtonsForGraphics extends React.Component {
 								</div>
 							</li> : null}
 
-						<li className="stat clickable" onClick={this.props.onToggleCharts}>
-							<div className="indicators label bucket-option">
-								{!showDepthChart ? <Translate content="exchange.order_depth" /> : <Translate content="exchange.price_history" />}
-							</div>
-						</li>
-
+    						<li className="stat clickable" onClick={this.props.onToggleCharts}>
+    							<div className="indicators label bucket-option">
+    								{!showDepthChart ? <Translate content="exchange.order_depth" /> : <Translate content="exchange.price_history" />}
+    							</div>
+    						</li>
 
 						{onBorrowBase ? 
 							<li className="stat clickable" onClick={onBorrowBase}>

@@ -194,7 +194,7 @@ a.order-cancel {
 }
 
 .market-stats {
-    margin:0;
+    margin: 0;
     > li {
         display: inline-block;
     }
@@ -211,7 +211,6 @@ a.order-cancel {
 }
 
 .market-stats .stat .value {
-    font-size: 0.75rem;
     color: #000;
     letter-spacing: normal;
 }
@@ -220,7 +219,11 @@ a.order-cancel {
     width: 100%
 }
 
-.top-stats li {}
+.top-stats {
+    &>li {
+        margin: 0 0 0 4%;
+    }
+}
 
 .stats-right {
     text-align: right;
@@ -271,7 +274,7 @@ a.order-cancel {
 div.bucket-option {
     cursor: pointer;
     text-transform: none !important;
-    margin: 0 0 0 5px;
+    margin: 0 5px 0 0px;
     border-radius: 0;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -532,11 +535,26 @@ a.order-cancel > .icon {
     text-decoration: none
 }
 
+.change-up {
+    color: $positive-color !important;
+    &>span {
+        font-size: 1.2em;
+        line-height: 1;
+    }
+}
+
+.change-down {
+    color: $negative-color !important;
+    &>span {
+        font-size: 1.2em;
+        line-height:1;
+    }
+}
+
 .custom-dropdown {
     position: relative;
     overflow: visible !important;
     z-index: 9;
-
     > div.custom-dropdown-content {
         position: absolute;
         z-index: 99;
@@ -549,7 +567,6 @@ a.order-cancel > .icon {
             list-style: none;
             text-align: left;
             font-size: 0.75rem;
-
             input {
                 font-size: 0.8rem;
                 height: 1.25rem;
