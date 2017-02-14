@@ -125,19 +125,25 @@ function CreateWebpackConfig(type) {
         this.module.rules.push({
             test: /\.jsx$/,
             include: [path.join(__dirname, "app"), path.join(__dirname, "node_modules/react-foundation-apps")],
-            use: [{
+            use: {
                 loader: "babel-loader",
                 options: {
-                    cacheDirectory: env.prod ? false : true
+                    presets: NODE_ENV == "production" ? ["es2015", "stage-0","react"] : ["stage-0","react"], //prod ["stage-0"],
+                    plugins: NODE_ENV == "production" ? "transform-runtime" : ""
                 }
-            }]
+            }
         });
 
         this.module.rules.push({
             test: /\.js$/,
             exclude: [/node_modules/],
-            loader: "babel-loader",
-            options: { compact: false, cacheDirectory: true }
+            use: {
+                loader: "babel-loader",
+                options: {
+                    presets: NODE_ENV == "production" ? ["es2015", "stage-0"] : ["stage-0"], //prod ["stage-0"],
+                    plugins: NODE_ENV == "production" ? "transform-runtime" : ""
+                }
+            }
         });
 
         this.module.rules.push({
