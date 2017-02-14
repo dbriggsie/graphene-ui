@@ -111,6 +111,7 @@ class WitnessRow extends React.Component {
     }
 
     render() {
+        console.log('@>',this.props)
         let {witness, isCurrent, rank} = this.props;
         let witness_data = ChainStore.getWitnessById( this.props.witness.get('id') );
         if ( !witness_data ) return null;

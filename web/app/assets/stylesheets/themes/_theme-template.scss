@@ -44,6 +44,12 @@
     label > span {
         color: $primary-text-color;
     }
+
+    h4 {
+        padding: 30px 0 10px 0;
+        border-bottom: 1px solid $dark-text-color;
+        margin: 0 0 35px 0;
+    }
     // select:hover {
     //   background-color: $panel-bg-color;
     // }
@@ -361,14 +367,12 @@
     input[type="number"],
     input[type="search"],
     textarea {
-        background-color: #ddd;
-        &:hover,
+        background-color: rgba(0, 0, 0, 0.2);
+        color: $secondary-text-color;
+        text-indent: 6px;
         &:focus,
-        &:active {
-            background-color: #ddd;
-        }
-        &:focus {
-            border-color: #aaa;
+        &:active &:focus {
+            background-color: rgba(0, 0, 0, 1);
         }
     }
     // Tabs
