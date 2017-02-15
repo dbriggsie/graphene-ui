@@ -29,7 +29,7 @@ class ExistingAccount extends Component {
                                 <h3><Translate content="wallet.setup_wallet" /></h3>}
                         </div>
 
-                        <Link to="/restore-brainkey">
+                        <Link to="/create-wallet-brainkey">
                             <Translate content="settings.backup_brainkey" />
                         </Link>
                         
