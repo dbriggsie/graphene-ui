@@ -10,7 +10,6 @@ import AmountSelector from "components/Utility/AmountSelector";
 import AccountActions from "actions/AccountActions";
 import Modal from "react-foundation-apps/src/modal";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
-import {validateAddress, WithdrawAddresses} from "common/blockTradesMethods";
 
 class WithdrawModalBlocktrades extends React.Component {
 
@@ -23,11 +22,14 @@ class WithdrawModalBlocktrades extends React.Component {
         output_coin_type: React.PropTypes.string.isRequired,
         url: React.PropTypes.string,
         output_wallet_type: React.PropTypes.string,
-        output_supports_memos: React.PropTypes.bool.isRequired
+        output_supports_memos: React.PropTypes.bool.isRequired,
+        amount_to_withdraw: React.PropTypes.string,
+        balance: ChainTypes.ChainObject
     };
 
     constructor( props ) {
         super(props);
+
         fetch(this.props.url + '/wallets/' + this.props.output_wallet_type + '/address-validator?address=' + encodeURIComponent(localStorage.getItem(`history_address_last_${this.props.output_wallet_type}`) !== null ? localStorage.getItem(`history_address_last_${this.props.output_wallet_type}`) : ''),
             {
             method: 'get',
@@ -45,23 +47,22 @@ class WithdrawModalBlocktrades extends React.Component {
                     });
                 }
             })});
-        this.state = {
-            withdraw_amount: null,
-            withdraw_address: WithdrawAddresses.getLast(props.output_wallet_type),
-            withdraw_address_check_in_progress: true,
-            withdraw_address_is_valid: null,
-            options_is_valid: false,
-            confirmation_is_valid: false,
-            withdraw_address_selected: WithdrawAddresses.getLast(props.output_wallet_type),
-            memo: "",
-            withdraw_address_first: true
-        };
 
-        this._validateAddress(this.state.withdraw_address, props);
+        this.state = {
+        withdraw_amount: this.props.amount_to_withdraw,
+        withdraw_address: localStorage.getItem(`history_address_last_${this.props.output_wallet_type}`) !== null ? localStorage.getItem(`history_address_last_${this.props.output_wallet_type}`) : '',
+        withdraw_address_check_in_progress: true,
+        withdraw_address_is_valid: null,
+        options_is_valid: false,
+        confirmation_is_valid: false,
+        withdraw_address_selected: localStorage.getItem(`history_address_last_${this.props.output_wallet_type}`) !== null ? localStorage.getItem(`history_address_last_${this.props.output_wallet_type}`) : '',
+        memo: '',
+        withdraw_address_first: true
+        }
     }
 
     onMemoChanged( e ) {
-	    this.setState( {memo: e.target.value} );
+        this.setState( {memo: e.target.value} );
     }
 
     onWithdrawAmountChange( {amount, asset} ) {
@@ -102,6 +103,7 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     onWithdrawAddressChanged( e ) {
+
         let new_withdraw_address = e.target.value.trim();
 
         fetch(this.props.url + '/wallets/' + this.props.output_wallet_type + '/address-validator?address=' + encodeURIComponent(new_withdraw_address),
@@ -128,19 +130,6 @@ class WithdrawModalBlocktrades extends React.Component {
             withdraw_address_check_in_progress: true,
             withdraw_address_selected: new_withdraw_address,
             withdraw_address_is_valid: null
-        });
-        this._validateAddress(new_withdraw_address);
-    }
-
-    _validateAddress(new_withdraw_address, props = this.props) {
-        validateAddress({url: props.url, walletType: props.output_wallet_type, newAddress: new_withdraw_address})
-            .then(isValid => {
-                if (this.state.withdraw_address === new_withdraw_address) {
-                    this.setState({
-                        withdraw_address_check_in_progress: false,
-                        withdraw_address_is_valid: isValid
-                    });
-                }
             });
     }
 
@@ -150,24 +139,24 @@ class WithdrawModalBlocktrades extends React.Component {
 
             if (!this.state.withdraw_address_is_valid) {
 
-				ZfApi.publish(this.getWithdrawModalId(), "open");
-	        } else {
-
-		   if (localStorage.getItem(`history_address_${this.props.output_wallet_type}`) == null) {
-
-		        let withdrawals = [];
-				withdrawals.push(this.state.withdraw_address);
-				localStorage.setItem(`history_address_${this.props.output_wallet_type}`, JSON.stringify(withdrawals));
+                ZfApi.publish(this.getWithdrawModalId(), "open");
             } else {
 
-		        let withdrawals = JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`));
-		        if (withdrawals.indexOf(this.state.withdraw_address) == -1) {
+           if (localStorage.getItem(`history_address_${this.props.output_wallet_type}`) == null) {
 
-	                withdrawals.push(this.state.withdraw_address);
-					localStorage.setItem(`history_address_${this.props.output_wallet_type}`, JSON.stringify(withdrawals));
-	            }
-	        }
-	  	    localStorage.setItem(`history_address_last_${this.props.output_wallet_type}`, this.state.withdraw_address);
+                let withdrawals = [];
+                withdrawals.push(this.state.withdraw_address);
+                localStorage.setItem(`history_address_${this.props.output_wallet_type}`, JSON.stringify(withdrawals));
+            } else {
+
+                let withdrawals = JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`));
+                if (withdrawals.indexOf(this.state.withdraw_address) == -1) {
+
+                    withdrawals.push(this.state.withdraw_address);
+                    localStorage.setItem(`history_address_${this.props.output_wallet_type}`, JSON.stringify(withdrawals));
+                }
+            }
+            localStorage.setItem(`history_address_last_${this.props.output_wallet_type}`, this.state.withdraw_address);
             let asset = this.props.asset;
             let precision = utils.get_asset_precision(asset.get("precision"));
             let amount = this.state.withdraw_amount.replace( /,/g, "" )
@@ -177,76 +166,80 @@ class WithdrawModalBlocktrades extends React.Component {
             this.props.issuer.get("id"),
             parseInt(amount * precision, 10),
             asset.get("id"),
-	    	this.state.memo ? this.props.output_coin_type + ":" + this.state.withdraw_address + ":" + new Buffer(this.state.memo, "utf-8") : this.props.output_coin_type + ":" + this.state.withdraw_address
-		    //this.props.output_coin_type + ":" + this.state.withdraw_address
+            this.state.memo ? this.props.output_coin_type + ":" + this.state.withdraw_address + ":" + new Buffer(this.state.memo, "utf-8") : this.props.output_coin_type + ":" + this.state.withdraw_address
+            //this.props.output_coin_type + ":" + this.state.withdraw_address
             )}
 
         }
-	}
+    }
 
     onSubmitConfirmation() {
 
         ZfApi.publish(this.getWithdrawModalId(), "close");
 
-        if (!WithdrawAddresses.has(this.props.output_wallet_type)) {
-	        let withdrawals = [];
-			withdrawals.push(this.state.withdraw_address);
-			localStorage.setItem(`history_address_${this.props.output_wallet_type}`, JSON.stringify(withdrawals));
+        if (localStorage.getItem(`history_address_${this.props.output_wallet_type}`) == null) {
+            let withdrawals = [];
+            withdrawals.push(this.state.withdraw_address);
+            localStorage.setItem(`history_address_${this.props.output_wallet_type}`, JSON.stringify(withdrawals));
 
         } else {
 
-			let withdrawals = JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`));
-		    if (withdrawals.indexOf(this.state.withdraw_address) == -1) {
-		        withdrawals.push(this.state.withdraw_address);
-                WithdrawAddresses.set({wallet: this.props.output_wallet_type, addresses: withdrawals});
-				// localStorage.setItem(`history_address_${this.props.output_wallet_type}`, JSON.stringify(withdrawals));
-	        }
-	    }
-        WithdrawAddresses.setLast({wallet: this.props.output_wallet_type, address: this.state.withdraw_address});
-		// localStorage.setItem(`history_address_last_${this.props.output_wallet_type}`, this.state.withdraw_address);
+            let withdrawals = JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`));
+            if (withdrawals.indexOf(this.state.withdraw_address) == -1) {
+                withdrawals.push(this.state.withdraw_address);
+                localStorage.setItem(`history_address_${this.props.output_wallet_type}`, JSON.stringify(withdrawals));
+            }
+        }
+        localStorage.setItem(`history_address_last_${this.props.output_wallet_type}`, this.state.withdraw_address);
         let asset = this.props.asset;
         let precision = utils.get_asset_precision(asset.get("precision"));
         let amount = this.state.withdraw_amount.replace( /,/g, "" )
         console.log( "withdraw_amount: ", amount );
         AccountActions.transfer(
-
         this.props.account.get("id"),
         this.props.issuer.get("id"),
         parseInt(amount * precision, 10),
         asset.get("id"),
-	    this.state.memo ? this.props.output_coin_type + ":" + this.state.withdraw_address + ":" + new Buffer(this.state.memo, "utf-8") : this.props.output_coin_type + ":" + this.state.withdraw_address
-	    //this.props.output_coin_type + ":" + this.state.withdraw_address
+        this.state.memo ? this.props.output_coin_type + ":" + this.state.withdraw_address + ":" + new Buffer(this.state.memo, "utf-8") : this.props.output_coin_type + ":" + this.state.withdraw_address
+        //this.props.output_coin_type + ":" + this.state.withdraw_address
         )
     }
 
     onDropDownList() {
 
-		if (JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`)) != null) {
+        if (JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`)) != null) {
 
-			if(this.state.options_is_valid === false) {
-				this.setState({options_is_valid: true});
-				this.setState({ withdraw_address_first: false });
-			}
+            if(this.state.options_is_valid === false) {
+                this.setState({options_is_valid: true});
+                this.setState({ withdraw_address_first: false });
+            }
 
-			if(this.state.options_is_valid === true) {
-				this.setState({options_is_valid: false});
-			}
-		}
+            if(this.state.options_is_valid === true) {
+                this.setState({options_is_valid: false});
+            }
+        }
     }
 
     getWithdrawModalId() {
         return "confirmation";
     }
 
+    onAccountBalance() {
+        if (Object.keys(this.props.account.get('balances').toJS()).includes(this.props.asset.get('id')) ) {
+            this.setState( {withdraw_amount: this.props.balance.toJS().balance/utils.get_asset_precision(this.props.asset.get("precision"))} );
+        }
+        
+    }
+
     render() {
 
-	    let {withdraw_address_selected, memo} = this.state;
-	    let storedAddress = [];
-	    if (JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`)) != null) {
-		    storedAddress = JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`));
-	    }
+        let {withdraw_address_selected, memo} = this.state;
+        let storedAddress = [];
+        if (JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`)) != null) {
+            storedAddress = JSON.parse(localStorage.getItem(`history_address_${this.props.output_wallet_type}`));
+        }
         let balance = null;
-		let style_select = "blocktrades-options";
+        let style_select = "blocktrades-options";
 
         // console.log( "account: ", this.props.account.toJS() );
         let account_balances = this.props.account.get("balances").toJS();
@@ -256,45 +249,44 @@ class WithdrawModalBlocktrades extends React.Component {
         if (asset_types.length > 0) {
             let current_asset_id = this.props.asset.get('id');
             if( current_asset_id )
-                balance = (<span><Translate component="span" content="transfer.available"/>: <BalanceComponent balance={account_balances[current_asset_id]}/></span>)
+                balance = (<span><Translate component="span" content="transfer.available"/>: <span className="set-cursor" onClick={this.onAccountBalance.bind(this)}><BalanceComponent balance={account_balances[current_asset_id]}/></span></span>)
             else
                 balance = "No funds";
         } else {
             balance = "No funds";
         }
 
-	    let withdrawModalId = this.getWithdrawModalId();
+        let withdrawModalId = this.getWithdrawModalId();
         let invalid_address_message = null;
-	    let options = null;
-	    let confirmation = null;
+        let options = null;
+        let confirmation = null;
+        if (storedAddress.length == 0) {
+            style_select = "blocktrades-disabled-options";
+        }
 
-		if (storedAddress.length == 0) {
-			style_select = "blocktrades-disabled-options";
-		}
-
-	    if (this.state.options_is_valid) {
-	        options =
-			    <div className={style_select}>
+        if (this.state.options_is_valid) {
+            options =
+                <div className={style_select}>
                     {storedAddress.map(function(name, index){
                     return <a key={index} onClick={this.onSelectChanged.bind(this, index)}>{name}</a>;
-					}, this)}
+                    }, this)}
                 </div>;
-		}
+        }
 
         if (!this.state.withdraw_address_check_in_progress && (this.state.withdraw_address && this.state.withdraw_address.length))
         {
             if (!this.state.withdraw_address_is_valid) {
 
             invalid_address_message = <div className="has-error" style={{paddingTop: 10}}><Translate content="gateway.valid_address" coin_type={this.props.output_coin_type} /></div>;
-		    confirmation =
-			    <Modal id={withdrawModalId} overlay={true}>
+            confirmation =
+                <Modal id={withdrawModalId} overlay={true}>
                     <Trigger close={withdrawModalId}>
                         <a href="#" className="close-button">&times;</a>
                     </Trigger>
                     <br/>
-					<label><Translate content="modal.confirmation.title"/></label>
-		 		    <br/>
-				    <div className="content-block">
+                    <label><Translate content="modal.confirmation.title"/></label>
+                    <br/>
+                    <div className="content-block">
                         <input type="submit" className="button"
                         onClick={this.onSubmitConfirmation.bind(this)}
                         value={counterpart.translate("modal.confirmation.accept")} />
@@ -302,24 +294,24 @@ class WithdrawModalBlocktrades extends React.Component {
                             <a href className="secondary button"><Translate content="modal.confirmation.cancel" /></a>
                         </Trigger>
                     </div>
-		        </Modal>;
-		    }
+                </Modal>;
+            }
             // if (this.state.withdraw_address_is_valid)
             //   invalid_address_message = <Icon name="checkmark-circle" className="success" />;
             // else
             //   invalid_address_message = <Icon name="cross-circle" className="alert" />;
         }
 
-	    let tabIndex = 1;
-		let withdraw_memo = null;
+        let tabIndex = 1;
+        let withdraw_memo = null;
 
-		if (this.props.output_supports_memos) {
-			withdraw_memo =
-				<div className="content-block">
-					<label><Translate component="span" content="transfer.memo"/></label>
-					<textarea rows="1" value={memo} tabIndex={tabIndex++} onChange={this.onMemoChanged.bind(this)} />
-				</div>;
-		}
+        if (this.props.output_supports_memos) {
+            withdraw_memo =
+                <div className="content-block">
+                    <label><Translate component="span" content="transfer.memo"/></label>
+                    <textarea rows="1" value={memo} tabIndex={tabIndex++} onChange={this.onMemoChanged.bind(this)} />
+                </div>;
+        }
 
         return (<form className="grid-block vertical full-width-content">
             <div className="grid-container">
@@ -338,18 +330,18 @@ class WithdrawModalBlocktrades extends React.Component {
                 </div>
                 <div className="content-block">
                     <label><Translate component="span" content="modal.withdraw.address"/></label>
-					<div className="blocktrades-select-dropdown">
-						<div className="inline-label">
-							<input type="text" value={withdraw_address_selected} tabIndex="4" onChange = {this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
-							<span onClick={this.onDropDownList.bind(this)} >&#9660;</span>
-						</div>
-					</div>
-					<div className="blocktrades-position-options">
-						{options}
-					</div>
-					{invalid_address_message}
+                    <div className="blocktrades-select-dropdown">
+                        <div className="inline-label">
+                            <input type="text" value={withdraw_address_selected} tabIndex="4" onChange = {this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
+                            <span onClick={this.onDropDownList.bind(this)} >&#9660;</span>
+                        </div>
+                    </div>
+                    <div className="blocktrades-position-options">
+                        {options}
+                    </div>
+                    {invalid_address_message}
                 </div>
-				{withdraw_memo}
+                {withdraw_memo}
                 <div className="content-block">
                     <input type="submit" className="button"
                     onClick={this.onSubmit.bind(this)}
@@ -358,10 +350,10 @@ class WithdrawModalBlocktrades extends React.Component {
                         <a href className="secondary button"><Translate content="account.perm.cancel" /></a>
                     </Trigger>
                 </div>
-				{confirmation}
+                {confirmation}
             </div>
             </form>
-	    );
+        );
     }
 };
 

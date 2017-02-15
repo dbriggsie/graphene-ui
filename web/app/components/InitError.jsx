@@ -29,7 +29,6 @@ class InitError extends React.Component {
         } else{
             window.location.href = "/"+window.location.search;
         } 
-
     }
 
     onReset() {

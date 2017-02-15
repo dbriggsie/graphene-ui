@@ -7,9 +7,6 @@ import Dashboard from "./Dashboard";
 
 import SimpleDashboard from "./SimpleDashboard";
 
-console.log('@>',AccountStore,SettingsStore,AltContainer,Dashboard,SimpleDashboard)
-
-
 class Content extends React.Component {
 
     render() {

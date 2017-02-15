@@ -30,6 +30,10 @@ class MarketCard extends React.Component {
 		super();
 
 		this.statsInterval = null;
+
+		this.state = {
+			imgError: false
+		};
 	}
 
 
@@ -52,6 +56,16 @@ class MarketCard extends React.Component {
 	goToMarket(e) {
 		e.preventDefault();
 		this.context.router.push(`/market/${this.props.base.get("symbol")}_${this.props.quote.get("symbol")}`);
+	}
+
+	_onError(imgName) {
+		if (!this.state.imgError) {
+			this.refs[imgName.toLowerCase()].src = "asset-symbols/bts.png";
+			this.setState({
+				imgError: true
+			});
+		}
+
 	}
 
 	render() {

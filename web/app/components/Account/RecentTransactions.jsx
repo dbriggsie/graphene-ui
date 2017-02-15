@@ -233,7 +233,6 @@ class RecentTransactions extends React.Component {
 
                             {historyCount > 0 ?
                             <span style={{fontSize: "60%", textTransform: "lowercase"}}>
-                                &nbsp;(
                                 <a
                                     className="inline-block"
                                     onClick={this._downloadCSV.bind(this)}

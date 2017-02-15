@@ -25,7 +25,7 @@ function split_into_sections(str) {
 
 function adjust_links(str) {
     return str.replace(/\<a\shref\=\"(.+?)\"/gi, (match, text) => {
-        if (text.indexOf("#/") === 0) return `<a href="${text}" onclick="_onClickLink(event)"`;
+        if (text.indexOf((__HASH_HISTORY__ ? "#" : "") + "/") === 0) return `<a href="${text}" onclick="_onClickLink(event)"`;
         if (text.indexOf("http") === 0) return `<a href="${text}" target="_blank"`;
         let page = endsWith(text, ".md") ? text.substr(0, text.length - 3) : text;
         let res = `<a href="${__HASH_HISTORY__ ? "#" : ""}/help/${page}" onclick="_onClickLink(event)"`;
@@ -73,11 +73,10 @@ class HelpContent extends React.Component {
 
     onClickLink(e) {
         e.preventDefault();
-
-        if(e.target.pathname.length<2){
-            return false;
-        }
-        this.context.router.push(e.target.pathname)
+        let path = (__HASH_HISTORY__ ? e.target.hash : e.target.pathname).split("/").filter(p => p && p !== "#");
+        if (path.length === 0) return false;
+        let route = "/" + path.join("/");
+        this.context.router.push(route);
         return false;
     }
 

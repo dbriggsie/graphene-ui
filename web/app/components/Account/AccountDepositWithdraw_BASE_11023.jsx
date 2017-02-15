@@ -92,17 +92,15 @@ class AccountDepositWithdraw extends React.Component {
                 blocktradesBackedCoins.push({
                     name: coins_by_type[coin_type.backingCoinType].name,
                     walletType: coins_by_type[coin_type.backingCoinType].walletType,
-                    walletSymbol: coins_by_type[coin_type.backingCoinType].walletSymbol,
-                    backingCoinType: coins_by_type[coin_type.backingCoinType].coinType,
+                    backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
                     symbol: coin_type.walletSymbol,
-                    supportsOutputMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos,
-                    coinType: coin_type.coinType
+					supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos
                 });
             }});
         return blocktradesBackedCoins;
     }
 
-    getOpenledgerBackedCoins(allOpenledgerCoins) {
+	getOpenledgerBackedCoins(allOpenledgerCoins) {
         let coins_by_type = {};
         allOpenledgerCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
         let openledgerBackedCoins = [];
@@ -112,11 +110,9 @@ class AccountDepositWithdraw extends React.Component {
                 openledgerBackedCoins.push({
                     name: coins_by_type[coin_type.backingCoinType].name,
                     walletType: coins_by_type[coin_type.backingCoinType].walletType,
-                    walletSymbol: coins_by_type[coin_type.backingCoinType].walletSymbol,
-                    backingCoinType: coins_by_type[coin_type.backingCoinType].coinType,
+                    backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
                     symbol: coin_type.walletSymbol,
-                    supportsOutputMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos,
-                    coinType: coin_type.coinType
+					supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos
                 });
             }});
         return openledgerBackedCoins;
@@ -169,7 +165,7 @@ class AccountDepositWithdraw extends React.Component {
             services, activeService} = this.state;
 
         let blockTradesGatewayCoins = this.state.blockTradesBackedCoins.filter(coin => {
-            if (coin.backingCoinType === "muse") {
+            if (coin.backingCoinType === "muse") {    // it is not filterring, should be MUSE
                 return false;
             }
             return coin.symbol.toUpperCase().indexOf("TRADE") !== -1;
@@ -178,23 +174,23 @@ class AccountDepositWithdraw extends React.Component {
             return coin;
         })
         .sort((a, b) => {
-            if (a.symbol < b.symbol)
-                return -1
-            if (a.symbol > b.symbol)
-                return 1
-            return 0
-        });
+			if (a.symbol < b.symbol)
+				return -1
+			if (a.symbol > b.symbol)
+				return 1
+			return 0
+		});
 
         let openLedgerGatewayCoins = this.state.openLedgerBackedCoins.map(coin => {
             return coin;
         })
         .sort((a, b) => {
-            if (a.symbol < b.symbol)
-                return -1
-            if (a.symbol > b.symbol)
-                return 1
-            return 0
-        });
+			if (a.symbol < b.symbol)
+				return -1
+			if (a.symbol > b.symbol)
+				return 1
+			return 0
+		});
 
         let options = services.map(name => {
             return <option key={name} value={name}>{name}</option>;
@@ -202,7 +198,7 @@ class AccountDepositWithdraw extends React.Component {
 
 
         return (
-        <div className={this.props.contained ? "grid-content" : "grid-container"}>
+		<div className={this.props.contained ? "grid-content" : "grid-container"}>
             <div className={this.props.contained ? "" : "grid-content"}>
                 <div style={{borderBottom: "2px solid #444"}}>
                     <HelpContent path="components/DepositWithdraw" section="receive" account={account.get("name")}/>
@@ -215,7 +211,7 @@ class AccountDepositWithdraw extends React.Component {
                     {options}
                 </select>
 
-                <div className="grid-content no-padding" style={{paddingTop: 15}}>
+    			<div className="grid-content no-padding" style={{paddingTop: 15}}>
 
                 {activeService === services.indexOf("BlockTrades (TRADE.X)") ?
                 <div>
@@ -323,7 +319,7 @@ class AccountDepositWithdraw extends React.Component {
 
                 </div>
             </div>
-        </div>
+		</div>
     );
     }
 };

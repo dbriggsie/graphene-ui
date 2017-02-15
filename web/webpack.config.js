@@ -60,7 +60,7 @@ module.exports = function() {
             APP_VERSION: JSON.stringify(git.tag()),
             __ELECTRON__: !!env.electron,
             __HASH_HISTORY__: !!env.hash,
-            __BASE_URL__: JSON.stringify(env.baseUrl || ""),
+            __BASE_URL__: JSON.stringify("baseUrl" in env ? env.baseUrl : "/"),
             __UI_API__: JSON.stringify(env.apiUrl || "https://ui.bitshares.eu/api")
         })
     ];
