@@ -128,7 +128,7 @@ function CreateWebpackConfig(type) {
             use: {
                 loader: "babel-loader",
                 options: {
-                    presets: NODE_ENV == "production" ? ["es2015", "stage-0","react"] : ["stage-0","react"], //prod ["stage-0"],
+                    presets: ["es2015", "stage-0", "react"], //prod ["stage-0"],
                     plugins: NODE_ENV == "production" ? "transform-runtime" : ""
                 }
             }
@@ -140,7 +140,7 @@ function CreateWebpackConfig(type) {
             use: {
                 loader: "babel-loader",
                 options: {
-                    presets: NODE_ENV == "production" ? ["es2015", "stage-0"] : ["stage-0"], //prod ["stage-0"],
+                    presets: ["es2015", "stage-0"], //prod ["stage-0"],
                     plugins: NODE_ENV == "production" ? "transform-runtime" : ""
                 }
             }

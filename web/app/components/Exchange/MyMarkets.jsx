@@ -21,7 +21,8 @@ let lastLookup = new Date();
 class MarketGroup extends React.Component {
 
     static defaultProps = {
-        maxRows: 20
+        maxRows: 20,
+        router: React.PropTypes.object
     };
 
     constructor(props) {

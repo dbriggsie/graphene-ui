@@ -30,10 +30,7 @@ class AccountPage extends React.Component {
 
     render() {
         let {myAccounts, linkedAccounts, account_name, searchAccounts, settings, wallet_locked, account, hiddenAssets} = this.props;
-
         let isMyAccount = AccountStore.isMyAccount(account);
-
-        console.log('@>AccountPage',this.props.account)
 
         return (
             <div className="grid-block page-layout">
@@ -75,8 +72,6 @@ AccountPage = BindToChainState(AccountPage, {keep_updating: true, show_loader: t
 class AccountPageStoreWrapper extends React.Component {
     render () {
         let account_name = this.props.routeParams.account_name;
-        console.log('@>AccountPageStoreWrapper',this.props.account)
-
         return <AccountPage {...this.props} account_name={account_name}/>;
     }
 }

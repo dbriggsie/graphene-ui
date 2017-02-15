@@ -16,7 +16,7 @@ class SimpleDashboard extends React.Component {
     componentWillMount() {
         // Check for wallet and account, if not present redirect to create-account
         if (!WalletDb.getWallet() || !this.props.currentAccount) {
-            this.props.history.push("/create-account");
+            this.props.router.push("/create-account");
         } else {
             accountUtils.getFinalFeeAsset(this.props.account, "transfer");
         }
