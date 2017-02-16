@@ -241,6 +241,12 @@
     .header .button.create-account {
         background-color: $button-bg-color !important;
     }
+
+    .wallet_bottons .button{
+        margin:0;
+    }
+
+
     .grp-menu-item button {
         &:hover,
         &:focus,
@@ -937,5 +943,10 @@
     }
     .switch input:checked + label::after {
         border-color: inherit;
+    }
+
+
+    .error {
+        color: #e3745b;
     }
 }

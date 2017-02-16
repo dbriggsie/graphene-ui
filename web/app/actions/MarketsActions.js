@@ -81,7 +81,7 @@ class MarketsActions {
         return true;
     }
 
-    subscribeMarket(base, quote, bucketSize) {
+    subscribeMarket(base, quote, bucketSize=86400) {
         clearBatchTimeouts();
         let subID = quote.get("id") + "_" + base.get("id");
 

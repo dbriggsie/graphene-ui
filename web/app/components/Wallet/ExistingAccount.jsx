@@ -19,7 +19,7 @@ class ExistingAccount extends Component {
     render() {
         const has_wallet = this.props.wallet.wallet_names.count() != 0;
         return (
-            <div className="grid-container">
+            <div className="grid-container wallet_bottons" >
                 <div className="grid-content">
                     <div className="content-block center-content">
                         <div className="page-header">
@@ -49,7 +49,7 @@ class ExistingAccountOptions extends Component {
     render() {
         const has_wallet = this.props.wallet.wallet_names.count() != 0;
         return (
-            <span>
+            <span >
                 {!has_wallet ? <div>
                     <Link to="existing-account/import-backup"><Translate content="wallet.import_backup" /></Link><br/><br/>
                     <Link to="existing-account/import-keys"><Translate content="wallet.import_bts1" /></Link><br/><br/>
@@ -59,7 +59,7 @@ class ExistingAccountOptions extends Component {
 
                 {!has_wallet ? null : <BalanceClaimActive/>}
 
-                {has_wallet ? <span>
+                {has_wallet ? <span  >
                     <Link to="dashboard">
                         <div className="button outline">
                             <Translate component="span" content="header.dashboard" />
