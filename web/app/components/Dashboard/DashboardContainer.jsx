@@ -16,17 +16,10 @@ class Content extends React.Component {
 
 class DashboardContainer extends React.Component {
     render() {
-
         return (
             <AltContainer
                 stores={[AccountStore, SettingsStore]}
                 inject={{
-                /** bind to chain state will use this to trigger updates to the dashboard */
-                // resolvedLinkedAccounts: () => {
-                    //console.log( "Linked Accounts: ", AccountStore.getState().linkedAccounts,  AccountStore.getState().linkedAccounts.toJS() );
-                    // return Immutable.List(AccountStore.getState().linkedAccounts);
-                // },
-                /** the dashboard only really needs the list of accounts */
                     linkedAccounts: () => {
                         return AccountStore.getState().linkedAccounts;
                     },
@@ -47,6 +40,9 @@ class DashboardContainer extends React.Component {
                     },
                     defaultAssets: () => {
                         return SettingsStore.getState().topMarkets;
+                    },
+                    accountsReady: () => {
+                        return AccountStore.getState().accountsLoaded && AccountStore.getState().refsLoaded;
                     }
                 }}>
                     <Content {...this.props} />

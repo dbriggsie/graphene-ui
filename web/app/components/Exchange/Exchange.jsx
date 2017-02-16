@@ -27,6 +27,7 @@ import Highcharts from "highcharts/highstock";
 import ExchangeHeader from "./ExchangeHeader";
 import ButtonsForGraphics from "./ButtonsForGraphics";
 import Translate from "react-translate-component";
+import { Apis } from "bitsharesjs-ws";
 
 Highcharts.setOptions({
     global: {
@@ -78,13 +79,13 @@ class Exchange extends React.Component {
         let savedIndicators = ws.get("indicators", {});
         let indicators = {};
         [["sma", true], ["ema1", false], ["ema2", false], ["smaVolume", true], ["macd", false], ["bb", false]].forEach(i => {
-            indicators[i[0]] = savedIndicators[i[0]] || i[1];
+            indicators[i[0]] = (i[0] in savedIndicators) ? savedIndicators[i[0]] : i[1];
         });
 
         let savedIndicatorsSettings = ws.get("indicatorSettings", {});
         let indicatorSettings = {};
         [["sma", 7], ["ema1", 20], ["ema2", 50], ["smaVolume", 30]].forEach(i => {
-            indicatorSettings[i[0]] = savedIndicatorsSettings[i[0]] || i[1];
+            indicatorSettings[i[0]] = (i[0] in savedIndicatorsSettings) ?  savedIndicatorsSettings[i[0]] : i[1];
         });
 
         return {
@@ -130,13 +131,18 @@ class Exchange extends React.Component {
         volumeData: []
     };
 
+    _getLastMarketKey() {
+        const chainID = Apis.instance().chain_id;
+        return `lastMarket${chainID ? ("_" + chainID.substr(0, 8)) : ""}`;
+    }
+
     componentDidMount() {
         let centerContainer = this.refs.center;
         if (centerContainer) {
             Ps.initialize(centerContainer);
         }
         SettingsActions.changeViewSetting.defer({
-            lastMarket: this.props.quoteAsset.get("symbol") + "_" + this.props.baseAsset.get("symbol")
+            [this._getLastMarketKey()]: this.props.quoteAsset.get("symbol") + "_" + this.props.baseAsset.get("symbol")
         });
 
         window.addEventListener("resize", this._getWindowSize, false);
@@ -164,7 +170,7 @@ class Exchange extends React.Component {
             this.setState(this._initialState(nextProps));
 
             return SettingsActions.changeViewSetting({
-                lastMarket: nextProps.quoteAsset.get("symbol") + "_" + nextProps.baseAsset.get("symbol")
+                [this._getLastMarketKey()]: nextProps.quoteAsset.get("symbol") + "_" + nextProps.baseAsset.get("symbol")
             });
         }
 
@@ -1121,7 +1127,6 @@ class Exchange extends React.Component {
                                     indicatorSettings={indicatorSettings}
                                     bucketSize={bucketSize}
                                     latest={latestPrice}
-                                    verticalOrderbook={leftOrderBook}
                                     theme={this.props.settings.get("themes")}
                                     zoom={this.state.currentPeriod}
                                     tools={tools}

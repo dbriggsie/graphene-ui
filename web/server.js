@@ -17,7 +17,7 @@ app.use(webpackDevMiddleware(compiler, {
 }));
 
 
-app.get("/([a-z,A-Z,_0-9\-\/]+)", function(req, res) {
+app.get("*", function(req, res) {
   res.sendFile(__dirname + '/app/assets/index.html')
 })
 app.listen(8080, function(err) {

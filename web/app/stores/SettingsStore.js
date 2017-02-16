@@ -2,8 +2,9 @@ import alt from "alt-instance";
 import SettingsActions from "actions/SettingsActions";
 import IntlActions from "actions/IntlActions";
 import Immutable from "immutable";
-import {merge} from "lodash";
+import { merge } from "lodash";
 import ls from "common/localStorage";
+import { Apis } from "bitsharesjs-ws";
 
 const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when used with BTS chain which is the most usual case currently
 
@@ -15,46 +16,53 @@ let lang = {
 };
 
 let marketsList = [
-   "BLOCKPAY",
-   "BROWNIE.PTS",
-   "BTS",
-   "BTWTY",
-   "CNY",
-   "EUR",
-   "USD",
-   "BTSR",
-   "ICOO",
-   "OBITS",
-   "OPEN.ARDR",
-   "OPEN.BTC",
-   "OPEN.CNY",
-   "OPEN.DASH",
-   "OPEN.DCT",
-   "OPEN.DGD",
-   "OPEN.DOGE",
-   "OPEN.BKS",
-   "OPEN.ETH",
-   "OPEN.EUR",
-   "OPEN.EURT",
-   "OPEN.GAME",
-   "OPEN.GRC",
-   "OPEN.HEAT",
-   "OPEN.INCNT",
-   "OPEN.LISK",
-   "OPEN.LTC",
-   "OPEN.MAID",
-   "OPEN.MKR",
-   "OPEN.MUSE",
-   "OPEN.NXC",
-   "OPEN.OMNI",
-   "OPEN.STEEM",
-   "OPEN.USD",
-   "OPEN.USDT",
-   "OPEN.WAVES",
-   "SHAREBITS",
-   "SOLCERT",
-   "HEMPSWEET"
+    "BLOCKPAY",
+    "BROWNIE.PTS",
+    "BTS",
+    "BTWTY",
+    "CNY",
+    "EUR",
+    "USD",
+    "BTSR",
+    "ICOO",
+    "OBITS",
+    "OPEN.ARDR",
+    "OPEN.BTC",
+    "OPEN.CNY",
+    "OPEN.DASH",
+    "OPEN.DCT",
+    "OPEN.DGD",
+    "OPEN.DOGE",
+    "OPEN.BKS",
+    "OPEN.ETH",
+    "OPEN.EUR",
+    "OPEN.EURT",
+    "OPEN.GAME",
+    "OPEN.GRC",
+    "OPEN.HEAT",
+    "OPEN.INCNT",
+    "OPEN.LISK",
+    "OPEN.LTC",
+    "OPEN.MAID",
+    "OPEN.MKR",
+    "OPEN.MUSE",
+    "OPEN.NXC",
+    "OPEN.OMNI",
+    "OPEN.STEEM",
+    "OPEN.USD",
+    "OPEN.USDT",
+    "OPEN.WAVES",
+    "SHAREBITS",
+    "SOLCERT",
+    "HEMPSWEET"
 ];
+
+let topMarkets = {
+    markets_4018d784: marketsList,
+    markets_39f5e2ed: [ // TESTNET
+        "PEG.FAKEUSD", "BTWTY"
+    ]
+};
 
 function checkBit(bit) {
     if (bit == "BITUSD" || bit == "BITEUR" || bit == "BITCNY" || bit == "BITGOLD" || bit == "BITBTC") {
@@ -64,7 +72,9 @@ function checkBit(bit) {
 
 class SettingsStore {
     constructor() {
-        this.exportPublicMethods({ getSetting: this.getSetting.bind(this) });
+
+        this.exportPublicMethods({ init: this.init.bind(this), getSetting: this.getSetting.bind(this) });
+        this.initDone = false;
 
         this.defaultSettings = Immutable.Map({
             locale: lang.locale,
@@ -77,25 +87,6 @@ class SettingsStore {
             themes: "olDarkTheme",
             disableChat: false,
             traderMode: false
-        });
-        // Default markets setup
-        this.topMarkets = marketsList;
-
-        // this.preferredBases = Immutable.List([CORE_ASSET, "OPEN.BTC", "USD", "CNY", "BTC"]);
-        // Openledger
-        this.preferredBases = Immutable.List(["OPEN.BTC", "USD", CORE_ASSET, "OBITS"]);
-
-        function addMarkets(target, base, markets) {
-            markets.filter(a => {
-                return a !== base;
-            }).forEach(market => {
-                target.push([`${market}_${base}`, { "quote": market, "base": base }]);
-            });
-        }
-
-        let defaultMarkets = [];
-        this.preferredBases.forEach(base => {
-            addMarkets(defaultMarkets, base, this.topMarkets);
         });
 
         // If you want a default value to be translated, add the translation to settings in locale-xx.js
@@ -171,11 +162,6 @@ class SettingsStore {
 
         this.settings = Immutable.Map(merge(this.defaultSettings.toJS(), ss.get("settings_v3")));
 
-        this.marketsString = "markets";
-        this.staticDefaultMarkets = Immutable.Map(ss.get([], defaultMarkets));
-        this.starredMarkets = Immutable.Map(ss.get(this.marketsString, []));
-        this.starredAccounts = Immutable.Map(ss.get("starredAccounts"));
-
         let savedDefaults = ss.get("defaults_v1", {});
         this.defaults = merge({}, defaults, savedDefaults);
 
@@ -228,6 +214,51 @@ class SettingsStore {
         this.marketDirections = Immutable.Map(ss.get("marketDirections"));
 
         this.hiddenAssets = Immutable.List(ss.get("hiddenAssets", []));
+    }
+
+    init() {
+        return new Promise((resolve) => {
+            if (this.initDone) resolve();
+            this.marketsString = this._getChainKey("markets");
+            // Default markets setup
+
+            let bases = {
+                markets_4018d784: [ // BTS MAIN NET
+                    "OPEN.BTC", "USD", CORE_ASSET, "OBITS"
+                ],
+                markets_39f5e2ed: [ // TESTNET
+                    "TEST"
+                ]
+            };
+
+            let coreAssets = { markets_4018d784: "BTS", markets_39f5e2ed: "TEST" };
+            let coreAsset = coreAssets[this.marketsString] || "BTS";
+            this.defaults.unit[0] = coreAsset;
+
+            let chainBases = bases[this.marketsString] || bases.markets_4018d784;
+            this.preferredBases = Immutable.List(chainBases);
+
+            function addMarkets(target, base, markets) {
+                markets.filter(a => {
+                    return a !== base;
+                }).forEach(market => {
+                    target.push([`${market}_${base}`, { "quote": market, "base": base }]);
+                });
+            }
+
+            let defaultMarkets = [];
+            let chainMarkets = topMarkets[this.marketsString] || [];
+            this.preferredBases.forEach(base => {
+                addMarkets(defaultMarkets, base, chainMarkets);
+            });
+
+            this.starredMarkets = Immutable.Map(ss.get(this.marketsString, []));
+            this.starredAccounts = Immutable.Map(ss.get(this._getChainKey("starredAccounts")));
+            this.topMarkets = marketsList;
+
+            this.initDone = true;
+            resolve();
+        });
     }
 
     getSetting(setting) {
@@ -298,7 +329,7 @@ class SettingsStore {
         if (!this.starredAccounts.has(account)) {
             this.starredAccounts = this.starredAccounts.set(account, { name: account });
 
-            ss.set("starredAccounts", this.starredAccounts.toJS());
+            ss.set(this._getChainKey("starredAccounts"), this.starredAccounts.toJS());
         } else {
             return false;
         }
@@ -308,7 +339,7 @@ class SettingsStore {
 
         this.starredAccounts = this.starredAccounts.delete(account);
 
-        ss.set("starredAccounts", this.starredAccounts.toJS());
+        ss.set(this._getChainKey("starredAccounts"), this.starredAccounts.toJS());
     }
 
     onAddWS(ws) {
@@ -337,10 +368,20 @@ class SettingsStore {
         }
     }
 
-    onSwitchLocale({ locale }) {
-        console.log("onSwitchLocale:", locale);
+    /*<<<<<<< HEAD
+        onSwitchLocale({ locale }) {
+            console.log("onSwitchLocale:", locale);
 
+            this.onChangeSetting({ setting: "locale", value: locale });
+    =======*/
+    onSwitchLocale({ locale }) {
         this.onChangeSetting({ setting: "locale", value: locale });
+        //>>>>>>> 5d25a8e1f78c0cc757d4b04ea378eb77dcda47d7
+    }
+
+    _getChainKey(key) {
+        const chainId = Apis.instance().chain_id;
+        return key + (chainId ? `_${chainId.substr(0, 8)}` : "");
     }
 }
 
@@ -375,4 +416,4 @@ set_obj.marketsOpenList = marketsList.filter(e => {
     return e.indexOf("OPEN.") === 0;
 }).map(e => e.split("OPEN.").join(""));
 
-export default set_obj
+export default set_obj;

@@ -10,7 +10,6 @@ import CollateralPosition from "../Blockchain/CollateralPosition";
 import { RecentTransactions } from "./RecentTransactions";
 import Proposals from "components/Account/Proposals";
 import {ChainStore} from "bitsharesjs/es";
-import {Apis} from "bitsharesjs-ws";
 import SettingsActions from "actions/SettingsActions";
 import assetUtils from "common/asset_utils";
 import counterpart from "counterpart";
@@ -246,7 +245,7 @@ class AccountOverview extends React.Component {
                                     <th style={{textAlign: "right"}}><Translate component="span" content="account.eq_value" /></th>
                                     {showAssetPercent ? <th style={{textAlign: "right"}}><Translate component="span" content="account.percent" /></th> : null}
                                     <th style={{textAlign: "right"}} colSpan="2">
-                                        {hiddenBalances.length - 1 > 0 ? <div
+                                        {hiddenBalances && hiddenBalances.length - 1 > 0 ? <div
                                             className="button outline small column-hide-small"
                                             onClick={this._toggleHiddenAssets.bind(this)}
                                         >
