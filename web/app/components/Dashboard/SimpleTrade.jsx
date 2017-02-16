@@ -88,8 +88,9 @@ class SimpleTradeContent extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log('@>this.state.price',this.state.price,this.state.price.toReal());
         ReactTooltip.rebuild();
+        console.log('@>this.state.price',this.state.price,this.state.price);
+        console.log('@>this.state.price.toReal()',this.state.price,this.state.price.toReal());
     }
 
     componentWillUnmount() {
@@ -300,7 +301,7 @@ class SimpleTradeContent extends React.Component {
 
     _updatePrice(p = null) {
         let updated = false;
-        console.log('@>this.state.price.toReal()',this.state.price.toReal())
+        console.log('@>this.state.price.toReal()',this.state.price)
        // console.log('@>p',p)
         if (p) {
             this.state.price = this.props.action === "buy" ? p : p.invert();
