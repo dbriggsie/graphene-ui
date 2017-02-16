@@ -1209,7 +1209,7 @@
   "simple_trade": {
       "max_spend": "输入最高的数量您要支出",
       "to_buy": "输入数量您要买",
-      "buy_with": "买 %(buy)s 用%(with)s",
+      "buy_with": "买 %(buy)s 用%(withAsset)s",
       "sell_for": "卖 %(sell)s 为%(for)s",
       "current_sell": "可用余额",
       "current_receive": "应收资产",

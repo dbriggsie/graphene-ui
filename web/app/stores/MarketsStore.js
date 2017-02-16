@@ -15,7 +15,10 @@ import {LimitOrder, CallOrder, FeedPrice, SettleOrder, Asset,
 
 const nullPrice = {
     getPrice: () => {return 0;},
-    sellPrice: () => {return 0;},
+    sellPrice: () => {return nullPrice;},
+    toReal: () => {return 0;},
+    clone: () => {return nullPrice;},
+    isValid: () => {return false;}
 };
 
 let marketStorage = new ls("__graphene__");

@@ -41,8 +41,6 @@ class SimpleTradeContent extends React.Component {
         */
         let activeAssetId =this._getNewActiveAssetId(props);
 
-        //console.log('@>activeAssetId',activeAssetId)
-        //console.log('@>props',props)
 
         this.state = {
             //activeAssetId:(this.props.action=="sell" ? this.props.sellAssetId : this.props.receiveAssetId), //not need
@@ -56,17 +54,15 @@ class SimpleTradeContent extends React.Component {
             showOrders: false
         };
 
-        //console.log('@>>for_sale',this.state.for_sale);
-        //console.log('@>>to_receive',this.state.to_receive);
-        this.state.price = new Price({
-            base: this.state.for_sale,
-            quote: this.state.to_receive
-        });
+        // this.state.price = new Price({
+        //     base: this.state.for_sale,
+        //     quote: this.state.to_receive
+        // });
 
         this._subToMarket = this._subToMarket.bind(this);
     }
 
-    componentDidMount() {        
+    componentDidMount() {
         this._checkSubAndBalance();
     }
 
@@ -89,8 +85,6 @@ class SimpleTradeContent extends React.Component {
 
     componentDidUpdate() {
         ReactTooltip.rebuild();
-        //console.log('@>this.state.price',this.state.price,this.state.price);
-        //console.log('@>this.state.price.toReal()',this.state.price,this.state.price.toReal());
     }
 
     componentWillUnmount() {
@@ -105,11 +99,8 @@ class SimpleTradeContent extends React.Component {
         });
 
         const isBuy = props.action === "buy";
-        console.log('@>lowestAsk.sellPrice()',lowestAsk,lowestAsk.sellPrice());
         const current = isBuy ? lowestAsk.clone() : highestBid.clone();
-        //console.log('@>lowestAsk.clone()',lowestAsk.clone());
-        //console.log('@>highestBid.clone()',highestBid.clone());
-        if (!this.state.price) {
+        if (!this.state.price || (this.state.price && !this.state.price.isValid())) {
             this.setState({
                 price: current,
                 priceValue: current.toReal()
@@ -265,7 +256,6 @@ class SimpleTradeContent extends React.Component {
                 FetchChainObjects(ChainStore.getAsset, [activeAssetId])
             ]).then(assets => {
                 let [quoteAsset, baseAsset] = assets;
-               // console.log('@>assets',assets,quoteAsset, baseAsset);
                 MarketsActions.subscribeMarket.defer(isBuy ? baseAsset[0] : quoteAsset[0], isBuy ? quoteAsset[0] : baseAsset[0]);
             });
         } else {
@@ -303,8 +293,6 @@ class SimpleTradeContent extends React.Component {
 
     _updatePrice(p = null) {
         let updated = false;
-        console.log('@>this.state.price.toReal()',this.state.price)
-       // console.log('@>p',p)
         if (p) {
             this.state.price = this.props.action === "buy" ? p : p.invert();
             this._updateToReceive() || this._updateForSale();
@@ -326,7 +314,6 @@ class SimpleTradeContent extends React.Component {
 
     _updateToReceive(r = null) {
         let updated = false;
-        console.log('@>to_receive',this.state.to_receive.getAmount({real: true}))
         if (r) {
             this.state.to_receive.setAmount({sats: r});
             this._updateForSale() || this._updatePrice();
@@ -462,12 +449,10 @@ class SimpleTradeContent extends React.Component {
     }
 
     render() {
-       // console.log('@>MarketsStore',MarketsStore.getState());
-        //console.log('@>lowVolumeMarkets',this.props.lowVolumeMarkets);
         let {modalId, asset, assets, lowVolumeMarkets, action, lowestAsk, highestBid, currentBalance} = this.props;
         let {activeAssetId, for_sale, to_receive, price} = this.state;
         const isBuy = action === "buy";
-        //console.log("price:",price, price.toReal(), price.base.asset_id, price.quote.asset_id, "for_sale:", for_sale.getAmount({}), for_sale.asset_id, "to_receive:", to_receive.getAmount({}), to_receive.asset_id);
+        // console.log("price:",price, price.toReal(), price.base.asset_id, price.quote.asset_id, "for_sale:", for_sale.getAmount({}), for_sale.asset_id, "to_receive:", to_receive.getAmount({}), to_receive.asset_id);
         let assetOptions = [];
         let forSaleBalance = isBuy && currentBalance ? currentBalance.toJS() : {balance: 0, asset_type: isBuy ? this.props.currentAsset.get("id") : activeAssetId};
         let receiveBalance = !isBuy && currentBalance ? currentBalance.toJS() : {balance: 0, asset_type: isBuy ? activeAssetId : this.props.currentAsset.get("id")};
@@ -530,7 +515,7 @@ class SimpleTradeContent extends React.Component {
             return null;
         }
 
-        const {replaceName:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true); 
+        const {replaceName:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true);
         const {replaceName:assetName} = utils.replaceName(asset, true);
 
         const marketID = isBuy ?
@@ -574,8 +559,6 @@ class SimpleTradeContent extends React.Component {
                 <Translate content={isBuy ? "simple_trade.max_spend" : "simple_trade.to_buy"} />
             </div>
         </div>;
-
-        //console.log('@>priceValue', this.state);
 
         const receiveAsset = <div>
             <div className="SimpleTrade__help-text">
@@ -622,7 +605,7 @@ class SimpleTradeContent extends React.Component {
                             <div>
                                 <div className="SimpleTrade__help-text">
                                     <div data-tip={counterpart.translate("tooltip.apply_price")} onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
-                                        <span>{isBuy ? lowestAsk && lowestAsk.sellPrice() : highestBid && highestBid.toReal()} {isBuy ? activeAssetName : assetName}</span>
+                                        <span>{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal()} {isBuy ? activeAssetName : assetName}</span>
                                     </div>
                                 </div>
                                 <label style={{width: "100%"}}>
@@ -671,8 +654,13 @@ class SimpleTradeContent extends React.Component {
                         {isLowVolume ? <div className="SimpleTrade__withdraw-row error"><Translate content="simple_trade.volume_warning" /></div> : null}
 
                         <div className="SimpleTrade__withdraw-row button-group">
+                        {/*
+                            some trouble with this part
                             <div className="button" onClick={this.onToggleOrders.bind(this)} ><Translate content="simple_trade.show_market" /></div>
+                        */}
                             <div className="button" onClick={this.onSubmit.bind(this)} type="submit" ><Translate content="simple_trade.place_order" /></div>
+
+
                         </div>
                     </form>
                 </div>
@@ -742,12 +730,11 @@ SimpleTradeContent = connect(SimpleTradeContent, {
     getProps() {
         return {
             orders: MarketsStore.getState().activeMarketLimits,
-            calls: MarketsStore.getState().calls,
-            bids: MarketsStore.getState().bids,
-            asks: MarketsStore.getState().asks,
+            bids: MarketsStore.getState().marketData.combinedBids,
+            asks: MarketsStore.getState().marketData.combinedAsks,
             lowVolumeMarkets: MarketsStore.getState().lowVolumeMarkets,
-            highestBid: MarketsStore.getState().highestBid,
-            lowestAsk: MarketsStore.getState().lowestAsk,
+            highestBid: MarketsStore.getState().marketData.highestBid.sellPrice(),
+            lowestAsk: MarketsStore.getState().marketData.lowestAsk.sellPrice(),
             receiveAssetId: SettingsStore.getState().viewSettings.get(["receiveAssetId"], preferredAssets[0]),
             sellAssetId: SettingsStore.getState().viewSettings.get(["sellAssetId"], preferredAssets[0])
         };

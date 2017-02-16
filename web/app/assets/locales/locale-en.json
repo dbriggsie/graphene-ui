@@ -1182,7 +1182,7 @@
     "simple_trade": {
         "max_spend": "Enter the max amount you want to spend",
         "to_buy": "Enter the amount you wish to buy",
-        "buy_with": "Buy %(buy)s with %(with)s",
+        "buy_with": "Buy %(buy)s with %(withAsset)s",
         "sell_for": "Sell %(sell)s for %(for)s",
         "current_sell": "Current balances",
         "current_receive": "Asset to receive",
