@@ -15,7 +15,10 @@ import {LimitOrder, CallOrder, FeedPrice, SettleOrder, Asset,
 
 const nullPrice = {
     getPrice: () => {return 0;},
-    sellPrice: () => {return 0;},
+    sellPrice: () => {return nullPrice;},
+    toReal: () => {return 0;},
+    clone: () => {return nullPrice;},
+    isValid: () => {return false;}
 };
 
 let marketStorage = new ls("__graphene__");
@@ -790,8 +793,8 @@ class MarketsStore {
         this.marketData.lowestAsk = !combinedAsks.length ? nullPrice :
             combinedAsks[0];
 
-        this.marketData.highestBid = !this.marketData.combinedBids.length ? nullPrice :
-            this.marketData.combinedBids[0];
+        this.marketData.highestBid = !combinedBids.length ? nullPrice :
+            combinedBids[0];
 
         this.marketData.combinedBids = combinedBids;
         this.marketData.combinedAsks = combinedAsks;

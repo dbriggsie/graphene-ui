@@ -58,10 +58,10 @@ class SimpleTradeContent extends React.Component {
 
         console.log('@>>for_sale',this.state.for_sale);
         console.log('@>>to_receive',this.state.to_receive);
-        this.state.price = new Price({
-            base: this.state.for_sale,
-            quote: this.state.to_receive
-        });
+        // this.state.price = new Price({
+        //     base: this.state.for_sale,
+        //     quote: this.state.to_receive
+        // });
 
         this._subToMarket = this._subToMarket.bind(this);
     }
@@ -89,8 +89,8 @@ class SimpleTradeContent extends React.Component {
 
     componentDidUpdate() {
         ReactTooltip.rebuild();
-        console.log('@>this.state.price',this.state.price,this.state.price);
-        console.log('@>this.state.price.toReal()',this.state.price,this.state.price.toReal());
+        console.log('@>this.state.price',this.state.price);
+        // console.log('@>this.state.price.toReal()',this.state.price,this.state.price.toReal());
     }
 
     componentWillUnmount() {
@@ -107,7 +107,7 @@ class SimpleTradeContent extends React.Component {
         const isBuy = props.action === "buy";
         const current = isBuy ? lowestAsk.clone() : highestBid.clone();
         console.log('@>lower high',lowestAsk.clone(),highestBid.clone());
-        if (!this.state.price) {
+        if (!this.state.price || (this.state.price && !this.state.price.isValid())) {
             this.setState({
                 price: current,
                 priceValue: current.toReal()
@@ -528,7 +528,7 @@ class SimpleTradeContent extends React.Component {
             return null;
         }
 
-        const {replaceName:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true); 
+        const {replaceName:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true);
         const {replaceName:assetName} = utils.replaceName(asset, true);
 
         const marketID = isBuy ?
@@ -572,8 +572,6 @@ class SimpleTradeContent extends React.Component {
                 <Translate content={isBuy ? "simple_trade.max_spend" : "simple_trade.to_buy"} />
             </div>
         </div>;
-
-        console.log('@>priceValue', this.state);
 
         const receiveAsset = <div>
             <div className="SimpleTrade__help-text">
@@ -740,12 +738,11 @@ SimpleTradeContent = connect(SimpleTradeContent, {
     getProps() {
         return {
             orders: MarketsStore.getState().activeMarketLimits,
-            calls: MarketsStore.getState().calls,
-            bids: MarketsStore.getState().bids,
-            asks: MarketsStore.getState().asks,
+            bids: MarketsStore.getState().marketData.combinedBids,
+            asks: MarketsStore.getState().marketData.combinedAsks,
             lowVolumeMarkets: MarketsStore.getState().lowVolumeMarkets,
-            highestBid: MarketsStore.getState().highestBid,
-            lowestAsk: MarketsStore.getState().lowestAsk,
+            highestBid: MarketsStore.getState().marketData.highestBid.sellPrice(),
+            lowestAsk: MarketsStore.getState().marketData.lowestAsk.sellPrice(),
             receiveAssetId: SettingsStore.getState().viewSettings.get(["receiveAssetId"], preferredAssets[0]),
             sellAssetId: SettingsStore.getState().viewSettings.get(["sellAssetId"], preferredAssets[0])
         };
