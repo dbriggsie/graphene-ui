@@ -22,7 +22,6 @@ next year by becoming an annual subscriber for a smaller one-time fee which
 lasts for only one year.
 
 ### Fee Division
-
 Every time an account you referred pays a transaction fee, that fee is divided
 among several different accounts. The network takes a cut, and the Lifetime
 Member who referred the account gets a cut.

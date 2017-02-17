@@ -112,8 +112,8 @@ class AccountMembership extends React.Component {
                 </div>
 
                 <div className="content-block no-margin">
-                <div className="no-margin grid-block vertical large-horizontal">
-                    <div className="no-margin grid-block large-5">
+                <div className="grid-block vertical large-horizontal">
+                    <div className="grid-block large-5 no-margin ">
                         <div className="grid-content">
                             {member_status=== "lifetime" ? (
                             <div>
@@ -153,7 +153,7 @@ class AccountMembership extends React.Component {
                                 </tbody>
                             </table>
 
-                            <h4 style={{paddingTop: "1rem"}}><Translate content="account.member.fees_cashback"/></h4>
+                            <h4 ><Translate content="account.member.fees_cashback"/></h4>
                             <table className="table key-value-table">
                                 <Statistics stat_object={account.statistics}/>
                             </table>

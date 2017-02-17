@@ -225,30 +225,25 @@ class RecentTransactions extends React.Component {
 
         return (
             <div className="recent-transactions no-overflow" style={style}>
-                <div className="generic-bordered-box">
                     <div ref="header">
+                        <h4>{this.props.title ? this.props.title : <Translate content="account.recent" />}</h4>
 
-                        <div className="block-content-header">
-                            <h4>{this.props.title ? this.props.title : <Translate content="account.recent" />}</h4>
+                        {historyCount > 0 ?
+                        <span >
+                            <a
+                                className="inline-block"
+                                onClick={this._downloadCSV.bind(this)}
+                                data-tip={counterpart.translate("transaction.csv_tip")}
+                                data-place="bottom"
+                            >
+                                <Translate content="transaction.csv" />
+                            </a>                                
+                        </span> : null}
 
-                            {historyCount > 0 ?
-                            <span style={{fontSize: "60%", textTransform: "lowercase"}}>
-                                <a
-                                    className="inline-block"
-                                    onClick={this._downloadCSV.bind(this)}
-                                    data-tip={counterpart.translate("transaction.csv_tip")}
-                                    data-place="bottom"
-                                >
-                                    <Translate content="transaction.csv" />
-                                </a>                                
-                            </span> : null}
-
-                            {this.props.showFilters ? (
-                            <div className="float-right">
-                                <select data-place="left" data-tip={counterpart.translate("tooltip.filter_ops")} style={{paddingTop: 0}} className="bts-select" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
-                            </div>) : null}
-                        </div>
-
+                        {this.props.showFilters ? (
+                        <div className="float-right">
+                            <select data-place="left" data-tip={counterpart.translate("tooltip.filter_ops")} style={{paddingTop: 0}} className="bts-select" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
+                        </div>) : null}
                         <table className={"table" + (compactView ? " compact" : "")}>
                             <thead>
                                 <tr>
@@ -299,7 +294,7 @@ class RecentTransactions extends React.Component {
                         }
                     </div>
                 }
-                </div>
+
                 {this.props.showMore && historyCount > this.props.limit || 20 && limit < historyCount ? (
                     <div className="account-info more-button">
                         <button className="button outline small" onClick={this._onIncreaseLimit.bind(this)}>

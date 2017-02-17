@@ -206,9 +206,9 @@ class Settings extends React.Component {
 
         return (
             <div className="grid-block page-layout">
-                <div className="grid-block main-content wrap" style={{marginTop: "1rem"}}>
-                    {!traderMode ? null : <div className="grid-content large-offset-2 shrink" style={{paddingRight: "4rem"}}>
-                        <Translate style={{paddingBottom: 20}} className="bottom-border" component="h4" content="header.settings" />
+
+                    {!traderMode ? null : <div className="grid-content large-offset-2 shrink" >
+                        <Translate className="bottom-border" component="h4" content="header.settings" />
 
                         <ul className="settings-menu">
                             {menuEntries.map((entry, index) => {
@@ -217,14 +217,14 @@ class Settings extends React.Component {
                         </ul>
                     </div>}
 
-                    <div className={(traderMode ? "grid-content" : "grid-container")}  style={{minWidth: 500, maxWidth: 1000}}>
-                        <div className={"grid-block no-padding no-margin vertical"}>
-                            <Translate component="h3" content={traderMode ? "settings." + menuEntries[activeSetting] : "header.settings"} />
-                            <Translate style={{paddingTop: 10, paddingBottom: 20, marginBottom: 30}} className="bottom-border" content={`settings.${menuEntries[activeSetting]}_text`} />
+                    <div className={(traderMode ? "grid-content" : "grid-container")} >
+                        <div className={"grid-container vertical"}>
+                            <Translate component="h4" content={traderMode ? "settings." + menuEntries[activeSetting] : "header.settings"} />
+                            <Translate className="h5" content={`settings.${menuEntries[activeSetting]}_text`} />
                             {entries}
                         </div>
                     </div>
-                </div>
+
                 <WebsocketAddModal
                     ref="ws_modal"
                     apis={defaults["apiServer"]}
