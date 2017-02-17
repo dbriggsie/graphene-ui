@@ -601,3 +601,10 @@ a.order-cancel > .icon {
         }
     }
 }
+
+@media (max-width: 769px) {
+    .zoom_mobile{
+        display: none;
+    }
+
+}

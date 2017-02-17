@@ -368,15 +368,9 @@ class SettingsStore {
         }
     }
 
-    /*<<<<<<< HEAD
-        onSwitchLocale({ locale }) {
-            console.log("onSwitchLocale:", locale);
 
-            this.onChangeSetting({ setting: "locale", value: locale });
-    =======*/
     onSwitchLocale({ locale }) {
         this.onChangeSetting({ setting: "locale", value: locale });
-        //>>>>>>> 5d25a8e1f78c0cc757d4b04ea378eb77dcda47d7
     }
 
     _getChainKey(key) {

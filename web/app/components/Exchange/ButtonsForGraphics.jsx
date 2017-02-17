@@ -71,8 +71,8 @@ export default class ButtonsForGraphics extends React.Component {
 
     render() {
         let {
-        	quoteAsset,
-        	baseAsset,
+            quoteAsset,
+            baseAsset,
             showDepthChart,
             buckets,
             bucketSize,
@@ -89,7 +89,7 @@ export default class ButtonsForGraphics extends React.Component {
             onChangeTool
         } = this.props;
 
-        const {dropdowns} = this.state;
+        const { dropdowns } = this.state;
 
         // Lower bar
         let bucketText = function(size) {
@@ -130,26 +130,26 @@ export default class ButtonsForGraphics extends React.Component {
             let hasSetting = i in indicatorSettings;
             let settingInput = hasSetting ?
                 <div style={{float: "right", clear: "both"}}>
-					<div className="inline-block" style={{paddingRight: 5}}><Translate content="exchange.chart_options.period" />:</div>
-					<input style={{margin: 0}} type="number" value={indicatorSettings[i]} onChange={this.props.onChangeIndicatorSetting.bind(null, i)} />
-				</div> : null;
+                    <div className="inline-block" style={{paddingRight: 5}}><Translate content="exchange.chart_options.period" />:</div>
+                    <input style={{margin: 0}} type="number" value={indicatorSettings[i]} onChange={this.props.onChangeIndicatorSetting.bind(null, i)} />
+                </div> : null;
 
             if (i.toLowerCase().indexOf("volume") !== -1) {
                 if (!this.props.showVolumeChart) return null;
                 indicatorOptionsVolume.push(
                     <li className="indicator" key={i}>
-						<input className="clickable" type="checkbox" checked={indicators[i]} onClick={this.props.onChangeIndicators.bind(null, i)}/>
-						<div onClick={this.props.onChangeIndicators.bind(null, i)} className="clickable"><Translate content={`exchange.chart_options.${i}`} /></div>
-						{ settingInput }
-					</li>
+                        <input className="clickable" type="checkbox" checked={indicators[i]} onClick={this.props.onChangeIndicators.bind(null, i)}/>
+                        <div onClick={this.props.onChangeIndicators.bind(null, i)} className="clickable"><Translate content={`exchange.chart_options.${i}`} /></div>
+                        { settingInput }
+                    </li>
                 );
             } else {
                 return (
                     <li className="indicator" key={i} >
-						<input className="clickable" type="checkbox" checked={indicators[i]} onClick={this.props.onChangeIndicators.bind(null, i)}/>
-						<div className="clickable"><Translate content={`exchange.chart_options.${i}`} onClick={this.props.onChangeIndicators.bind(null, i)}/></div>
-						{ settingInput }
-					</li>
+                        <input className="clickable" type="checkbox" checked={indicators[i]} onClick={this.props.onChangeIndicators.bind(null, i)}/>
+                        <div className="clickable"><Translate content={`exchange.chart_options.${i}`} onClick={this.props.onChangeIndicators.bind(null, i)}/></div>
+                        { settingInput }
+                    </li>
                 );
             }
         }).filter(a => !!a);
@@ -158,10 +158,10 @@ export default class ButtonsForGraphics extends React.Component {
         const toolsOptions = Object.keys(this.props.tools).map(i => {
             return (
                 <li className="clickable" key={i} onClick={this._toggleTools.bind(this, i)}>
-					<div style={{marginLeft: 5}} className="inline-block">
-						<Translate content={`exchange.chart_options.${i}`} />
-					</div>
-				</li>
+                    <div style={{marginLeft: 5}} className="inline-block">
+                        <Translate content={`exchange.chart_options.${i}`} />
+                    </div>
+                </li>
             );
         });
 
@@ -173,13 +173,13 @@ export default class ButtonsForGraphics extends React.Component {
                     {
                         content = (
                             <li className="indicator" key={i}>
-							<div style={{marginLeft: 0, paddingRight: 10}}>
-								<div><Translate content="exchange.chart_options.height" />:</div>
-							</div>
-							<div>
-								<input style={{margin: 0, textAlign: "right", maxWidth: 75}} value={this.props.chartHeight} type="number" onChange={this._onInputHeight} />
-							</div>
-						</li>
+                            <div style={{marginLeft: 0, paddingRight: 10}}>
+                                <div><Translate content="exchange.chart_options.height" />:</div>
+                            </div>
+                            <div>
+                                <input style={{margin: 0, textAlign: "right", maxWidth: 75}} value={this.props.chartHeight} type="number" onChange={this._onInputHeight} />
+                            </div>
+                        </li>
                         );
                         break;
                     }
@@ -188,9 +188,9 @@ export default class ButtonsForGraphics extends React.Component {
                     {
                         content = (
                             <li className="clickable indicator" key={i} onClick={this.props.onToggleVolume}>
-							<input type="checkbox" checked={this.props.showVolumeChart} />
-							<div><Translate content={`exchange.chart_options.${i}`} /></div>
-						</li>
+                            <input type="checkbox" checked={this.props.showVolumeChart} />
+                            <div><Translate content={`exchange.chart_options.${i}`} /></div>
+                        </li>
                         );
                         break;
                     }
@@ -199,101 +199,101 @@ export default class ButtonsForGraphics extends React.Component {
                     {
                         content = (
                             <li key={i}>
-							TBD
-						</li>
+                            TBD
+                        </li>
                         );
                     }
             }
             return content;
         });
 
-       // return null;
+        // return null;
         return (
             <div className="grid-block shrink" >
-					<ul className="grid-block market-stats stats bottom-stats">
-						{/* Chart controls */}
-						{!showDepthChart ? (
-							<li className="stat">
-								<span>
-									<span><Translate content="exchange.zoom" />:&nbsp;</span>
-									<span>{zoomOptions}</span>
-								</span>
-							</li>) : null}
-						{!showDepthChart ? (
-							<li className="stat">
-								<span>
-									<span><Translate content="exchange.time" />:&nbsp;</span>
-									<span>{bucketOptions}</span>
-								</span>
-							</li>) : null}
-						</ul>
+                    <ul className="grid-block market-stats stats bottom-stats">
+                        {/* Chart controls */}
+                        {!showDepthChart ? (
+                            <li className="stat">
+                                <span className="zoom_mobile" >
+                                    <span ><Translate content="exchange.zoom" />:&nbsp;</span>
+                                    <span  >{zoomOptions}</span>
+                                </span>
+                            </li>) : null}
+                        {!showDepthChart ? (
+                            <li className="stat zoom_mobile">
+                                <span>
+                                    <span><Translate content="exchange.time" />:&nbsp;</span>
+                                    <span>{bucketOptions}</span>
+                                </span>
+                            </li>) : null}
+                        </ul>
 
-						<ul className="grid-block market-stats stats bottom-stats no-over" style={{ "justifyContent": "flex-end",overflow:"visible",margin:"0 20px 0 0"}}>
-						{showIndicators ?
-								<li className="stat custom-dropdown" style={{margin:"0 10px"}}>
-									<div className="indicators clickable" onClick={this._toggleDropdown.bind(this, "settings")}>
-										<Icon className="icon-14px settings-cog" name="cog"/>
-									</div>
-									{dropdowns.settings ?
-								<div className="custom-dropdown-content" onClick={this._stopPropagation}>
-									<ul>
-										{settingsOptions}
-									</ul>
-								</div> : null}
-							</li> : null}
+                        <ul className="grid-block market-stats stats bottom-stats no-over zoom_mobile" style={{ "justifyContent": "flex-end",overflow:"visible",margin:"0 20px 0 0"}}>
+                        {showIndicators ?
+                            <li className="stat custom-dropdown" style={{margin:"0 10px"}}>
+                                <div className="indicators clickable" onClick={this._toggleDropdown.bind(this, "settings")}>
+                                    <Icon className="icon-14px settings-cog" name="cog"/>
+                                </div>
+                                {dropdowns.settings ?
+                                <div className="custom-dropdown-content" onClick={this._stopPropagation}>
+                                    <ul>
+                                        {settingsOptions}
+                                    </ul>
+                                </div> : null}
+                            </li> : null}
+                        {showIndicators ? (
+                            <li className="stat custom-dropdown">
+                                <div className="indicators label bucket-option clickable" onClick={this._toggleDropdown.bind(this, "tools")}>
+                                    <Translate content="exchange.chart_options.tools" />
+                                </div>
+                                {dropdowns.tools ?
+                                <div className="custom-dropdown-content"  onClick={this._stopPropagation}>
+                                    <ul>
+                                        {toolsOptions}
+                                    </ul>
+                                </div> : null}
+                            </li>) : null}
 
-						{showIndicators ? (
-							<li className="stat custom-dropdown">
-								<div className="indicators label bucket-option clickable" onClick={this._toggleDropdown.bind(this, "tools")}>
-									<Translate content="exchange.chart_options.tools" />
-								</div>
-								{dropdowns.tools ?
-								<div className="custom-dropdown-content"  onClick={this._stopPropagation}>
-									<ul>
-										{toolsOptions}
-									</ul>
-								</div> : null}
-							</li>) : null}
 
+                        {showIndicators ? (
+                            <li className="stat custom-dropdown">
+                                <div className="indicators label bucket-option clickable" onClick={this._toggleDropdown.bind(this, "indicators")}>
+                                    <Translate content="exchange.chart_options.title" />
+                                </div>
+                                {dropdowns.indicators ?
+                                <div className="custom-dropdown-content" onClick={this._stopPropagation}>
+                                    <ul>
+                                        <li className="indicator-title"><Translate content="exchange.chart_options.price_title" /></li>
+                                            {indicatorOptionsPrice}
+                                            {indicatorOptionsVolume.length ? <li className="indicator-title"><Translate content="exchange.chart_options.volume_title" />
+                                        </li> : null}
+                                        {indicatorOptionsVolume}
+                                    </ul>
+                                </div> : null}
+                            </li>) : null}                      
+                        {/* Borrow buttons */}
+                        {onBorrowQuote ? (
+                            <li className="stat clickable" onClick={onBorrowQuote}>
+                                <div className="indicators label bucket-option">
+                                    <Translate content="exchange.borrow" />&nbsp;{quoteAsset.get("symbol")}
+                                </div>
+                            </li>) : null}
 
-						{showIndicators ? (
-							<li className="stat custom-dropdown">
-								<div className="indicators label bucket-option clickable" onClick={this._toggleDropdown.bind(this, "indicators")}>
-									<Translate content="exchange.chart_options.title" />
-								</div>
-								{dropdowns.indicators ?
-								<div className="custom-dropdown-content" onClick={this._stopPropagation}>
-									<ul>
-										<li className="indicator-title"><Translate content="exchange.chart_options.price_title" /></li>
-											{indicatorOptionsPrice}
-											{indicatorOptionsVolume.length ? <li className="indicator-title"><Translate content="exchange.chart_options.volume_title" />
-										</li> : null}
-										{indicatorOptionsVolume}
-									</ul>
-								</div> : null}
-							</li>) : null}						
-						{/* Borrow buttons */}
-						{onBorrowQuote ? <li className="stat clickable" onClick={onBorrowQuote}>
-								<div className="indicators label bucket-option">
-									<Translate content="exchange.borrow" />&nbsp;{quoteAsset.get("symbol")}
-								</div>
-							</li> : null}
+                            <li className="stat clickable" onClick={this.props.onToggleCharts}>
+                                <div className="indicators label bucket-option">
+                                    {!showDepthChart ? <Translate content="exchange.order_depth" /> : <Translate content="exchange.price_history" />}
+                                </div>
+                            </li>
 
-    						<li className="stat clickable" onClick={this.props.onToggleCharts}>
-    							<div className="indicators label bucket-option">
-    								{!showDepthChart ? <Translate content="exchange.order_depth" /> : <Translate content="exchange.price_history" />}
-    							</div>
-    						</li>
+                        {onBorrowBase ? 
+                            <li className="stat clickable" onClick={onBorrowBase}>
+                                <div className="indicators label bucket-option">
+                                   <Translate content="exchange.borrow" />&nbsp;{baseAsset.get("symbol")}
+                                </div>
+                            </li> : null}
+                        </ul>
 
-						{onBorrowBase ? 
-							<li className="stat clickable" onClick={onBorrowBase}>
-								<div className="indicators label bucket-option">
-								   <Translate content="exchange.borrow" />&nbsp;{baseAsset.get("symbol")}
-								</div>
-							</li> : null}
-						</ul>
-
-		</div>);
+        </div>);
 
     }
 }
