@@ -89,7 +89,7 @@ class Dashboard extends React.Component {
     }
 
     render() {
-        let { linkedAccounts, myIgnoredAccounts, accountsReady } = this.props;
+        let { linkedAccounts, myIgnoredAccounts, accountsReady,traderMode } = this.props;
         let {width, showIgnored, featuredMarkets, newAssets} = this.state;
         let names = linkedAccounts.toArray().sort();
         let ignored = myIgnoredAccounts.toArray().sort();
@@ -122,13 +122,13 @@ class Dashboard extends React.Component {
             );
         });
 
-        if (!accountCount) {
+        if (!accountCount && !traderMode) {
             return (
                 <div ref="wrapper" className="grid-block page-layout vertical">
                     <div ref="container" className="grid-block vertical medium-horizontal"  style={{padding: "25px 10px 0 10px"}}>
                         <div className="grid-block vertical small-12 medium-5">
                             <div className="Dashboard__intro-text">
-                                <h4><img style={{position: "relative", top: -15, margin: 0}} src={logo}/><Translate content="account.intro_text_title" /></h4>
+                                <h4><img style={{position: "relative", top: -15, margin: 0}} src='/app/assets/logo.png' /><Translate content="account.intro_text_title" /></h4>
 
                                 <Translate unsafe content="account.intro_text_1" component="p" />
                                 <Translate unsafe content="account.intro_text_2" component="p" />

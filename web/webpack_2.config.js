@@ -1,7 +1,7 @@
-const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const fs = require('fs');
 const exec = require('child_process').exec;
 
@@ -18,9 +18,9 @@ exec(`rm -fr ${__dirname}/dist/*`, (err, stdout, stderr) => {
     console.log(stdout);
 });
 
-function CreateWebpackConfig(type) {
+function CreateWebpackConfig(type, options) {
     let folder = (type == "js" ? "scripts" : "assets");
-    let ext = (type == "js" && "js" || type == "scss" && "css" || type == "html" && "html");
+    let ext = (type == "js" && "js" || type == "scss" && "css");
 
     this.plugins = [
         new webpack.optimize.OccurrenceOrderPlugin(),
@@ -29,11 +29,13 @@ function CreateWebpackConfig(type) {
             __ELECTRON__: !!env.electron,
             __HASH_HISTORY__: !!env.hash,
             __BASE_URL__: JSON.stringify(env.baseUrl || ""),
-            __UI_API__: JSON.stringify(env.apiUrl || "https://ui.bitshares.eu/api")
+            __UI_API__: JSON.stringify(env.apiUrl || "https://ui.bitshares.eu/api"),
+            ENV: JSON.stringify(options.ENV),
+            SET: JSON.stringify(options.SET)
         })
     ];
 
-    if (NODE_ENV == "production") {
+    if (options.ENV == "production") {
         this.plugins.push(new webpack.LoaderOptionsPlugin({
             minimize: true,
             debug: false
@@ -55,7 +57,7 @@ function CreateWebpackConfig(type) {
     }
 
 
-    this.devtool = NODE_ENV == "production" ? "" : "inline-source-map";
+    this.devtool = options.ENV == "production" ? "" : "inline-source-map";
 
     this.module = {
         rules: []
@@ -88,9 +90,17 @@ function CreateWebpackConfig(type) {
     } else if (type == 'scss') {
         this.entry['files'] = path.join(__dirname, 'app', 'assets', 'files');
         this.entry['app'] = path.join(__dirname, 'app', 'assets', 'stylesheets', 'app');
-        //this.entry['file1'] = path.join(__dirname, folder, 'file1');
-    } else if (type == 'html') {
-        this.entry['index'] = path.join(__dirname, 'app', 'assets', 'index');
+
+        this.plugins.push(new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: path.join(__dirname, 'app', 'assets', 'index.html'),
+            inject: false,
+            SET: options.SET,
+            minify: {
+                html5: true,
+                collapseWhitespace: (options.ENV == "production" ? true : false),
+            }
+        }));
     }
 
     this.output = {
@@ -129,7 +139,7 @@ function CreateWebpackConfig(type) {
                 loader: "babel-loader",
                 options: {
                     presets: ["es2015", "stage-0", "react"], //prod ["stage-0"],
-                    plugins: NODE_ENV == "production" ? "transform-runtime" : ""
+                    plugins: options.ENV == "production" ? "transform-runtime" : ""
                 }
             }
         });
@@ -141,7 +151,7 @@ function CreateWebpackConfig(type) {
                 loader: "babel-loader",
                 options: {
                     presets: ["es2015", "stage-0"], //prod ["stage-0"],
-                    plugins: NODE_ENV == "production" ? "transform-runtime" : ""
+                    plugins: options.ENV == "production" ? "transform-runtime" : ""
                 }
             }
         });
@@ -157,34 +167,12 @@ function CreateWebpackConfig(type) {
 
         this.module.rules.push({ test: /\.coffee$/, loader: "coffee-loader" });
 
-
-
-        /*this.module.rules.push({
-            test: /\.js$/,
-            use: {
-                loader: "babel-loader",
-                options: {
-                    presets: NODE_ENV == "production" ? ["es2015", "stage-0"] : ["stage-0"], //prod ["stage-0"],
-                    plugins: NODE_ENV == "production" ? "transform-runtime" : ""
-                }
-            },
-            exclude: /(node_modules|bower_components)/
-        });*/
-
-        //this.plugins.push({
-        //    'Promise': 'exports?global.Promise!es6-promise',
-        //    'window.fetch': 'exports?self.fetch!whatwg-fetch'
-        //});
-
     } else if (type == 'scss') {
 
 
         this.resolve.alias = {
             style_dir: path.resolve(__dirname, "app/assets/stylesheets")
         };
-
-
-
 
         this.module.rules.push({
             test: /\.(sass|scss)$/,
@@ -195,17 +183,17 @@ function CreateWebpackConfig(type) {
                 use: [{
                     loader: 'css-loader',
                     query: {
-                        minimize: NODE_ENV == "production" ? true : false,
+                        minimize: options.ENV == "production" ? true : false,
                         modules: true, // enables CSS Modules spec
-                        sourceMap: NODE_ENV == "production" ? false : true,
+                        sourceMap: options.ENV == "production" ? false : true,
                         importLoaders: 1, // will import previous amount of loaders,
                         localIdentName: '[local]'
                     },
                 }, {
                     loader: 'sass-loader',
                     query: {
-                        sourceMap: NODE_ENV == "production" ? false : true,
-                        sourceMapContents: NODE_ENV == "production" ? false : true,
+                        sourceMap: options.ENV == "production" ? false : true,
+                        sourceMapContents: options.ENV == "production" ? false : true,
                     },
                 }]
             })
@@ -226,31 +214,13 @@ function CreateWebpackConfig(type) {
             disable: false,
             allChunks: true
         }));
-
-
-    } else if (type == 'html') {
-        this.module.rules.push({
-            test: /\.html$/,
-            use: ExtractTextPlugin.extract({
-                use: {
-                    loader: 'html-loader',
-                    query: {
-                        minimize: NODE_ENV == "production" ? true : false
-                    }
-                }
-            })
-        });
-
-        this.plugins.push(new ExtractTextPlugin({
-            filename: `[name].${ext}`,
-            disable: false,
-        }));
     }
 }
 
-
-module.exports = [
-    new CreateWebpackConfig('js'),
-    new CreateWebpackConfig('scss'),
-    new CreateWebpackConfig('html')
-]
+module.exports = function(options = {}) {
+    console.log("options", options);
+    return [
+        new CreateWebpackConfig('js', options),
+        new CreateWebpackConfig('scss', options)
+    ];
+}

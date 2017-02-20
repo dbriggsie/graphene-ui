@@ -11,9 +11,64 @@ const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when 
 const STORAGE_KEY = "__graphene__";
 let ss = new ls(STORAGE_KEY);
 
-let lang = {
-    locale: "en"
-};
+function server_set(type) {
+    //"urls" "apiServer" "faucet_address"
+
+    if (type == "urls") {
+        if (SET == "EU1") {
+            return [
+                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
+                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
+                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
+                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
+            ];
+        } else if (SET == "CN") {
+            return [
+                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
+                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
+                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
+                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
+            ];
+        } else {
+            return [
+                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
+                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
+                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
+                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
+            ];
+        }
+    }
+
+    if (type == "apiServer") {
+        if (SET == "EU1") {
+            return "wss://bitshares.openledger.info/ws";
+        } else if (SET == "CN") {
+            return "wss://openledger.hk/ws";
+        } else {
+            return "wss://bitshares.openledger.info/ws";
+        }
+    }
+
+    if (type == "faucet_address") {
+        if (SET == "EU1") {
+            return "https://bitshares.openledger.info";
+        } else if (SET == "CN") {
+            return "https://openledger.hk";
+        } else {
+            return "https://bitshares.openledger.info";
+        }
+    }
+
+    if (type == "lang") {
+        if (SET == "EU1") {
+            return "en";
+        } else if (SET == "CN") {
+            return "cn";
+        } else {
+            return "en";
+        }
+    }
+}
 
 let marketsList = [
     "BLOCKPAY",
@@ -69,6 +124,7 @@ function checkBit(bit) {
         return true;
     }
 }
+console.log('@>',server_set("lang"))
 
 class SettingsStore {
     constructor() {
@@ -77,9 +133,9 @@ class SettingsStore {
         this.initDone = false;
 
         this.defaultSettings = Immutable.Map({
-            locale: lang.locale,
-            apiServer: "wss://bitshares.openledger.info/ws",
-            faucet_address: "https://bitshares.openledger.info",
+            locale: server_set("lang"),
+            apiServer: server_set("apiServer"),
+            faucet_address: server_set("faucet_address"),
             unit: CORE_ASSET,
             showSettles: false,
             showAssetPercent: false,
@@ -91,12 +147,7 @@ class SettingsStore {
 
         // If you want a default value to be translated, add the translation to settings in locale-xx.js
         // and use an object {translate: key} in the defaults array
-        let apiServer = [
-            { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
-            { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
-            { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-            { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
-        ];
+        let apiServer = server_set("urls");
 
         let defaults = {
             locale: [
@@ -109,7 +160,7 @@ class SettingsStore {
                 "tr",
                 "ru"
             ],
-            apiServer: [],
+            apiServer: apiServer,
             unit: [
                 CORE_ASSET,
                 "USD",
@@ -401,7 +452,7 @@ set_obj.fiatAssets = [{
     walletType: "openledger-fiat"
 }];
 
-set_obj.lang = lang;
+set_obj.lang = server_set("lang");
 set_obj.rpc_url = "https://openledger.info/api/";
 set_obj.site_registr = "https://openledger.info/v/";
 set_obj.checkBit = checkBit;

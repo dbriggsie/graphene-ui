@@ -1,6 +1,7 @@
 import alt from "alt-instance";
 import IntlActions from "actions/IntlActions";
 import SettingsActions from "actions/SettingsActions";
+import SettingsStore from "stores/SettingsStore";
 import counterpart from "counterpart";
 var locale_en = require("json-loader!assets/locales/locale-en");
 import ls from "common/localStorage";
@@ -31,7 +32,7 @@ addLocaleData(ru);
 
 class IntlStore {
     constructor() {
-        this.currentLocale = ss.has("settings_v3") ? ss.get("settings_v3").locale : "en";
+        this.currentLocale = SettingsStore.lang;
 
         this.locales = ["en"];
         this.localesObject = {en: locale_en};

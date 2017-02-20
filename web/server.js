@@ -4,7 +4,7 @@ var express = require("express");
 var app = express();
 var webpackDevMiddleware = require("webpack-dev-middleware");
 var ProgressPlugin = require("webpack/lib/ProgressPlugin");
-var config = require("./webpack_2.config.js");
+var config = require("./webpack_2.config.js")({SET:"CN"});
 var compiler = webpack(config);
 
 compiler.apply(new ProgressPlugin(function(percentage, msg) {
