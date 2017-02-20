@@ -124,7 +124,6 @@ function checkBit(bit) {
         return true;
     }
 }
-console.log('@>',server_set("lang"))
 
 class SettingsStore {
     constructor() {
