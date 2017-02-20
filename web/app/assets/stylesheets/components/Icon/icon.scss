@@ -83,9 +83,18 @@ $icons: "user",
 "clippy";
 @each $image in $icons {
     .#{$image} {
-        -webkit-mask:url('./components/Icon/#{$image}.svg') no-repeat 50% 50%;
-        mask: url('./components/Icon/#{$image}.svg') no-repeat 50% 50%;
+        -webkit-mask:url('./components/Icon/#{$image}.svg') no-repeat center;
+        mask: url('./components/Icon/#{$image}.svg') no-repeat center;
         -webkit-mask-size: cover;
         mask-size: cover;
+    }
+}
+
+@-moz-document url-prefix() {
+    @each $image in $icons {
+        .#{$image} {
+            background: url('./components/Icon/#{$image}.svg') no-repeat center/cover;
+
+        }
     }
 }
