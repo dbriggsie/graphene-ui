@@ -148,11 +148,19 @@ var Utils = {
         let quoteID = quote.toJS ? quote.get("id") : quote.id;
         let quotePrecision  = Math.max(minDecimals, quote.toJS ? quote.get("precision") : quote.precision);
         let baseID = base.toJS ? base.get("id") : base.id;
-        let basePrecision  = Math.max(minDecimals, base.toJS ? base.get("precision") : base.precision);
+
+        let basePrecision  = base.toJS ? base.get("precision") : base.precision;
+        let fixedPrecisionAssets = {
+            "1.3.113": 5, // bitCNY
+            "1.3.121": 5 // bitUSD
+        };
+
         if (quoteID === "1.3.0") {
             priceText = this.format_number(price, quotePrecision);
         } else if (baseID === "1.3.0") {
             priceText = this.format_number(price, Math.min(maxDecimals, quotePrecision + 2));
+        }  else if (fixedPrecisionAssets[quoteID]) {
+            priceText = this.format_number(price, fixedPrecisionAssets[quoteID]);
         } else {
             priceText = this.format_number(price, Math.min(maxDecimals, quotePrecision + basePrecision));
         }
