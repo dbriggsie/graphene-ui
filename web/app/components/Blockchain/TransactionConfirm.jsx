@@ -15,7 +15,6 @@ import {ChainStore} from "bitsharesjs/es";
 import utils from "common/utils";
 
 class TransactionConfirm extends React.Component {
-
     shouldComponentUpdate(nextProps) {
         if (!nextProps.transaction) {
             return false;
@@ -65,7 +64,7 @@ class TransactionConfirm extends React.Component {
     }
 
     render() {
-        let {broadcast, broadcasting, traderMode} = this.props;
+        let {broadcast, broadcasting} = this.props;
 
         if ( !this.props.transaction || this.props.closed ) {return null; }
         let button_group, header, confirmButtonClass = "button";
@@ -165,7 +164,7 @@ class TransactionConfirm extends React.Component {
                         {button_group}
 
                         {/* P R O P O S E   T O G G L E */}
-                        { traderMode && !this.props.transaction.has_proposed_operation() && !(broadcast || broadcasting) ?
+                        { !this.props.transaction.has_proposed_operation() && !(broadcast || broadcasting) ?
                             <div className="align-right grid-block">
                                 <label style={{paddingTop: "0.5rem", paddingRight: "0.5rem"}}><Translate content="propose" />:</label>
                                 <div className="switch" onClick={this.onProposeClick.bind(this)}>
