@@ -40,33 +40,14 @@ export function requestDepositAddress({inputCoinType, outputCoinType, outputAddr
 }
 
 export function getBackedCoins({allCoins, backer}) {
-    //console.log('@>',allCoins,backer)
-
     let blocktradesBackedCoins = [];
     allCoins.map((e)=>{
-        if(e.backingCoinType&&~e.symbol.indexOf(backer+'.')){
+        if(e.backingCoinType&&e.symbol.indexOf(backer+'.')==0){
             e.supportsMemos = e.supportsOutputMemos;
             blocktradesBackedCoins.push(e);
         }
     });
-
     return blocktradesBackedCoins;
-
-
-    /*let coins_by_type = {};
-    allCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
-    let blocktradesBackedCoins = [];
-    allCoins.forEach(coin_type => {
-        if (coin_type.walletSymbol.startsWith(backer + ".") && coin_type.backingCoinType) {
-            blocktradesBackedCoins.push({
-                name: coins_by_type[coin_type.backingCoinType].name,
-                walletType: coins_by_type[coin_type.backingCoinType].walletType,
-                backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
-                symbol: coin_type.walletSymbol,
-                supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos
-            });
-        }});
-    return blocktradesBackedCoins;*/
 }
 
 export function validateAddress({url = "https://bitshares.openledger.info/depositwithdraw/api/v2", walletType, newAddress}) {
