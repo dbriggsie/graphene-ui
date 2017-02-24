@@ -452,7 +452,7 @@ set_obj.fiatAssets = [{
 }];
 
 set_obj.lang = server_set("lang");
-set_obj.rpc_url = "https://openledger.info/api/";
+set_obj.rpc_url = "https://openledger.info/api/";// https://blocktrades.us/api/v2/coins
 set_obj.site_registr = "https://openledger.info/v/";
 set_obj.checkBit = checkBit;
 set_obj.marketsList = marketsList;

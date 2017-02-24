@@ -1,5 +1,5 @@
 import React from "react";
-import BlockTradesGatewayDepositRequest from "./blocktrades/BlockTradesGatewayDepositRequest";
+import BlockTradesGatewayDepositRequest from "../DepositWithdraw/blocktrades/BlockTradesGatewayDepositRequest";
 import Translate from "react-translate-component";
 import { connect } from "alt-react";
 import SettingsStore from "stores/SettingsStore";
@@ -79,46 +79,27 @@ class BlockTradesGateway extends React.Component {
     render() {
         let {coins, account, provider} = this.props;
         let {activeCoin, action} = this.state;
-
         if (!coins.length) {
             return <LoadingIndicator />;
         }
 
         let filteredCoins = coins.filter(a => {
-            if (!a || !a.walletSymbol) {
+            if (!a || !a.symbol) {
                 return false;
             } else {
                 return true;
             }
         });
 
-        let filteredCoins2 =[];
-        let lastCoin =[];
-        let relative = ["BTC", "ETH", "LTC", "DAO", "STEEM", "DASH", "MAID", "DOGE", "DGD", "EMC", "AMP", "PPC", "USDT", "AGRS", "OMNI", "BKS", "MUSE", "NSR", "EURT", "LISK", "MKR", "NBT", "SBD"];
-        
-        relative.map((e1=>{
-            filteredCoins.map(e2=>{
-                e2.backingCoinType===e1?filteredCoins2.push(e2):1;
-            });
-        }));
-
-        filteredCoins.map((e1=>{
-            if(filteredCoins2.indexOf(e1)==-1){
-                lastCoin.push(e1);
-            }         
-        }));
-
-        filteredCoins=filteredCoins2.concat(lastCoin);
-
         let coinOptions = filteredCoins.map(coin => {
-            let option = action === "deposit" ? coin.walletSymbol.toUpperCase() : coin.symbol;
+            let option = action === "deposit" ? coin.backingCoinType.toUpperCase() : coin.symbol;
             return <option value={option} key={coin.symbol}>{option}</option>;
         }).filter(a => {
             return a !== null;
         });
 
         let coin = filteredCoins.filter(coin => {
-            return (action === "deposit" ? coin.walletSymbol.toUpperCase() === activeCoin : coin.symbol === activeCoin);
+            return (action === "deposit" ? coin.backingCoinType.toUpperCase() === activeCoin : coin.symbol === activeCoin);
         })[0];
 
         let issuers = {
@@ -163,14 +144,14 @@ class BlockTradesGateway extends React.Component {
                             gateway={provider}
                             issuer_account={issuer.name}
                             account={account}
-                            deposit_asset={coin.walletSymbol.toUpperCase()}
+                            deposit_asset={coin.backingCoinType.toUpperCase()}
                             deposit_asset_name={coin.name}
-                            deposit_coin_type={coin.backingCoinType}
+                            deposit_coin_type={coin.backingCoinType.toLowerCase()}
                             deposit_account={coin.depositAccount}
                             deposit_wallet_type={coin.walletType}
                             receive_asset={coin.symbol}
-                            receive_coin_type={coin.coinType}
-                            supports_output_memos={coin.supportsOutputMemos}
+                            receive_coin_type={coin.symbol.toLowerCase()}
+                            supports_output_memos={coin.supportsMemos}
                             action={this.state.action}
                         />
                         <div style={{padding: 15}}><Translate content="gateway.support_block" /> <a href={"mailto:" + issuer.support}>{issuer.support}</a></div>
@@ -200,14 +181,13 @@ class BlockTradesGateway extends React.Component {
                                 customFilter={{
                                     fields: ["to", "from", "asset_id"],
                                     values: {
-                                            to: to.get("id"),
-                                            from: fromAccount.get("id") ,
-                                            asset_id: asset.get("id")
-                                        }
-
-                                    }}
-                            />
-                            }
+                                        to: to.get("id"),
+                                        from: fromAccount.get("id") ,
+                                        asset_id: asset.get("id")
+                                    }
+                                }}
+                            />;
+                        }
                         }
                     </TransactionWrapper> : null}
                 </div>

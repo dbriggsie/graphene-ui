@@ -88,7 +88,10 @@ module.exports = function() {
 
         // PROD PLUGINS
         plugins.push(new Clean(cleanDirectories, {root: root_dir}));
-        plugins.push(new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}}));
+        plugins.push(new webpack.DefinePlugin({
+            "process.env": {NODE_ENV: JSON.stringify("production")},
+            __DEV__: false
+        }));
         plugins.push(extractCSS);
         plugins.push(new webpack.LoaderOptionsPlugin({
             minimize: true,
@@ -108,7 +111,10 @@ module.exports = function() {
         }
     } else {
         // plugins.push(new webpack.optimize.OccurenceOrderPlugin());
-        plugins.push(new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("development")}}));
+        plugins.push(new webpack.DefinePlugin({
+            "process.env": {NODE_ENV: JSON.stringify("development")},
+            __DEV__: true
+        }));
         plugins.push(new webpack.HotModuleReplacementPlugin());
         plugins.push(new webpack.NoEmitOnErrorsPlugin());
     }

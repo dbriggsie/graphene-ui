@@ -475,6 +475,8 @@ class ListWrapper extends React.Component {
         fetchCoins()
             .then(result => {
                 openLedgerBackedCoins = getBackedCoins({ allCoins: result, backer: "OPEN" }).concat(SettingsStore.fiatAssets);
+                console.log('@>',getBackedCoins({ allCoins: result, backer: "OPEN" }))
+                console.log('@>fetchCoins',result)
                 return fetch(SettingsStore.rpc_url, {
                     method: 'POST',
                     headers: new Headers({

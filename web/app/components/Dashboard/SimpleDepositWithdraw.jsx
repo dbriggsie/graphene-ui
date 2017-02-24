@@ -331,7 +331,6 @@ class DepositWithdrawContent extends React.Component {
                         <label>
                             <span className="inline-label">
                                 <input readOnly style={{border: "1px solid grey"}} type="text" value={counterpart.translate("transfer.memo") + ": " + receive_address.memo} />
-
                                 <CopyButton
                                     text={receive_address.memo}
                                 />
