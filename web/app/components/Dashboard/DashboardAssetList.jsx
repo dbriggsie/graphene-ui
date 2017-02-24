@@ -44,8 +44,6 @@ class DashboardAssetList extends React.Component {
     }
 
     shouldComponentUpdate(np, ns) {
-        console.log('@>qqq',np.openLedgerBackedCoins)
-
         let balancesChanged = false;
         np.balances.forEach((a, i) => {
             if (!Immutable.is(a, this.props.balances[i])) {
@@ -227,8 +225,6 @@ class DashboardAssetList extends React.Component {
     render() {
         let {activeBuyAsset, activeSellAsset, coreAsset} = this.state;
         let assets = this.props.assetNames;
-
-        console.log('@>',this.props.openLedgerBackedCoins)
 
         // Find the current buy and sell assets
         let currentBuyAsset, currentSellAsset;
@@ -480,7 +476,6 @@ class ListWrapper extends React.Component {
         fetchCoins()
             .then(result => {
                 openLedgerBackedCoins = getBackedCoins({ allCoins: result, backer: "OPEN" }).concat(SettingsStore.fiatAssets);
-                console.log('@>111',openLedgerBackedCoins)
                 return fetch(SettingsStore.rpc_url, {
                     method: 'POST',
                     headers: new Headers({
@@ -493,13 +488,11 @@ class ListWrapper extends React.Component {
             .then(response => response.json())
             .then((json_response) => {
                 if ('result' in json_response){
-                    console.log('@>1',openLedgerBackedCoins)
                     this.setState({
                         openLedgerBackedCoins,
                         openLedgerBackedFiatCoins: json_response.result 
                     });
                 }else{
-                    console.log('@>2',openLedgerBackedCoins)
                     this.setState({
                         openLedgerBackedCoins
                     });
