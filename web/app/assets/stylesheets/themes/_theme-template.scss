@@ -44,7 +44,6 @@
     label > span {
         color: $primary-text-color;
     }
-
     h4 {
         padding: 30px 0 10px 0;
         border-bottom: 1px solid $dark-text-color;
@@ -241,12 +240,9 @@
     .header .button.create-account {
         background-color: $button-bg-color !important;
     }
-
-    .wallet_bottons .button{
-        margin:0;
+    .wallet_bottons .button {
+        margin: 0;
     }
-
-
     .grp-menu-item button {
         &:hover,
         &:focus,
@@ -483,7 +479,6 @@
     .facolor-info {
         color: $info-color;
     }
-
     .facolor-error {
         color: $error-text-color;
     }
@@ -567,29 +562,24 @@
             background-color: transparent;
             border-color: $dark-text-color;
         }
-
-        h4{
-            padding:10px 0 10px 0;
+        h4 {
+            padding: 10px 0 10px 0;
         }
     }
-
     .click-for-help {
         border-bottom-color: $secondary-text-color !important;
     }
     // Block List (section)
     section input[type="text"],
     section input[type="password"] {
-        background-color: transparent;
-        border: none;
         border-bottom: 1px solid $panel-bg-color;
+        background-color: transparent;
         color: $primary-text-color;
-        max-width: 30rem;
         &:hover,
         &:active,
         &:focus {
             color: $primary-text-color;
             background-color: transparent;
-            border: none;
             border-bottom: 1px solid $panel-bg-color;
         }
     }
@@ -949,8 +939,6 @@
     .switch input:checked + label::after {
         border-color: inherit;
     }
-
-
     .error {
         color: #e3745b;
     }

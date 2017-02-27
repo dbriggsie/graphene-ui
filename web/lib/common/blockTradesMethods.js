@@ -24,8 +24,7 @@ export function requestDepositAddress({inputCoinType, outputCoinType, outputAddr
         body: body_string
     }).then( reply => { reply.json()
         .then( json => {
-            console.log( "reply: ", json )
-            let address = {"address": json.inputAddress || "unknown", "memo": json.inputMemo};
+            let address = {"address": json.inputAddress || "unknown", "memo": json.inputMemo, error: json.error || null};
             if (stateCallback) stateCallback(address);
         }, error => {
             // console.log( "error: ",error  );
@@ -40,13 +39,19 @@ export function requestDepositAddress({inputCoinType, outputCoinType, outputAddr
 }
 
 export function getBackedCoins({allCoins, backer}) {
+    let coins_by_type = {};
+    allCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
     let blocktradesBackedCoins = [];
-    allCoins.map((e)=>{
-        if(e.backingCoinType&&e.symbol.indexOf(backer+'.')==0){
-            e.supportsMemos = e.supportsOutputMemos;
-            blocktradesBackedCoins.push(e);
-        }
-    });
+    allCoins.forEach(coin_type => {
+        if (coin_type.walletSymbol.startsWith(backer + ".") && coin_type.backingCoinType && coins_by_type[coin_type.backingCoinType]) {
+            blocktradesBackedCoins.push({
+                name: coins_by_type[coin_type.backingCoinType].name,
+                walletType: coins_by_type[coin_type.backingCoinType].walletType,
+                backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
+                symbol: coin_type.walletSymbol,
+                supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos
+            });
+        }});
     return blocktradesBackedCoins;
 }
 
