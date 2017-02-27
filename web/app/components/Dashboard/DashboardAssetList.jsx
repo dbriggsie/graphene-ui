@@ -19,6 +19,7 @@ import { fetchCoins,getBackedCoins } from "common/blockTradesMethods";
 import ReactTooltip from "react-tooltip";
 import MarketCard from "./MarketCard";
 import SettingsStore from "stores/SettingsStore";
+import { settingsAPIs } from "api/apiConfig";
 
 class DashboardAssetList extends React.Component {
 
@@ -476,7 +477,7 @@ class ListWrapper extends React.Component {
         fetchCoins()
             .then(result => {
                 openLedgerBackedCoins = getBackedCoins({ allCoins: result, backer: "OPEN" }).concat(SettingsStore.fiatAssets);
-                return fetch(SettingsStore.rpc_url, {
+                return fetch(settingsAPIs.RPC_URL, {
                     method: 'POST',
                     headers: new Headers({
                         "Accept": "application/json",

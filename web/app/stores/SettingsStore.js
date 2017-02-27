@@ -5,70 +5,12 @@ import Immutable from "immutable";
 import { merge } from "lodash";
 import ls from "common/localStorage";
 import { Apis } from "bitsharesjs-ws";
+import { settingsAPIs } from "api/apiConfig";
 
 const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when used with BTS chain which is the most usual case currently
 
 const STORAGE_KEY = "__graphene__";
 let ss = new ls(STORAGE_KEY);
-
-function server_set(type) {
-    //"urls" "apiServer" "faucet_address"
-
-    if (type == "urls") {
-        if (SET == "EU1") {
-            return [
-                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
-                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
-                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
-            ];
-        } else if (SET == "CN") {
-            return [
-                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
-                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
-                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
-            ];
-        } else {
-            return [
-                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
-                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
-                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
-            ];
-        }
-    }
-
-    if (type == "apiServer") {
-        if (SET == "EU1") {
-            return "wss://bitshares.openledger.info/ws";
-        } else if (SET == "CN") {
-            return "wss://openledger.hk/ws";
-        } else {
-            return "wss://bitshares.openledger.info/ws";
-        }
-    }
-
-    if (type == "faucet_address") {
-        if (SET == "EU1") {
-            return "https://bitshares.openledger.info";
-        } else if (SET == "CN") {
-            return "https://openledger.hk";
-        } else {
-            return "https://bitshares.openledger.info";
-        }
-    }
-
-    if (type == "lang") {
-        if (SET == "EU1") {
-            return "en";
-        } else if (SET == "CN") {
-            return "cn";
-        } else {
-            return "en";
-        }
-    }
-}
 
 let marketsList = [
     "BLOCKPAY",
@@ -124,6 +66,16 @@ function checkBit(bit) {
         return true;
     }
 }
+let lang = "en";
+
+if (SET == "EU1") {
+    lang = "en";
+} else if (SET == "CN") {
+    lang = "cn";
+} else {
+    lang = "en";
+}
+
 
 class SettingsStore {
     constructor() {
@@ -132,9 +84,9 @@ class SettingsStore {
         this.initDone = false;
 
         this.defaultSettings = Immutable.Map({
-            locale: server_set("lang"),
-            apiServer: server_set("apiServer"),
-            faucet_address: server_set("faucet_address"),
+            locale: lang,
+            apiServer: settingsAPIs.DEFAULT_WS_NODE,
+            faucet_address: settingsAPIs.DEFAULT_FAUCET,
             unit: CORE_ASSET,
             showSettles: false,
             showAssetPercent: false,
@@ -146,7 +98,7 @@ class SettingsStore {
 
         // If you want a default value to be translated, add the translation to settings in locale-xx.js
         // and use an object {translate: key} in the defaults array
-        let apiServer = server_set("urls");
+        let apiServer = settingsAPIs.WS_NODE_LIST;
 
         let defaults = {
             locale: [
@@ -186,13 +138,9 @@ class SettingsStore {
                 "olDarkTheme"
             ],
             traderMode: [
-                    false,
-                    true
-                ]
-                // confirmMarketOrder: [
-                //     {translate: "confirm_yes"},
-                //     {translate: "confirm_no"}
-                // ]
+                false,
+                true
+            ]
         };
 
         this.bindListeners({
@@ -451,9 +399,7 @@ set_obj.fiatAssets = [{
     walletType: "openledger-fiat"
 }];
 
-set_obj.lang = server_set("lang");
-set_obj.rpc_url = "https://openledger.info/api/";// https://blocktrades.us/api/v2/coins
-set_obj.site_registr = "https://openledger.info/v/";
+set_obj.lang = lang;
 set_obj.checkBit = checkBit;
 set_obj.marketsList = marketsList;
 set_obj.marketsOpenList = marketsList.filter(e => {

@@ -209,7 +209,6 @@ class Settings extends React.Component {
 
                     {!traderMode ? null : <div className="grid-content large-offset-2 shrink" >
                         <Translate className="bottom-border" component="h4" content="header.settings" />
-
                         <ul className="settings-menu">
                             {menuEntries.map((entry, index) => {
                                 return <li className={index === activeSetting ? "active" : ""} onClick={this._onChangeMenu.bind(this, entry)} key={entry}><Translate content={"settings." + entry} /></li>;

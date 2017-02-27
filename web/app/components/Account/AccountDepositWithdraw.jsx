@@ -17,6 +17,7 @@ import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
 import {fetchCoins, getBackedCoins} from "common/blockTradesMethods";
 import { Apis } from "bitsharesjs-ws";
+import { settingsAPIs } from "api/apiConfig";
 
 class AccountDepositWithdraw extends React.Component {
 
@@ -61,7 +62,7 @@ class AccountDepositWithdraw extends React.Component {
     componentWillMount() {
         accountUtils.getFinalFeeAsset(this.props.account, "transfer");
         if (Apis.instance().chain_id.substr(0, 8) === "4018d784") { // Only fetch this when on BTS main net
-            fetchCoins("https://blocktrades.us/api/v2/coins").then(result => {
+            fetchCoins().then(result => {
                 this.setState({
                     blockTradesCoins: result,
                     blockTradesBackedCoins: getBackedCoins({allCoins: result, backer: "TRADE"})
@@ -184,7 +185,6 @@ class AccountDepositWithdraw extends React.Component {
                             {btService === "bridge" ?
                             <BlockTradesBridgeDepositRequest
                                 gateway="blocktrades"
-                                url="https://api.blocktrades.us/v2"
                                 issuer_account="blocktrades"
                                 account={account}
                                 initial_deposit_input_coin_type="btc"
@@ -235,11 +235,11 @@ class AccountDepositWithdraw extends React.Component {
                                 <div style={{paddingBottom: 15}}><Translate component="h5" content="gateway.fiat_text" /></div>
 
                                 <OpenLedgerFiatDepositWithdrawal
-                                        rpc_url="https://openledger.info/api/"
+                                        rpc_url={settingsAPIs.RPC_URL}
                                         account={account}
                                         issuer_account="openledger-fiat" />
                                 <OpenLedgerFiatTransactionHistory
-                                        rpc_url="https://openledger.info/api/"
+                                        rpc_url={settingsAPIs.RPC_URL}
                                         account={account} />
                             </div> : null}
                         </div>

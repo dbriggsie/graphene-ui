@@ -22,7 +22,7 @@ import {requestDepositAddress, validateAddress, WithdrawAddresses} from "common/
 import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
 import CopyButton from "../Utility/CopyButton";
 import Icon from "../Icon/Icon";
-import SettingsStore from "stores/SettingsStore";
+import { settingsAPIs } from "api/apiConfig";
 
 
 import DepositFiatOpenLedger from "components/DepositWithdraw/openledger/DepositFiatOpenLedger";
@@ -106,7 +106,6 @@ class DepositWithdrawContent extends React.Component {
             inputCoinType: this.props.backingCoinType.toLowerCase(),
             outputCoinType: this.props.symbol.toLowerCase(),
             outputAddress: this.props.sender.get("name"),
-            url: "https://bitshares.openledger.info/depositwithdraw/api/v2",
             stateCallback: this.addDepositAddress
         };
     }
@@ -155,7 +154,6 @@ class DepositWithdrawContent extends React.Component {
     }
 
     _updateAmount(amount) {
-        console.log("updateAmount", amount);
         this.state.to_withdraw.setAmount({sats: amount});
         this.setState({
             withdrawValue: this.state.to_withdraw.getAmount({real: true}),
@@ -230,10 +228,10 @@ class DepositWithdrawContent extends React.Component {
                     issuer_account="openledger-fiat"
                     deposit_asset={this.props.asset.get("symbol").split('OPEN.').join('')}
                     receive_asset={this.props.asset.get("symbol")} 
-                    rpc_url={SettingsStore.rpc_url}
+                    rpc_url={settingsAPIs.RPC_URL}
                 />);
             }else{
-                return (<p>Click <a href='#' onClick={(e)=>{ window.open(SettingsStore.site_registr,'_blank');}} >here</a> to register for deposits </p>);
+                return (<p>Click <a href='#' onClick={(e)=>{ window.open(settingsAPIs.OPENLEDGER_FACET_REGISTR,'_blank');}} >here</a> to register for deposits </p>);
             }            
 
         }
@@ -300,10 +298,10 @@ class DepositWithdrawContent extends React.Component {
                     issuer_account="openledger-fiat"
                     deposit_asset={this.props.asset.get("symbol").split('OPEN.').join('')}
                     receive_asset={this.props.asset.get("symbol")} 
-                    rpc_url={SettingsStore.rpc_url}
+                    rpc_url={settingsAPIs.RPC_URL}
                 />);
             }else{
-                return (<p>Click <a href='#' onClick={(e)=>{ window.open(SettingsStore.site_registr,'_blank');}} >here</a> to register for deposits </p>);
+                return (<p>Click <a href='#' onClick={(e)=>{ window.open(settingsAPIs.OPENLEDGER_FACET_REGISTR,'_blank');}} >here</a> to register for deposits </p>);
             }            
 
         }
