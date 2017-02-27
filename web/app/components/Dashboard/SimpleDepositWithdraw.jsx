@@ -325,6 +325,9 @@ class DepositWithdrawContent extends React.Component {
                             />
                         </span>
                     </label>
+
+                    {this.props.asset.get("symbol").indexOf("OPEN.BTC")==0?<img src={`https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${addressValue}`} />:null }
+                    
                     {hasMemo ?
                         <label>
                             <span className="inline-label">
