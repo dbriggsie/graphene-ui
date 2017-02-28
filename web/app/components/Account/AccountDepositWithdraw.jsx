@@ -18,6 +18,8 @@ import SettingsActions from "actions/SettingsActions";
 import {fetchCoins, getBackedCoins} from "common/blockTradesMethods";
 import { Apis } from "bitsharesjs-ws";
 import { settingsAPIs } from "api/apiConfig";
+import BitKapital from "../DepositWithdraw/BitKapital";
+
 
 class AccountDepositWithdraw extends React.Component {
 
@@ -41,7 +43,7 @@ class AccountDepositWithdraw extends React.Component {
             btService: props.viewSettings.get("btService", "bridge"),
             metaService: props.viewSettings.get("metaService", "bridge"),
             activeService: props.viewSettings.get("activeService", 0),
-            services: ["Openledger (OPEN.X)", "BlockTrades (TRADE.X)", "Transwiser"]
+            services: ["Openledger (OPEN.X)", "BlockTrades (TRADE.X)", "Transwiser"]  // , "BitKapital"
         };
     }
 
@@ -275,6 +277,9 @@ class AccountDepositWithdraw extends React.Component {
                             </tbody>
                         </table>
                     </div> : null}
+
+                    {activeService === services.indexOf("BitKapital") ?
+                        <BitKapital viewSettings={this.props.viewSettings} account={account}/> : null}
 
                 </div>
             </div>
