@@ -328,7 +328,7 @@ class Header extends React.Component {
                 <div className="grid-block show-for-medium shrink menu-bar">
                     <div className="grp-menu-items-group header-right-menu">
 
-                        {!traderMode ? null : walletBalance}
+                        {walletBalance}
 
                         <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
                             <div style={{textTransform: "none", fontSize: "0.9rem"}} className="button">
