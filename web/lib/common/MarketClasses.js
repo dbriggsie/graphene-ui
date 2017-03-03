@@ -465,10 +465,6 @@ class LimitOrder {
         return new LimitOrder(this.order, this.assets, this.market_base);
     }
 
-    clone() {
-        return new LimitOrder(this._order, this.assets, this.market_base);
-    }
-
     ne(order) {
         return (
             this.sell_price.ne(order.sell_price) ||
