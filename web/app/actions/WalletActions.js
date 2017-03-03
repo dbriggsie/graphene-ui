@@ -40,7 +40,6 @@ class WalletActions {
     }
 
     createAccount( account_name, registrar, referrer, referrer_percent, refcode ) {
-        let referrerAccount = referrer;
 
         if( WalletDb.isLocked()) {
             let error = "wallet locked";
@@ -60,13 +59,15 @@ class WalletActions {
             return p.catch( error => transaction.abort() );
         };
 
+
+
         let create_account = () => {
             return application_api.create_account(
                 owner_private.private_key.toPublicKey().toPublicKeyString(),
                 active_private.private_key.toPublicKey().toPublicKeyString(),
                 account_name,
                 registrar, //registrar_id,
-                referrerAccount, //referrer_id,
+                referrer, //referrer_id,
                 referrer_percent, //referrer_percent,
                 true //broadcast
             ).then( () => updateWallet() );
@@ -98,12 +99,10 @@ class WalletActions {
                         "memo_key": active_private.private_key.toPublicKey().toPublicKeyString(),
                         //"memo_key": memo_private.private_key.toPublicKey().toPublicKeyString(),
                         "refcode": refcode,
-                        "referrer": referrerAccount
+                        "referrer": referrer
                     }
                 })
             }).then(r => r.json());
-
-            return false;
 
             return create_account_promise.then(result => {
                 if (result.error) {
@@ -111,19 +110,17 @@ class WalletActions {
                 }
                 return updateWallet();
             }).catch(error => {
-                if (
-                    error instanceof TypeError ||
-                    error.toString().indexOf("ECONNREFUSED") != -1
-                ) {
-                    console.log("Warning! faucet registration failed, falling back to direct application_api.create_account..");
-                    return create_account();
-                }
+                /*
+                * Since the account creation failed, we need to decrement the
+                * sequence used to generate private keys from the brainkey. Two
+                * keys were generated, so we decrement twice.
+                */
+                WalletDb.decrementBrainKeySequence();
+                WalletDb.decrementBrainKeySequence();
                 throw error;
             });
         }
     }
-
-
 
     claimVestingBalance(account, cvb, forceAll = false) {
         let tr = new TransactionBuilder();
