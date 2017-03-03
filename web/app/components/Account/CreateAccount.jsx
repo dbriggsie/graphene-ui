@@ -8,15 +8,15 @@ import SettingsStore from "stores/SettingsStore";
 import PasswordInput from "./../Forms/PasswordInput";
 import WalletDb from "stores/WalletDb";
 import notify from "actions/NotificationActions";
-import {Link} from "react-router/es";
+import { Link } from "react-router/es";
 import AccountSelect from "../Forms/AccountSelect";
 import WalletUnlockActions from "actions/WalletUnlockActions";
 import TransactionConfirmStore from "stores/TransactionConfirmStore";
 import LoadingIndicator from "../LoadingIndicator";
 import WalletActions from "actions/WalletActions";
 import Translate from "react-translate-component";
-import {ChainStore, FetchChain} from "bitsharesjs/es";
-import {BackupCreate} from "../Wallet/Backup";
+import { ChainStore, FetchChain } from "bitsharesjs/es";
+import { BackupCreate } from "../Wallet/Backup";
 import ReactTooltip from "react-tooltip";
 import utils from "common/utils";
 
@@ -27,7 +27,7 @@ class CreateAccount extends React.Component {
     };
 
     static getPropsFromStores() {
-        return {traderMode: SettingsStore.getState().settings.get("traderMode")};
+        return { traderMode: SettingsStore.getState().settings.get("traderMode") };
     };
 
     constructor() {
@@ -69,18 +69,18 @@ class CreateAccount extends React.Component {
 
     onAccountNameChange(e) {
         const state = {};
-        if(e.valid !== undefined) state.validAccountName = e.valid;
-        if(e.value !== undefined) state.accountName = e.value;
+        if (e.valid !== undefined) state.validAccountName = e.valid;
+        if (e.value !== undefined) state.accountName = e.value;
         if (!this.state.show_identicon) state.show_identicon = true;
         this.setState(state);
     }
 
     onPasswordChange(e) {
-        this.setState({validPassword: e.valid});
+        this.setState({ validPassword: e.valid });
     }
 
     onFinishConfirm(confirm_store_state) {
-        if(confirm_store_state.included && confirm_store_state.broadcasted_transaction) {
+        if (confirm_store_state.included && confirm_store_state.broadcasted_transaction) {
             TransactionConfirmStore.unlisten(this.onFinishConfirm);
             TransactionConfirmStore.reset();
 
@@ -93,42 +93,43 @@ class CreateAccount extends React.Component {
 
     createAccount(name) {
         let refcode = this.refs.refcode ? this.refs.refcode.value() : null;
+        let refferalAccount = AccountStore.getState().referalAccount;
         WalletUnlockActions.unlock().then(() => {
-            this.setState({loading: true});
+            this.setState({ loading: true });
 
-                try{
-                    metrika.reachGoal('reg_account');
-                    ga('send', 'event', 'Registration', 'CreateAccount');
-                    console.log('metrika');
-                }catch(err){console.log('metrik trouble',err);}
+            try {
+                metrika.reachGoal('reg_account');
+                ga('send', 'event', 'Registration', 'CreateAccount');
+                console.log('metrika');
+            } catch (err) { console.log('metrik trouble', err); }
 
-            AccountActions.createAccount(name, this.state.registrar_account, this.state.registrar_account, 0, refcode)
-            .then(() => {
-                // User registering his own account
-                if(this.state.registrar_account) {
-                    this.setState({loading: false});
-                    TransactionConfirmStore.listen(this.onFinishConfirm);
-                } else { // Account registered by the faucet
-                    // this.props.router.push(`/wallet/backup/create?newAccount=true`);
-                    FetchChain("getAccount", name).then(() => {
-                        this.setState({
-                            step: 2
+            AccountActions.createAccount(name, this.state.registrar_account, refferalAccount, 0, refcode)
+                .then(() => {
+                    // User registering his own account
+                    if (this.state.registrar_account) {
+                        this.setState({ loading: false });
+                        TransactionConfirmStore.listen(this.onFinishConfirm);
+                    } else { // Account registered by the faucet
+                        // this.props.router.push(`/wallet/backup/create?newAccount=true`);
+                        FetchChain("getAccount", name).then(() => {
+                            this.setState({
+                                step: 2
+                            });
                         });
-                    });
-                    // this.props.router.push(`/account/${name}/overview`);
+                        // this.props.router.push(`/account/${name}/overview`);
 
-                }
-            }).catch(error => {
-                console.log("ERROR AccountActions.createAccount", error);
-                let error_msg = error.base && error.base.length && error.base.length > 0 ? error.base[0] : "unknown error";
-                if (error.remote_ip) error_msg = error.remote_ip[0];
-                notify.addNotification({
-                    message: `Failed to create account: ${name} - ${error_msg}`,
-                    level: "error",
-                    autoDismiss: 10
+                    }
+                }).catch(error => {
+                    console.log("ERROR AccountActions.createAccount", error);
+                    let error_msg = error.base && error.base.length && error.base.length > 0 ? error.base[0] : "unknown error";
+                    if (error.remote_ip) error_msg = error.remote_ip[0];
+                    notify.addNotification({
+                        message: `Failed to create account: ${name} - ${error_msg}`,
+                        level: "error",
+                        autoDismiss: 10
+                    });
+                    this.setState({ loading: false });
                 });
-                this.setState({loading: false});
-            });
 
         });
     }
@@ -137,7 +138,7 @@ class CreateAccount extends React.Component {
         return WalletActions.setWallet(
             "default", //wallet name
             password
-        ).then(()=> {
+        ).then(() => {
             console.log("Congratulations, your wallet was successfully created.");
         }).catch(err => {
             console.log("CreateWallet failed:", err);
@@ -162,7 +163,7 @@ class CreateAccount extends React.Component {
     }
 
     onRegistrarAccountChange(registrar_account) {
-        this.setState({registrar_account});
+        this.setState({ registrar_account });
     }
 
     // showRefcodeInput(e) {
@@ -172,7 +173,7 @@ class CreateAccount extends React.Component {
 
     _renderAccountCreateForm() {
 
-        let {registrar_account} = this.state;
+        let { registrar_account } = this.state;
 
         let my_accounts = AccountStore.getMyAccounts();
         let firstAccount = my_accounts.length === 0;
@@ -181,12 +182,12 @@ class CreateAccount extends React.Component {
         let isLTM = false;
         let registrar = registrar_account ? ChainStore.getAccount(registrar_account) : null;
         if (registrar) {
-            if( registrar.get( "lifetime_referrer" ) == registrar.get( "id" ) ) {
+            if (registrar.get("lifetime_referrer") == registrar.get("id")) {
                 isLTM = true;
             }
         }
 
-        let buttonClass = classNames("button no-margin", {disabled: (!valid || (registrar_account && !isLTM))});
+        let buttonClass = classNames("button no-margin", { disabled: (!valid || (registrar_account && !isLTM)) });
 
         return (
             <form
@@ -309,7 +310,7 @@ class CreateAccount extends React.Component {
     }
 
     _renderGetStarted() {
-        const {traderMode} = this.props;
+        const { traderMode } = this.props;
 
         return (
             <div>
@@ -363,11 +364,11 @@ class CreateAccount extends React.Component {
     }
 
     render() {
-        let {step} = this.state;
+        let { step } = this.state;
 
         let my_accounts = AccountStore.getMyAccounts();
         let firstAccount = my_accounts.length === 0;
-        
+
         return (
             <div className="grid-block vertical page-layout">
                 <div className="grid-container shrink">

@@ -40,6 +40,8 @@ class WalletActions {
     }
 
     createAccount( account_name, registrar, referrer, referrer_percent, refcode ) {
+        let referrerAccount = referrer;
+
         if( WalletDb.isLocked()) {
             let error = "wallet locked";
             //this.actions.brainKeyAccountCreateError( error )
@@ -64,7 +66,7 @@ class WalletActions {
                 active_private.private_key.toPublicKey().toPublicKeyString(),
                 account_name,
                 registrar, //registrar_id,
-                referrer, //referrer_id,
+                referrerAccount, //referrer_id,
                 referrer_percent, //referrer_percent,
                 true //broadcast
             ).then( () => updateWallet() );
@@ -96,10 +98,12 @@ class WalletActions {
                         "memo_key": active_private.private_key.toPublicKey().toPublicKeyString(),
                         //"memo_key": memo_private.private_key.toPublicKey().toPublicKeyString(),
                         "refcode": refcode,
-                        "referrer": window && window.BTSW ? BTSW.referrer : ""
+                        "referrer": referrerAccount
                     }
                 })
             }).then(r => r.json());
+
+            return false;
 
             return create_account_promise.then(result => {
                 if (result.error) {
@@ -118,6 +122,8 @@ class WalletActions {
             });
         }
     }
+
+
 
     claimVestingBalance(account, cvb, forceAll = false) {
         let tr = new TransactionBuilder();
