@@ -199,6 +199,7 @@ class Settings extends React.Component {
                         locales={this.props.localesObject}
                         triggerModal={this.triggerModal.bind(this)}
                         {...this.state}
+                        apiLatencies={this.props.apiLatencies}
                     />);
             });
             break;
