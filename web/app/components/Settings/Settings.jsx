@@ -206,7 +206,7 @@ class Settings extends React.Component {
         }
 
         return (
-            <div className="grid-block page-layout">
+            <div className="grid-block main-content wrap">
 
                     {!traderMode ? null : <div className="grid-content large-offset-2 shrink" >
                         <Translate className="bottom-border" component="h4" content="header.settings" />
@@ -217,7 +217,7 @@ class Settings extends React.Component {
                         </ul>
                     </div>}
 
-                    <div className={(traderMode ? "grid-content" : "grid-container")} >
+                    <div className={(traderMode ? "grid-content" : "grid-container")} style={{maxWidth:'1000px'}} >
                         <div className={"grid-container vertical"}>
                             <Translate component="h4" content={traderMode ? "settings." + menuEntries[activeSetting] : "header.settings"} />
                             <Translate className="h5" content={`settings.${menuEntries[activeSetting]}_text`} />
@@ -228,7 +228,7 @@ class Settings extends React.Component {
                 <WebsocketAddModal
                     ref="ws_modal"
                     apis={defaults["apiServer"]}
-                    api={defaults["apiServer"].filter(a => {return a === this.state.apiServer;})}
+                    api={defaults["apiServer"].filter(a => {return a.url === this.state.apiServer;}).reduce((a, b) => {return b && b.url;}, null)}
                     changeConnection={(apiServer) => {this.setState({apiServer});}}
                 />
             </div>

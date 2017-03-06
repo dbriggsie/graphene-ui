@@ -6,7 +6,6 @@ import ApplicationApi from "api/ApplicationApi";
 import WalletDb from "stores/WalletDb";
 import {ChainStore} from "bitsharesjs/es";
 import big from "bignumber.js";
-import SettingsStore from "stores/SettingsStore";
 
 let wallet_api = new WalletApi();
 let application_api = new ApplicationApi();
@@ -266,14 +265,6 @@ class AssetActions {
 
     getAssetList(start, count) {
 
-        if(~SettingsStore.marketsOpenList.indexOf(start)){
-            start = "OPEN."+start;
-        }
-
-        if(SettingsStore.checkBit(start)){
-            start=start.split('BIT').join('');
-        }
-
         let id = start + "_" + count;
         return (dispatch) => {
             if (!inProgress[id]) {
@@ -282,7 +273,8 @@ class AssetActions {
                     start, count
                 ]).then(assets => {
                     let bitAssetIDS = [];
-                    let dynamicIDS = [];                    
+                    let dynamicIDS = [];
+
                     assets.forEach(asset => {
                         ChainStore._updateObject(asset, false);
                         dynamicIDS.push(asset.dynamic_asset_data_id);

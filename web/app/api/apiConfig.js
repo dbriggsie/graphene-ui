@@ -61,5 +61,6 @@ export const settingsAPIs = {
     WS_NODE_LIST: server_set("urls"),
     DEFAULT_FAUCET: server_set("faucet_address"),
     RPC_URL: "https://openledger.info/api/",
-    OPENLEDGER_FACET_REGISTR: "https://openledger.info/v/"
+    OPENLEDGER_FACET_REGISTR: "https://openledger.info/v/",
+    DEFAULT_WS_NODE: "wss://fake.automatic-selection.com",
 };
