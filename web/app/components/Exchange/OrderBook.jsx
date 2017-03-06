@@ -372,7 +372,7 @@ class OrderBook extends React.Component {
             );
 
             return (
-                    <div className={classnames("grid-block orderbook no-padding small-vertical medium-horizontal align-spaced no-overflow")}>
+                    <div className={classnames("grid-block orderbook no-padding small-vertical medium-horizontal align-spaced no-overflow medium-12")}>
                         <div className={classnames("small-12 medium-6 middle-content", this.state.flip ? "order-1" : "order-2")}>
                             <div className="exchange-bordered">
                                 <div className="exchange-content-header ask">
