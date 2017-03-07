@@ -52,7 +52,10 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     onWithdrawAmountChange( {amount, asset} ) {
-        this.setState( {withdraw_amount: amount, empty_withdraw_value: !parseInt(amount, 10)} );
+        this.setState( {
+            withdraw_amount: amount,
+            empty_withdraw_value: !parseFloat(amount)
+        });
     }
 
     onSelectChanged(index, e) {
@@ -98,7 +101,7 @@ class WithdrawModalBlocktrades extends React.Component {
         if ((!this.state.withdraw_address_check_in_progress) && (this.state.withdraw_address && this.state.withdraw_address.length) && (this.state.withdraw_amount !== null)) {
             if (!this.state.withdraw_address_is_valid) {
 				ZfApi.publish(this.getWithdrawModalId(), "open");
-	        } else if(parseInt(this.state.withdraw_amount)){
+	        } else if(parseFloat(this.state.withdraw_amount)){
 
     		   if (!WithdrawAddresses.has(this.props.output_wallet_type)) {
 
@@ -128,7 +131,7 @@ class WithdrawModalBlocktrades extends React.Component {
                 AccountActions.transfer(
                     this.props.account.get("id"),
                     this.props.issuer.get("id"),
-                    parseInt(amount * precision, 10),
+                    parseFloat(amount * precision, 10),
                     asset.get("id"),
                     this.props.output_coin_type + ":" + this.state.withdraw_address + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : "")
                 );
@@ -172,7 +175,7 @@ class WithdrawModalBlocktrades extends React.Component {
         AccountActions.transfer(
             this.props.account.get("id"),
             this.props.issuer.get("id"),
-            parseInt(amount * precision, 10),
+            parseFloat(amount * precision, 10),
             asset.get("id"),
     	    this.props.output_coin_type + ":" + this.state.withdraw_address + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : "")
         );
