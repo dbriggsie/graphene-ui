@@ -2,18 +2,31 @@
   justify-content: flex-start;
 }
 
+.icon > svg {
+  > path {
+    fill : #fff;
+  }
+}
+
 .float-left > span.icon.user {
     top: 0;
 }
 
 .header {
+    &.primary {
+        border-bottom: 1px solid $border-color;
+    }
   padding-left: 0 !important;
-  padding-right: 1rem;
-  min-height: 48px;
+  min-height: 66px;
+  text-transform: uppercase;
   .menu-bar > li {
+
     display: list-item;
     padding: 0;
+    border-right: 1px solid $border-color;
     > a {
+      font-weight: bold;
+      line-height: 2rem;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
       font-size: 0.9rem;
@@ -25,30 +38,62 @@
   }
 }
 
+div.header-balance {
+    a {
+        font-weight: bold;
+        &:hover {
+            background-color: transparent !important;
+        };
+    }
+}
+
+div.account-drop-down {    
+    .dropdown-divider {
+        padding-bottom: 10px;
+    }
+  a.button {
+      text-transform: uppercase;
+      font-weight: bold;
+      background-color: transparent;
+  }
+  a:active.button, a:hover.button {
+    background-color: transparent !important;
+  }
+}
+
+div.header-right-menu {
+    > .grp-menu-item {
+        border-left: 1px solid $border-color;
+        line-height: 2rem;
+
+        > a {
+            @include breakpoint(large) {
+              padding-left: 1.25rem;
+              padding-right: 1.25rem;
+            }
+        }
+    }
+}
+
 .grp-menu-items-group {
   flex-flow: row nowrap;
   display: flex;
   justify-content: flex-end;
 }
 
-.grp-menu-item {
+.grp-menu-item {  
   display: flex;
   flex-wrap: nowrap;
-  align-items: center;
-  .button:hover {
-    background: #414141 !important;
-  }
+  align-items: center;  
   > a, .button {
+    font-family: 'Roboto-Light', arial, sans-serif;
+    font-weight: bold;
     padding: 0.5rem;
     @include breakpoint(large) {
       padding-left: 0.75rem;
       padding-right: 0.75rem;
     }
-    font-size: 1rem;
-    &:hover {
-      background: #414141;
-      color: #fff;
-    }
+    font-size: 0.9rem;    
   }
 }
 
@@ -59,7 +104,6 @@
 
 .header .button.create-account {
     margin-left: 16px;
-
   > span {
       font-size: 14px;
       text-transform: capitalize;

@@ -1,5 +1,13 @@
 .page-layout {
 
+  > .grid-block {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    > .grid-content, > .grid-block {
+      padding: 10px;
+    }
+  }
+
   .left-column {
     background-color: #fafafa;
   }
@@ -10,6 +18,10 @@
 
   .right-column {
     background-color: #eaeaea;
+  }
+
+  .regular-padding {
+    padding: 1rem 1.75rem 1rem 1.75rem !important;
   }
 
 }
@@ -44,6 +56,14 @@ div.bordered-header {
 
 .exchange-bordered {
   border: 1px solid rgba(183, 183, 183, 0.29);
+
+  div:first-child & {
+    margin: 0 10px 0 10px;
+  }
+
+  div:last-child & {
+    margin: 0 10px 0 10px;
+  }
 }
 
 .generic-bordered-box {

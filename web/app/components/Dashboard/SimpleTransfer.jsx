@@ -172,7 +172,7 @@ class SimpleTransferContent extends React.Component {
             <FormattedAsset amount={currentBalance.get("balance")} asset={currentBalance.get("asset_type")} />
         </div> : null;
 
-        const {replaceName:assetName}  = utils.replaceName(asset.get("symbol"), true);
+        const {replacedName:assetName}  = utils.replaceName(asset.get("symbol"), true);
 
         let tabIndex = 1;
 

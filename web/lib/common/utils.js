@@ -506,17 +506,17 @@ var Utils = {
 
     replaceName(name, returnFull = false) {
 
-        let replaceName ='';
+        let replacedName ='';
         let prefix ='';
         let partNames = name.split('.');
 
         //if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){
         if(~name.indexOf("OPEN.")){
-            replaceName = partNames[1]
+            replacedName = partNames[1]
             prefix = (partNames[0]+'.').toLowerCase();
             prefix = ''; //hard remove prefix
         }else{
-            replaceName = name;
+            replacedName = name;
             prefix = '';
         }
 
@@ -526,8 +526,8 @@ var Utils = {
         }
 
         return {
-            replaceName,
-            prefix: prefix
+            replacedName,
+            prefix
         };
     }
 };

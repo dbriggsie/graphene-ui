@@ -7,9 +7,14 @@
     background-color: #fff;
 }
 
+.icon-32px {
+    width: 32px;
+    height: 32px;
+}
+
 .icon-14px {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
 }
 
 .icon-2x {
@@ -94,7 +99,6 @@ $icons: "user",
     @each $image in $icons {
         .#{$image} {
             background: url('./components/Icon/#{$image}.svg') no-repeat center/cover;
-
         }
     }
 }

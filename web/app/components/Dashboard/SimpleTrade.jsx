@@ -404,7 +404,7 @@ class SimpleTradeContent extends React.Component {
 
         let currentBalance = isBuy ? this.props.assets.find(a => a.get("asset_type") === this.state.activeAssetId) : this.props.currentBalance;
         let currentAsset = ChainStore.getAsset(currentBalance.get("asset_type"));
-        const {replaceName:assetName} = utils.replaceName(currentAsset.get("symbol"), true);
+        const {replacedName:assetName} = utils.replaceName(currentAsset.get("symbol"), true);
 
         console.log("isBuy", isBuy, this.state.activeAssetId);
         let asset = new Asset({
@@ -515,8 +515,8 @@ class SimpleTradeContent extends React.Component {
             return null;
         }
 
-        const {replaceName:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true);
-        const {replaceName:assetName} = utils.replaceName(asset, true);
+        const {replacedName:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true);
+        const {replacedName:assetName} = utils.replaceName(asset, true);
 
         const marketID = isBuy ?
             this.props.currentAsset.get("id") + "_" + activeAsset.get("id") :

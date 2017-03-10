@@ -186,7 +186,7 @@ class Asset extends React.Component {
             })
         }
 
-        let {replaceName, prefix} = utils.replaceName(asset.symbol);
+        let {replacedName, prefix} = utils.replaceName(asset.symbol);
 
         return (
                 <div style={{overflow:"visible"}}>
@@ -194,7 +194,7 @@ class Asset extends React.Component {
                         path = {"assets/" + asset.symbol}
                         alt_path = "assets/Asset"
                         section="summary"
-                        symbol={(prefix || "") + replaceName}
+                        symbol={(prefix || "") + replacedName}
                         description={desc}
                         issuer= {issuerName}
                     />

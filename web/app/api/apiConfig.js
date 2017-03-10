@@ -53,7 +53,8 @@ function server_set(type) {
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
     BASE_OL: "https://api.blocktrades.us/ol/v2",
-    COINS_LIST: "/coins"
+    COINS_LIST: "/coins",
+    ACTIVE_WALLETS: "/active-wallets"
 };
 
 export const settingsAPIs = {

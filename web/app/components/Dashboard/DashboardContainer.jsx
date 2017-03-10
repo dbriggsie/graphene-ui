@@ -1,6 +1,7 @@
 import React from "react";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
+import MarketsStore from "stores/MarketsStore";
 
 import AltContainer from "alt-container";
 import Dashboard from "./Dashboard";
@@ -18,7 +19,7 @@ class DashboardContainer extends React.Component {
     render() {
         return (
             <AltContainer
-                stores={[AccountStore, SettingsStore]}
+                stores={[AccountStore, SettingsStore, MarketsStore]}
                 inject={{
                     linkedAccounts: () => {
                         return AccountStore.getState().linkedAccounts;
@@ -43,6 +44,9 @@ class DashboardContainer extends React.Component {
                     },
                     accountsReady: () => {
                         return AccountStore.getState().accountsLoaded && AccountStore.getState().refsLoaded;
+                    },
+                    lowVolumeMarkets: () => {
+                        return MarketsStore.getState().lowVolumeMarkets;
                     }
                 }}>
                     <Content {...this.props} />

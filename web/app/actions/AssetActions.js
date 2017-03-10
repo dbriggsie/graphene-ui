@@ -4,6 +4,7 @@ import utils from "common/utils";
 import WalletApi from "api/WalletApi";
 import ApplicationApi from "api/ApplicationApi";
 import WalletDb from "stores/WalletDb";
+import SettingsStore from "stores/SettingsStore";
 import {ChainStore} from "bitsharesjs/es";
 import big from "bignumber.js";
 
@@ -264,6 +265,14 @@ class AssetActions {
     // }
 
     getAssetList(start, count) {
+
+        if(~SettingsStore.marketsOpenList.indexOf(start)){
+            start = "OPEN."+start;
+        }
+
+        if(SettingsStore.checkBit(start)){
+            start=start.split('BIT').join('');
+        }
 
         let id = start + "_" + count;
         return (dispatch) => {

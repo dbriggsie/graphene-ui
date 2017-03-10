@@ -3,8 +3,7 @@ import utils from "common/utils";
 import asset_utils from "common/asset_utils";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
-import Popover from "react-popover";
-import AssetImage from "../Utility/AssetImage";
+import counterpart from "counterpart";
 
 class AssetName extends React.Component {
 
@@ -16,16 +15,9 @@ class AssetName extends React.Component {
 
 	static defaultProps = {
 		replace: true,
-		popOver: false
+		noPrefix: false,
+		noTip: false
 	};
-
-	constructor() {
-		super();
-
-		this.state = {
-			isPopoverOpen: false
-		}
-	}
 
 	shouldComponentUpdate(nextProps) {
 		return (
@@ -35,37 +27,29 @@ class AssetName extends React.Component {
 	}
 
 	render() {
-		let {name, replace, asset, popover} = this.props;
-		let {replaceName, prefix} = utils.replaceName(name);
+		let {name, replace, asset, noPrefix} = this.props;
+		let isBitAsset = asset.has("bitasset");
+		let isPredMarket = isBitAsset && asset.getIn(["bitasset", "is_prediction_market"]);
 
-		if (popover) {
+		let {replacedName, prefix} = utils.replaceName(name, isBitAsset && !isPredMarket && asset.get("issuer") === "1.2.0");
+
+		// let prefix = isBitAsset && !isPredMarket ? <span>bit</span> :
+		// 			 replacedName !== this.props.name ? <span>{replacedPrefix}</span> : null;
+
+		let excludeList = ["BTWTY", "BANCOR", "BTCSHA", "CROWDFUN", "DRAGON", "TESTME"];
+		let includeBitAssetDescription = isBitAsset && !isPredMarket && excludeList.indexOf(name) === -1;
+
+		if (replace && replacedName !== this.props.name || isBitAsset) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
-			return (
-				<Popover className="simple_Popover"
-					isOpen={this.state.isPopoverOpen}
-					onOuterAction={() => {this.setState({isPopoverOpen: false});}}
-					body={(
-						<div >
-							<h3>{prefix}{replaceName}</h3>
-							<div style={{width:'70%',float:'left',padding: '0 15px 0 0'}} >{desc.short ? desc.short : desc.main}</div>
+			let realPrefix = name.split(".");
+			realPrefix = realPrefix.length > 1 ? realPrefix[0] : null;
+			if (realPrefix) realPrefix += ".";
+			let	optional = realPrefix || includeBitAssetDescription ? counterpart.translate("gateway.assets." + (isBitAsset ? "bit" : realPrefix.replace(".", "").toLowerCase()), {asset: name, backed: includeBitAssetDescription ? desc.main : replacedName}) : "";
+			if (isBitAsset && name === "CNY") {
+				optional = optional + counterpart.translate("gateway.assets.bitcny");
+			}
+			let tooltip = this.props.noTip ? null : `<div><strong>${includeBitAssetDescription ? "bit" : (realPrefix ? realPrefix.toUpperCase() : realPrefix) || ""}${replacedName}</strong><br />${includeBitAssetDescription ? "" : "<br />" + (desc.short ? desc.short : desc.main || "")}${!isBitAsset || includeBitAssetDescription ? optional : ""}</div>`;
 
-							<AssetImage assetName={asset.get("symbol")} />
-
-						</div>
-					)}
-					preferPlace="right"
-				>
-					<span className="help-tooltip" onClick={() => {this.setState({isPopoverOpen: !this.state.isPopoverOpen});}} >
-						<span className="asset-prefix-replaced">{prefix}</span>
-						<span>{replaceName}</span>
-					</span>
-				</Popover>
-			);
-		}
-
-		if (replace && replaceName !== this.props.name) {
-			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
-			let tooltip = `<div><strong>${this.props.name}</strong><br />${desc.short ? desc.short : desc.main}</div>`;
 			return (
 				<div
 					className="tooltip inline-block"
@@ -73,11 +57,11 @@ class AssetName extends React.Component {
 					data-place="bottom"
 					data-html={true}
 				>
-					<span className="asset-prefix-replaced">{prefix}</span><span>{replaceName}</span>
+					<span className="asset-prefix-replaced">{prefix}</span><span>{replacedName}</span>
 				</div>
 			);
 		} else {
-			return <span>{prefix}<span>{replaceName}</span></span>
+			return <span><span className={!noPrefix ? "asset-prefix-replaced" : ""}>{!noPrefix ? prefix : null}</span>{name}</span>;
 		}
 
 	}

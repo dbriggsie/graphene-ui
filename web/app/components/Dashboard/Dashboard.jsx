@@ -61,6 +61,7 @@ class Dashboard extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         return (
             !utils.are_equal_shallow(nextState.featuredMarkets, this.state.featuredMarkets) ||
+            !utils.are_equal_shallow(nextProps.lowVolumeMarkets, this.props.lowVolumeMarkets) ||
             !utils.are_equal_shallow(nextState.newAssets, this.state.newAssets) ||
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
             nextProps.ignoredAccounts !== this.props.ignoredAccounts ||
@@ -100,7 +101,10 @@ class Dashboard extends React.Component {
             return <LoadingIndicator />;
         }
 
-        let markets = featuredMarkets.map((pair, index) => {
+        let markets = featuredMarkets.filter(pair => {
+            let isLowVolume = this.props.lowVolumeMarkets.get(pair[1] + "_" + pair[0]) || this.props.lowVolumeMarkets.get(pair[0] + "_" + pair[1]);
+            return !isLowVolume;
+        }).map((pair, index) => {
 
             let className = "";
             if (index > 5) {
@@ -109,6 +113,8 @@ class Dashboard extends React.Component {
             if (index > 8) {
                 className += " show-for-large";
             }
+
+            if (index >= 16) return null;
 
             return (
                 <MarketCard
@@ -120,7 +126,7 @@ class Dashboard extends React.Component {
                     invert={pair[2]}
                 />
             );
-        });
+        }).filter(a => !!a);
 
         if (!accountCount && !traderMode) {
             return (
@@ -142,7 +148,7 @@ class Dashboard extends React.Component {
                         </div>
                         <div className="grid-container small-12 medium-7" style={{paddingTop: 44}}>
                             <Translate content="exchange.featured" component="h4" style={{paddingLeft: 30}}/>
-                            <div className="grid-block small-up-2 medium-up-3 large-up-4 no-overflow">
+                            <div className="grid-block small-up-2 medium-up-3 large-up-4 no-overflow fm-outer-container">
                                 {markets}
                             </div>
                         </div>
@@ -155,7 +161,7 @@ class Dashboard extends React.Component {
             <div ref="wrapper" className="grid-block page-layout vertical">
                 <div ref="container" className="grid-container" style={{padding: "25px 10px 0 10px"}}>
                     <Translate content="exchange.featured" component="h4" />
-                    <div className="grid-block small-up-2 medium-up-3 large-up-4 no-overflow">
+                    <div className="grid-block small-up-2 medium-up-3 large-up-4 no-overflow fm-outer-container">
                         {markets}
                     </div>
 

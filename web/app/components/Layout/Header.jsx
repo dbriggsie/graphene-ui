@@ -91,6 +91,7 @@ class Header extends React.Component {
         );
     }
 
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.traderMode && !this.props.traderMode) {
             this.context.router.push("/dashboard");
@@ -129,6 +130,7 @@ class Header extends React.Component {
         e.preventDefault();
         ZfApi.publish("account_drop_down", "close");
         AccountActions.setCurrentAccount.defer(account_name);
+        this.onClickUser(account_name, e);
     }
 
     onClickUser(account, e) {
@@ -178,25 +180,20 @@ class Header extends React.Component {
             });
         }
 
-
         let myAccounts = AccountStore.getMyAccounts();
 
         let walletBalance = myAccounts.length ? (
-                            <div className="grp-menu-item" style={{
-                                padding: "18px 0 15px 0",
-                                fontSize: 14
-                            }} >
-                                <TotalBalanceValue.AccountWrapper accounts={myAccounts} inHeader={true}/>
+                            <div className="grp-menu-item header-balance">
+                                <a><span className="font-secondary"><Translate content="exchange.balance" />: </span><TotalBalanceValue.AccountWrapper accounts={myAccounts} inHeader={true}/></a>
                             </div>) : null;
 
         let dashboard = (
             <a
-                style={{display: "inline-block", paddingTop: 3, paddingBottom: 3}}
+                style={{paddingTop: 12, paddingBottom: 12}}
                 className={cnames({active: active === "/" || active.indexOf("dashboard") !== -1})}
                 onClick={this._onNavigate.bind(this, "/dashboard")}
             >
-                <img style={{margin: 0, height: 40}} src={'app/assets/logo.png'}/>
-                <div style={{display: "inline-block", position: "relative", top: 1, paddingLeft: 15}}>{!traderMode ? <Translate content="wallet.title" /> : null}</div>
+                <img style={{margin: 0, height: 40}} src={'app/assets/logo.png'}/>               
             </a>
         );
 
@@ -213,7 +210,7 @@ class Header extends React.Component {
             <div className="grp-menu-item" >
             { this.props.locked ?
                 <a style={{padding: "1rem"}} href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={locked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="locked"/></a>
-                : <a href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={unlocked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="unlocked"/></a> }
+                : <a style={{padding: "1rem"}} href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={unlocked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="unlocked"/></a> }
             </div>
         ) : null;
 
@@ -237,27 +234,27 @@ class Header extends React.Component {
             }
 
             if (tradingAccounts.length >= 1) {
-
                 let accountsList = tradingAccounts
                     .sort()
                     .map((name, index) => {
                         return (
-                            <li key={name} style={index === 0 ? {paddingTop: 10} : null}>
+                            <li className={name === account_display_name ? "current-account" : ""} key={name}>
                                 <a href onClick={this._accountClickHandler.bind(this, name)}>
-                                    <span className="float-left">
-                                        <Icon className="icon-14px" name="user"/>
-                                    </span>
                                     <span>{name}</span>
                                 </a>
                             </li>
                         );
                     });
 
-                let options = [
+                let optionsEntries = [
                     {to: "/help", text: "header.help"},
                     {to: "/explorer", text: "header.explorer"}
-                ].map(entry => {
-                    return <li className="dropdown-options" key={entry.to}><Translate content={entry.text} component="a" onClick={this._onNavigate.bind(this, entry.to)}/></li>;
+                ];
+                
+                let options = optionsEntries.map((entry, index) => {
+                    return <li className={"dropdown-options" + (index === optionsEntries.length - 1 ? " dropdown-divider" : "")} key={entry.to}>
+                        <Translate content={entry.text} component="a" onClick={this._onNavigate.bind(this, entry.to)}/>
+                    </li>;
                 });
 
                 let lockOptions = (this.props.current_wallet && myAccountCount) ? (
@@ -268,6 +265,7 @@ class Header extends React.Component {
                             onClick={this._toggleLock.bind(this)}
                         />
                     </li>) : null;
+
 
 
                 accountsDropDown = (
@@ -286,16 +284,16 @@ class Header extends React.Component {
                             </ul>
                         </ActionSheet.Content>
                     </ActionSheet>);
-            }
+                }
         }
 
         const enableDepositWithdraw = Apis.instance().chain_id.substr(0, 8) === "4018d784";
 
         return (
-            <div className="header menu-group primary" style={{minHeight: 49}}>
+            <div className="header menu-group primary" >
                 <div className="show-for-small-only">
                     <ul className="primary menu-bar title">
-                        <li><a href onClick={this._triggerMenu}><Icon className="icon-14px" name="menu"/></a></li>
+                        <li><a href onClick={this._triggerMenu}><Icon className="icon-32px" name="menu"/></a></li>
                     </ul>
                 </div>
                 {__ELECTRON__ ? <div className="grid-block show-for-medium shrink">
@@ -323,7 +321,6 @@ class Header extends React.Component {
                         {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                     </ul>
 
-
                 </div>
                 <div className="grid-block show-for-medium shrink menu-bar">
                     <div className="grp-menu-items-group header-right-menu">
@@ -331,16 +328,16 @@ class Header extends React.Component {
                         {walletBalance}
 
                         <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
-                            <div style={{textTransform: "none", fontSize: "0.9rem"}} className="button">
+                            <div className="button">
                                 <Icon className="icon-14px" name="assets"/>
                                 <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_basic" />:<Translate content="header.switch_advanced" />}</span>
                             </div>
                         </div> 
-                        <div className="grid-block shrink overflow-visible account-drop-down">
+                        <div className="grp-menu-item overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>
                         <div className="grp-menu-item" >
-                            <Link style={{padding: "1rem"}} to="/settings" data-tip={settings} data-place="bottom"><Icon className="icon-14px" name="cog"/></Link>
+                            <Link className={cnames({active: active.indexOf("settings") !== -1})} style={{padding: "1rem"}} to="/settings" data-tip={settings} data-place="bottom"><Icon className="icon-14px" name="cog"/></Link>
                         </div>
                         {lock_unlock}
                         {createAccountLink}
