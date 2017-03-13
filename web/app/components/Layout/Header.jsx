@@ -184,7 +184,7 @@ class Header extends React.Component {
 
         let walletBalance = myAccounts.length ? (
                             <div className="grp-menu-item header-balance">
-                                <a><span className="font-secondary"><Translate content="exchange.balance" />: </span><TotalBalanceValue.AccountWrapper accounts={myAccounts} inHeader={true}/></a>
+                                <a><TotalBalanceValue.AccountWrapper label="exchange.balance" accounts={myAccounts} inHeader={true}/></a>
                             </div>) : null;
 
         let dashboard = (
@@ -268,7 +268,14 @@ class Header extends React.Component {
 
 
 
-                accountsDropDown = (
+                accountsDropDown = tradingAccounts.length === 1 ?
+                (<ActionSheet.Button title="">
+                    <a onClick={this._accountClickHandler.bind(this, account_display_name)} style={{padding: "1rem", border: "none"}} className="button">
+                        <Icon className="icon-14px" name="user"/> {account_display_name}
+                    </a>
+                </ActionSheet.Button>) :
+
+                (
                     <ActionSheet>
                         <ActionSheet.Button title="">
                             <a style={{padding: "1rem"}} className="button" data-place="bottom" data-tip={!traderMode ? counterpart.translate("tooltip.account_dropdown") : null}>
@@ -276,13 +283,14 @@ class Header extends React.Component {
                                 <Icon className="icon-14px" name="chevron-down"/>
                             </a>
                         </ActionSheet.Button>
-                        <ActionSheet.Content >
+                        {tradingAccounts.length > 1 ?
+                        <ActionSheet.Content>
                             <ul className="no-first-element-top-border">
                                 {options}
                                 {lockOptions}
                                 {tradingAccounts.length > 1 ? accountsList : null}
                             </ul>
-                        </ActionSheet.Content>
+                        </ActionSheet.Content> : null}
                     </ActionSheet>);
                 }
         }

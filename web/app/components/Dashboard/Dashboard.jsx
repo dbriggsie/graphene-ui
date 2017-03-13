@@ -102,6 +102,7 @@ class Dashboard extends React.Component {
         }
 
         let markets = featuredMarkets.filter(pair => {
+            return pair;
             let isLowVolume = this.props.lowVolumeMarkets.get(pair[1] + "_" + pair[0]) || this.props.lowVolumeMarkets.get(pair[0] + "_" + pair[1]);
             return !isLowVolume;
         }).map((pair, index) => {

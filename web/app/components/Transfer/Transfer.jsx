@@ -35,7 +35,7 @@ class Transfer extends React.Component {
         }
         if(query.memo) this.state.memo = query.memo;
         let currentAccount = AccountStore.getState().currentAccount;
-        if (!this.state.from_name && query.to !== currentAccount) this.state.from_name = currentAccount;
+        if (!this.state.from_name) this.state.from_name = currentAccount;
         this.onTrxIncluded = this.onTrxIncluded.bind(this);
     }
 
@@ -190,6 +190,16 @@ class Transfer extends React.Component {
         return {asset_types, fee_asset_types};
     }
 
+    _onAccountDropdown(account) {
+        let newAccount = ChainStore.getAccount(account);
+        if (newAccount) {
+            this.setState({
+                from_name: account,
+                from_account: ChainStore.getAccount(account)
+            });
+        }
+    }
+
     render() {
         let from_error = null;
         let {propose, from_account, to_account, asset, asset_id, propose_account,
@@ -259,7 +269,7 @@ class Transfer extends React.Component {
             <div className="grid-block vertical">
             <div className="grid-block shrink vertical medium-horizontal" style={{paddingTop: "2rem"}}>
 
-                <form style={{paddingBottom: 20, overflow: "visible"}} className="grid-content medium-6 large-4 large-offset-2 full-width-content" onSubmit={this.onSubmit.bind(this)} noValidate>
+                <form style={{paddingBottom: 20, overflow: "visible"}} className="grid-content small-12 medium-6 large-5 large-offset-1 full-width-content" onSubmit={this.onSubmit.bind(this)} noValidate>
 
                         <Translate content="transfer.header" component="h2" />
                         {/*  F R O M  */}
@@ -272,6 +282,8 @@ class Transfer extends React.Component {
                                 size={60}
                                 error={from_error}
                                 tabIndex={tabIndex++}
+                                onDropdownSelect={this._onAccountDropdown.bind(this)}
+                                dropDownContent={AccountStore.getMyAccounts()}
                             />
                         </div>
                         {/*  T O  */}
@@ -363,7 +375,7 @@ class Transfer extends React.Component {
 
                         {/* TODO: show remaining balance */}
                 </form>
-                <div className="grid-content medium-6 large-4 right-column">
+                <div className="grid-content small-12 medium-6 large-4 large-offset-1 right-column">
                 <div className="grid-content no-padding">
                     <RecentTransactions
                         accountsList={accountsList}

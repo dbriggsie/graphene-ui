@@ -61,7 +61,7 @@ class AssetName extends React.Component {
 				</div>
 			);
 		} else {
-			return <span><span className={!noPrefix ? "asset-prefix-replaced" : ""}>{!noPrefix ? prefix : null}</span>{name}</span>;
+			return <span><span className={!noPrefix ? "asset-prefix-replaced" : ""}>{!noPrefix ? prefix : null}</span>{replacedName}</span>;
 		}
 
 	}

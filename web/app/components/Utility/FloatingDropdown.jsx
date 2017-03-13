@@ -73,7 +73,6 @@ class Dropdown extends React.Component {
 
     render() {
         const {entries, value} = this.props;
-        console.log("entries:", entries, "value:", value);
         let {active} = this.state;
         if(entries.length === 0) return null;
         if(entries.length == 1) {
@@ -86,11 +85,11 @@ class Dropdown extends React.Component {
            );
         } else {
             let options = entries.map(value => {
-                return <li key={value} onClick={this.onChange.bind(this, this.props.values[value])}><span>{value}</span></li>
+                return <li key={value} onClick={this.onChange.bind(this, this.props.values[value])}><span>{value}</span></li>;
             });
             return (
                 <div onClick={this._toggleDropdown.bind(this)} className={"dropdown-wrapper" + (active ? " active" : "")}>
-                    <div style={{paddingRight: 15}}>{value}</div>
+                    <div style={{paddingRight: 15}}>{value ? value : <span className="hidden">A</span>}</div>
                     <ul className="dropdown">
                         {options}
                     </ul>
