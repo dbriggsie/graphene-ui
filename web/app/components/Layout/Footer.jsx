@@ -51,6 +51,7 @@ class Footer extends React.Component {
                             <Translate content="footer.title" /> &nbsp; <span className="version">(Powered by BitShares {APP_VERSION})</span>
                         </div>
                     </div>
+                    <div className="grid-block" id="subscribe" ></div>
                     {this.props.synced ? null : <div className="grid-block shrink txtlabel error"><Translate content="footer.nosync" />&nbsp; &nbsp;</div>}
                     {this.props.rpc_connection_status === "closed" ? <div className="grid-block shrink txtlabel error"><Translate content="footer.connection" />&nbsp; &nbsp;</div> : null}
                     {this.props.backup_recommended ? <span>
@@ -78,6 +79,14 @@ class Footer extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    componentDidMount(){
+        try{
+            window.subscribe();            
+        }catch(err){
+            console.log("subscribe function is exist");
+        }
     }
 
     onBackup() {
