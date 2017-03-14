@@ -131,7 +131,7 @@ class WithdrawModalBlocktrades extends React.Component {
                 AccountActions.transfer(
                     this.props.account.get("id"),
                     this.props.issuer.get("id"),
-                    parseFloat(amount * precision, 10),
+                    parseInt(amount * precision, 10),
                     asset.get("id"),
                     this.props.output_coin_type + ":" + this.state.withdraw_address + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : "")
                 );
@@ -175,7 +175,7 @@ class WithdrawModalBlocktrades extends React.Component {
         AccountActions.transfer(
             this.props.account.get("id"),
             this.props.issuer.get("id"),
-            parseFloat(amount * precision, 10),
+            parseInt(amount * precision, 10),
             asset.get("id"),
     	    this.props.output_coin_type + ":" + this.state.withdraw_address + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : "")
         );
