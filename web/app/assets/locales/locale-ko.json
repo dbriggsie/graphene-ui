@@ -45,9 +45,8 @@
     "pin": "Click to pin this asset",
     "unpin": "Click to unpin this asset",
     "asset_dropdown": "Click here to select from a list of assets.",
-    "cant_buy": "You do not have any balances you can use to buy this asset with."
-  },
-  "tooltip": {
+    "cant_buy": "You do not have any balances you can use to buy this asset with.",
+    "account_notify": "The active account is now %(account)s",
     "call_limit": "This is the call price of the least collateralized margin position in the market.",
     "margin_price": "This is the maximum price that a margin called position can be made to pay. It also called the Squeeze Price.",
     "settle_price": "This is the price at which settle orders will execute.",
@@ -68,9 +67,7 @@
     "propose_scam": "This proposal was created by a known scammer, do not approve it!",
     "login": "This BitShares wallet does not offer a traditional login but instead simply locks or unlocks a wallet that is <b>only</b> stored locally in your browser.<br/><br/>Whenever you close the wallet it will be locked and you will effectively be logged out.",
     "buy_min": "You will receive at minimum this amount. If there are matching orders with a cheaper price than you specified, you will receive more than this amount.",
-    "borrow": "Borrow %(asset)s from the network. This creates a smart contract that locks your collateral until you either modify the position or a margin call is required."
-  },
-  "account": {
+    "borrow": "Borrow %(asset)s from the network. This creates a smart contract that locks your collateral until you either modify the position or a margin call is required.",
     "in_open": "This is the amount of %(asset)s you have in open orders.",
     "in_open_value": "This is the equivalent value of the %(asset)s you have in open orders.",
     "transfer_actions": "Transfer actions",

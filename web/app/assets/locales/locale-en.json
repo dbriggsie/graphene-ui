@@ -36,7 +36,10 @@
     "switch_advanced": "Switch to Advanced Mode",
     "switch_basic": "Switch to Basic Mode",
     "trader_mode_tip": "Trader Mode gives you access to additional settings as well as the full Exchange interface, with less hints and descriptions.",
-    "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings"
+    "trader_mode_notify": "Trader mode activated, to return to simple mode please go to the Settings",
+    "locked_tip": "<br/>Click to login by unlocking your wallet.<br/><br/>Closing the browser window will also log you out.",
+    "unlocked_tip": "<br/>Click to log out by locking your wallet.<br/><br/>Closing the browser window will also log you out.",
+    "account_notify": "The active account is now %(account)s"
   },
   "tooltip": {
     "account_dropdown": "Click here to switch between accounts as well as to access the Settings, Block Explorer and Help sections.",
@@ -1172,7 +1175,7 @@
     "withdraw_coin": "Withdraw %(coin)s (%(symbol)s)",
 	"convert_coin": "Convert to %(coin)s (%(symbol)s)",
     "limit": "Limit: %(amount)s %(symbol)s",
-    "bridge_text": "A bridge lets you 'shapeshift' an asset into another one, for example BTC to BTS.",
+    "bridge_text": "A bridge lets you exchange an asset into another one, for example BTC to BTS.",
     "gateway_text": "Choose whether you want to make a deposit or withdrawal here",
     "fiat_text": "Fiat deposits and withdrawal are provided by CCEDK. In order to get started you need to complete the registration process. The following conversions are available:",
     "transwiser": {

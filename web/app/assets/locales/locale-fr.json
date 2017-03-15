@@ -41,9 +41,8 @@
     "pin": "Click to pin this asset",
     "unpin": "Click to unpin this asset",
     "asset_dropdown": "Click here to select from a list of assets.",
-    "cant_buy": "You do not have any balances you can use to buy this asset with."
-  },
-  "tooltip": {
+    "cant_buy": "You do not have any balances you can use to buy this asset with.",
+    "account_notify": "The active account is now %(account)s",
     "call_limit": "This is the call price of the least collateralized margin position in the market.",
     "margin_price": "This is the maximum price that a margin called position can be made to pay. It also called the Squeeze Price.",
     "settle_price": "This is the price at which settle orders will execute.",

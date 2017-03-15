@@ -152,7 +152,7 @@ class Exchange extends React.Component {
             [this._getLastMarketKey()]: this.props.quoteAsset.get("symbol") + "_" + this.props.baseAsset.get("symbol")
         });
 
-        window.addEventListener("resize", this._getWindowSize, false);
+        window.addEventListener("resize", this._getWindowSize, {capture: false, passive: true});
     }
 
     shouldComponentUpdate(nextProps) {
@@ -187,7 +187,7 @@ class Exchange extends React.Component {
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", this._getWindowSize, false);
+        window.removeEventListener("resize", this._getWindowSize);
     }
 
     _getFee(asset) {
@@ -1078,8 +1078,13 @@ class Exchange extends React.Component {
                             lowestCallPrice={lowestCallPrice}
                             showCallLimit={showCallLimit} feedPrice={feedPrice}
                             marketReady={marketReady} latestPrice={latestPrice}
-                            //onSelectIndicators={this._onSelectIndicators.bind(this)}
-                            marketStats={marketStats} 
+                            showDepthChart={showDepthChart}
+                            onSelectIndicators={this._onSelectIndicators.bind(this)}
+                            marketStats={marketStats}
+                            onBorrowQuote={!isNullAccount && quoteIsBitAsset ? this._borrowQuote.bind(this) : null}
+                            onBorrowBase={!isNullAccount && baseIsBitAsset ? this._borrowBase.bind(this) : null}
+                            onToggleCharts={this._toggleCharts.bind(this)}
+                            showVolumeChart={showVolumeChart}
                         />
 
                         <div className="grid-block vertical no-padding" id="CenterContent" ref="center">                          
@@ -1139,12 +1144,35 @@ class Exchange extends React.Component {
                                     marketReady={marketReady}
                                     indicators={indicators}
                                     indicatorSettings={indicatorSettings}
-                                    bucketSize={bucketSize}
                                     latest={latestPrice}
                                     theme={this.props.settings.get("themes")}
                                     zoom={this.state.currentPeriod}
                                     tools={tools}
                                     showVolumeChart={showVolumeChart}
+
+                                    buckets={buckets} bucketSize={bucketSize}
+                                    currentPeriod={this.state.currentPeriod}
+                                    changeBucketSize={this._changeBucketSize.bind(this)}
+                                    changeZoomPeriod={this._changeZoomPeriod.bind(this)}
+                                    onSelectIndicators={this._onSelectIndicators.bind(this)}
+                                    onChangeIndicators={this._changeIndicator.bind(this)}
+                                    onChangeTool={(key) => {
+                                        let tools = cloneDeep(this.state.tools);
+                                        for (let k in tools) {
+                                            if (k === key) {
+                                                tools[k] = !tools[k];
+                                            } else {
+                                                tools[k] = false;
+                                            }
+                                        }
+                                        this.setState({tools}, () => {
+                                            this.setState({tools: {fib: false, trendline: false}});
+                                        });
+                                    }}
+                                    onChangeChartHeight={this.onChangeChartHeight.bind(this)}
+                                    chartHeight={chartHeight}
+                                    onToggleVolume={() => {SettingsActions.changeViewSetting({showVolumeChart: !showVolumeChart});}}
+                                    onChangeIndicatorSetting={this._changeIndicatorSetting.bind(this)}
                                 />
                                 ) : (
                                 <DepthHighChart

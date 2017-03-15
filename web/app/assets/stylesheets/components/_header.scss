@@ -13,6 +13,9 @@
 }
 
 .header {
+    .electron-navigation > ul > li {
+        border: none;
+    }
     &.primary {
         border-bottom: 1px solid $border-color;
     }
@@ -100,12 +103,4 @@ div.header-right-menu {
 .user-icon > a {
   padding-left: 0.3rem;
   padding-right: 0.3rem;
-}
-
-.header .button.create-account {
-    margin-left: 16px;
-  > span {
-      font-size: 14px;
-      text-transform: capitalize;
-  }
 }

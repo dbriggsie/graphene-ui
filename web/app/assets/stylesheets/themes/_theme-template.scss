@@ -116,7 +116,7 @@
       border-top-color: $panel-bg-color;
       &:hover {
         @include color($light-text-color, lighten($super-light-panel-bg-color, 4%));
-        color: $link-text-color;
+        // color: $link-text-color;
       }
     }
   }
@@ -261,8 +261,18 @@
     background-color: $panel-bg-color !important;
   }
 
-  .header .button.create-account {
-    background-color: $button-bg-color !important;
+  .header a.button.create-account {
+    transition: color 0s !important;
+    color: $button-bg-color !important;
+    > span > svg > path {
+        fill: $button-bg-color;
+    }
+    &:hover {
+        color: lighten($button-bg-color, 10%) !important;
+        > span > svg > path {
+            fill: lighten($button-bg-color, 10%);
+        }
+    }
   }
 
   .grp-menu-item button {
@@ -285,7 +295,7 @@
     a:hover {background-color: lighten($panel-bg-color, 4%);}
     a.active {background-color: lighten($panel-bg-color, 4%);}
     li.current-account > a {
-        @include color($light-text-color, lighten($super-light-panel-bg-color, 4%));
+        @include color($info-color, lighten($super-light-panel-bg-color, 4%));
         > span { font-weight: bold; }
     }
     svg > path { fill: $secondary-text-color; }
@@ -458,7 +468,13 @@
     }
   }
 
-
+  ul.button-group.segmented {
+      > li.is-active > a {
+          background: $input-background;
+          color: $primary-text-color;
+          border-bottom: 1px solid $button-bg-color;
+      }
+  }
   // Tabs
 
   .tabs {
@@ -1117,7 +1133,8 @@
           background-color: transparent !important;
       }
       > option {
-          background-color: white !important;
+          color: $primary-text-color;
+          background-color: $panel-bg-color !important;
       }
         &:hover, &:focus {
           color: $primary-text-color;
@@ -1188,6 +1205,7 @@
         }
     }
 
+
     .simpleMode_wallet{
         position: absolute;
         font-size: 10px;
@@ -1195,4 +1213,22 @@
         line-height: 1;
     }
 
+    ul.dashboard-links {
+        > li.active {
+            color: $primary-text-color;
+        }
+    }
+
+    .switch input:checked + label{
+        background-color: darken($positive-color, 10%);
+        &::after {
+            border: none;
+            background-color: lighten($positive-color, 5%);
+        }
+    }
+
+    .action-sheet ul {
+        max-height: 479px;
+        overflow: auto;
+    }
 }

@@ -35,7 +35,8 @@
     "switch_advanced": "转到交易模式",
     "switch_basic": "转到基本模式",
     "trader_mode_tip": "在交易模式中您可以用附加的设置以及交易界面",
-    "trader_mode_notify": "您选定了交易模式为了回到基本模式请转到设置"
+    "trader_mode_notify": "您选定了交易模式为了回到基本模式请转到设置",
+    "account_notify": "The active account is now %(account)s"
   },
   "tooltip": {
     "account_dropdown": "点击在这儿为了转到账户以及访问设置，Block Explorer和助手 ",
