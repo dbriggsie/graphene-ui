@@ -39,6 +39,15 @@ class Header extends React.Component {
         this.unlisten = null;
     }
 
+    componentWillReceiveProps(nextProps) {
+
+        if (nextProps.traderMode && !this.props.traderMode) {
+            this.context.router.push("/dashboard");
+        }else if(!nextProps.traderMode && this.props.traderMode){
+            this.context.router.push("/dashboard");
+        }
+    }
+
     componentWillMount() {
         this.unlisten = this.context.router.listen((newState, err) => {
             if (!err) {
