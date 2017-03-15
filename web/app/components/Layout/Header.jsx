@@ -5,8 +5,6 @@ import ActionSheet from "react-foundation-apps/src/action-sheet";
 import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
-import SettingsActions from "actions/SettingsActions";
-import notify from "actions/NotificationActions";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import Icon from "../Icon/Icon";
 import Translate from "react-translate-component";
@@ -19,25 +17,13 @@ import cnames from "classnames";
 import TotalBalanceValue from "../Utility/TotalBalanceValue";
 import ReactTooltip from "react-tooltip";
 import { Apis } from "bitsharesjs-ws";
+import notify from "actions/NotificationActions";
 import {ChainStore} from "bitsharesjs/es";
+import SettingsActions from "actions/SettingsActions";
+
+var logo = 'app/assets/logo.png';
 
 class Header extends React.Component {
-
-    static getStores() {
-        return [AccountStore, WalletUnlockStore, WalletManagerStore, SettingsStore];
-    }
-
-    static getPropsFromStores() {
-        return {
-            linkedAccounts: AccountStore.getState().linkedAccounts,
-            currentAccount: AccountStore.getState().currentAccount,
-            locked: WalletUnlockStore.getState().locked,
-            current_wallet: WalletManagerStore.getState().current_wallet,
-            lastMarket: SettingsStore.getState().viewSettings.get("lastMarket"),
-            starredAccounts: SettingsStore.getState().starredAccounts,
-            traderMode: SettingsStore.getState().settings.get("traderMode")
-        };
-    }
 
     static contextTypes = {
         location: React.PropTypes.object.isRequired,
@@ -91,15 +77,6 @@ class Header extends React.Component {
         );
     }
 
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.traderMode && !this.props.traderMode) {
-            this.context.router.push("/dashboard");
-        }else if(!nextProps.traderMode && this.props.traderMode){
-            this.context.router.push("/dashboard");
-        }
-    }
-
     _triggerMenu(e) {
         e.preventDefault();
         ZfApi.publish("mobile-menu", "toggle");
@@ -129,16 +106,28 @@ class Header extends React.Component {
     _accountClickHandler(account_name, e) {
         e.preventDefault();
         ZfApi.publish("account_drop_down", "close");
-        AccountActions.setCurrentAccount.defer(account_name);
-        this.onClickUser(account_name, e);
+        if (this.context.location.pathname.indexOf("/account/") !== -1) {
+            let currentPath = this.context.location.pathname.split("/");
+            currentPath[2] = account_name;
+            this.context.router.push(currentPath.join("/"));
+        }
+        if (account_name !== this.props.currentAccount) {
+            AccountActions.setCurrentAccount.defer(account_name);
+            notify.addNotification({
+                message: counterpart.translate("header.account_notify", {account: account_name}),
+                level: "success",
+                autoDismiss: 3
+            });
+        }
+        // this.onClickUser(account_name, e);
     }
 
-    onClickUser(account, e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        this.context.router.push(`/account/${account}/overview`);
-    }
+    // onClickUser(account, e) {
+    //     e.stopPropagation();
+    //     e.preventDefault();
+    //
+    //     this.context.router.push(`/account/${account}/overview`);
+    // }
 
     onSwitchTraderMode() {
         if(SettingsStore.getState().settings.get("traderMode")){
@@ -155,11 +144,8 @@ class Header extends React.Component {
     }
 
     render() {
-
-
         let {active} = this.state;
         let {linkedAccounts, currentAccount, starredAccounts, traderMode} = this.props;
-
         let settings = counterpart.translate("header.settings");
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
@@ -182,9 +168,9 @@ class Header extends React.Component {
 
         let myAccounts = AccountStore.getMyAccounts();
 
-        let walletBalance = myAccounts.length ? (
+        let walletBalance = myAccounts.length && this.props.currentAccount ? (
                             <div className="grp-menu-item header-balance">
-                                <a><TotalBalanceValue.AccountWrapper label="exchange.balance" accounts={myAccounts} inHeader={true}/></a>
+                                <a><TotalBalanceValue.AccountWrapper label="exchange.balance" accounts={[this.props.currentAccount]} inHeader={true}/></a>
                             </div>) : null;
 
         let dashboard = (
@@ -193,17 +179,18 @@ class Header extends React.Component {
                 className={cnames({active: active === "/" || active.indexOf("dashboard") !== -1})}
                 onClick={this._onNavigate.bind(this, "/dashboard")}
             >
-                <img style={{margin: 0, height: 40}} src={'app/assets/logo.png'}/>               
+                <img style={{margin: 0, height: 40}} src={logo} />
+                <div className="simpleMode_wallet">{!traderMode ? <Translate content="wallet.title" /> : null}</div>
+
             </a>
         );
 
-
         let createAccountLink = myAccountCount === 0 ? (
-            <div className="grp-menu-item" >
-            <div className={cnames("button create-account", {active: active.indexOf("create-account") !== -1})} onClick={this._onNavigate.bind(this, "/create-account")}>
-                <Translate content="header.create_account" />
-            </div>
-            </div>
+            <ActionSheet.Button title="">
+                <a className="button create-account" onClick={this._onNavigate.bind(this, "/create-account")} style={{padding: "1rem", border: "none"}} >
+                    <Icon className="icon-14px" name="user"/> <Translate content="header.create_account" />
+                </a>
+            </ActionSheet.Button>
         ) : null;
 
         let lock_unlock = (this.props.current_wallet && myAccountCount) ? (
@@ -219,86 +206,62 @@ class Header extends React.Component {
             <a className={cnames({active: active.indexOf("market/") !== -1})} onClick={this._onNavigate.bind(this, "/market/USD_BTS")}><Translate component="span" content="header.exchange" /></a>;
 
         // Account selector: Only active inside the exchange
-        let accountsDropDown = null;
+        let accountsDropDown = null, account_display_name, accountsList;
 
         let hasOrders = linkedAccounts.reduce((final, a) => {
             let account = ChainStore.getAccount(a);
             return final || (account && account.get("orders") && account.get("orders").size > 0);
         }, false);
 
-        if (currentAccount) {
 
-            let account_display_name = currentAccount.length > 20 ? `${currentAccount.slice(0, 20)}..` : currentAccount;
+        if (currentAccount) {
+            account_display_name = currentAccount.length > 20 ? `${currentAccount.slice(0, 20)}..` : currentAccount;
             if (tradingAccounts.indexOf(currentAccount) < 0) {
                 tradingAccounts.push(currentAccount);
             }
 
             if (tradingAccounts.length >= 1) {
-                let accountsList = tradingAccounts
-                    .sort()
-                    .map((name, index) => {
-                        return (
-                            <li className={name === account_display_name ? "current-account" : ""} key={name}>
-                                <a href onClick={this._accountClickHandler.bind(this, name)}>
-                                    <span>{name}</span>
-                                </a>
-                            </li>
-                        );
-                    });
-
-                let optionsEntries = [
-                    {to: "/help", text: "header.help"},
-                    {to: "/explorer", text: "header.explorer"}
-                ];
-                
-                let options = optionsEntries.map((entry, index) => {
-                    return <li className={"dropdown-options" + (index === optionsEntries.length - 1 ? " dropdown-divider" : "")} key={entry.to}>
-                        <Translate content={entry.text} component="a" onClick={this._onNavigate.bind(this, entry.to)}/>
-                    </li>;
-                });
-
-                let lockOptions = (this.props.current_wallet && myAccountCount) ? (
-                    <li className="dropdown-options">
-                        <Translate
-                            content={ this.props.locked ? "header.unlock" : "header.lock"}
-                            component="a"
-                            onClick={this._toggleLock.bind(this)}
-                        />
-                    </li>) : null;
-
-
-
-                accountsDropDown = tradingAccounts.length === 1 ?
-                (<ActionSheet.Button title="">
-                    <a onClick={this._accountClickHandler.bind(this, account_display_name)} style={{padding: "1rem", border: "none"}} className="button">
-                        <Icon className="icon-14px" name="user"/> {account_display_name}
-                    </a>
-                </ActionSheet.Button>) :
-
-                (
-                    <ActionSheet>
-                        <ActionSheet.Button title="">
-                            <a style={{padding: "1rem"}} className="button" data-place="bottom" data-tip={!traderMode ? counterpart.translate("tooltip.account_dropdown") : null}>
-                                &nbsp;{account_display_name} &nbsp;
-                                <Icon className="icon-14px" name="chevron-down"/>
+                accountsList = tradingAccounts
+                .sort()
+                .map((name, index) => {
+                    return (
+                        <li className={name === account_display_name ? "current-account" : ""} key={name}>
+                            <a href onClick={this._accountClickHandler.bind(this, name)}>
+                                <span>{name}</span>
                             </a>
-                        </ActionSheet.Button>
-                        {tradingAccounts.length > 1 ?
-                        <ActionSheet.Content>
-                            <ul className="no-first-element-top-border">
-                                {options}
-                                {lockOptions}
-                                {tradingAccounts.length > 1 ? accountsList : null}
-                            </ul>
-                        </ActionSheet.Content> : null}
-                    </ActionSheet>);
-                }
+                        </li>
+                    );
+                });
+            }
         }
+
+        accountsDropDown = createAccountLink ?
+        createAccountLink :
+        tradingAccounts.length === 1 ?
+        (<ActionSheet.Button title="" setActiveState={() => {}}>
+            <a onClick={this._accountClickHandler.bind(this, account_display_name)} style={{cursor: "default", padding: "1rem", border: "none"}} className="button">
+                <Icon className="icon-14px" name="user"/> {account_display_name}
+            </a>
+        </ActionSheet.Button>) :
+
+        (<ActionSheet>
+            <ActionSheet.Button title="">
+                <a style={{padding: "1rem", border: "none"}} className="button">
+                    <Icon className="icon-14px" name="user"/> {account_display_name}
+                </a>
+            </ActionSheet.Button>
+            {tradingAccounts.length > 1 ?
+            <ActionSheet.Content>
+                <ul className="no-first-element-top-border">
+                     {accountsList}
+                </ul>
+            </ActionSheet.Content> : null}
+        </ActionSheet>);
 
         const enableDepositWithdraw = Apis.instance().chain_id.substr(0, 8) === "4018d784";
 
         return (
-            <div className="header menu-group primary" >
+            <div className="header menu-group primary">
                 <div className="show-for-small-only">
                     <ul className="primary menu-bar title">
                         <li><a href onClick={this._triggerMenu}><Icon className="icon-32px" name="menu"/></a></li>
@@ -319,7 +282,6 @@ class Header extends React.Component {
                     </ul>
                 </div> : null}
                 <div className="grid-block show-for-medium">
-
                     <ul className="menu-bar">
                         <li>{dashboard}</li>
                         {(!traderMode && hasOrders) ? <li><Link to={"/my-orders"} activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}
@@ -328,12 +290,10 @@ class Header extends React.Component {
                         {!traderMode ? null : <li>{tradeLink}</li>}
                         {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                     </ul>
-
                 </div>
-                <div className="grid-block show-for-medium shrink menu-bar">
+                <div className="grid-block show-for-medium shrink">
                     <div className="grp-menu-items-group header-right-menu">
-
-                        {walletBalance}
+                        {!myAccountCount || !walletBalance ? null : walletBalance}
 
                         <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
                             <div className="button">
@@ -341,14 +301,40 @@ class Header extends React.Component {
                                 <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_basic" />:<Translate content="header.switch_advanced" />}</span>
                             </div>
                         </div> 
+
                         <div className="grp-menu-item overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>
                         <div className="grp-menu-item" >
-                            <Link className={cnames({active: active.indexOf("settings") !== -1})} style={{padding: "1rem"}} to="/settings" data-tip={settings} data-place="bottom"><Icon className="icon-14px" name="cog"/></Link>
+                            <ActionSheet>
+                                <ActionSheet.Button title="">
+                                    <a style={{padding: "1rem", border: "none"}} className="button">
+                                        <Icon className="icon-14px" name="cog"/>
+                                    </a>
+                                </ActionSheet.Button>
+                                <ActionSheet.Content>
+                                    <ul className="no-first-element-top-border">
+                                        <li>
+                                            <a href onClick={this._onNavigate.bind(this, "/settings")}>
+                                                <span><Translate content="header.settings" /></span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href onClick={this._onNavigate.bind(this, "/explorer")}>
+                                                <span><Translate content="header.explorer" /></span>
+                                            </a>
+                                        <li>
+                                        </li>
+                                            <a href onClick={this._onNavigate.bind(this, "/help")}>
+                                                <span><Translate content="header.help" /></span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </ActionSheet.Content>
+                            </ActionSheet>
+                            {/* <Link className={cnames({active: active.indexOf("settings") !== -1})} style={{padding: "1rem"}} to="/settings" data-tip={settings} data-place="bottom"><Icon className="icon-14px" name="cog"/></Link> */}
                         </div>
                         {lock_unlock}
-                        {createAccountLink}
                     </div>
                 </div>
             </div>

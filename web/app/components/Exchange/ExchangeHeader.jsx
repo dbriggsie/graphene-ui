@@ -72,7 +72,7 @@ export default class ExchangeHeader extends React.Component {
                     ) : (
 					<a>{`${quoteSymbol} : ${baseSymbol}`}</a>					
 					)}
-                </div>
+				</div>
 
 				<div className="grid-block vertical" >
 						<div className="grid-block show-for-medium wrap" >
