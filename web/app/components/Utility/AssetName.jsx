@@ -35,11 +35,12 @@ class AssetName extends React.Component {
 
 		// let prefix = isBitAsset && !isPredMarket ? <span>bit</span> :
 		// 			 replacedName !== this.props.name ? <span>{replacedPrefix}</span> : null;
+		let ol_tooltip = asset_utils.ol_description_for_assets(name);
 
 		let excludeList = ["BTWTY", "BANCOR", "BTCSHA", "CROWDFUN", "DRAGON", "TESTME"];
 		let includeBitAssetDescription = isBitAsset && !isPredMarket && excludeList.indexOf(name) === -1;
 
-		if (replace && replacedName !== this.props.name || isBitAsset) {
+		if (replace && replacedName !== this.props.name || isBitAsset||ol_tooltip) {
 			let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
 			let realPrefix = name.split(".");
 			realPrefix = realPrefix.length > 1 ? realPrefix[0] : null;
@@ -49,11 +50,10 @@ class AssetName extends React.Component {
 				optional = optional + counterpart.translate("gateway.assets.bitcny");
 			}
 			let tooltip = this.props.noTip ? null : `<div><strong>${includeBitAssetDescription ? "bit" : (realPrefix ? realPrefix.toUpperCase() : realPrefix) || ""}${replacedName}</strong><br />${includeBitAssetDescription ? "" : "<br />" + (desc.short ? desc.short : desc.main || "")}${!isBitAsset || includeBitAssetDescription ? optional : ""}</div>`;
-
 			return (
 				<div
 					className="tooltip inline-block"
-					data-tip={tooltip}
+					data-tip={ol_tooltip||tooltip}
 					data-place="bottom"
 					data-html={true}
 				>

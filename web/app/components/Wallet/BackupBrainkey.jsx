@@ -33,7 +33,7 @@ export default class BackupBrainkey extends Component {
             content = <div>
                 <h3><Translate content="wallet.brainkey" /></h3>
                 <div className="card"><div className="card-content">
-                    <h5>{this.state.brainkey}</h5></div></div>
+                    <p>{this.state.brainkey}</p></div></div>
                 <br/>
                 <pre className="no-overflow">sha1 hash of the brainkey: {sha1}</pre>
                 <br/>
@@ -46,7 +46,7 @@ export default class BackupBrainkey extends Component {
             content = <span>
                 <h3><Translate content="wallet.brainkey" /></h3>
                 <div className="card"><div className="card-content">
-                    <h5>{this.state.brainkey}</h5></div></div>
+                    <p>{this.state.brainkey}</p></div></div>
                     <div style={{padding: "10px 0"}}>
                         <pre className="no-overflow">sha1 hash of your brainkey: {sha1}</pre>
                     </div>

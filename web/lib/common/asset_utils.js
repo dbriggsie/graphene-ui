@@ -79,4 +79,27 @@ export default class AssetUtils {
 
         return parsed ? parsed : {main: description};
     }
+
+    static ol_description_for_assets(asset_name) {
+        switch(asset_name){
+            case "OBITS":
+                return `OBITS<br>
+OpenLedger ApS (Denmark, part of EU) backed user issued asset (UIA) <br>
+www.obits.io<br>
+OBITS is the official digital token of the OpenLedger DC allowing multiple organizations to join forces and directly invest in each other’s successes, reaping the benefits of cross-promotion throughout the entire network. OBITS benefit directly from www.BloggersClub.net , OpenLedger exchange as well as the digital tokens like ICOO, BTSR, BLOCKPAY, APPX, CNTZ, REALITY, OPEN.`;
+            case "ICOO":
+                return `ICOO<br>
+OpenLedger ApS (Denmark, part of EU) backed user issued asset (UIA)<br>
+www.icoo.io<br>
+Investing in ICOOs = Investing in ALL ITOs on OpenLedger. When you are Investing in ICOO, you are in fact investing in all ITO's (Initial Token Offering) introduced on OpenLedger DC, whether they are external ITO pre-launches or ITO's on OpenLedger DC. Initially minimum 2% dividend in monthly payouts based on coinmarketcap average of the month. The intention is dividend and sharing of profits as end goal.`;
+            case "BTSR":
+                return `BTSR<br>
+OpenLedger ApS (Denmark, part of EU) backed user issued asset (UIA)<br>
+www.btsr.io<br>
+HubDSP.com is a DSP advertising service using real time bidding (RTB) powered by a digital token with the abbreviation “BTSR”. 
+BTSR is OpenLedger’s solution to advertising credits on the blockchain. The network infrastructure allows users to earn tokens by blogging, selling ads, and being an active community member.`;
+            default:
+                return "";
+        }
+    }
 }
