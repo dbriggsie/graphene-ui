@@ -267,6 +267,33 @@ class Header extends React.Component {
             </ActionSheet.Content> : null}
         </ActionSheet>);
 
+        let settingsDropdown = <ActionSheet>
+            <ActionSheet.Button title="">
+                <a style={{padding: "1rem", border: "none"}} className="button">
+                    <Icon className="icon-14px" name="cog"/>
+                </a>
+            </ActionSheet.Button>
+            <ActionSheet.Content>
+                <ul className="no-first-element-top-border">
+                    <li>
+                        <a href onClick={this._onNavigate.bind(this, "/settings")}>
+                            <span><Translate content="header.settings" /></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href onClick={this._onNavigate.bind(this, "/explorer")}>
+                            <span><Translate content="header.explorer" /></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href onClick={this._onNavigate.bind(this, "/help")}>
+                            <span><Translate content="header.help" /></span>
+                        </a>
+                    </li>
+                </ul>
+            </ActionSheet.Content>
+        </ActionSheet>;
+
         const enableDepositWithdraw = Apis.instance().chain_id.substr(0, 8) === "4018d784";
 
         return (

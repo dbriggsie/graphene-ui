@@ -11,15 +11,15 @@ const localStorage = (key) => {
         get(key, dv = {}) {
 
             let rv;
-            if ( ls_key_exists(STORAGE_KEY + key, ls) ) {
-                let e = ls.getItem(STORAGE_KEY + key);
-                try {
-                    rv = JSON.parse(e);
-                } catch(err) {
-                    rv = e;
+
+            try {
+                if ( ls_key_exists(STORAGE_KEY + key, ls) ) {
+                    rv = JSON.parse(ls.getItem(STORAGE_KEY + key));
                 }
+                return rv ? rv : dv;
+            } catch(err) {
+                return dv;
             }
-            return rv ? rv : dv;
         },
 
         set(key, object) {
