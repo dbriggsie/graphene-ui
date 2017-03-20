@@ -1211,10 +1211,10 @@
 
 
     .simpleMode_wallet{
-        position: absolute;
-        font-size: 10px;
-        bottom: 0;
+        font-size: 9px;
+        bottom: 2px;
         line-height: 1;
+        text-align: center;
     }
 
     ul.dashboard-links {
@@ -1226,5 +1226,9 @@
     .action-sheet ul {
         max-height: 479px;
         overflow: auto;
+    }
+
+    .help-content{
+      padding:30px;
     }
 }

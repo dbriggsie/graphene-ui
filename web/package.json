@@ -29,10 +29,10 @@
     "dev": "webpack --env.ENV development --env.SET EU1 --config webpack_2.config.js --display-error-details --colors --progress",
     "build-hash": "NODE_ENV=production webpack --env.prod --env.hash --progress --display-error-details --colors",
     "build-github": "NODE_ENV=production webpack --env.prod --env.hash --env.baseUrl='/wallet' --progress --display-error-details --colors",
-    "electron": "NODE_ENV=production webpack --env.prod --env.electron --env.hash --progress --display-error-details --colors ",
+    "electron": "NODE_ENV=production webpack --env.prod --config webpack_2.config.js --env.electron --env.hash --progress --display-error-details --colors ",
     "electron-nougly": "NODE_ENV=production webpack --env.prod --env.electron --env.noUgly --env.hash --progress --display-error-details --colors",
-    "postelectron": " echo 'copying to electron/build..'; cp -r electron/* ../electron/build/; echo 'done.'",
-    "postelectron-nougly": " echo 'copying to electron/build..'; cp -r electron/* ../electron/build/; echo 'done.'",
+    "postelectron": " echo 'copying to electron/dist..'; cp -r dist/* ../electron/build/; echo 'done.'",
+    "postelectron-nougly": " echo 'copying to electron/dist..'; cp -r electron/* ../electron/build/; echo 'done.'",
     "build-win32": "set NODE_ENV=production && webpack --env.prod --progress --colors &&  echo 'copying to electron/build..' &&  xcopy dist ..\\electron\\build /s /e /y && echo 'done.'"
   },
   "dependencies": {

@@ -293,7 +293,7 @@ class OrderBook extends React.Component {
 
             let tempAsks = combinedAsks
             .filter(a => {
-                if (this.state.showAllAsks) {
+                if (this.state.showAllAsks||combinedAsks.length<6) {
                     return true;
                 }
                 return a.getPrice() <= lowestAsk.getPrice() * 5;
