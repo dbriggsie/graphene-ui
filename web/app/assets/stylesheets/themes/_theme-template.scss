@@ -733,7 +733,7 @@
   }
 
   // Block List (section)
-  section input[type="text"], section input[type="password"] {
+  section.block-list input[type="text"], section.block-list input[type="password"] {
     border-bottom: 1px solid $panel-bg-color;
     background-color: transparent;
     color: $primary-text-color;
@@ -1230,5 +1230,19 @@
 
     .help-content{
       padding:30px;
+    }
+
+    div.Account_create {
+
+        label > a {
+            color: $secondary-text-color;
+        }
+    }
+
+    div.ok-indicator {
+        color: $secondary-text-color;
+        &.success {
+            color: $success-color;
+        }
     }
 }
