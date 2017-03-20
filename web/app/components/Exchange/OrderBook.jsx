@@ -263,7 +263,7 @@ class OrderBook extends React.Component {
         if(base && quote) {
             bidRows = combinedBids
             .filter(a => {
-                if (this.state.showAllBids) {
+                if (this.state.showAllBids||combinedBids.length<6) {
                     return true;
                 }
                 return a.getPrice() >= highestBid.getPrice() / 5;
