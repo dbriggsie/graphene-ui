@@ -31,7 +31,7 @@ class Settings extends React.Component {
             ],
             settingEntries: {
                 general: ["locale", "unit", "showSettles", "walletLockTimeout", "themes",
-                "disableChat", "showAssetPercent", "traderMode"],
+                "disableChat", "showAssetPercent", "reset", "traderMode"],
                 access: ["apiServer", "faucet_address"]
             }
         };
@@ -42,9 +42,16 @@ class Settings extends React.Component {
     }
 
     _onChangeSetting(setting, e) {
-        if (e && e.preventDefault) {
-            e.preventDefault();
+        if(typeof e == "boolean"){
+            let e_original = e; //traderMode
+            e={
+                target:{
+                    value:e_original
+                },
+                preventDefault:()=>{}
+            }
         }
+        e.preventDefault();
 
         let {defaults} = this.props;
         let value = null;
@@ -80,8 +87,9 @@ class Settings extends React.Component {
 
         case "walletLockTimeout":
             let newValue = parseInt(e.target.value, 10);
-            if (newValue && !isNaN(newValue) && typeof newValue === "number") {
-                SettingsActions.changeSetting({setting: "walletLockTimeout", value: e.target.value });
+            if (isNaN(newValue)) newValue = 0;
+            if (!isNaN(newValue) && typeof newValue === "number") {
+                SettingsActions.changeSetting({setting: "walletLockTimeout", value: newValue });
             }
             break;
 
@@ -95,6 +103,10 @@ class Settings extends React.Component {
             this.setState({
                 apiServer: e.target.value
             });
+            break;
+
+        case "traderMode":
+            SettingsActions.changeSetting({setting: "traderMode", value: e.target.value});
             break;
 
         case "disableChat":
@@ -112,11 +124,6 @@ class Settings extends React.Component {
         case "unit":
             let index = findEntry(e.target.value, defaults[setting]);
             SettingsActions.changeSetting({setting: setting, value: defaults[setting][index]});
-            break;
-
-        case "traderMode":
-            let value = e;
-            SettingsActions.changeSetting({setting: "traderMode", value: value});
             break;
 
         default:
@@ -153,14 +160,6 @@ class Settings extends React.Component {
             activeSetting = 0;
             settingEntries.general = ["locale", "disableChat", "themes",
             "password", "backup", "unit", "apiServer", "traderMode"];
-
-            // menuEntries = menuEntries.filter(a => {
-            //     console.log("menu entry:", a);
-            // });
-            //
-            // settingEntries = settingEntries.filter(a => {
-            //     console.log("menu entry:", a);
-            // });
         }
 
         let entries;
