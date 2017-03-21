@@ -218,9 +218,9 @@ class Settings extends React.Component {
                     </div>}
 
                     <div className={(traderMode ? "grid-content" : "grid-container")} style={{maxWidth:'1000px'}} >
-                        <div className={"grid-container vertical"}>
-                            <Translate component="h4" content={traderMode ? "settings." + menuEntries[activeSetting] : "header.settings"} />
-                            <Translate className="h5" content={`settings.${menuEntries[activeSetting]}_text`} />
+                        <div className="grid-block small-12 medium-10 no-margin vertical">
+                            <Translate component="h4" content={"settings." + menuEntries[activeSetting]} />
+                            <Translate unsafe style={{paddingTop: 10, paddingBottom: 20, marginBottom: 30}} className="bottom-border" content={`settings.${menuEntries[activeSetting]}_text`} />
                             {entries}
                         </div>
                     </div>
