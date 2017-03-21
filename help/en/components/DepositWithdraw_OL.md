@@ -2,7 +2,7 @@
 
 When you deposit Fiat to your OpenLedger account name, you are sending the amount in question to an OPENLEDGER bank account, and this same amount will then appear as OPEN.USD or OPEN.EUR in your account. Amount will appear the same, provided no costs have been deducted from your side or via any correspondent bank. 
 
-Deposit and withdrawals fees for Crypto
+## Deposit and withdrawals fees for Crypto
 
 We have no fees on deposit (that's the coins you see with "OpenLedger" in front in the table below: it means for a deposit of the coin and the fee is always 0). The one exception to this is Maker which has a 1% fee for deposit.
 

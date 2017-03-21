@@ -14,6 +14,7 @@
  * [会员等级](accounts/membership.md)
  * [市场锚定资产](assets/mpa.md) (BitUSD, BitEUR, BitGOLD, Bit\*,...)
  * [用户发行资产](assets/uia.md)
+ * [存款提款](components/DepositWithdraw_OL)
  * [私有比特资产](assets/privbitassets.md)
  * [去中心化交易所](dex/introduction.md)
  * [交易](dex/trading.md)
