@@ -3,7 +3,7 @@ import { fetchCoins, getBackedCoins, getActiveWallets } from "common/blockTrades
 
 class GatewayActions {
 
-    fetchCoins({backer = "OPEN", url = undefined} = {}) {
+    fetchCoins({backer, url} = {}) {
         return (dispatch) => {
             Promise.all([
                 fetchCoins(url),
@@ -12,9 +12,7 @@ class GatewayActions {
                 let [coins, wallets] = result;
                 dispatch({
                     coins: coins,
-                    backedCoins: getBackedCoins({allCoins: coins, backer: backer}).filter(a => {
-                        return wallets.indexOf(a.walletType) !== -1;
-                    }),
+                    backedCoins: getBackedCoins({allCoins: coins, backer: backer}),
                     backer
                 });
             });

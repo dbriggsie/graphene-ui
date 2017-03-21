@@ -502,7 +502,7 @@ class BalanceWrapper extends React.Component {
 
     componentWillMount() {
         if (Apis.instance().chain_id.substr(0, 8) === "4018d784") { // Only fetch this when on BTS main net
-            GatewayActions.fetchCoins();
+            GatewayActions.fetchCoins({backer: "OPEN"});
         }
     }
 

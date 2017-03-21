@@ -1228,8 +1228,10 @@
         overflow: auto;
     }
 
-    .help-content{
-      padding:30px;
+    .main-content{
+      .help-content{
+        padding:30px;
+      }
     }
 
     div.Account_create {

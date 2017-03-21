@@ -320,7 +320,7 @@ class DepositStoreWrapper extends React.Component {
 
     componentWillMount() {
         if (Apis.instance().chain_id.substr(0, 8) === "4018d784") { // Only fetch this when on BTS main net
-            GatewayActions.fetchCoins.defer(); // Openledger
+            GatewayActions.fetchCoins.defer({backer: "OPEN"}); // Openledger
             GatewayActions.fetchCoins.defer({backer: "TRADE"}); // Blocktrades
         }
     }

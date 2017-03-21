@@ -603,7 +603,7 @@ class BlockTradesBridgeDepositRequest extends React.Component {
                 }
             });
         }).catch((error) => {
-            this.urlConnection("https://api.blocktrades.info/v2", 2);
+            this.urlConnection(blockTradesAPIs.BASE, 2);
             this.setState( {
                 coin_info_request_state: 0,
                 coins_by_type: null,
