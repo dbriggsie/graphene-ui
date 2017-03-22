@@ -47,7 +47,10 @@ class DashboardContainer extends React.Component {
                     },
                     lowVolumeMarkets: () => {
                         return MarketsStore.getState().lowVolumeMarkets;
-                    }
+                    },
+                    // marketStats: () => {
+                    //     return MarketsStore.getState().allMarketStats;
+                    // }
                 }}>
                     <Content {...this.props} />
             </AltContainer>

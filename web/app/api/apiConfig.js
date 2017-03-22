@@ -7,21 +7,21 @@ function server_set(type) {
                 { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
                 { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
                 { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
+                { url: "wss://node.testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
             ];
         } else if (SET == "CN") {
             return [
                 { url: "wss://openledger.hk/ws", location: "Hong Kong" },
                 { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
                 { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
-                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
+                { url: "wss://node.testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
             ];
         } else {
             return [
                 { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
                 { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
                 { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-                { url: "wss://testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
+                { url: "wss://node.testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
             ];
         }
     }
@@ -39,11 +39,11 @@ function server_set(type) {
 
     if (type == "faucet_address") {
         if (SET == "EU1") {
-            return "https://bitshares.openledger.info";
+            return "https://openledger.io"; // https://faucet.testnet.bitshares.eu
         } else if (SET == "CN") {
             return "https://openledger.hk";
         } else {
-            return "https://bitshares.openledger.info";
+            return "https://openledger.io";
         }
     }
 
