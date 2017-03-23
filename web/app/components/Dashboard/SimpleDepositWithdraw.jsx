@@ -210,6 +210,12 @@ class DepositWithdrawContent extends React.Component {
             });
     }
 
+    _openRegistrarSite(e) {
+        e.preventDefault();
+        let newWnd = window.open(SettingsStore.site_registr, "_blank");
+        newWnd.opener = null;
+    }
+
     _renderWithdraw() {
         const {replacedName} = utils.replaceName(this.props.asset.get("symbol"), !!this.props.asset.get("bitasset"));
         let assetName = replacedName;
@@ -299,6 +305,7 @@ class DepositWithdrawContent extends React.Component {
                 return (<p>Click <a href='#' onClick={(e)=>{ window.open(settingsAPIs.OPENLEDGER_FACET_REGISTR,'_blank');}} >here</a> to register for deposits </p>);
             }
         }
+
         return (
             <div className={!addressValue ? "no-overflow" : ""}>
                 <p><Translate unsafe content="gateway.add_funds" account={this.props.sender.get("name")} /></p>

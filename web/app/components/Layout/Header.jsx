@@ -155,10 +155,8 @@ class Header extends React.Component {
     render() {
         let {active} = this.state;
         let {linkedAccounts, currentAccount, starredAccounts, traderMode} = this.props;
-        let settings = counterpart.translate("header.settings");
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
-
         let tradingAccounts = AccountStore.getMyAccounts();
         let myAccountCount = tradingAccounts.length;
 
@@ -175,6 +173,7 @@ class Header extends React.Component {
             });
         }
 
+
         let myAccounts = AccountStore.getMyAccounts();
 
         let walletBalance = myAccounts.length && this.props.currentAccount ? (
@@ -183,19 +182,18 @@ class Header extends React.Component {
                             </div>) : null;
 
         let dashboard = (
-            <a
-                style={{paddingTop: 12, paddingBottom: 12}}
-                className={cnames({active: active === "/" || active.indexOf("dashboard") !== -1})}
+            <a 
+                className={cnames({active: active === "/" || active.indexOf("dashboard") !== -1},"dashboard_logo")}
                 onClick={this._onNavigate.bind(this, "/dashboard")}
             >
-                <img style={{margin: 0, height: 40}} src={logo} />
+                <img src={logo} />
                 <div className="simpleMode_wallet">{!traderMode ? <Translate content="wallet.title" /> : null}</div>
 
             </a>
         );
 
         let createAccountLink = myAccountCount === 0 ? (
-            <ActionSheet.Button title="">
+            <ActionSheet.Button title="" setActiveState={() => {}}>
                 <a className="button create-account" onClick={this._onNavigate.bind(this, "/create-account")} style={{padding: "1rem", border: "none"}} >
                     <Icon className="icon-14px" name="user"/> <Translate content="header.create_account" />
                 </a>
@@ -208,7 +206,7 @@ class Header extends React.Component {
                 <a style={{padding: "1rem"}} href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={locked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="locked"/></a>
                 : <a style={{padding: "1rem"}} href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={unlocked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="unlocked"/></a> }
             </div>
-        ) : <div className="grp-menu-item" ><a style={{padding: "1rem",cursor:"default"}}><Icon className="icon-14px" name="locked"/></a></div>;
+        ) : null;
 
         let tradeLink = this.props.lastMarket && active.indexOf("market/") === -1 ?
             <a className={cnames({active: active.indexOf("market/") !== -1})} onClick={this._onNavigate.bind(this, `/market/${this.props.lastMarket}`)}><Translate component="span" content="header.exchange" /></a>:
@@ -221,7 +219,6 @@ class Header extends React.Component {
             let account = ChainStore.getAccount(a);
             return final || (account && account.get("orders") && account.get("orders").size > 0);
         }, false);
-
 
         if (currentAccount) {
             account_display_name = currentAccount.length > 20 ? `${currentAccount.slice(0, 20)}..` : currentAccount;
@@ -266,6 +263,15 @@ class Header extends React.Component {
                 </ul>
             </ActionSheet.Content> : null}
         </ActionSheet>);
+
+        let switchTraderMode = (
+            <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
+                <div className="button">
+                    <Icon className="icon-14px" name="assets"/>
+                    <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_basic" />:<Translate content="header.switch_advanced" />}</span>
+                </div>
+            </div> 
+        );
 
         let settingsDropdown = <ActionSheet>
             <ActionSheet.Button title="">
@@ -329,55 +335,25 @@ class Header extends React.Component {
                 </div>
                 <div className="grid-block show-for-medium shrink">
                     <div className="grp-menu-items-group header-right-menu">
-                       
 
                         {!myAccountCount || !walletBalance ? null : walletBalance}
-
-                        <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
-                            <div className="button">
-                                <Icon className="icon-14px" name="assets"/>
-                                <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_basic" />:<Translate content="header.switch_advanced" />}</span>
-                            </div>
-                        </div> 
+                        {switchTraderMode}
+                        {myAccountCount !== 0 ? null :<div className="grp-menu-item overflow-visible" >
+                            {settingsDropdown}
+                        </div>}
 
                         <div className="grp-menu-item overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>
-                        <div className="grp-menu-item" >
-                            <ActionSheet>
-                                <ActionSheet.Button title="">
-                                    <a style={{padding: "1rem", border: "none"}} className="button">
-                                        <Icon className="icon-14px" name="cog"/>
-                                    </a>
-                                </ActionSheet.Button>
-                                <ActionSheet.Content>
-                                    <ul className="no-first-element-top-border">
-                                        <li>
-                                            <a href onClick={this._onNavigate.bind(this, "/settings")}>
-                                                <span><Translate content="header.settings" /></span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href onClick={this._onNavigate.bind(this, "/explorer")}>
-                                                <span><Translate content="header.explorer" /></span>
-                                            </a>
-                                        <li>
-                                        </li>
-                                            <a href onClick={this._onNavigate.bind(this, "/help")}>
-                                                <span><Translate content="header.help" /></span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </ActionSheet.Content>
-                            </ActionSheet>
-                            {/* <Link className={cnames({active: active.indexOf("settings") !== -1})} style={{padding: "1rem"}} to="/settings" data-tip={settings} data-place="bottom"><Icon className="icon-14px" name="cog"/></Link> */}
-                        </div>
+                        {!myAccountCount ? null :<div className="grp-menu-item overflow-visible" >
+                            {settingsDropdown}
+                        </div>}
                         {lock_unlock}
                     </div>
                 </div>
             </div>
         );
-    }
+	}
 }
 
 export default connect(Header, {
