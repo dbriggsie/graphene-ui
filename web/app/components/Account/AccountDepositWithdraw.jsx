@@ -16,7 +16,7 @@ import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
 import { Apis } from "bitsharesjs-ws";
-import { settingsAPIs } from "api/apiConfig";
+import { settingsAPIs, blockTradesAPIs } from "api/apiConfig";
 import BitKapital from "../DepositWithdraw/BitKapital";
 import GatewayStore from "stores/GatewayStore";
 import GatewayActions from "actions/GatewayActions";
@@ -320,8 +320,8 @@ class DepositStoreWrapper extends React.Component {
 
     componentWillMount() {
         if (Apis.instance().chain_id.substr(0, 8) === "4018d784") { // Only fetch this when on BTS main net
-            GatewayActions.fetchCoins.defer({backer: "OPEN"}); // Openledger
-            GatewayActions.fetchCoins.defer({backer: "TRADE"}); // Blocktrades
+            GatewayActions.fetchCoins.defer({backer: "OPEN", url:blockTradesAPIs.BASE_OL}); // Openledger
+            GatewayActions.fetchCoins.defer({backer: "TRADE", url:blockTradesAPIs.BASE+blockTradesAPIs.COINS_LIST}); // Blocktrades
         }
     }
 
