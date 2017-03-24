@@ -33,7 +33,10 @@ function CreateWebpackConfig(type, options) {
             __TESTNET__: !!env.testnet,
             __DEV__: false,
             ENV: JSON.stringify(options.ENV),
-            SET: JSON.stringify(options.SET)
+            SET: JSON.stringify(options.SET),
+            'process.env': {
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+            }
         })
     ];
 
