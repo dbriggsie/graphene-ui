@@ -4,7 +4,6 @@ import classNames from "classnames";
 import AccountActions from "actions/AccountActions";
 import AccountStore from "stores/AccountStore";
 import AccountNameInput from "./../Forms/AccountNameInput";
-import SettingsStore from "stores/SettingsStore";
 import PasswordInput from "./../Forms/PasswordInput";
 import WalletDb from "stores/WalletDb";
 import notify from "actions/NotificationActions";
@@ -19,18 +18,10 @@ import {ChainStore, FetchChain} from "bitsharesjs/es";
 import {BackupCreate} from "../Wallet/Backup";
 import ReactTooltip from "react-tooltip";
 import utils from "common/utils";
+import SettingsActions from "actions/SettingsActions";
 import counterpart from "counterpart";
 
 class CreateAccount extends React.Component {
-
-    static getStores() {
-        return [AccountStore, SettingsStore];
-    };
-
-    static getPropsFromStores() {
-        return {traderMode: SettingsStore.getState().settings.get("traderMode")};
-    };
-
     constructor() {
         super();
         this.state = {
@@ -46,6 +37,13 @@ class CreateAccount extends React.Component {
         this.onFinishConfirm = this.onFinishConfirm.bind(this);
 
         this.accountNameInput = null;
+    }
+
+    componentWillMount() {
+        SettingsActions.changeSetting({
+            setting: "passwordLogin",
+            value: false
+        });
     }
 
     componentDidMount() {
@@ -94,17 +92,11 @@ class CreateAccount extends React.Component {
 
     createAccount(name) {
         let refcode = this.refs.refcode ? this.refs.refcode.value() : null;
-        let referalAccount = AccountStore.getState().referalAccount;
+        let referralAccount = AccountStore.getState().referralAccount;
         WalletUnlockActions.unlock().then(() => {
             this.setState({loading: true});
 
-                try{
-                    metrika.reachGoal('reg_account');
-                    ga('send', 'event', 'Registration', 'CreateAccount');
-                    console.log('metrika');
-                }catch(err){console.log('metrik trouble',err);}
-
-            AccountActions.createAccount(name, this.state.registrar_account, referalAccount, 0, refcode).then(() => {
+            AccountActions.createAccount(name, this.state.registrar_account, referralAccount || this.state.registrar_account, 0, refcode).then(() => {
                 // User registering his own account
                 if(this.state.registrar_account) {
                     FetchChain("getAccount", name).then(() => {
@@ -135,7 +127,6 @@ class CreateAccount extends React.Component {
                 });
                 this.setState({loading: false});
             });
-
         });
     }
 
@@ -200,7 +191,7 @@ class CreateAccount extends React.Component {
                 onSubmit={this.onSubmit.bind(this)}
                 noValidate
             >
-               {firstAccount ? <Translate content="wallet.create_w_a" component="h4" />  : <Translate content="wallet.create_a" component="h4" />}
+                <p style={{fontWeight: "bold"}}>{firstAccount ? <Translate content="wallet.create_w_a" />  : <Translate content="wallet.create_a" />}</p>
                 <AccountNameInput
                     ref={(ref) => {if (ref) {this.accountNameInput = ref.refs.nameInput;}}}
                     cheapNameOnly={!!firstAccount}
@@ -218,6 +209,7 @@ class CreateAccount extends React.Component {
                             confirmation={true}
                             onChange={this.onPasswordChange.bind(this)}
                             noLabel
+                            checkStrength
                         />
                 }
 
@@ -290,7 +282,7 @@ class CreateAccount extends React.Component {
                 } */}
             </div>
         );
-    }
+}
 
     _renderBackup() {
         return (
@@ -319,7 +311,48 @@ class CreateAccount extends React.Component {
     }
 
     _renderGetStarted() {
+
+        return (
+            <div>
+                <table className="table">
+                    <tbody>
+
+                        <tr>
+                            <td><Translate content="wallet.tips_dashboard" />:</td>
+                            <td><Link to="dashboard"><Translate content="header.dashboard" /></Link></td>
+                        </tr>
+
+                        <tr>
+                            <td><Translate content="wallet.tips_account" />:</td>
+                            <td><Link to={`/account/${this.state.accountName}/overview`} ><Translate content="wallet.link_account" /></Link></td>
+                        </tr>
+
+                        <tr>
+                            <td><Translate content="wallet.tips_deposit" />:</td>
+                            <td><Link to="deposit-withdraw"><Translate content="wallet.link_deposit" /></Link></td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td><Translate content="wallet.tips_transfer" />:</td>
+                            <td><Link to="transfer"><Translate content="wallet.link_transfer" /></Link></td>
+                        </tr>
+
+                        <tr>
+                            <td><Translate content="wallet.tips_settings" />:</td>
+                            <td><Link to="settings"><Translate content="header.settings" /></Link></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        );
+    }
+
+    _renderGetStarted() {
         const {traderMode} = this.props;
+        console.log('@>',traderMode)
 
         return (
             <div>
@@ -357,20 +390,6 @@ class CreateAccount extends React.Component {
         );
     }
 
-    _renderGetStartedText() {
-
-        return (
-            <div>
-                <p style={{fontWeight: "bold"}}><Translate content="wallet.congrat" /></p>
-
-                <p><Translate content="wallet.tips_explore" /></p>
-
-                <p><Translate content="wallet.tips_header" /></p>
-
-                <p className="txtlabel warning"><Translate content="wallet.tips_login" /></p>
-            </div>
-        );
-    }
 
     render() {
         let {step} = this.state;
