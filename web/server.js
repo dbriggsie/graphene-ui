@@ -4,7 +4,12 @@ var express = require("express");
 var app = express();
 var webpackDevMiddleware = require("webpack-dev-middleware");
 var ProgressPlugin = require("webpack/lib/ProgressPlugin");
-var config = require("./webpack_2.config.js")({SET:"EU1"});
+
+var config = require("./webpack_2.config.js")({
+	SET:"EU1",
+	"electron":!!~process.argv.indexOf("electron"),
+	"hash":!!~process.argv.indexOf("hash")
+});
 var compiler = webpack(config);
 
 compiler.apply(new ProgressPlugin(function(percentage, msg) {
@@ -15,7 +20,6 @@ app.use(webpackDevMiddleware(compiler, {
     publicPath: "/",
     historyApiFallback: true
 }));
-
 
 app.get("*", function(req, res) {
   res.sendFile(__dirname + '/app/assets/index.html')

@@ -27,6 +27,7 @@
     "start": "node server.js",
     "build": "NODE_ENV=production webpack --env.ENV production --env.SET EU1 --config webpack_2.config.js --display-error-details --colors --progress",
     "dev": "webpack --env.ENV development --env.SET EU1 --config webpack_2.config.js --display-error-details --colors --progress",
+    "elec": "webpack --env.ENV development --env.SET EU1 --config webpack_2.config.js --env.electron --env.hash --display-error-details --colors --progress",
     "build-hash": "NODE_ENV=production webpack --env.prod --env.hash --progress --display-error-details --colors",
     "build-github": "NODE_ENV=production webpack --env.prod --env.hash --env.baseUrl='/wallet' --progress --display-error-details --colors",
     "electron": "NODE_ENV=production webpack --env.prod --config webpack_2.config.js --env.electron --env.hash --progress --display-error-details --colors ",

@@ -1,12 +1,12 @@
 <!doctype html>
 <html>
 <head>
-    <base href="/">
+    <base href="<%=htmlWebpackPlugin.options.HASH %>">
     <meta charset="utf-8">
     <meta name="format-detection" content="telephone=no">
     <title>OpenLedger</title>
-    <link rel="icon" type="image/x-icon" href="/app/assets/favicon.jpg">
-    <link rel="stylesheet" href="/app.css">
+    <link rel="icon" type="image/x-icon" href="<%=htmlWebpackPlugin.options.HASH %>app/assets/favicon.jpg">
+    <link rel="stylesheet" href="<%=htmlWebpackPlugin.options.HASH %>app.css">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>-->    
     <style>
         body {
@@ -41,7 +41,7 @@
         <h1 class="centerDiv" style="">Loading...</h1>
     </main>
 
-<script src="/app.js" charset="utf-8"></script>
+<script src="<%=htmlWebpackPlugin.options.HASH %>app.js" charset="utf-8"></script>
 <script>
     var BTSW = window.BTSW || {};
     (function () {

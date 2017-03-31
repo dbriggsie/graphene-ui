@@ -444,12 +444,12 @@ table thead tr th.mymarkets-header {
     padding-right: 0.25rem;
 }
 
-.gold-star {
-    background-color: #CC9F00;
+.gold-star > svg > path {
+  fill: #CC9F00;
 }
 
-.grey-star {
-    background-color: #878787;
+.grey-star > svg > path {
+  fill: #878787;
 }
 
 .no-data {
@@ -506,10 +506,6 @@ table thead tr th.mymarkets-header {
     -moz-appearance: menulist;
     appearance: menulist;
     text-align: left;
-}
-
-a.order-cancel > .icon {
-    background-color: #e8564b;
 }
 
 .chart-title {

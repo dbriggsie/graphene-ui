@@ -353,12 +353,8 @@
     "send": "Gönder",
     "final": "Kalan bakiye",
     "balances": "Bakiyeler",
-<<<<<<< HEAD
     "my_balance": "My Balance",
-    "available": "Mevcut",
-=======
     "available": "Bakiye",
->>>>>>> f3215e098a774b2b03bb1b76493b5980a60584f8
     "errors": {
       "req": "Mecburi alan",
       "pos": "Miktar pozitif olmak zorundadır.",

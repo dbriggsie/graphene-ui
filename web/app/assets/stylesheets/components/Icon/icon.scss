@@ -4,7 +4,6 @@
     width: 1.12rem;
     height: 1.12rem;
     display: inline-block;
-    background-color: #fff;
 }
 
 .icon-32px {
@@ -52,53 +51,53 @@
     background-color: red;
 }
 
-$icons: "user",
-"trash",
-"chevron-down",
-"menu",
-"database",
-"search",
-"plus-circle",
-"lnr-cross",
-"question-circle",
-"cross-circle",
-"cog",
-"layers",
-"users",
-"wand",
-"b-logo",
-"accounts",
-"witnesses",
-"assets",
-"proposals",
-"blocks",
-"committee_members",
-"workers",
-"key",
-"checkmark-circle",
-"checkmark",
-"piggy",
-"locked",
-"unlocked",
-"markets",
-"fi-star",
-"fees",
-"thumb-tack",
-"clock",
-"clippy";
-@each $image in $icons {
-    .#{$image} {
-        -webkit-mask:url('./components/Icon/#{$image}.svg') no-repeat center;
-        mask: url('./components/Icon/#{$image}.svg') no-repeat center;
-        -webkit-mask-size: cover;
-        mask-size: cover;
-    }
-}
+// $icons: "user",
+// "trash",
+// "chevron-down",
+// "menu",
+// "database",
+// "search",
+// "plus-circle",
+// "lnr-cross",
+// "question-circle",
+// "cross-circle",
+// "cog",
+// "layers",
+// "users",
+// "wand",
+// "b-logo",
+// "accounts",
+// "witnesses",
+// "assets",
+// "proposals",
+// "blocks",
+// "committee_members",
+// "workers",
+// "key",
+// "checkmark-circle",
+// "checkmark",
+// "piggy",
+// "locked",
+// "unlocked",
+// "markets",
+// "fi-star",
+// "fees",
+// "thumb-tack",
+// "clock",
+// "clippy";
+// @each $image in $icons {
+//     .#{$image} {
+//         -webkit-mask:url('./components/Icon/#{$image}.svg') no-repeat center;
+//         mask: url('./components/Icon/#{$image}.svg') no-repeat center;
+//         -webkit-mask-size: cover;
+//         mask-size: cover;
+//     }
+// }
 
-@-moz-document url-prefix() {
-    @each $image in $icons {
-        .#{$image} {
-            background: url('./components/Icon/#{$image}.svg') no-repeat center/cover;
-        }
-    }
-}
+// @-moz-document url-prefix() {
+//     @each $image in $icons {
+//         .#{$image} {
+//             background: url('./components/Icon/#{$image}.svg') no-repeat center/cover;
+//         }
+//     }
+// }

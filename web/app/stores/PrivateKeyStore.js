@@ -63,7 +63,6 @@ class PrivateKeyStore extends BaseStore {
         }).then(()=>{
             this.pendingOperationDone();
         }).catch( error => {
-            console.log('@>cursor',cursor)
             this.setState(this._getInitialState());
             this.privateKeyStorageError("loading", error);
             throw error;

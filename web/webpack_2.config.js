@@ -8,8 +8,6 @@ const exec = require('child_process').exec;
 const git = require("git-rev-sync");
 require("es6-promise").polyfill();
 
-let env = { dev: true };
-
 exec(`rm -fr ${__dirname}/dist/*`, (err, stdout, stderr) => {
     if (err) {
         console.error(err);
@@ -26,11 +24,11 @@ function CreateWebpackConfig(type, options) {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.DefinePlugin({
             APP_VERSION: JSON.stringify(git.tag()),
-            __ELECTRON__: !!env.electron,
-            __HASH_HISTORY__: !!env.hash,
-            __BASE_URL__: JSON.stringify(env.baseUrl || ""),
-            __UI_API__: JSON.stringify(env.apiUrl || "https://ui.bitshares.eu/api"),
-            __TESTNET__: !!env.testnet,
+            __ELECTRON__: !!options.electron,
+            __HASH_HISTORY__: !!options.electron,
+            __BASE_URL__: JSON.stringify(options.baseUrl || ""),
+            __UI_API__: JSON.stringify(options.apiUrl || "https://ui.bitshares.eu/api"),
+            __TESTNET__: !!options.testnet,
             __DEV__: false,
             ENV: JSON.stringify(options.ENV),
             SET: JSON.stringify(options.SET),
@@ -101,6 +99,7 @@ function CreateWebpackConfig(type, options) {
             template: path.join(__dirname, 'app', 'assets', 'index.html'),
             inject: false,
             SET: options.SET,
+            HASH: options.electron ? "" : "/",
             minify: {
                 html5: true,
                 collapseWhitespace: (options.ENV == "production" ? true : false),
@@ -171,6 +170,8 @@ function CreateWebpackConfig(type, options) {
         });
 
         this.module.rules.push({ test: /\.coffee$/, loader: "coffee-loader" });
+
+        this.module.rules.push({ test: /.*\.svg$/, loaders: ["svg-inline-loader", "svgo-loader"] });
 
     } else if (type == 'scss') {
 

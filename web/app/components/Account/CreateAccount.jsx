@@ -352,8 +352,6 @@ class CreateAccount extends React.Component {
 
     _renderGetStarted() {
         const {traderMode} = this.props;
-        console.log('@>',traderMode)
-
         return (
             <div>
                 <table className="table">

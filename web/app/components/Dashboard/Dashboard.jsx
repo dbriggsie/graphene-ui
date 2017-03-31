@@ -196,7 +196,7 @@ class Dashboard extends React.Component {
                     <div ref="container" className="grid-block vertical medium-horizontal"  style={{padding: "25px 10px 0 10px"}}>
                         <div className="grid-block vertical small-12 medium-5">
                             <div className="Dashboard__intro-text">
-                                <h4><img style={{position: "relative", top: -15, margin: 0}} src='/app/assets/logo.png' /><Translate content="account.intro_text_title" /></h4>
+                                <h4><img style={{position: "relative", top: -15, margin: 0}} src={(__ELECTRON__?"":"/")+'app/assets/logo.png'} /><Translate content="account.intro_text_title" /></h4>
 
                                 <Translate unsafe content="account.intro_text_1" component="p" />
                                 <Translate unsafe content="account.intro_text_2" component="p" />
