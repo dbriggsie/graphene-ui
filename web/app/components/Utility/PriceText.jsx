@@ -10,9 +10,8 @@ const PriceText = ({price, preFormattedPrice, quote, base}) => {
 
     if(!formattedPrice.int&&!formattedPrice.dec){
         if(isFinite(formattedPrice.full)){
-           // console.log('@>',formattedPrice.full)
             formattedPrice.dec="000000";
-            formattedPrice.trailing = (" "+formattedPrice.full*10).split(/[0]{2,}/)[1].slice(-2);
+            formattedPrice.trailing = (formattedPrice.full*100000+"").split(".").join("").match(/[1-9][0-9]?/g)[0];
         }
     }
 
