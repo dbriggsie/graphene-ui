@@ -116,7 +116,7 @@ class AccountDepositWithdraw extends React.Component {
                         <div className="service-selector">
                             <ul className="button-group segmented no-margin">
                                 <li onClick={this.toggleOLService.bind(this, "gateway")} className={olService === "gateway" ? "is-active" : ""}><a><Translate content="gateway.gateway" /></a></li>
-                                <li onClick={this.toggleOLService.bind(this, "fiat")} className={olService === "fiat" ? "is-active" : ""}><a>Fiat</a></li>
+                                <li onClick={this.toggleOLService.bind(this, "fiat")} className={olService === "fiat" ? "is-active" : ""}><a><Translate content="gateway.fiat" /></a></li>
                             </ul>
                         </div>
 

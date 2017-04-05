@@ -69,7 +69,7 @@ class MarketCard extends React.Component {
 
     _onError(imgName) {
         if (!this.state.imgError) {
-            this.refs[imgName.toLowerCase()].src = (__ELECTRON__?"":"/") + "app/assets/asset-symbols/bts.png";
+            this.refs[imgName.toLowerCase()].src = "/app/assets/asset-symbols/bts.png";
             this.setState({
                 imgError: true
             });
@@ -97,7 +97,7 @@ class MarketCard extends React.Component {
             <div className={cnames("grid-block no-overflow fm-container", this.props.className)} onClick={this.goToMarket.bind(this)}>
                 <div className="grid-block vertical shrink">
                     <div className="v-align">
-                        <img className="align-center" ref={imgName.toLowerCase()} onError={this._onError.bind(this, imgName)} style={{maxWidth: 70}} src={(__ELECTRON__?"":"/")+"app/assets/asset-symbols/"+ imgName.toLowerCase() + ".png"} />
+                        <img className="align-center" ref={imgName.toLowerCase()} onError={this._onError.bind(this, imgName)} style={{maxWidth: 70}} src={"/app/assets/asset-symbols/"+ imgName.toLowerCase() + ".png"} />
                     </div>
                 </div>
                 <div className="grid-block vertical no-overflow">

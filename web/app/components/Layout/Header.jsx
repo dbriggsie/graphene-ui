@@ -21,7 +21,7 @@ import notify from "actions/NotificationActions";
 import {ChainStore} from "bitsharesjs/es";
 import SettingsActions from "actions/SettingsActions";
 
-let logo = (__ELECTRON__?"":"/") + 'app/assets/logo.png';
+let logo = '/app/assets/logo.png';
 
 class Header extends React.Component {
 
