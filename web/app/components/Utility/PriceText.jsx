@@ -4,17 +4,16 @@ import utils from "common/utils";
 const PriceText = ({price, preFormattedPrice, quote, base}) => {
     const formattedPrice = preFormattedPrice ? preFormattedPrice : utils.price_to_text(price, quote, base);
 
-    console.log('1@>price',price, quote, base)
-    console.log('2@>preFormattedPrice',preFormattedPrice)
-    console.log('3@>formattedPrice',formattedPrice)
     formattedPrice.int=parseInt(formattedPrice.int)||0;
     formattedPrice.dec=parseInt(formattedPrice.dec)||0;
     formattedPrice.trailing=parseInt(formattedPrice.trailing)||0;
-//formattedPrice.full*10
-//"000000"
+
     if(!formattedPrice.int&&!formattedPrice.dec){
-        formattedPrice.dec="000000";
-        formattedPrice.trailing = (" "+formattedPrice.full*10).split(/[0]{3,}/)[1].slice(-2);
+        if(isFinite(formattedPrice.full)){
+           // console.log('@>',formattedPrice.full)
+            formattedPrice.dec="000000";
+            formattedPrice.trailing = (" "+formattedPrice.full*10).split(/[0]{2,}/)[1].slice(-2);
+        }
     }
 
     if (formattedPrice.full >= 1) {
