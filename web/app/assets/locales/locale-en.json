@@ -1134,6 +1134,12 @@
   },
   "gateway": {
     "title": "Deposit & Withdraw",
+    "history_title": "Transaction History",
+    "transaction_history": "Show Transaction History",
+    "refresh": "Refresh",
+    "no_withdrawal":"No withdrawals",
+    "withdrawal_amount":"Withdrawal Amount",
+    "status":"Status",
     "assets": {
         "open": "<br/><br/>The %(asset)s asset is backed 1:1 by real %(backed)s and can be deposited or withdrawn using the gateway service provided by Openledger.",
         "trade": "<br/><br/>The %(asset)s asset is backed 1:1 by real %(backed)s and can be deposited or withdrawn using the gateway service provided by Blocktrades.",
@@ -1237,6 +1243,11 @@
         "spend": "Spend",
         "transfer_actions": "Transfer actions",
         "include_memo": "Include memo",
-        "show_all": "Show all assets"
+        "show_all": "Show all assets",
+        "click": "Click",
+        "here": "here",
+        "to_register": "to register for deposits of",
+        "to_withdrawal": "to register for withdrawal of",
+        "find_an": "Find an asset"
     }
 }

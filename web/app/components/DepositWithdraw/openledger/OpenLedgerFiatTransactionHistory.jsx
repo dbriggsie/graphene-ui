@@ -1,6 +1,7 @@
 import React from "react";
 import ChainTypes from "components/Utility/ChainTypes";
 import BindToChainState from "components/Utility/BindToChainState";
+import counterpart from "counterpart";
 
 class OpenLedgerFiatTransactionHistory extends React.Component {
     static propTypes = {
@@ -77,8 +78,8 @@ class OpenLedgerFiatTransactionHistory extends React.Component {
                 openledger_withdrawal_history_fragment = <table className="table">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>Withdrawal Amount</th>
-                                                                    <th>Status</th>
+                                                                    <th>{counterpart.translate("gateway.withdrawal_amount")}</th>
+                                                                    <th>{counterpart.translate("gateway.status")}</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -87,7 +88,7 @@ class OpenLedgerFiatTransactionHistory extends React.Component {
                                                          </table>;
             }
             else
-                openledger_withdrawal_history_fragment = <p>No withdrawals</p>;
+                openledger_withdrawal_history_fragment = <p>{counterpart.translate("gateway.no_withdrawal")}</p>;
         }
 
         let openledger_deposit_history_fragment = null;
@@ -136,10 +137,10 @@ class OpenLedgerFiatTransactionHistory extends React.Component {
                                                       </div>;
         else
         {
-            let button_label = this.state.current_status === 'never_loaded' ? 'Show Transaction History' : 'Refresh';
+            let button_label = this.state.current_status === 'never_loaded' ? counterpart.translate("gateway.transaction_history") : counterpart.translate("gateway.refresh");
             openledger_transaction_history_fragment = <div className="content-block">
                                                         <br/>
-                                                        <h4>Transaction History</h4>
+                                                        <h4>{counterpart.translate("gateway.history_title")} </h4>
                                                         <button className={"button outline"} onClick={this.onShowOpenLedgerTransactionHistory.bind(this)}> {button_label} </button>
                                                         {openledger_withdrawal_history_fragment}
                                                         {openledger_deposit_history_fragment}

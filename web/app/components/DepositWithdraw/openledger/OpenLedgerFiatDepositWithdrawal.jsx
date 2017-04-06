@@ -10,6 +10,7 @@ import AccountBalance from "../../Account/AccountBalance";
 import BalanceComponent from "components/Utility/BalanceComponent";
 import DepositFiatOpenLedger from "./DepositFiatOpenLedger";
 import WithdrawFiatOpenLedger from "./WithdrawFiatOpenLedger";
+import counterpart from "counterpart";
 
 class OpenLedgerFiatDepositWithdrawCurrency extends React.Component {
     static propTypes = {
@@ -92,7 +93,7 @@ class OpenLedgerFiatDepositWithdrawCurrency extends React.Component {
                             </td>;
         }
         else
-            deposit_fragment = <td>Click <a href="https://openledger.info/v/" rel="noopener noreferrer" target="_blank">here</a> to register for deposits of {this.props.deposit_asset}</td>;
+            deposit_fragment = <td>{counterpart.translate("simple_trade.click")} <a href="https://openledger.info/v/" rel="noopener noreferrer" target="_blank">{counterpart.translate("simple_trade.here")}</a> {counterpart.translate("simple_trade.to_register")} {this.props.deposit_asset}</td>;
 
         let withdraw_fragment = null;
         if (this.props.withdraw_allowed)
@@ -118,7 +119,7 @@ class OpenLedgerFiatDepositWithdrawCurrency extends React.Component {
                             </td>;
         }
         else
-            withdraw_fragment = <td>Click <a href="https://openledger.info/v/" rel="noopener noreferrer" target="_blank">here</a> to register for withdrawals of {this.props.deposit_asset}</td>;
+            withdraw_fragment = <td>{counterpart.translate("simple_trade.click")} <a href="https://openledger.info/v/" rel="noopener noreferrer" target="_blank">{counterpart.translate("simple_trade.here")}</a> {counterpart.translate("simple_trade.to_withdrawal")} {this.props.deposit_asset}</td>;
 
         return  <tr>
                     <td>{ this.props.deposit_asset}</td>

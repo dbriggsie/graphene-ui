@@ -232,7 +232,7 @@ class DepositWithdrawContent extends React.Component {
                     rpc_url={settingsAPIs.RPC_URL}
                 />);
             }else{
-                return (<p>Click <a href='#' onClick={(e)=>{ window.open(settingsAPIs.OPENLEDGER_FACET_REGISTR,'_blank');}} >here</a> to register for deposits </p>);
+                return (<p>{counterpart.translate("simple_trade.click")} <a href='#' onClick={(e)=>{ window.open(settingsAPIs.OPENLEDGER_FACET_REGISTR,'_blank');}} >{counterpart.translate("simple_trade.here")}</a> {counterpart.translate("simple_trade.to_register")} </p>);
             }
         }
 
@@ -302,7 +302,7 @@ class DepositWithdrawContent extends React.Component {
                     rpc_url={settingsAPIs.RPC_URL}
                 />);
             }else{
-                return (<p>Click <a href='#' onClick={(e)=>{ window.open(settingsAPIs.OPENLEDGER_FACET_REGISTR,'_blank');}} >here</a> to register for deposits </p>);
+                return (<p>{counterpart.translate("simple_trade.click")} <a href='#' onClick={(e)=>{ window.open(settingsAPIs.OPENLEDGER_FACET_REGISTR,'_blank');}} >{counterpart.translate("simple_trade.here")}</a> {counterpart.translate("simple_trade.to_register")} </p>);
             }
         }
 

@@ -1,12 +1,12 @@
-# Deposit Withdraw USD EUR
+# 存款 存款 USD EUR
 
-When you deposit Fiat to your OpenLedger account name, you are sending the amount in question to an OPENLEDGER bank account, and this same amount will then appear as OPEN.USD or OPEN.EUR in your account. Amount will appear the same, provided no costs have been deducted from your side or via any correspondent bank. 
+存款Fiat货币到您的OpenLedger账户的时候， 这量出现在您的OpenLedger账户为OPEN.USD或OPEN.EUR。没有任何费用对您或通过代理银行。
 
-## Deposit and withdrawals fees for Crypto
+## 存款和存款手续费
 
-We have no fees on deposit (that's the coins you see with "OpenLedger" in front in the table below: it means for a deposit of the coin and the fee is always 0). The one exception to this is Maker which has a 1% fee for deposit.
+我们没有存款手续费（下面的硬币没有存款手续费）。唯一例外 Maker有1%存款手续费
 
-It is otherwise FREE to deposit fiat directly to asset on OpenLedger with a minimum of 50 USD or 50 EUR. Amounts less than this are possible, but charged with a 2% deposit fee and minimum 2 USD/2EUR/15 CNY.EUR When you withdraw any one of the two fiat pegged assets OPEN.USD and OPEN.EUR directly to fiat USD or EUR in your own bank account, it will appear with a deducted commission of 3% of amount and based on minimum withdrawals of 100 USD.
+在某些情况下 FIAT存款到OpenLedger资产，最低金额50 USD或50 EUR， 免费。 您也可也存款比上述的量小但有存款2%，最低金额 2 USD/2EUR/15 CNY。如果您提款OPEN.USD或OPEN.EUR到您的银行帐户， 您有3%手续费。最低金额是100美元。
 
 #### Withdrawal fee
 

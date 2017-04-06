@@ -55,6 +55,8 @@
     "unpin": "点击为了拔去这个资产",
     "asset_dropdown": "自资产清单选择",
     "cant_buy": "您没有数量为了买这个资产",
+    "locked_tip": "钱包已锁定，点击解锁。",
+    "unlocked_tip": "钱包已解锁，点击锁定。",
     "call_limit": "市场中最少抵押率头寸的平仓价",
     "margin_price": "This is the maximum price that a margin called position can be made to pay. It also called the Squeeze Price.",
     "settle_price": "清算单执行时将使用的价格",
@@ -551,6 +553,7 @@
     "balance_owner": "余额所有者公钥",
     "balance_id": "余额ID",
     "deposit_to": "向账户存入",
+    "fiat": "Fiat",
     "claimed": "领取总额",
     "broadcasting": "交易广播中..",
     "broadcasting_short": "交易广播中..",
@@ -1113,6 +1116,13 @@
     "enter_refcode": "输入推荐码"
   },
   "gateway": {
+    "title": "存款 存款",
+    "history_title": "交易历史",
+    "transaction_history": "显示交易历史",
+    "refresh": "更新",
+    "no_withdrawal":"没有提款",
+    "withdrawal_amount":"取款额",
+    "status":"状态",
     "assets": {
         "open": "<br/><br/>The %(asset)s asset is backed 1:1 by real %(backed)s and can be deposited or withdrawn using the gateway service provided by Openledger.",
         "trade": "<br/><br/>The %(asset)s asset is backed 1:1 by real %(backed)s and can be deposited or withdrawn using the gateway service provided by Blocktrades.",
@@ -1243,6 +1253,11 @@
       "pinned": "别住的",
       "transfer_actions": "转账活动",
       "include_memo": "包括便签",
-      "show_all": "显示所有的资产"
+      "show_all": "显示所有的资产",
+      "click": "",
+      "here": "点击",
+      "to_register": "注册为了存款f",
+      "to_withdrawal": "注册为了提款",
+      "find_an": "找到资产"    
   }
 }

@@ -85,6 +85,12 @@ var Utils = {
     },
 
     format_number: (number, decimals, trailing_zeros = true) => {
+        //@>        
+        if(!number|| !isFinite(number)){
+            return "";
+        }
+        return parseFloat(number).toFixed(decimals);
+        /* 
         if(isNaN(number) || !isFinite(number) || number === undefined || number === null) return "";
         let zeros = ".";
         for (var i = 0; i < decimals; i++) {
@@ -93,7 +99,7 @@ var Utils = {
         let num = numeral(number).format("0,0" + zeros);
         if( num.indexOf('.') > 0 && !trailing_zeros)
            return num.replace(/0+$/,"").replace(/\.$/,"")
-        return num
+        return num*/
     },
 
     format_asset: function(amount, asset, noSymbol, trailing_zeros=true) {
