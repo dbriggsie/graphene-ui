@@ -1,6 +1,7 @@
 (function () {
     'use strict';
 
+    var electron = require('electron');
     var app = require('electron').app;
     var BrowserWindow = require('electron').BrowserWindow;
     var Menu = require("electron").Menu;
@@ -8,6 +9,10 @@
     var devHelper = require('./vendor/electron_boilerplate/dev_helper');
     var windowStateKeeper = require('./vendor/electron_boilerplate/window_state');
     var fs = require('fs');
+
+
+const path = require('path')
+const url = require('url')
 
     var mainWindow;
 
@@ -32,12 +37,35 @@
             mainWindow.maximize();
         }
 
-        mainWindow.loadURL('file://' + __dirname + '/index.html');
+        //mainWindow.loadURL("index.html");
 
-        //if (env.name !== 'production') {
-        //devHelper.setDevMenu();
-        //mainWindow.openDevTools();
-        //}
+
+        let protocol = electron.protocol;
+        protocol.interceptFileProtocol('file', function(req, callback) {
+            let url = req.url.substr(7);
+            console.log('@>11', url, req.url)
+            console.log('@>22', __dirname + url)
+            if(~req.url.indexOf("#/")){
+                callback({ path: path.normalize(__dirname + "/index.html") })
+            }else{
+                callback({ path: path.normalize(__dirname + url) })
+            }
+        }, function(error) {
+            if (error) {
+                console.error('Failed to register protocol')
+            }
+        })
+
+        // and load the index.html of the app.
+        mainWindow.loadURL(url.format({
+            pathname: path.join('index.html'),
+            protocol: 'file:',
+            slashes: true
+        }))
+
+
+
+
 
         mainWindow.on('close', function () {
             mainWindowState.saveState(mainWindow);
