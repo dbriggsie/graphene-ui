@@ -1,4 +1,4 @@
-# 存款 存款 USD EUR
+# 提款和存款手续费
 
 存款Fiat货币到您的OpenLedger账户的时候， 这量出现在您的OpenLedger账户为OPEN.USD或OPEN.EUR。没有任何费用对您或通过代理银行。
 
