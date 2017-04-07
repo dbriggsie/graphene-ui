@@ -43,8 +43,7 @@ const url = require('url')
         let protocol = electron.protocol;
         protocol.interceptFileProtocol('file', function(req, callback) {
             let url = req.url.substr(7);
-            console.log('@>11', url, req.url)
-            console.log('@>22', __dirname + url)
+
             if(~req.url.indexOf("#/")){
                 callback({ path: path.normalize(__dirname + "/index.html") })
             }else{
