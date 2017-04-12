@@ -1249,5 +1249,25 @@
         "to_register": "to register for deposits of",
         "to_withdrawal": "to register for withdrawal of",
         "find_an": "Find an asset"
+    },
+    "popups": {
+      "thanks":"Thanks for subscribe",
+      "input":"please input information",
+      "please_input":"please input",
+      "email_error":"please input correct email",
+      "sign_up":"Sign up for newsletter",
+      "get_latest":"And get latest news about OpenLedger.",
+      "listing":"Listing new coins",
+      "your_name":"your_name",
+      "your_email":"your email",
+      "subscribe":"Subscribe",
+      "add_coin":"Add coin",
+      "contact_person":"contact person",
+      "contact_email":"contact email",
+      "full_name":"the full name of the coin",
+      "link_to":"link to repository",
+      "official_website":"official website",
+      "detailed":"detailed description",
+      "dear_coin":"Dear coin developers or its official representatives, now you have possibility of listing your asset on our exchange. You are to make a request to implement a coin and we will process your request during 2-3 working days."
     }
 }

@@ -1246,7 +1246,7 @@
     }
 
     .main-content{
-      .help-content{
+      .help_padding{
         padding:30px;
       }
     }
@@ -1263,5 +1263,25 @@
         &.success {
             color: $success-color;
         }
+    }
+
+    .popups{
+      .addcoin_text{
+        font-size: 1rem;
+        font-variant: normal;
+        font-family: Arial;
+        text-transform: none;
+      }
+      h6{
+        font-size: 1.3rem;
+      }
+      a{
+        text-decoration: none;
+      }
+    }
+
+    .pointer{
+      cursor: pointer;
+      justify-content: center;
     }
 }

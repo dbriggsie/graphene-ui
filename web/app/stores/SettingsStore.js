@@ -101,6 +101,7 @@ class SettingsStore {
         // and use an object {translate: key} in the defaults array
         let apiServer = settingsAPIs.WS_NODE_LIST;
 
+
         let defaults = {
             locale: [
                 "en",
@@ -112,7 +113,7 @@ class SettingsStore {
                 "tr",
                 "ru"
             ],
-            apiServer: apiServer,
+            apiServer: [],
             unit: [
                 CORE_ASSET,
                 "USD",
@@ -122,26 +123,30 @@ class SettingsStore {
                 "GBP"
             ],
             showSettles: [
-                { translate: "yes" },
-                { translate: "no" }
+                {translate: "yes"},
+                {translate: "no"}
             ],
             showAssetPercent: [
-                { translate: "yes" },
-                { translate: "no" }
+                {translate: "yes"},
+                {translate: "no"}
             ],
             disableChat: [
-                { translate: "yes" },
-                { translate: "no" }
+                {translate: "yes"},
+                {translate: "no"}
             ],
             themes: [
                 "darkTheme",
                 "lightTheme",
                 "olDarkTheme"
             ],
-            traderMode: [
-                false,
-                true
+            passwordLogin: [
+                {translate: "yes"},
+                {translate: "no"}
             ]
+            // confirmMarketOrder: [
+            //     {translate: "confirm_yes"},
+            //     {translate: "confirm_no"}
+            // ]
         };
 
         this.bindListeners({

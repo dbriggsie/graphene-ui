@@ -37,6 +37,19 @@ class InitError extends React.Component {
         SettingsActions.clearSettings();
     }
 
+    componentDidMount() {
+
+        setTimeout(()=>{
+            if (window.electron) {
+                window.location.hash = "";
+                window.remote.getCurrentWindow().reload();
+            } else{
+                window.location.href = "/";
+            } 
+        },5000);
+
+    }
+
     render() {
         let options = this.props.apis.map(entry => {
             let onlyDescription = entry.url.indexOf("fake.automatic-selection") !== -1;

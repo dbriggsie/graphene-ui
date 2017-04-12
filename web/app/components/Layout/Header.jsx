@@ -20,8 +20,15 @@ import { Apis } from "bitsharesjs-ws";
 import notify from "actions/NotificationActions";
 import {ChainStore} from "bitsharesjs/es";
 import SettingsActions from "actions/SettingsActions";
+import IntlActions from "actions/IntlActions";
 
 let logo = '/app/assets/logo.png';
+
+const FlagImage = ({flag, width = 20, height = 20}) => {
+    return <img height={height} width={width} src={"/app/assets/language-dropdown/img/" + flag.toUpperCase() + ".png"} />;
+};
+
+
 
 class Header extends React.Component {
 
@@ -82,6 +89,7 @@ class Header extends React.Component {
             nextProps.current_wallet !== this.props.current_wallet ||
             nextProps.lastMarket !== this.props.lastMarket ||
             nextProps.starredAccounts !== this.props.starredAccounts ||
+            nextProps.currentLocale !== this.props.currentLocale ||
             nextState.active !== this.state.active
         );
     }
@@ -300,6 +308,29 @@ class Header extends React.Component {
             </ActionSheet.Content>
         </ActionSheet>;
 
+
+        const flagDropdown = <ActionSheet>
+            <ActionSheet.Button title="">
+                <a style={{padding: "1rem", border: "none"}} className="button">
+                    <FlagImage flag={this.props.currentLocale} />
+                </a>
+            </ActionSheet.Button>
+            <ActionSheet.Content>
+                <ul className="no-first-element-top-border">
+                    {this.props.locales.map(locale => {
+                        return (
+                            <li key={locale}>
+                                <a href onClick={(e) => {e.preventDefault(); IntlActions.switchLocale(locale);}}>
+                                    <td><FlagImage flag={locale} /></td>
+                                    <td style={{paddingLeft: 10}}><Translate content={"languages." + locale} /></td>
+                                </a>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </ActionSheet.Content>
+        </ActionSheet>;
+
         const enableDepositWithdraw = Apis.instance().chain_id.substr(0, 8) === "4018d784";
 
         return (
@@ -345,6 +376,11 @@ class Header extends React.Component {
                         <div className="grp-menu-item overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>
+
+                        <div className="grp-menu-item overflow-visible" >
+                            {flagDropdown}
+                        </div>
+
                         {!myAccountCount ? null :<div className="grp-menu-item overflow-visible" >
                             {settingsDropdown}
                         </div>}
@@ -369,7 +405,9 @@ export default connect(Header, {
             current_wallet: WalletManagerStore.getState().current_wallet,
             traderMode: SettingsStore.getState().settings.get("traderMode"),
             lastMarket: SettingsStore.getState().viewSettings.get(`lastMarket${chainID ? ("_" + chainID.substr(0, 8)) : ""}`),
-            starredAccounts: SettingsStore.getState().starredAccounts
+            starredAccounts: SettingsStore.getState().starredAccounts,
+            currentLocale: SettingsStore.getState().settings.get("locale"),
+            locales: SettingsStore.getState().defaults.locale
         };
     }
 });

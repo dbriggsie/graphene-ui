@@ -10,6 +10,8 @@ import WalletDb from "stores/WalletDb";
 import TimeAgo from "../Utility/TimeAgo";
 import Icon from "../Icon/Icon";
 
+import Popups from "./Popups";
+
 class Footer extends React.Component {
 
     static propTypes = {
@@ -46,12 +48,12 @@ class Footer extends React.Component {
         return (
             <div className="show-for-medium grid-block shrink footer">
                 <div className="align-justify grid-block">
-                    <div className="grid-block">
+                    <div className="grid-block shrink">
                         <div className="logo">
                             <Translate content="footer.title" /> &nbsp; <span className="version">(Powered by BitShares {APP_VERSION})</span>
                         </div>
                     </div>
-                    <div className="grid-block" id="subscribe" ></div>
+                    <Popups />
                     {this.props.synced ? null : <div className="grid-block shrink txtlabel error"><Translate content="footer.nosync" />&nbsp; &nbsp;</div>}
                     {this.props.rpc_connection_status === "closed" ? <div className="grid-block shrink txtlabel error"><Translate content="footer.connection" />&nbsp; &nbsp;</div> : null}
                     {this.props.backup_recommended ? <span>
@@ -79,14 +81,6 @@ class Footer extends React.Component {
                 </div>
             </div>
         );
-    }
-
-    componentDidMount(){
-        try{
-            window.subscribe();            
-        }catch(err){
-            console.log("subscribe function is exist");
-        }
     }
 
     onBackup() {

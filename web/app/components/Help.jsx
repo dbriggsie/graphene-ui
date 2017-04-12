@@ -14,7 +14,7 @@ class Help extends React.Component {
                     </div>
                 </div>
                 <div className="grid-block small-12 medium-10 main-content">
-                    <div className="grid-content">
+                    <div className="grid-content help_padding">
                         <HelpContent path={path || "index"}/>
                     </div>
                 </div>
