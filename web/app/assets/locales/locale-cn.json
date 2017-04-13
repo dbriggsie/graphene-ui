@@ -1259,5 +1259,25 @@
       "to_register": "注册为了存款f",
       "to_withdrawal": "注册为了提款",
       "find_an": "找到资产"    
-  }
+  },
+  "popups": {
+      "thanks":"感谢您的订阅",
+      "input":"请输入资料",
+      "please_input":"请输入",
+      "email_error":"请输入正确邮箱 ",
+      "sign_up":"订阅简讯 ",
+      "get_latest":"和获得最新的消息关于OpenLedger",
+      "listing":"上币",
+      "your_name":"您的名字",
+      "your_email":"邮箱",
+      "subscribe":"订阅",
+      "add_coin":"上币",
+      "contact_person":"联系人",
+      "contact_email":"联系邮箱",
+      "full_name":"币全称",
+      "link_to":"软件原",
+      "official_website":"官方网站",
+      "detailed":"详细描述",
+      "dear_coin":"敬爱的开发者或官方代表， 现在您有机会上币。您应该申请为了上币，然后对申请作出答复 在2-3工作日中。 "
+    }
 }

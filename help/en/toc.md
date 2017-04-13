@@ -14,6 +14,7 @@
  * [Memberships](accounts/membership.md)
  * [Market Pegged Assets](assets/mpa.md) (BitUSD, BitEUR, BitGOLD, Bit\*,...)
  * [User Issued Assets](assets/uia.md)
+ * [Listing new coins](assets/addcoin.md)
  * [Deposit Withdraw](components/DepositWithdraw_OL)
  * [Privatized BitAssets](assets/privbitassets.md)
  * [Decentralized Exchange](dex/introduction.md)
