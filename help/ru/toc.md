@@ -14,6 +14,7 @@
 - [Членство](accounts/membership.md)
 - [Привязанные к рынку активы](assets/mpa.md) (BitUSD, BitEUR, BitGOLD, Bit\*,...)
 - [Эмитированные пользователем активы](assets/uia.md)
+- [Добавление своей монеты](assets/addcoin.md)
 - [Приватизированные BitAssets](assets/privbitassets.md)
 - [Децентрализованная биржа](dex/introduction.md)
 - [Торговля](dex/trading.md)

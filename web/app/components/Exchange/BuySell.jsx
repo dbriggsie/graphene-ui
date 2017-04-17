@@ -196,7 +196,7 @@ class BuySell extends React.Component {
                                                 <td><Translate content="exchange.balance" />:</td>
                                                 <td style={{paddingLeft: 5, textAlign: "right"}}>
                                                     <span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} onClick={this._addBalance.bind(this, balanceToAdd)}>
-                                                        {utils.format_number(balanceAmount.getAmount({real: true}), balancePrecision)} <AssetName name={balanceSymbol} />
+                                                        {utils.format_number(balanceAmount.getAmount({real: true}), balancePrecision)||"0"} <AssetName name={balanceSymbol} />
                                                     </span>
                                                 </td>
                                           </tr>

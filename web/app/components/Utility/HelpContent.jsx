@@ -55,6 +55,8 @@ class HelpContent extends React.Component {
         req.keys().filter(a => {
             return (
                 a.indexOf(`/${locale}/`) !== -1 ||
+                a.indexOf("/ru/") !== -1 ||
+                a.indexOf("/cn/") !== -1 ||
                 a.indexOf("/en/") !== -1
             );
         }).forEach(function(filename) {
@@ -70,6 +72,12 @@ class HelpContent extends React.Component {
 
     onClickLink(e) {
         e.preventDefault();
+
+        if(~e.target.href.indexOf("/create_asset")&&!__ELECTRON__){
+            window._show_footer_popup();
+            return false;
+        }
+        
         let path = (__HASH_HISTORY__ ? e.target.hash : e.target.pathname).split("/").filter(p => p && p !== "#");
         if (path.length === 0) return false;
         let route = "/" + path.join("/");
@@ -90,13 +98,14 @@ class HelpContent extends React.Component {
     }
     render() {
         let locale = this.props.locale || counterpart.getLocale() || "en";
-
+        console.log('@>',HelpData,locale)
         if (!HelpData[locale]) {
             console.error(`missing locale '${locale}' help files, rolling back to 'en'`);
             locale = "en";
         }
         let value = HelpData[locale][this.props.path];
 
+        console.log('@>',this.props.path)
         if (!value && locale !== "en") {
             console.warn(`missing path '${this.props.path}' for locale '${locale}' help files, rolling back to 'en'`);
             value = HelpData['en'][this.props.path];

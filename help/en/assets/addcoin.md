@@ -1,5 +1,7 @@
 # Listing new coins
 
-Dear coin developers or its official representatives, now you have possibility of listing your asset on our exchange.
+If you want your coin to be listed on OpenLedger Exchange, please fill our form and wait for an answer from our technical department. Usually we process such requests within 2-3 working days.
 
-Coin developer are to report all technical issues with the coin happened in time. Developer is responsible for the case of losing the funds after forks or technical / security issues with node. If you want to receive any additional information, please refer directly to dt@ccedk.com.
+Follow this link and fill the request: [create asset](/create_asset)
+
+In case you'll have any questions please write to support@openledger.info 

@@ -79,8 +79,8 @@ class Popups extends Component {
         for (let i in ob) {
             if (!ob[i]) {
                 error_p += ` ${i}`;
-            }else{
-            	request_p.push(`${i}=${ob[i]}`);
+            } else {
+                request_p.push(`${i}=${ob[i]}`);
             }
         }
 
@@ -136,52 +136,63 @@ class Popups extends Component {
         this.setState({ open: false });
     }
 
+    componentDidMount() {
+
+        if (!__ELECTRON__) {
+            window._show_footer_popup = () => { this.show("addcoin") }
+
+            if (window.location.search == "?addcoin") {
+                this.show("addcoin");
+            }
+        }
+    }
+
     render() {
 
         return (
             <div className="popups grid-block" >
-	            <Modal onClose={this.onClose.bind(this)} id={"subscribe"} overlay={true} className="test">
-	                <Trigger close={"subscribe"}>
-	                    <a href="#" className="close-button">&times;</a>
-	                </Trigger>
-	                <div className="grid-block vertical full-width-content" >
-	                	<div className="content-block">
-	                		<Translate component="h3" content="popups.sign_up"/>
-	                	</div>
-	                	<p className="error" >{this.state.error}</p>
+                <Modal onClose={this.onClose.bind(this)} id={"subscribe"} overlay={true} className="test">
+                    <Trigger close={"subscribe"}>
+                        <a href="#" className="close-button">&times;</a>
+                    </Trigger>
+                    <div className="grid-block vertical full-width-content" >
+                        <div className="content-block">
+                            <Translate component="h3" content="popups.sign_up"/>
+                        </div>
+                        <p className="error" >{this.state.error}</p>
                         <p className="addcoin_text" >{counterpart.translate("popups.get_latest")}</p>
-	                	<form style={{"padding":"30px 0 20px"}} >
-					        <input type="text" ref="subs_name" placeholder={counterpart.translate("popups.your_name")} />
-					        <input type="text" ref="subs_email" placeholder={counterpart.translate("popups.your_email")} />
-					        <input type="button" value={counterpart.translate("popups.subscribe")} className="button" onClick={(e)=>{this.submit_subs(e)}} />
-					        {this.state.answer}					        
-				        </form>
-	                </div>      
-	            </Modal>
-	            <Modal onClose={this.onClose.bind(this)} id={"addcoin"} overlay={true} className="test">
-	                <Trigger close={"addcoin"}>
-	                    <a href="#" className="close-button">&times;</a>
-	                </Trigger>
-	                <div className="grid-block vertical full-width-content" >
-	                	<div className="content-block">
-	                		<Translate component="h3" content="popups.listing"/>
-	                	</div>
-	                	<p className="addcoin_text" >{counterpart.translate("popups.dear_coin")}</p>
-	                	<p className="error" >{this.state.error}</p>
-	                	<form style={{"padding":"10px 0 20px"}} >
-					        <input type="text" ref="personname" placeholder={counterpart.translate("popups.contact_person")}  />
-					        <input type="email" ref="email" placeholder={counterpart.translate("popups.contact_email")} />
-					        <input type="text" ref="coinfullname" placeholder={counterpart.translate("popups.full_name")} />
-					        <input type="text" ref="repository" placeholder={counterpart.translate("popups.link_to")} />
-					        <input type="text" ref="website" placeholder={counterpart.translate("popups.official_website")} />
-					        <textarea ref="details" cols="1" defaultValue={counterpart.translate("popups.detailed")} rows="2"></textarea>
-					        <input type="button" value={counterpart.translate("popups.add_coin")} className="button" onClick={(e)=>{this.add_coin(e)}} />
-					        {this.state.answer}					        
-				        </form>
-	                </div>      
-	            </Modal>	            
-	            <div className="grid-block pointer" onClick={()=>{this.show("subscribe")}} >{counterpart.translate("popups.sign_up")}</div>
-	            <div className="grid-block pointer" onClick={()=>{this.show("addcoin")}} >{counterpart.translate("popups.add_coin")}</div>
+                        <form style={{"padding":"30px 0 20px"}} >
+                            <input type="text" ref="subs_name" placeholder={counterpart.translate("popups.your_name")} />
+                            <input type="text" ref="subs_email" placeholder={counterpart.translate("popups.your_email")} />
+                            <input type="button" value={counterpart.translate("popups.subscribe")} className="button" onClick={(e)=>{this.submit_subs(e)}} />
+                            {this.state.answer}                         
+                        </form>
+                    </div>      
+                </Modal>
+                <Modal onClose={this.onClose.bind(this)} id={"addcoin"} overlay={true} className="test">
+                    <Trigger close={"addcoin"}>
+                        <a href="#" className="close-button">&times;</a>
+                    </Trigger>
+                    <div className="grid-block vertical full-width-content" >
+                        <div className="content-block">
+                            <Translate component="h3" content="popups.listing"/>
+                        </div>
+                        <p className="addcoin_text" >{counterpart.translate("popups.dear_coin")}</p>
+                        <p className="error" >{this.state.error}</p>
+                        <form style={{"padding":"10px 0 20px"}} >
+                            <input type="text" ref="personname" placeholder={counterpart.translate("popups.contact_person")}  />
+                            <input type="email" ref="email" placeholder={counterpart.translate("popups.contact_email")} />
+                            <input type="text" ref="coinfullname" placeholder={counterpart.translate("popups.full_name")} />
+                            <input type="text" ref="repository" placeholder={counterpart.translate("popups.link_to")} />
+                            <input type="text" ref="website" placeholder={counterpart.translate("popups.official_website")} />
+                            <textarea ref="details" cols="1" defaultValue={counterpart.translate("popups.detailed")} rows="2"></textarea>
+                            <input type="button" value={counterpart.translate("popups.add_coin")} className="button" onClick={(e)=>{this.add_coin(e)}} />
+                            {this.state.answer}                         
+                        </form>
+                    </div>      
+                </Modal>                
+                <div className="grid-block pointer" onClick={()=>{this.show("subscribe")}} >{counterpart.translate("popups.sign_up")}</div>
+                <div className="grid-block pointer" onClick={()=>{this.show("addcoin")}} >{counterpart.translate("popups.add_coin")}</div>
             </div>
         );
     }

@@ -423,7 +423,8 @@ class MyMarkets extends React.Component {
 
     add_symbols_tooltip(e){
         if(this.refs[e.target.id].value&&(e.key === 'Tab'||e.key === 'ArrowRight')){
-            if(e.target.id==='symols_tooltip1'){
+            e.target.value = this.refs[e.target.id].value;
+            if(e.target.id==='symols_tooltip1'){                
                 this.setState({
                     lookupQuote: this.refs[e.target.id].value
                 });
@@ -597,11 +598,11 @@ class MyMarkets extends React.Component {
                         {activeTab === "all" ? <div className="symbols_input" >
                             <div>
                             <input ref="symols_tooltip1" className="hide_tooltip" type="text" onChange={(e)=>{}} disabled={true} />
-                            <input ref="symbol_one" id ="symols_tooltip1" type="text" value={this.state.lookupQuote||''} onChange={this._lookupAssets.bind(this)} onKeyDown={this.add_symbols_tooltip.bind(this)} placeholder="CURRENCY 1" />
+                            <input ref="symbol_one" id ="symols_tooltip1" type="text" defaultValue={this.state.lookupQuote||''} onChange={this._lookupAssets.bind(this)} onKeyDown={this.add_symbols_tooltip.bind(this)} placeholder="CURRENCY 1" />
                             </div>
                             {this.state.showBaseTab?<div>
                                 <input ref="symols_tooltip2" className="hide_tooltip" type="text" onChange={(e)=>{}} disabled={true} />
-                                <input ref="symbol_two" id="symols_tooltip2" type="text" value={this.state.lookupBase||''} onChange={this._lookupAssets.bind(this)} onKeyDown={this.add_symbols_tooltip.bind(this)} placeholder="CURRENCY 2" />
+                                <input ref="symbol_two" id="symols_tooltip2" type="text" defaultValue={this.state.lookupBase||''} onChange={this._lookupAssets.bind(this)} onKeyDown={this.add_symbols_tooltip.bind(this)} placeholder="CURRENCY 2" />
                             </div>:null}
                         </div>
                         : null}
