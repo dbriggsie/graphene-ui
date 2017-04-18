@@ -98,14 +98,13 @@ class HelpContent extends React.Component {
     }
     render() {
         let locale = this.props.locale || counterpart.getLocale() || "en";
-        console.log('@>',HelpData,locale)
+
         if (!HelpData[locale]) {
             console.error(`missing locale '${locale}' help files, rolling back to 'en'`);
             locale = "en";
         }
         let value = HelpData[locale][this.props.path];
 
-        console.log('@>',this.props.path)
         if (!value && locale !== "en") {
             console.warn(`missing path '${this.props.path}' for locale '${locale}' help files, rolling back to 'en'`);
             value = HelpData['en'][this.props.path];

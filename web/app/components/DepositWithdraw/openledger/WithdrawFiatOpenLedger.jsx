@@ -90,7 +90,7 @@ class WithdrawFiatOpenLedger extends React.Component {
        return (<form className="grid-block vertical full-width-content">
                  <div className="grid-container">
                    <div className="content-block">
-                      <h3>Withdraw {this.props.deposit_asset}</h3>
+                      <h3> Withdraw {this.props.deposit_asset}</h3>
                    </div>
                    <div className="content-block">
                      <AmountSelector label="modal.withdraw.amount"

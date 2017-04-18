@@ -71,7 +71,7 @@ class WithdrawModal extends React.Component {
        return (<form className="grid-block vertical full-width-content">
                  <div className="grid-container">
                    <div className="content-block">
-                      <h3>Withdraw {this.props.receive_asset_name}({this.props.receive_asset_symbol})</h3>
+                      <h3>1212<Translate content="gateway.withdraw_coin" coin={this.props.receive_asset_name} symbol={this.props.receive_asset_symbol} /></h3>
                    </div>
                    <div className="content-block">
                      <AmountSelector label="modal.withdraw.amount"
