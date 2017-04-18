@@ -1285,4 +1285,11 @@
       cursor: pointer;
       justify-content: center;
     }
+
+    @media screen and (max-height: 678px) {
+      #addcoin{      
+        height: 100%;
+        overflow: auto !important;
+      }
+    }
 }
