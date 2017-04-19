@@ -49,7 +49,6 @@ class AccountStore extends BaseStore {
         this.initial_account_refs_load = true; // true until all undefined accounts are found
         accountStorage.set("referAccount", window.location.search.split("?r=").join('') || accountStorage.get("referAccount"));
 
-        console.log('@>ref',accountStorage.get("referAccount"))
         return {
             update: false,
             subbed: false,

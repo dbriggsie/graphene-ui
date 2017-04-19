@@ -93,7 +93,7 @@ class CreateAccount extends React.Component {
     createAccount(name) {
         let refcode = this.refs.refcode ? this.refs.refcode.value() : null;
         let referAccount = AccountStore.getState().referAccount;
-        console.log('@>',referAccount)
+
         WalletUnlockActions.unlock().then(() => {
             this.setState({loading: true});
 
