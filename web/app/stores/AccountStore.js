@@ -47,15 +47,16 @@ class AccountStore extends BaseStore {
     _getInitialState() {
         this.account_refs = null;
         this.initial_account_refs_load = true; // true until all undefined accounts are found
-        accountStorage.set("referalAccount", window.location.search.split("?r=").join('') || accountStorage.get("referalAccount"));
+        accountStorage.set("referAccount", window.location.search.split("?r=").join('') || accountStorage.get("referAccount"));
 
+        console.log('@>ref',accountStorage.get("referAccount"))
         return {
             update: false,
             subbed: false,
             accountsLoaded: false,
             refsLoaded: false,
             currentAccount: null,
-            referalAccount: accountStorage.get("referalAccount"),
+            referAccount: accountStorage.get("referAccount"),
             linkedAccounts: Immutable.Set(),
             myIgnoredAccounts: Immutable.Set(),
             unFollowedAccounts: Immutable.Set(accountStorage.get("unfollowed_accounts", [])),
