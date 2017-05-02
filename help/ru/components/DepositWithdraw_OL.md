@@ -22,7 +22,7 @@
 |Dogecoin |  `  `  | DOGE |  `  `  |1.00000 |
 |EmerCoin |  `  `  | EMC |  `  `  |0.30000 |
 |Ether |  `  `  | ETH |  `  `  |0.00150 |
-|EUR Tether |  `  `  | USDT |  `  `  |0.00032 |
+|EUR Tether |  `  `  | EURT |  `  `  |0.00032 |
 |GameCredits |  `  `  | GAME |  `  `  |0.00010 |
 |GridCoin |  `  `  | GRC |  `  `  |0.00020 |
 |Incent |  `  `  | INCNT |  `  `  |0.00100 |
