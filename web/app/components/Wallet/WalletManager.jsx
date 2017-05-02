@@ -6,6 +6,10 @@ import WalletManagerStore from "stores/WalletManagerStore";
 import Translate from "react-translate-component";
 import cname from "classnames";
 import counterpart from "counterpart";
+import AccountStore from 'stores/AccountStore';
+
+import AccountActions from "actions/AccountActions";
+import notify from "actions/NotificationActions";
 
 const connectObject = {
     listenTo() {
@@ -221,7 +225,7 @@ class ChangeActiveWallet extends Component {
             <div
                 className="button outline"
                 onClick={this.onConfirm.bind(this)}
-            >
+            > 
                 <Translate content="wallet.change" name={this.state.current_wallet} />
             </div>) : null}
 
@@ -231,6 +235,20 @@ class ChangeActiveWallet extends Component {
 
     onConfirm() {
         WalletActions.setWallet(this.state.current_wallet);
+        setTimeout(()=>{
+            let account_name = AccountStore.getMyAccounts()[0];
+
+            if (account_name !== this.props.currentAccount) {
+                AccountActions.setCurrentAccount.defer(account_name);
+                notify.addNotification({
+                    message: counterpart.translate("header.account_notify", {account: account_name}),
+                    level: "success",
+                    autoDismiss: 3
+                });
+            }
+
+
+        },500)
         // if (window.electron) {
         //     window.location.hash = "";
         //     window.remote.getCurrentWindow().reload();

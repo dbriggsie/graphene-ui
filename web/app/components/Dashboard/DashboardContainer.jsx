@@ -24,6 +24,9 @@ class DashboardContainer extends React.Component {
                     linkedAccounts: () => {
                         return AccountStore.getState().linkedAccounts;
                     },
+                    my_accounts: () => {
+                        return AccountStore.getMyAccounts();
+                    },
                     myIgnoredAccounts: () => {
                         return AccountStore.getState().myIgnoredAccounts;
                     },
@@ -44,6 +47,9 @@ class DashboardContainer extends React.Component {
                     },
                     accountsReady: () => {
                         return AccountStore.getState().accountsLoaded && AccountStore.getState().refsLoaded;
+                    },
+                    passwordAccount: () => {
+                        return AccountStore.getState().passwordAccount;
                     },
                     lowVolumeMarkets: () => {
                         return MarketsStore.getState().lowVolumeMarkets;

@@ -176,7 +176,7 @@ module.exports = function() {
                 },
                 {
                     test: /\.png$/,
-                    exclude:[path.resolve(root_dir, "app/assets/asset-symbols")],
+                    exclude:[path.resolve(root_dir, "app/assets/asset-symbols"), path.resolve(root_dir, "app/assets/language-dropdown/img")],
                     use: [
                         {
                             loader: "url-loader",

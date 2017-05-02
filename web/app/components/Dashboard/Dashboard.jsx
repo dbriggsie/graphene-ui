@@ -7,6 +7,8 @@ import MarketCard from "./MarketCard";
 import utils from "common/utils";
 import { Apis } from "bitsharesjs-ws";
 import LoadingIndicator from "../LoadingIndicator";
+import SettingsActions from "actions/SettingsActions";
+import WalletUnlockActions from "actions/WalletUnlockActions";
 
 
 class Dashboard extends React.Component {
@@ -67,6 +69,7 @@ class Dashboard extends React.Component {
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
             // nextProps.marketStats !== this.props.marketStats ||
             nextProps.ignoredAccounts !== this.props.ignoredAccounts ||
+            nextProps.passwordAccount !== this.props.passwordAccount ||
             nextState.width !== this.state.width ||
             nextProps.accountsReady !== this.props.accountsReady ||
             nextState.showIgnored !== this.state.showIgnored
@@ -150,12 +153,14 @@ class Dashboard extends React.Component {
     // }
 
     render() {
-        let { linkedAccounts, myIgnoredAccounts, accountsReady,traderMode } = this.props;
+
+        let { linkedAccounts, myIgnoredAccounts, accountsReady, passwordAccount, traderMode } = this.props;
         let {width, showIgnored, featuredMarkets, newAssets} = this.state;
         let names = linkedAccounts.toArray().sort();
+        if (passwordAccount && names.indexOf(passwordAccount) === -1) names.push(passwordAccount);
         let ignored = myIgnoredAccounts.toArray().sort();
 
-        let accountCount = linkedAccounts.size + myIgnoredAccounts.size;
+        let accountCount = linkedAccounts.size + myIgnoredAccounts.size + (passwordAccount ? 1 : 0);
 
         if (!accountsReady) {
             return <LoadingIndicator />;
@@ -202,9 +207,17 @@ class Dashboard extends React.Component {
                                 <Translate unsafe content="account.intro_text_2" component="p" />
                                 <Translate unsafe content="account.intro_text_3" component="p" />
                                 <Translate unsafe content="account.intro_text_4" component="p" />
+                                <div className="button-group">
+                                    <div className="button create-account" onClick={() => {this.props.router.push("create-account");}}>
+                                        <Translate content="account.create_new" />
+                                    </div>
 
-                                <div className="button create-account" onClick={() => {this.props.router.push("create-account");}}>
-                                    <Translate content="header.create_account" />
+                                    <div className="button create-account" onClick={() => {
+                                        SettingsActions.changeSetting({setting: "passwordLogin", value: true});
+                                        WalletUnlockActions.unlock.defer();
+                                    }}>
+                                        <Translate content="account.password_login" />
+                                    </div>
                                 </div>
                             </div>
                         </div>

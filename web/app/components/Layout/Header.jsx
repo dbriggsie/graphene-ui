@@ -18,6 +18,7 @@ import TotalBalanceValue from "../Utility/TotalBalanceValue";
 import ReactTooltip from "react-tooltip";
 import { Apis } from "bitsharesjs-ws";
 import notify from "actions/NotificationActions";
+import AccountImage from "../Account/AccountImage";
 import {ChainStore} from "bitsharesjs/es";
 import SettingsActions from "actions/SettingsActions";
 import IntlActions from "actions/IntlActions";
@@ -27,8 +28,6 @@ let logo = '/app/assets/logo.png';
 const FlagImage = ({flag, width = 20, height = 20}) => {
     return <img height={height} width={width} src={"/app/assets/language-dropdown/img/" + flag.toUpperCase() + ".png"} />;
 };
-
-
 
 class Header extends React.Component {
 
@@ -85,6 +84,7 @@ class Header extends React.Component {
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
             nextProps.traderMode !== this.props.traderMode ||
             nextProps.currentAccount !== this.props.currentAccount ||
+            nextProps.passwordLogin !== this.props.passwordLogin ||
             nextProps.locked !== this.props.locked ||
             nextProps.current_wallet !== this.props.current_wallet ||
             nextProps.lastMarket !== this.props.lastMarket ||
@@ -101,8 +101,13 @@ class Header extends React.Component {
 
     _toggleLock(e) {
         e.preventDefault();
-        if (WalletDb.isLocked()) WalletUnlockActions.unlock();
-        else WalletUnlockActions.lock();
+        if (WalletDb.isLocked()) {
+            WalletUnlockActions.unlock().then(() => {
+                AccountActions.tryToSetCurrentAccount();
+            });
+        } else {
+            WalletUnlockActions.lock();
+        }
     }
 
     _onNavigate(route, e) {
@@ -162,11 +167,11 @@ class Header extends React.Component {
 
     render() {
         let {active} = this.state;
-        let {linkedAccounts, currentAccount, starredAccounts, traderMode} = this.props;
+        let {linkedAccounts, currentAccount, starredAccounts, traderMode, passwordLogin} = this.props;
+
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
         let tradingAccounts = AccountStore.getMyAccounts();
-        let myAccountCount = tradingAccounts.length;
 
         if (starredAccounts.size) {
             for (let i = tradingAccounts.length - 1; i >= 0; i--) {
@@ -183,6 +188,7 @@ class Header extends React.Component {
 
 
         let myAccounts = AccountStore.getMyAccounts();
+        let myAccountCount = myAccounts.length;
 
         let walletBalance = myAccounts.length && this.props.currentAccount ? (
                             <div className="grp-menu-item header-balance">
@@ -208,7 +214,31 @@ class Header extends React.Component {
             </ActionSheet.Button>
         ) : null;
 
-        let lock_unlock = (this.props.current_wallet && myAccountCount) ? (
+        //@>
+        let login_with_password = myAccountCount === 0 ? (
+            <ActionSheet.Button title="" setActiveState={() => {}}>
+                <a className="button create-account" 
+                    onClick={() => {
+                            SettingsActions.changeSetting({setting: "passwordLogin", value: true});
+                            WalletUnlockActions.unlock.defer();
+                        }} 
+                    style={{padding: "1rem", border: "none"}} >
+                    <Icon className="icon-14px" name="key"/> <Translate content="header.login" />
+                </a>
+            </ActionSheet.Button>
+        ) : null;
+
+        /*
+                                <div className="grp-menu-item overflow-visible" onClick={() => {
+                            SettingsActions.changeSetting({setting: "passwordLogin", value: true});
+                            WalletUnlockActions.unlock.defer();
+                        }}>
+                            <span><Translate content="header.settings" /></span>
+                        </div>
+
+        */
+
+        let lock_unlock = ((this.props.current_wallet && myAccountCount) || passwordLogin) ? (
             <div className="grp-menu-item" >
             { this.props.locked ?
                 <a style={{padding: "1rem"}} href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={locked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="locked"/></a>
@@ -233,7 +263,6 @@ class Header extends React.Component {
             if (tradingAccounts.indexOf(currentAccount) < 0) {
                 tradingAccounts.push(currentAccount);
             }
-
             if (tradingAccounts.length >= 1) {
                 accountsList = tradingAccounts
                 .sort()
@@ -241,7 +270,8 @@ class Header extends React.Component {
                     return (
                         <li className={name === account_display_name ? "current-account" : ""} key={name}>
                             <a href onClick={this._accountClickHandler.bind(this, name)}>
-                                <span>{name}</span>
+                                <td><AccountImage style={{position: "relative", top: 5}} size={{height: 20, width: 20}} account={name}/></td>
+                                <td style={{paddingLeft: 10}}><span>{name}</span></td>
                             </a>
                         </li>
                     );
@@ -254,14 +284,16 @@ class Header extends React.Component {
         tradingAccounts.length === 1 ?
         (<ActionSheet.Button title="" setActiveState={() => {}}>
             <a onClick={this._accountClickHandler.bind(this, account_display_name)} style={{cursor: "default", padding: "1rem", border: "none"}} className="button">
-                <Icon className="icon-14px" name="user"/> {account_display_name}
+                <td><AccountImage style={{display: "inline-block"}} size={{height: 20, width: 20}} account={account_display_name}/></td>
+                <td style={{paddingLeft: 5}}><div className="inline-block"><span>{account_display_name}</span></div></td>
             </a>
         </ActionSheet.Button>) :
 
         (<ActionSheet>
             <ActionSheet.Button title="">
                 <a style={{padding: "1rem", border: "none"}} className="button">
-                    <Icon className="icon-14px" name="user"/> {account_display_name}
+                    <td><AccountImage style={{display: "inline-block"}} size={{height: 20, width: 20}} account={account_display_name}/></td>
+                    <td style={{paddingLeft: 5}}><div className="inline-block"><span>{account_display_name}</span></div></td>
                 </a>
             </ActionSheet.Button>
             {tradingAccounts.length > 1 ?
@@ -307,7 +339,6 @@ class Header extends React.Component {
                 </ul>
             </ActionSheet.Content>
         </ActionSheet>;
-
 
         const flagDropdown = <ActionSheet>
             <ActionSheet.Button title="">
@@ -364,6 +395,7 @@ class Header extends React.Component {
                         {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                     </ul>
                 </div>
+
                 <div className="grid-block show-for-medium shrink">
                     <div className="grp-menu-items-group header-right-menu">
 
@@ -373,18 +405,23 @@ class Header extends React.Component {
                             {settingsDropdown}
                         </div>}
 
+                        <div className="grp-menu-item overflow-visible" >
+                            {flagDropdown}
+                        </div>
+
                         <div className="grp-menu-item overflow-visible account-drop-down">
                             {accountsDropDown}
                         </div>
 
-                        <div className="grp-menu-item overflow-visible" >
-                            {flagDropdown}
+                        <div className="grp-menu-item overflow-visible account-drop-down">
+                            {login_with_password}
                         </div>
 
                         {!myAccountCount ? null :<div className="grp-menu-item overflow-visible" >
                             {settingsDropdown}
                         </div>}
-                        {lock_unlock}
+
+                        {!myAccountCount ? null : lock_unlock}
                     </div>
                 </div>
             </div>
@@ -400,14 +437,16 @@ export default connect(Header, {
         const chainID = Apis.instance().chain_id;
         return {
             linkedAccounts: AccountStore.getState().linkedAccounts,
-            currentAccount: AccountStore.getState().currentAccount,
+            currentAccount: AccountStore.getState().currentAccount || AccountStore.getState().passwordAccount,
             locked: WalletUnlockStore.getState().locked,
             current_wallet: WalletManagerStore.getState().current_wallet,
             traderMode: SettingsStore.getState().settings.get("traderMode"),
             lastMarket: SettingsStore.getState().viewSettings.get(`lastMarket${chainID ? ("_" + chainID.substr(0, 8)) : ""}`),
             starredAccounts: SettingsStore.getState().starredAccounts,
+            passwordLogin: SettingsStore.getState().settings.get("passwordLogin"),
             currentLocale: SettingsStore.getState().settings.get("locale"),
-            locales: SettingsStore.getState().defaults.locale
+            locales: SettingsStore.getState().defaults.locale,
+            my_accounts:AccountStore.getMyAccounts()
         };
     }
 });

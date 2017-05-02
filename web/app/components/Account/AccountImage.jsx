@@ -1,17 +1,34 @@
-import React from "react";
+import React, { Component, PropTypes } from "react";
 import Identicon from "./Identicon";
 
-const AccountImage = ({account, image, size = {height: 120, width: 120}}) => {
+class AccountImage extends Component {
+    render() {
+        let {account, image, style} = this.props;
+        let {height, width} = this.props.size;
+        let custom_image = image ?
+            <img src={image} height={height + "px"} width={width + "px"}/> :
+            <Identicon id={account} account={account} size={this.props.size}/>;
 
-    const custom_image = image ?
-        <img src={image} height={size.height + "px"} width={size.width + "px"}/> :
-        <Identicon id={account} account={account} size={size}/>;
+        return (
+            <div style={style} className="account-image">
+                {custom_image}
+            </div>
+        );
+    }
+}
 
-    return (
-        <div className="account-image">
-            {custom_image}
-        </div>
-    );
+AccountImage.defaultProps = {
+    src: "",
+    account: "",
+    size: {height: 120, width: 120},
+    style: {}
+};
+
+AccountImage.propTypes = {
+    src: PropTypes.string,
+    account: PropTypes.string,
+    size: PropTypes.object.isRequired,
+    style: PropTypes.object
 };
 
 export default AccountImage;

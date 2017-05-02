@@ -580,7 +580,7 @@ class SimpleTradeContent extends React.Component {
             <div className="SimpleTrade__modal">
                 <div className="Modal__header">
                     {isBuy ?
-                        <h3><Translate content="simple_trade.buy_with" buy={assetName} with={activeAssetName} /></h3> :
+                        <h3><Translate content="simple_trade.buy_with" buy={assetName} /></h3> :
                         <h3><Translate content="simple_trade.sell_for" sell={assetName} for={activeAssetName} /></h3>
                     }
 

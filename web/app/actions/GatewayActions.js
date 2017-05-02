@@ -1,5 +1,7 @@
 import alt from "alt-instance";
-import { fetchCoins, getBackedCoins, getActiveWallets } from "common/blockTradesMethods";
+import { fetchCoins, fetchBridgeCoins, getBackedCoins, getActiveWallets } from "common/blockTradesMethods";
+
+let inProgress = {};
 
 class GatewayActions {
 
@@ -17,6 +19,29 @@ class GatewayActions {
                 });
             });
         };
+    }
+
+    fetchBridgeCoins(url = undefined) {
+        if (!inProgress["fetchBridgeCoins"]) {
+            inProgress["fetchBridgeCoins"] = true;
+            return (dispatch) => {
+                Promise.all([
+                    fetchCoins(url),
+                    fetchBridgeCoins(url),
+                    getActiveWallets(url)
+                ]).then(result => {
+                    delete inProgress["fetchBridgeCoins"];
+                    let [coins, bridgeCoins, wallets] = result;
+                    dispatch({
+                        coins,
+                        bridgeCoins,
+                        wallets
+                    });
+                });
+            };
+        } else {
+            return {};
+        }
     }
 }
 

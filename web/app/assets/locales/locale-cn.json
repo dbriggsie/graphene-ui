@@ -24,6 +24,7 @@
     "settings": "设置",
     "current": "当前账户",
     "create_account": "创建账户",
+    "login": "登录",
     "create_asset": "创建资产",
     "update_asset": "更新资产",
     "lock": "锁定钱包",
@@ -226,7 +227,16 @@
       "show": "显示",
       "brain": "脑钱包位置",
       "from": "已从账户导入",
-      "sign_owner": "已所有者身份签名"
+      "sign_owner": "已所有者身份签名",
+      "password_model": "Account model",
+      "password_model_1": "If you want to be able to login from anywhere using only your password, you can use this page to add new keys to your permissions. If you also want to remove the original keys, you can do so in the active/owner permissions tabs.",
+      "password_model_2": "Add password generated keys",
+      "new_active": "New active key",
+      "new_owner": "New owner key",
+      "new_memo": "New memo key",
+      "memo_warning": "WARNING: If you replace the memo key you will be unable to read old memos when logging in with your password, and unless you import the new memo private key into your old wallet that wallet will be unable to decode new memos",
+      "use_text": "Use",
+      "remove_text": "Remove"
     },
     "votes": {
       "proxy_current": "Your current proxy is",
@@ -753,6 +763,7 @@
     }
   },
   "settings": {
+    "passwordLogin": "Login using the account model",
     "inverseMarket": "市场交易对视角",
     "unit": "显示记账单位",
     "confirmMarketOrder": "市场订单要求确认",
@@ -910,7 +921,11 @@
     "settings": "图表选项",
     "featured": "热门市场",
     "new": "新增",
-    "market_frozen": "%(asset)s 资产发行人已禁用该资产的市场交易"
+    "market_frozen": "%(asset)s 资产发行人已禁用该资产的市场交易",
+    "show_star_1": "Show",
+    "show_star_2": "only",
+    "base": "Base currency:",
+    "search": "Search for more markets here"
   },
   "markets": {
     "title": "交易所",
@@ -1048,8 +1063,31 @@
     "tips_header": "这些链接也可以在页面顶部，或者右上方账户名右侧的下拉菜单中找到。",
     "tips_login": "重要！这里没有登录/注销的概念和功能，当你需要发生交易时解锁钱包，闲置或者手动选择进行钱包锁定。",
     "import_key_success": "已成功导入 %(count)s 个密钥。",
-    "account_public": "Account Name (Public)",
-    "current_pass": "Current password"
+    "wallet_password": "登录用密码",
+    "password_lose_warning": "<strong> 注意:您如果忘了密码的话那么不可以 访问到账户。我们不可以卸载或恢复您的密码！ 请获得证实您记住了或记录了密码！</strong>",
+    "password_crucial": "极重要现在 您记录密码。如果您忘了密码的话那么不可以 访问到账户. <strong>我们不可以恢复密码</strong>.",
+    "password_show": "显示我的密码",
+    "tips_explore_pass": "现在您创建帐号和备份密码拷贝的时候你就可以开始。点击链接左边为了开始研究。",
+    "create_account_password_text": "您接到账户密钥用您的密码。<strong>我们不存在中央服务器或浏览器因此您需要记住密码吧！</strong>",
+    "create_password": "创建新的账户用密码",
+    "login_type": "选择登录方式",
+    "wallet_model": "钱包方式",
+    "wallet_model_sub": "Bin文件或brainkey",
+    "password_model": "账户方式",
+    "password_model_sub": "登录名和密码",
+    "wallet_model_1": ".钱包方式存在钱包在您的浏览器。钱包翻成您的密码并且有机会创造备份拷贝用brainkey 或加密bin文件有私人钥匙。",
+    "wallet_model_2": "钱包方式有高度的安全但在您的浏览器和电脑方面限制您。为了转钱包到别的浏览器或电脑， 请用备份拷贝或brainkey。",
+    "wallet_model_3": "<li>一些账户 </li><li>需要钱包备份</li><li>高度的安全 </li>",
+    "password_model_1": ". 账户方式用密码跟您的账户名为了即可生成您的私人钥匙。",
+    "password_model_2": "无论从哪里来您可以登录用只您的账户名和密码但<strong>这个方式有脆弱点brute-force 所以您应该用很长的密码。强烈推荐20+符号。</strong>",
+    "password_model_3": "<li>统一的账户</li><li>容易登录</li><li>适度的安全 </li>",
+    "use_wallet": "用钱包方式",
+    "use_password": "用账户方式",
+    "pass_length": "密码至少需要%(minLength)s标志我们介绍用密码20或更多标志包括数字，专用字符和字母。 ",
+    "switch_model_wallet": "改用钱包方式",
+    "switch_model_password": "改用账户方式",
+    "account_public": "账户名 (公开)",
+    "current_pass": "您没有钱包" 
   },
   "borrow": {
     "title": "%(asset_symbol)s 保证金头寸",
@@ -1153,6 +1191,8 @@
       "open_website": "访问官网"
     },
     "generate_new": "生成新地址",
+    "copy_address": "复制钱包地址",
+    "copy_memo": "复制memo",
     "calc": "计算中",
     "website": "访问网站",
     "withdraw_now": "提现",
@@ -1177,7 +1217,10 @@
     "bridge_text": "桥接能让你将一种资产转变成另一种资产，比如从 BTC 转换到 BTS。",
     "gateway_text": "网关能让你将BitShares中的资产与外部资产进行互换，比如OPEN.BTC到BTC。",
     "fiat_text": "法币的冲提现服务由CCEDK提供。你必须先行在CCEDK上进行账户注册。下面是支持的货币：",
-    "service": "转账服务"
+    "service": "转账服务",
+    "purchase": "Purchase %(asset)s",
+    "purchase_1": "Quickly and easily purchase %(outputAsset)s using %(inputAsset)s from an external wallet. This service is provided by <a href='https://blocktrades.us/' target='blank' rel='noopener noreferrer'>Blocktrades</a>",
+    "deposit_limit": "Deposit limit"
   },
   "propose": "提议",
   "cancel": "取消",

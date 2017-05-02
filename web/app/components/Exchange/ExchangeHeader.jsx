@@ -39,7 +39,16 @@ export default class ExchangeHeader extends React.Component {
             lowestCallPrice,
             marketReady,
             latestPrice,
-            marketStats
+            currentPeriod,
+            marketStats,
+            showDepthChart,
+            buckets,
+            bucketSize,
+            showIndicators,
+            onBorrowBase,
+            onBorrowQuote,
+            indicators,
+            indicatorSettings
         } = this.props;
 
         const baseSymbol = baseAsset.get("symbol");
@@ -74,8 +83,8 @@ export default class ExchangeHeader extends React.Component {
 					)}
 				</div>
 
-				<div className="grid-block vertical" >
-						<div className="grid-block show-for-medium wrap" >
+					<div className="grid-block vertical" style={{overflow: "visible"}}>
+						<div className="grid-block wrap market-stats-container">
 							<ul className="market-stats stats top-stats">
 								{latestPrice ? <PriceStat ready={marketReady} price={latestPrice.full} quote={quoteAsset} base={baseAsset} content="exchange.latest"/> : null}
 								<li className="stat" >

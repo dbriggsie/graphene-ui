@@ -2,6 +2,7 @@ import BaseStore from "./BaseStore";
 import Immutable from "immutable";
 import alt from "alt-instance";
 import AccountActions from "actions/AccountActions";
+import SettingsActions from "actions/SettingsActions";
 import iDB from "idb-instance";
 import PrivateKeyStore from "./PrivateKeyStore";
 import { ChainStore, ChainValidation, FetchChain } from "bitsharesjs/es";
@@ -29,8 +30,12 @@ class AccountStore extends BaseStore {
             onLinkAccount: AccountActions.linkAccount,
             onUnlinkAccount: AccountActions.unlinkAccount,
             onAccountSearch: AccountActions.accountSearch,
+            tryToSetCurrentAccount: AccountActions.tryToSetCurrentAccount,
+            onSetPasswordAccount: AccountActions.setPasswordAccount,
+            onChangeSetting: SettingsActions.changeSetting
             // onNewPrivateKeys: [ PrivateKeyActions.loadDbData, PrivateKeyActions.addKey ]
         });
+
         this._export(
             "loadDbData",
             "tryToSetCurrentAccount",
@@ -55,13 +60,26 @@ class AccountStore extends BaseStore {
             accountsLoaded: false,
             refsLoaded: false,
             currentAccount: null,
-            referAccount: accountStorage.get("referAccount"),
+            referAccount: accountStorage.get("referAccount",""),
+            passwordAccount: accountStorage.get(this._getCurrentAccountKey("passwordAccount"), ""),
             linkedAccounts: Immutable.Set(),
             myIgnoredAccounts: Immutable.Set(),
             unFollowedAccounts: Immutable.Set(accountStorage.get("unfollowed_accounts", [])),
             searchAccounts: Immutable.Map(),
             searchTerm: ""
         };
+    }
+
+    onSetPasswordAccount(account) {
+        let key = this._getCurrentAccountKey("passwordAccount");
+        if (!account) {
+            accountStorage.remove(key);
+        } else {
+            accountStorage.set(key, account);
+        }
+        this.setState({
+            passwordAccount: account
+        });
     }
 
     _addIgnoredAccount(name) {
@@ -73,6 +91,7 @@ class AccountStore extends BaseStore {
     loadDbData() {
         let linkedAccounts = Immutable.Set().asMutable();
         let chainId = Apis.instance().chain_id;
+
         return new Promise((resolve, reject) => {
             iDB.load_data("linked_accounts")
                 .then(data => {
@@ -179,8 +198,8 @@ class AccountStore extends BaseStore {
             }
 
             // console.log("account:", account_name, "auth:", auth);
-
         }
+        if (this.state.passwordAccount && accounts.indexOf(this.state.passwordAccount) === -1) accounts.push(this.state.passwordAccount);
         // console.log("accounts:", accounts, "linkedAccounts:", this.state.linkedAccounts && this.state.linkedAccounts.toJS());
         return accounts.sort();
     }
@@ -265,14 +284,19 @@ class AccountStore extends BaseStore {
         });
     }
 
-    _getCurrentAccountKey() {
+    _getCurrentAccountKey(key = "currentAccount") {
         const chainId = Apis.instance().chain_id;
-        return "currentAccount" + (chainId ? `_${chainId.substr(0, 8)}` : "");
+        return key + (chainId ? `_${chainId.substr(0, 8)}` : "");
     }
 
     tryToSetCurrentAccount() {
+        const passwordAccountKey = this._getCurrentAccountKey("passwordAccount");
         const key = this._getCurrentAccountKey();
-        if (accountStorage.has(key)) {
+        if (accountStorage.has(passwordAccountKey)) {
+            const acc = accountStorage.get(passwordAccountKey, null);
+            this.setState({passwordAccount: acc});
+            return this.setCurrentAccount(acc);
+        } else if (accountStorage.has(key)) {
             return this.setCurrentAccount(accountStorage.get(key, null));
         }
 
@@ -286,6 +310,7 @@ class AccountStore extends BaseStore {
     }
 
     setCurrentAccount(name) {
+        if (this.state.passwordAccount) name = this.state.passwordAccount;
         const key = this._getCurrentAccountKey();
         if (!name) {
             this.state.currentAccount = null;
@@ -394,6 +419,13 @@ class AccountStore extends BaseStore {
 
     isMyKey(key) {
         return PrivateKeyStore.hasKey(key);
+    }
+
+    onChangeSetting(payload) {
+        if (payload.setting === "passwordLogin" && payload.value === false) {
+            this.onSetPasswordAccount(null);
+            accountStorage.remove(this._getCurrentAccountKey());
+        }
     }
 }
 

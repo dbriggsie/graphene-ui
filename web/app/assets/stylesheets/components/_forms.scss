@@ -49,15 +49,24 @@ div.account-image {
     }
 }
 
+.asset-selector {
+    .error-area {
+        position: absolute;
+    }
+}
 .account-selector, .pubkey-input {
   clear: right;
   input {
     display: block;
     flex: auto;
   }
+
+  .header-area {
+      margin-left: 3.5rem;
+  }
   .error-area {
       position: absolute;
-      padding-left: 3.8rem;
+      padding-left: 3.5rem;
   }
   .account-image {
     float: left;
@@ -253,4 +262,10 @@ div.ok-indicator {
     position: absolute;
     top: 11px;
     right: 10px;
+}
+
+div.dropdown-wrapper.upper-case {
+    > div, > ul > li {
+        text-transform: uppercase;
+    }
 }

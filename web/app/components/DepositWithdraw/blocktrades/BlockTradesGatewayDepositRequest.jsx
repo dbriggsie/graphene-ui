@@ -13,6 +13,7 @@ import AssetName from "components/Utility/AssetName";
 import LinkToAccountById from "components/Blockchain/LinkToAccountById";
 import {requestDepositAddress} from "common/blockTradesMethods";
 import { blockTradesAPIs } from "api/apiConfig";
+import counterpart from "counterpart";
 
 class BlockTradesGatewayDepositRequest extends React.Component {
     static propTypes = {
@@ -248,8 +249,12 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                                 </tbody>
                             </table>
                             <div className="button-group" style={{paddingTop: 10}}>
-                                {deposit_address_fragment ? <div className="button" onClick={this.toClipboard.bind(this, clipboardText)}>Copy address</div> : null}
-                                {memoText ? <div className="button" onClick={this.toClipboard.bind(this, memoText)}>Copy memo</div> : null}
+                                {deposit_address_fragment ? <div className="button" onClick={this.toClipboard.bind(this, clipboardText)}>
+                                    <Translate content="gateway.copy_address" />
+                                </div> : null}
+                                {memoText ? <div className="button" onClick={this.toClipboard.bind(this, memoText)}>
+                                    <Translate content="gateway.copy_memo" />
+                                </div> : null}
                                 <button className={"button"} onClick={requestDepositAddress.bind(null, this._getDepositObject())}><Translate content="gateway.generate_new" /></button>
                             </div>
                         </div>

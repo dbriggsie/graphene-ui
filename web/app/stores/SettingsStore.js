@@ -2,7 +2,7 @@ import alt from "alt-instance";
 import SettingsActions from "actions/SettingsActions";
 import IntlActions from "actions/IntlActions";
 import Immutable from "immutable";
-import { merge } from "lodash";
+import {merge} from "lodash";
 import ls from "common/localStorage";
 import { Apis } from "bitsharesjs-ws";
 import { settingsAPIs } from "api/apiConfig";
@@ -12,47 +12,52 @@ const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when 
 const STORAGE_KEY = "__graphene__";
 let ss = new ls(STORAGE_KEY);
 
-let marketsList = [
-    "BLOCKPAY",
-    "BROWNIE.PTS",
-    "BTS",
-    "BTWTY",
-    "CNY",
-    "EUR",
-    "USD",
-    "BTSR",
-    "ICOO",
-    "OBITS",
-    "OPEN.ARDR",
-    "OBITS.WARRANT",
-    "OPEN.BTC",
-    "OPEN.CNY",
-    "OPEN.DASH",
-    "OPEN.DCT",
-    "OPEN.DGD",
-    "OPEN.DOGE",
-    "OPEN.BKS",
-    "OPEN.ETH",
-    "OPEN.EUR",
-    "OPEN.EURT",
-    "OPEN.GAME",
-    "OPEN.GRC",
-    "OPEN.HEAT",
-    "OPEN.INCNT",
-    "OPEN.LISK",
-    "OPEN.LTC",
-    "OPEN.MAID",
-    "OPEN.MKR",
-    "OPEN.MUSE",
-    "OPEN.NXC",
-    "OPEN.OMNI",
-    "OPEN.STEEM",
-    "OPEN.USD",
-    "OPEN.USDT",
-    "OPEN.WAVES",
-    "SHAREBITS",
-    "SOLCERT",
-    "HEMPSWEET"
+let marketsList = [  
+   "BLOCKPAY",
+   "BROWNIE.PTS",
+   "BTS",
+   "BTWTY",
+   "CNY",
+   "EUR",
+   "USD",
+   "BTSR",
+   "ICOO",
+   "OBITS",
+   "OPEN.ARDR",
+   "OBITS.WARRANT",
+   "OPEN.BTC",
+   "OPEN.CNY",
+   "OPEN.DASH",
+   "OPEN.DCT",
+   "OPEN.DGD",
+   "OPEN.DOGE",
+   "OPEN.BKS",
+   "OPEN.ETH",
+   "OPEN.EUR",
+   "OPEN.EURT",
+   "OPEN.GAME",
+   "OPEN.GRC",
+   "OPEN.HEAT",
+   "OPEN.INCNT",
+   "OPEN.LISK",
+   "OPEN.LTC",
+   "OPEN.MAID",
+   "OPEN.MKR",
+   "OPEN.MUSE",
+   "OPEN.NXC",
+   "OPEN.OMNI",
+   "OPEN.STEEM",
+   "OPEN.USD",
+   "OPEN.USDT",
+   "OPEN.WAVES",
+   "SHAREBITS",
+   "SOLCERT",
+   "HEMPSWEET",
+   "OPEN.SBD",
+   "OPEN.NSR",
+   "OPEN.NBT",
+   "QORA",
+   "OPEN.EXCL"
 ];
 
 let topMarkets = {
@@ -80,10 +85,25 @@ if (SET == "EU1") {
 
 class SettingsStore {
     constructor() {
+        this.exportPublicMethods({init: this.init.bind(this), getSetting: this.getSetting.bind(this)});
 
-        this.exportPublicMethods({ init: this.init.bind(this), getSetting: this.getSetting.bind(this) });
+        this.bindListeners({
+            onChangeSetting: SettingsActions.changeSetting,
+            onChangeViewSetting: SettingsActions.changeViewSetting,
+            onChangeMarketDirection: SettingsActions.changeMarketDirection,
+            onAddStarMarket: SettingsActions.addStarMarket,
+            onRemoveStarMarket: SettingsActions.removeStarMarket,
+            onAddStarAccount: SettingsActions.addStarAccount,
+            onRemoveStarAccount: SettingsActions.removeStarAccount,
+            onAddWS: SettingsActions.addWS,
+            onRemoveWS: SettingsActions.removeWS,
+            onHideAsset: SettingsActions.hideAsset,
+            onClearSettings: SettingsActions.clearSettings,
+            onSwitchLocale: IntlActions.switchLocale,
+            onSetUserMarket: SettingsActions.setUserMarket
+        });
+
         this.initDone = false;
-
         this.defaultSettings = Immutable.Map({
             locale: lang,
             apiServer: settingsAPIs.DEFAULT_WS_NODE,
@@ -100,7 +120,6 @@ class SettingsStore {
         // If you want a default value to be translated, add the translation to settings in locale-xx.js
         // and use an object {translate: key} in the defaults array
         let apiServer = settingsAPIs.WS_NODE_LIST;
-
 
         let defaults = {
             locale: [
@@ -149,21 +168,6 @@ class SettingsStore {
             // ]
         };
 
-        this.bindListeners({
-            onChangeSetting: SettingsActions.changeSetting,
-            onChangeViewSetting: SettingsActions.changeViewSetting,
-            onChangeMarketDirection: SettingsActions.changeMarketDirection,
-            onAddStarMarket: SettingsActions.addStarMarket,
-            onRemoveStarMarket: SettingsActions.removeStarMarket,
-            onAddStarAccount: SettingsActions.addStarAccount,
-            onRemoveStarAccount: SettingsActions.removeStarAccount,
-            onAddWS: SettingsActions.addWS,
-            onRemoveWS: SettingsActions.removeWS,
-            onHideAsset: SettingsActions.hideAsset,
-            onClearSettings: SettingsActions.clearSettings,
-            onSwitchLocale: IntlActions.switchLocale
-        });
-
         this.settings = Immutable.Map(merge(this.defaultSettings.toJS(), ss.get("settings_v3")));
 
         let savedDefaults = ss.get("defaults_v1", {});
@@ -172,7 +176,7 @@ class SettingsStore {
         (savedDefaults.apiServer || []).forEach(api => {
             let hasApi = false;
             if (typeof api === "string") {
-                api = { url: api, location: null };
+                api = {url: api, location: null};
             }
             this.defaults.apiServer.forEach(server => {
                 if (server.url === api.url) {
@@ -211,7 +215,8 @@ class SettingsStore {
     init() {
         return new Promise((resolve) => {
             if (this.initDone) resolve();
-            this.marketsString = this._getChainKey("markets");
+            this.starredKey = this._getChainKey("markets");
+            this.marketsKey = this._getChainKey("userMarkets");
             // Default markets setup
 
             let bases = {
@@ -223,28 +228,30 @@ class SettingsStore {
                 ]
             };
 
-            let coreAssets = { markets_4018d784: "BTS", markets_39f5e2ed: "TEST" };
-            let coreAsset = coreAssets[this.marketsString] || "BTS";
+            let coreAssets = {markets_4018d784: "BTS", markets_39f5e2ed: "TEST"};
+            let coreAsset = coreAssets[this.starredKey] || "BTS";
             this.defaults.unit[0] = coreAsset;
 
-            let chainBases = bases[this.marketsString] || bases.markets_4018d784;
+            let chainBases = bases[this.starredKey] || bases.markets_4018d784;
             this.preferredBases = Immutable.List(chainBases);
 
             function addMarkets(target, base, markets) {
                 markets.filter(a => {
                     return a !== base;
                 }).forEach(market => {
-                    target.push([`${market}_${base}`, { "quote": market, "base": base }]);
+                    target.push([`${market}_${base}`, {"quote": market,"base": base}]);
                 });
             }
 
             let defaultMarkets = [];
-            let chainMarkets = topMarkets[this.marketsString] || [];
+            let chainMarkets = topMarkets[this.starredKey] || [];
             this.preferredBases.forEach(base => {
                 addMarkets(defaultMarkets, base, chainMarkets);
             });
 
-            this.starredMarkets = Immutable.Map(ss.get(this.marketsString, []));
+            this.defaultMarkets = Immutable.Map(defaultMarkets);
+            this.starredMarkets = Immutable.Map(ss.get(this.starredKey, []));
+            this.userMarkets = Immutable.Map(ss.get(this.marketsKey, {}));
             this.starredAccounts = Immutable.Map(ss.get(this._getChainKey("starredAccounts")));
             this.topMarkets = marketsList;
 
@@ -299,14 +306,23 @@ class SettingsStore {
 
     onAddStarMarket(market) {
         let marketID = market.quote + "_" + market.base;
-
         if (!this.starredMarkets.has(marketID)) {
-            this.starredMarkets = this.starredMarkets.set(marketID, { quote: market.quote, base: market.base });
+            this.starredMarkets = this.starredMarkets.set(marketID, {quote: market.quote, base: market.base});
 
-            ss.set(this.marketsString, this.starredMarkets.toJS());
+            ss.set(this.starredKey, this.starredMarkets.toJS());
         } else {
             return false;
         }
+    }
+
+    onSetUserMarket(payload) {
+        let marketID = payload.quote + "_" + payload.base;
+        if (payload.value) {
+            this.userMarkets = this.userMarkets.set(marketID, {quote: payload.quote, base: payload.base});
+        } else {
+            this.userMarkets = this.userMarkets.delete(marketID);
+        }
+        ss.set(this.marketsKey, this.userMarkets.toJS());
     }
 
     onRemoveStarMarket(market) {
@@ -314,12 +330,12 @@ class SettingsStore {
 
         this.starredMarkets = this.starredMarkets.delete(marketID);
 
-        ss.set(this.marketsString, this.starredMarkets.toJS());
+        ss.set(this.starredKey, this.starredMarkets.toJS());
     }
 
     onAddStarAccount(account) {
         if (!this.starredAccounts.has(account)) {
-            this.starredAccounts = this.starredAccounts.set(account, { name: account });
+            this.starredAccounts = this.starredAccounts.set(account, {name: account});
 
             ss.set(this._getChainKey("starredAccounts"), this.starredAccounts.toJS());
         } else {
@@ -336,7 +352,7 @@ class SettingsStore {
 
     onAddWS(ws) {
         if (typeof ws === "string") {
-            ws = { url: ws, location: null };
+            ws = {url: ws, location: null};
         }
         this.defaults.apiServer.push(ws);
         ss.set("defaults_v1", this.defaults);
@@ -360,9 +376,8 @@ class SettingsStore {
         }
     }
 
-
-    onSwitchLocale({ locale }) {
-        this.onChangeSetting({ setting: "locale", value: locale });
+    onSwitchLocale({locale}) {
+        this.onChangeSetting({setting: "locale", value: locale});
     }
 
     _getChainKey(key) {

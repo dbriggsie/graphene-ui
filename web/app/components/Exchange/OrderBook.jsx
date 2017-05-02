@@ -96,7 +96,7 @@ class OrderBook extends React.Component {
             flip: props.flipOrderBook,
             showAllBids: false,
             showAllAsks: false,
-            rowsToShow: props.simpleTrade ? 5 : 10
+            rowCount: props.simpleTrade ? 5 : 6
         };
 
         this._updateHeight = this._updateHeight.bind(this);
@@ -256,7 +256,7 @@ class OrderBook extends React.Component {
     render() {
         let {combinedBids, combinedAsks, highestBid, lowestAsk, quote, base,
             totalAsks, totalBids, quoteSymbol, baseSymbol, horizontal} = this.props;
-        let {showAllAsks, showAllBids} = this.state;
+        let {showAllAsks, showAllBids, rowCount} = this.state;
 
         let bidRows = null, askRows = null;
 
@@ -293,7 +293,8 @@ class OrderBook extends React.Component {
 
             let tempAsks = combinedAsks
             .filter(a => {
-                if (this.state.showAllAsks||combinedAsks.length<6) {
+
+                if (this.state.showAllAsks || combinedBids.length <= rowCount) {
                     return true;
                 }
                 return a.getPrice() <= lowestAsk.getPrice() * 5;
@@ -338,19 +339,19 @@ class OrderBook extends React.Component {
             let totalAsksLength = askRows.length;
 
             if (!showAllBids) {
-                bidRows.splice(this.state.rowsToShow, bidRows.length);
+                bidRows.splice(rowCount, bidRows.length);
             }
 
             if (!showAllAsks) {
-                askRows.splice(this.state.rowsToShow, askRows.length);
+                askRows.splice(rowCount, askRows.length);
             }
 
             let leftHeader = (
                 <thead ref="leftHeader">
                     <tr key="top-header" className="top-header">
-                        <th style={{width: "25%", textAlign: "center"}}><Translate className="header-sub-title" content="exchange.total" /><span className="header-sub-title"> (<AssetName name={baseSymbol} />)</span></th>
-                        <th style={{width: "25%", textAlign: "center"}}><span className="header-sub-title"><AssetName name={baseSymbol} /></span></th>
-                        <th style={{width: "25%", textAlign: "center"}}><span className="header-sub-title"><AssetName name={quoteSymbol} /></span></th>
+                        <th style={{width: "25%", textAlign: "center"}}><Translate className="header-sub-title" content="exchange.total" /><span className="header-sub-title"> (<AssetName dataPlace="top" name={baseSymbol} />)</span></th>
+                        <th style={{width: "25%", textAlign: "center"}}><span className="header-sub-title"><AssetName dataPlace="top" name={baseSymbol} /></span></th>
+                        <th style={{width: "25%", textAlign: "center"}}><span className="header-sub-title"><AssetName dataPlace="top" name={quoteSymbol} /></span></th>
                         <th style={{width: "25%", textAlign: "right"}}>
                             <Translate className={(this.state.flip ? "ask-total" : "bid-total") + " header-sub-title"} content="exchange.price" />
                         </th>
@@ -364,9 +365,9 @@ class OrderBook extends React.Component {
                         <th style={{width: "25%", textAlign: "right"}}>
                             <Translate className={(!this.state.flip ? "ask-total" : "bid-total") + " header-sub-title"} content="exchange.price" />
                         </th>
-                        <th style={{width: "25%", textAlign: "center"}}><span className="header-sub-title"><AssetName name={quoteSymbol} /></span></th>
-                        <th style={{width: "25%", textAlign: "center"}}><span className="header-sub-title"><AssetName name={baseSymbol} /></span></th>
-                        <th style={{width: "25%", textAlign: "right"}}><Translate className="header-sub-title" content="exchange.total" /><span className="header-sub-title"> (<AssetName name={baseSymbol} />)</span></th>
+                        <th style={{width: "25%", textAlign: "center"}}><span className="header-sub-title"><AssetName dataPlace="top" name={quoteSymbol} /></span></th>
+                        <th style={{width: "25%", textAlign: "center"}}><span className="header-sub-title"><AssetName dataPlace="top" name={baseSymbol} /></span></th>
+                        <th style={{width: "25%", textAlign: "right"}}><Translate className="header-sub-title" content="exchange.total" /><span className="header-sub-title"> (<AssetName dataPlace="top" name={baseSymbol} />)</span></th>
                     </tr>
                 </thead>
             );
@@ -404,8 +405,7 @@ class OrderBook extends React.Component {
                                         </TransitionWrapper>
                                     </table>
                                 </div>
-
-                                {totalAsksLength > (this.props.simpleTrade ? 5 : 10) ? (
+                                {totalAsksLength > rowCount ? (
                                 <div className="orderbook-showall">
                                     <a onClick={this._onToggleShowAll.bind(this, "asks")}>
                                         <Translate content={showAllAsks ? "exchange.hide" : "exchange.show_asks"} />
@@ -446,8 +446,7 @@ class OrderBook extends React.Component {
                                         </TransitionWrapper>
                                     </table>
                                 </div>
-
-                                {totalBidsLength > (this.props.simpleTrade ? 5 : 10) ? (
+                                {totalBidsLength > rowCount ? (
                                 <div className="orderbook-showall">
                                     <a onClick={this._onToggleShowAll.bind(this, "bids")}>
                                         <Translate content={showAllBids ? "exchange.hide" : "exchange.show_bids"} />

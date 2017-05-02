@@ -7,7 +7,7 @@ import FormattedAsset from "../Utility/FormattedAsset";
 import AssetName from "../Utility/AssetName";
 import AssetImage from "../Utility/AssetImage";
 import SettingsActions from "actions/SettingsActions";
-import Icon from "../Icon/Icon";
+import Icon from "../Icon/Icon"; 
 import utils from "common/utils";
 import SimpleTrade from "./SimpleTrade";
 import SimpleTransfer from "./SimpleTransfer";
@@ -166,8 +166,8 @@ class DashboardAssetList extends React.Component {
                 <td className="column-hide-small" data-place="right" data-tip={isPinned ? counterpart.translate("tooltip.unpin") : counterpart.translate("tooltip.pin")} className={"clickable text-center pin-column"} onClick={this._togglePin.bind(this, assetName)}>
                     <span>
                         {isPinned ?
-                            <span><Icon className="icon-14px" name="lnr-cross"/></span> :
-                            <span><Icon className="icon-14px" name="thumb-tack"/></span>
+                            <Icon className="icon-14px fill-red" name="lnr-cross"/> :
+                            <Icon className="icon-14px fill-red" name="thumb-tack"/> 
                         }
                     </span>
                 </td>

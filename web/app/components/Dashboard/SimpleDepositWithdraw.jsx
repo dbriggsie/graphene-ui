@@ -413,7 +413,7 @@ class DepositWithdrawContent extends React.Component {
             return null;
         }
 
-        const {name: assetName} = utils.replaceName(asset.get("symbol"), true);
+        const {replacedName: assetName} = utils.replaceName(asset.get("symbol"), true);
 
         return (
             <div className="SimpleTrade__modal">

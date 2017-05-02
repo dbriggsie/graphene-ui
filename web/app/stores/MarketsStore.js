@@ -72,6 +72,7 @@ class MarketsStore {
 
         this.allMarketStats = Immutable.Map();
         this.lowVolumeMarkets = Immutable.Map(marketStorage.get("lowVolumeMarkets", {}));
+        this.onlyStars = marketStorage.get("onlyStars", false);
 
         this.baseAsset = {
             id: "1.3.0",
@@ -97,7 +98,8 @@ class MarketsStore {
             onGetMarketStats: MarketsActions.getMarketStats,
             onSettleOrderUpdate: MarketsActions.settleOrderUpdate,
             onSwitchMarket: MarketsActions.switchMarket,
-            onFeedUpdate: MarketsActions.feedUpdate
+            onFeedUpdate: MarketsActions.feedUpdate,
+            onToggleStars: MarketsActions.toggleStars
         });
     }
 
@@ -123,6 +125,11 @@ class MarketsStore {
 
     onChangeBucketSize(size) {
         this._setBucketSize(size);
+    }
+
+    onToggleStars() {
+        this.onlyStars = !this.onlyStars;
+        marketStorage.set("onlyStars", this.onlyStars);
     }
 
     onUnSubscribeMarket(payload) {
@@ -295,9 +302,12 @@ class MarketsStore {
             this.activeMarketHistory = this.activeMarketHistory.clear();
             result.history.forEach(order => {
                 order.op.time = order.time;
-                this.activeMarketHistory = this.activeMarketHistory.add(
-                    order.op
-                );
+                /* Only include history objects that aren't 'something for nothing' to avoid confusion */
+                if (!(order.op.receives.amount == 0 || order.op.pays.amount == 0)) {
+                    this.activeMarketHistory = this.activeMarketHistory.add(
+                        order.op
+                    );
+                }
             });
         }
 
@@ -350,7 +360,6 @@ class MarketsStore {
             let didUpdate = false;
             cancellations.forEach(orderID => {
                 if (orderID && this.marketLimitOrders.has(orderID)) {
-                    console.log("removed order", orderID);
                     didUpdate = true;
                     this.marketLimitOrders = this.marketLimitOrders.delete(orderID);
                 }
@@ -968,6 +977,9 @@ class MarketsStore {
             }
 
             change = noTrades ? 0 : Math.round(10000 * (close - open) / open) / 100;
+            if (!isFinite(change) || isNaN(change)) {
+                change = 0;
+            }
         }
 
         if (recent && recent.length && recent.length > 1) {
@@ -1018,7 +1030,7 @@ class MarketsStore {
                 (volumeQuoteAsset.asset_id === "1.3.861" || volumeQuoteAsset.asset_id === "1.3.103") ? volumeQuoteAsset.getAmount({real: true}) : null;
 
         if (market) {
-            if ((coreVolume && coreVolume <= 15000) || (usdVolume && usdVolume < 100) || (btcVolume && btcVolume < 0.1) || !Math.floor(volumeBase * 100)) {
+            if ((coreVolume && coreVolume <= 1000) || (usdVolume && usdVolume < 10) || (btcVolume && btcVolume < 0.01) || !Math.floor(volumeBase * 100)) {
                 this.lowVolumeMarkets = this.lowVolumeMarkets.set(market, true);
                 // console.log("lowVolume:", market, coreVolume, usdVolume, btcVolume, volumeBase);
             } else {

@@ -15,6 +15,34 @@ import AccountStore from "stores/AccountStore";
 import {ChainStore} from "bitsharesjs/es";
 
 
+let gate_fees = {
+    AGRS: 0.00032,
+    AMP: 0.00032,
+    BTC: 0.00030,
+    DAO: 0.00150,
+    DASH: 0.00010,
+    DGD: 0.00150,
+    DOGE: 1.00000,
+    EMC: 0.30000,
+    ETH: 0.00150,
+    USDT: 0.00032,
+    GAME: 0.00010,
+    GRC: 0.00020,
+    INCNT: 0.00100,
+    LSK: 0.10000,
+    LTC: 0.00300,
+    MAID: 0.00032,
+    MUSE: 8.00000,
+    NBT: 0.01000,
+    NSR: 1.00000,
+    NXC: 0.00150,
+    OMNI: 0.00032,
+    PPC: 0.00010,
+    SBD: 0.00000,
+    STEEM: 0.00000,
+    WAVES: 0.00100
+};
+
 class WithdrawModalBlocktrades extends React.Component {
 
     static propTypes = {
@@ -400,10 +428,9 @@ class WithdrawModalBlocktrades extends React.Component {
                         onChange={this.onWithdrawAmountChange.bind(this)}
                         display_balance={balance}
                     />
-                    {this.state.empty_withdraw_value ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.valid" /></p>:null}
+                    {this.state.empty_withdraw_value ? <p className="error_grey no-margin" style={{paddingTop: 4}}><Translate content="transfer.errors.valid" /></p>:null}
                 </div>
-                <div className="content-block">
-                    
+                <div className="content-block gate_fee">                    
                     <AmountSelector
                         refCallback={this.setNestedRef.bind(this)}
                         label="transfer.fee"
@@ -414,12 +441,19 @@ class WithdrawModalBlocktrades extends React.Component {
                         assets={fee_asset_types}
                         tabIndex={tabIndex++}
                     />
-                   
-
+                    {gate_fees[this.props.output_coin_symbol]?
+                        (<div className="amount-selector right-selector">
+                            <label className="left-label">Gate fee</label>
+                            <div className="inline-label input-wrapper">
+                                <p className="right-selector-input" >{gate_fees[this.props.output_coin_symbol]} {this.props.output_coin_symbol}</p>
+                            </div>
+                        </div>):null}
                 </div>
 
                 <div className="content-block">
-                    <label><Translate component="span" content="modal.withdraw.address"/></label>
+                    <label className="left-label">
+                        <Translate component="span" content="modal.withdraw.address"/>
+                    </label>
                     <div className="blocktrades-select-dropdown">
                         <div className="inline-label">
                             <input type="text" value={withdraw_address_selected} tabIndex="4" onChange = {this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
@@ -433,9 +467,9 @@ class WithdrawModalBlocktrades extends React.Component {
                 </div>
                 {withdraw_memo}
                 <div className="content-block">
-                    <input type="submit" className="button"
-                    onClick={this.onSubmit.bind(this)}
-                    value={counterpart.translate("modal.withdraw.submit")} />
+
+                    <a onClick={this.onSubmit.bind(this)} className="button white_color_a"><Translate content="modal.withdraw.submit" /></a>
+
                     <Trigger close={this.props.modal_id}>
                         <a href className="secondary button"><Translate content="account.perm.cancel" /></a>
                     </Trigger>

@@ -7,6 +7,7 @@ import SettingsActions from "actions/SettingsActions";
 import {Apis} from "bitsharesjs-ws";
 import Icon from "./Icon/Icon";
 import WebsocketAddModal from "./Settings/WebsocketAddModal";
+import counterpart from "counterpart";
 
 class SyncError extends React.Component {
 
@@ -38,15 +39,16 @@ class SyncError extends React.Component {
     }
 
     componentDidMount() {
-
-        setTimeout(()=>{
-            if (window.electron) {
-                window.location.hash = "";
-                window.remote.getCurrentWindow().reload();
-            } else{
-                window.location.href = "/";
-            } 
-        },5000);
+        if(ENV){
+            setTimeout(()=>{
+                if (window.electron) {
+                    window.location.hash = "";
+                    window.remote.getCurrentWindow().reload();
+                } else{
+                    window.location.href = "/";
+                } 
+            },5000);
+        }
 
     }
 
@@ -54,7 +56,7 @@ class SyncError extends React.Component {
         let options = this.props.apis.map(entry => {
             let onlyDescription = entry.url.indexOf("fake.automatic-selection") !== -1;
             let {location} = entry;
-            if (typeof location === "object" && "translate" in location) location = counterpart.translate(location.translate);
+            if (location && typeof location === "object" && "translate" in location) location = counterpart.translate(location.translate);
 
             return <option key={entry.url} value={entry.url}>{location || entry.url} {!onlyDescription && location ? `(${entry.url})` : null}</option>;
         });
