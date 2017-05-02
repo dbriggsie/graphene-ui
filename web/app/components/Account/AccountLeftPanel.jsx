@@ -128,8 +128,8 @@ class AccountLeftPanel extends React.Component {
 								{isMyAccount ? <li><Link to={`/account/${account_name}/vesting/`} activeClassName="active"><Translate content="account.vesting.title"/></Link></li> : null}
 							</ul>) : null}
 						</section>
-
-						{isMyAccount ?
+					{/* @>>>>> bug */}
+						{isMyAccount||5 ?
 							<div className="regular-padding">
 								<div className="button block-button create-account-button">
 									<Link to="/create-account"><Translate content="account.create_new" /></Link>
