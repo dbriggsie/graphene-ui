@@ -965,7 +965,7 @@ class Exchange extends React.Component {
                 className={cnames(
                     " no-padding middle-content",
                     {disabled: isNullAccount},
-                    leftOrderBook || smallScreen ? "medium-6" : "medium-6 ",
+                    leftOrderBook || smallScreen ? "medium-6" : "medium-6 xlarge-4",
                     this.state.flipBuySell ? `order-${buySellTop ? 2 : 5 * orderMultiplier} sell-form` : `order-${buySellTop ? 1 : 4 * orderMultiplier} buy-form`
                 )}
                 type="bid"
@@ -1009,7 +1009,7 @@ class Exchange extends React.Component {
                 className={cnames(
                     " no-padding middle-content",
                     {disabled: isNullAccount},
-                    leftOrderBook || smallScreen ? "medium-6" : "medium-6 ",
+                    leftOrderBook || smallScreen ? "medium-6" : "medium-6 xlarge-4",
                     this.state.flipBuySell ? `order-${buySellTop ? 1 : 4 * orderMultiplier} buy-form` : `order-${buySellTop ? 2 : 5 * orderMultiplier} sell-form`
                 )}
                 type="ask"
@@ -1222,8 +1222,8 @@ class Exchange extends React.Component {
 
                                 <MarketHistory
                                     className={cnames(
-                                        !smallScreen && !leftOrderBook ? "medium-6 " : "",
-                                        "no-padding no-overflow middle-content  medium-6 order-5 xlarge-order-3"
+                                        !smallScreen && !leftOrderBook ? "medium-6 xlarge-4" : "",
+                                        "no-padding no-overflow middle-content small-12 medium-6 order-5 xlarge-order-3"
                                     )}
                                     headerStyle={{paddingTop: 0}}
                                     history={activeMarketHistory}
@@ -1257,8 +1257,8 @@ class Exchange extends React.Component {
                                     smallScreen={this.props.smallScreen}
                                     className={cnames(
                                         {disabled: isNullAccount},
-                                        !smallScreen && !leftOrderBook ? "medium-6 " : "",
-                                        ` medium-6 no-padding align-spaced ps-container middle-content order-${buySellTop ? 6 : 6}`
+                                        !smallScreen && !leftOrderBook ? "medium-6 xlarge-4" : "",
+                                        `small-12 medium-6 no-padding align-spaced ps-container middle-content order-${buySellTop ? 6 : 6}`
                                     )}
                                     key="open_orders"
                                     orders={marketLimitOrders}
@@ -1278,8 +1278,8 @@ class Exchange extends React.Component {
                             {(base.get("id") === "1.3.0" || quote.get("id") === "1.3.0") ? (
                             <OpenSettleOrders
                                 key="settle_orders"
-                                className={cnames(!smallScreen && !leftOrderBook ? "medium-6  order-12" : "",
-                                    ` medium-6 no-padding align-spaced ps-container middle-content order-12`
+                                className={cnames(!smallScreen && !leftOrderBook ? "medium-6 xlarge-4 order-12" : "",
+                                    `small-12 medium-6 no-padding align-spaced ps-container middle-content order-12`
                                 )}
                                 orders={marketSettleOrders}
                                 base={base}
