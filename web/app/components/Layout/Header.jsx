@@ -70,6 +70,7 @@ class Header extends React.Component {
         setTimeout(() => {
             ReactTooltip.rebuild();
         }, 1250);
+        document.cookie = `currentAccount=${this.props.currentAccount}`;
     }
 
     componentWillUnmount() {
