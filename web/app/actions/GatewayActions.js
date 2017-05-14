@@ -31,7 +31,7 @@ class GatewayActions {
                 Promise.all([
                     fetchCoins(url),
                     fetchBridgeCoins(url),
-                    getActiveWallets(blockTradesAPIs.BASE_OL + blockTradesAPIs.ACTIVE_WALLETS)
+                    getActiveWallets(blockTradesAPIs.BASE + blockTradesAPIs.ACTIVE_WALLETS)
                 ]).then(result => {
                     delete inProgress["fetchBridgeCoins"];
                     let [coins, bridgeCoins, wallets] = result;
