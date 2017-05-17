@@ -183,7 +183,8 @@ class AccountDepositWithdraw extends React.Component {
                         <div className="content-block">
                         </div>
                     </div>)
-        });
+        });serList.pop(); //@>
+
 
         serList.push({
             name: "Transwiser",

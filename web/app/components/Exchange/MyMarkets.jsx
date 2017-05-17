@@ -257,7 +257,7 @@ class MyMarkets extends React.Component {
         };
 
         this._setMinWidth = this._setMinWidth.bind(this);
-        this.getAssetList = AssetActions.getAssetList;
+        this.getAssetList = debounce(AssetActions.getAssetList.defer, 150);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
