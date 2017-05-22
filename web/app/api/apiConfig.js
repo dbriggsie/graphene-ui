@@ -49,10 +49,11 @@ function server_set(type) {
 
 }
 
-
+//http://192.168.0.145:8009/api/v0/ol/support local
+//http://148.251.31.237:6006/api/v0/ol/support server
 export const blockTradesAPIs = {
-    BASE: "http://148.251.31.237:6006/api/v0/ol/support",
-    BASE_OL: "http://148.251.31.237:6006/api/v0/ol/support",
+    BASE: "https://api.blocktrades.us/v2",
+    BASE_OL: "https://api.blocktrades.us/ol/v2",
     COINS_LIST: "/coins",
     ACTIVE_WALLETS: "/active-wallets",
     TRADING_PAIRS: "/trading-pairs",
