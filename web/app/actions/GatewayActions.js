@@ -13,11 +13,11 @@ class GatewayActions {
                 getActiveWallets(blockTradesAPIs.BASE_OL + blockTradesAPIs.ACTIVE_WALLETS)
             ]).then(result => {
                 let [coins, wallets] = result;
-                                    //coins = test;
+                                   // coins = test;
                 dispatch({
                     coins: coins,
                     backedCoins: getBackedCoins({ allCoins: coins, backer: backer }).filter(a => {
-                        //return true;
+                        return true;
                         return wallets.indexOf(a.walletType) !== -1;
                     }),
                     backer

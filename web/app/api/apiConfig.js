@@ -49,11 +49,11 @@ function server_set(type) {
 
 }
 
-//http://192.168.0.145:8009/api/v0/ol/support local
-//http://148.251.31.237:6006/api/v0/ol/support server
+//http://192.168.0.145:8009/api/v0/ol/support     local
+//http://148.251.31.237:6006/api/v0/ol/support    server
 export const blockTradesAPIs = {
-    BASE: "https://api.blocktrades.us/v2",
-    BASE_OL: "https://api.blocktrades.us/ol/v2",
+    BASE: "https://openledger.info/coins/api/v0/ol/support",
+    BASE_OL: "https://openledger.info/coins/api/v0/ol/support",
     COINS_LIST: "/coins",
     ACTIVE_WALLETS: "/active-wallets",
     TRADING_PAIRS: "/trading-pairs",
@@ -69,3 +69,8 @@ export const settingsAPIs = {
     OPENLEDGER_FACET_REGISTR: "https://openledger.info/v/",
     DEFAULT_WS_NODE: "wss://fake.automatic-selection.com",
 };
+
+
+
+//https://openledger.info/coins/
+//https://openledger.info/coins/api/v0/ol/support
