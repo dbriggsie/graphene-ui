@@ -52,7 +52,7 @@ function server_set(type) {
 //http://192.168.0.145:8009/api/v0/ol/support     local
 //http://148.251.31.237:6006/api/v0/ol/support    server
 export const blockTradesAPIs = {
-    BASE: "https://openledger.info/coins/api/v0/ol/support",
+    BASE: "https://api.blocktrades.us/v2",
     BASE_OL: "https://openledger.info/coins/api/v0/ol/support",
     COINS_LIST: "/coins",
     ACTIVE_WALLETS: "/active-wallets",
