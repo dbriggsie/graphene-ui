@@ -1189,7 +1189,7 @@
     "withdraw_to": "Aşağıdaki butona tıklayarak %(asset)s adlı dijital varlık çekme işlemine başlayın",
     "intermediate": "Aracı hesap",
     "asset_to_withdraw": "Çekilecek dijital varlık:",
-    "support_block": "Destek için, lütfen Blocktrades'e şuradan ulaşın:",
+    "support_block": "Destek için, lütfen OpenLedger'e şuradan ulaşın:",
     "service": "Transfer Hizmet Sağlayıcısı",
     "valid_address": "Lütfen geçerli bir  %(coin_type)s adresi giriniz",
     "withdraw_coin": " %(coin)s (%(symbol)s) Çekme Talebi",

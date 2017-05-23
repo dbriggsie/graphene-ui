@@ -1220,7 +1220,7 @@
     "withdraw_to":"Нажмите кнопку ниже, чтобы открыть вывод %(asset)s",
     "intermediate":"Промежуточный аккаунт",
     "asset_to_withdraw":"Актив для вывода:",
-    "support_block":"Чтобы получить поддержку, пожалуйста, обратитесь в Blocktrades на:",
+    "support_block":"Чтобы получить поддержку, пожалуйста, обратитесь в Openledger на:",
     "valid_address":"Пожалуйста, введите действительный %(coin_type)s адрес",
     "withdraw_coin":"Вывести %(coin)s (%(symbol)s)",
     "convert_coin":"Конвертировать в %(coin)s (%(symbol)s)",
