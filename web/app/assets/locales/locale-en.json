@@ -1229,7 +1229,7 @@
     "recent_withdraw": "Recent withdrawals",
     "withdraw_summary": "Withdrawal summary",
     "withdraw_inst": "Withdrawal instructions",
-    "withdraw_to": "Click the button below to open a %(asset)s withdrawal",
+    "withdraw_to": "Click the button below to open %(asset)s withdrawal",
     "intermediate": "Intermediate account",
     "asset_to_withdraw": "Asset to withdraw:",
     "support_block": "For support, please contact Openledger at:",
