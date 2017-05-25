@@ -378,6 +378,10 @@ var Utils = {
             });
         }
 
+        if(asset.get("is_currency_fee")){ //@>
+            return fee;
+        }
+
         return useCoreFee ? coreFee : fee;
     },
 

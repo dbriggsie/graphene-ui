@@ -17,7 +17,6 @@ class GatewayActions {
                 dispatch({
                     coins: coins,
                     backedCoins: getBackedCoins({ allCoins: coins, backer: backer }).filter(a => {
-                        return true;
                         return wallets.indexOf(a.walletType) !== -1;
                     }),
                     backer

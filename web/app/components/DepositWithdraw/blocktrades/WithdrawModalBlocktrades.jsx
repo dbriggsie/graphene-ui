@@ -88,6 +88,7 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     onWithdrawAmountChange( {amount} ) {
+
         this.setState({
             withdraw_amount: amount,
             empty_withdraw_value: !parseFloat(amount)
@@ -209,6 +210,7 @@ class WithdrawModalBlocktrades extends React.Component {
         let asset = this.props.asset;
         let precision = utils.get_asset_precision(asset.get("precision"));
         let amount = String.prototype.replace.call(this.state.withdraw_amount, /,/g, "");
+
         AccountActions.transfer(
             this.props.account.get("id"),
             this.props.issuer.get("id"),
@@ -237,10 +239,13 @@ class WithdrawModalBlocktrades extends React.Component {
         return "confirmation";
     }
 
-    onAccountBalance() {
+    onAccountBalance({fee,feeID,total_precision}) {
+
         if (Object.keys(this.props.account.get("balances").toJS()).includes(this.props.asset.get("id")) ) {
+            let total_minus_fee = this.props.balance.get("balance") / utils.get_asset_precision(this.props.asset.get("precision"));
+            total_minus_fee=utils.limitByPrecision(total_minus_fee-fee*1.09,total_precision);
             this.setState({
-                withdraw_amount: this.props.balance.get("balance") / utils.get_asset_precision(this.props.asset.get("precision")),
+                withdraw_amount: total_minus_fee,
                 empty_withdraw_value: false
             });
         }
@@ -303,16 +308,6 @@ class WithdrawModalBlocktrades extends React.Component {
         // console.log( "balances: ", account_balances );
         let asset_types = Object.keys(account_balances);
 
-        if (asset_types.length > 0) {
-            let current_asset_id = this.props.asset.get("id");
-            if( current_asset_id )
-                balance = (<span><Translate component="span" content="transfer.available"/>: <span className="set-cursor" onClick={this.onAccountBalance.bind(this)}><BalanceComponent balance={account_balances[current_asset_id]}/></span></span>);
-            else
-                balance = "No funds";
-        } else {
-            balance = "No funds";
-        }
-
         let withdrawModalId = this.getWithdrawModalId();
         let invalid_address_message = null;
         let options = null;
@@ -374,6 +369,8 @@ class WithdrawModalBlocktrades extends React.Component {
         let asset = this.state.asset;
         let { fee_asset_types } = this._getAvailableAssets();
         let balance_fee = null;
+        let feeID = feeAsset ? feeAsset.get("id") : "1.3.0";
+        let core = ChainStore.getObject("1.3.0");
 
         // Estimate fee
         let globalObject = ChainStore.getObject("2.0.0");
@@ -383,8 +380,7 @@ class WithdrawModalBlocktrades extends React.Component {
 
             let account_balances = from_account.get("balances").toJS();
 
-            // Finish fee estimation
-            let core = ChainStore.getObject("1.3.0");
+            // Finish fee estimation            
             if (feeAsset && feeAsset.get("id") !== "1.3.0" && core) {
 
                 let price = utils.convertPrice(core, feeAsset.getIn(["options", "core_exchange_rate"]).toJS(), null, feeAsset.get("id"));
@@ -400,18 +396,28 @@ class WithdrawModalBlocktrades extends React.Component {
 
             if (asset_types.length === 1) asset = ChainStore.getAsset(asset_types[0]);
             if (asset_types.length > 0) {
-                let current_asset_id = asset ? asset.get("id") : asset_types[0];
-                let feeID = feeAsset ? feeAsset.get("id") : "1.3.0";
+                let current_asset_id = asset ? asset.get("id") : asset_types[0];                
                 balance_fee = (<span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} onClick={this._setTotal.bind(this, current_asset_id, account_balances[current_asset_id], fee, feeID)}><Translate component="span" content="transfer.available"/>: <BalanceComponent balance={account_balances[current_asset_id]}/></span>);
             } else {
                 balance_fee = "No funds";
             }
         } else {
-            let core = ChainStore.getObject("1.3.0");
             fee_asset_types = ["1.3.0"];
             if (core) {
                 fee = utils.limitByPrecision(utils.get_asset_amount(fee, feeAsset || core), feeAsset ? feeAsset.get("precision") : core.get("precision"));
             }
+        }
+
+        let total_precision = feeAsset ? feeAsset.get("precision") : core.get("precision");
+
+        if (asset_types.length > 0) {
+            let current_asset_id = this.props.asset.get("id");
+            if( current_asset_id )
+                balance = (<span><Translate component="span" content="transfer.available"/>: <span className="set-cursor" onClick={()=>{this.onAccountBalance({fee,feeID,total_precision})}}><BalanceComponent balance={account_balances[current_asset_id]}/></span></span>);
+            else
+                balance = "No funds";
+        } else {
+            balance = "No funds";
         }
 
         return (<form className="grid-block vertical full-width-content">
@@ -437,7 +443,7 @@ class WithdrawModalBlocktrades extends React.Component {
                         disabled={true}
                         amount={fee}
                         onChange={this.onFeeChanged.bind(this)}
-                        asset={fee_asset_types.length && feeAsset ? feeAsset.get("id") : ( fee_asset_types.length === 1 ? fee_asset_types[0] : fee_asset_id ? fee_asset_id : fee_asset_types[0])}
+                        asset={fee_asset_types.indexOf(this.props.asset.get("id"))==-1?fee_asset_types[0]:this.props.asset.get("id")}
                         assets={fee_asset_types}
                         tabIndex={tabIndex++}
                     />

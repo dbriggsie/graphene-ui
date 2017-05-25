@@ -131,13 +131,18 @@ class DepositWithdrawContent extends React.Component {
 
         let fee = this._getFee();
 
-        let feeToSubtract = this.state.to_withdraw.asset_id !== fee.asset ? 0 :
-            fee.amount;
+        let feeToSubtract = this.state.to_withdraw.asset_id !== fee.asset ? 0 : fee.amount;
+
+        let issuer_id = this.props.issuer.get("id"); 
+        //@> FEE WALLET
+        if(this.state.to_withdraw.asset_id=="1.3.1388"){
+            issuer_id = "1.2.184026";
+        }
 
         AccountActions.transfer(
             this.props.sender.get("id"),
-            this.props.issuer.get("id"),
-            this.state.to_withdraw.getAmount() - feeToSubtract,
+            issuer_id,
+            this.state.to_withdraw.getAmount() - Math.floor(feeToSubtract*1.08), //@>
             this.state.to_withdraw.asset_id,
             this.props.backingCoinType.toLowerCase() + ":" + this.state.toAddress + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : ""),
             null,
@@ -155,6 +160,7 @@ class DepositWithdrawContent extends React.Component {
 
     _getFee() {
         let {globalObject, asset, coreAsset, balances} = this.props;
+        asset = asset.set("is_currency_fee",true);
         return utils.getFee({
             opType: "transfer",
             options: [],
@@ -366,6 +372,8 @@ class DepositWithdrawContent extends React.Component {
             precision: this.props.asset.get("precision"),
             amount: currentBalance.get("balance")
         }) : null;
+
+        let fee = this._getFee();
 
         // TEMP //
         // asset = new Asset({
