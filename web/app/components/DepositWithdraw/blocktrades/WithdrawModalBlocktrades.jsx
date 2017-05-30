@@ -19,7 +19,6 @@ let gate_fees = {
     AGRS: 0.00032,
     AMP: 0.00032,
     BTC: 0.00030,
-    DAO: 0.00150,
     DASH: 0.00010,
     DGD: 0.00150,
     DOGE: 1.00000,
@@ -420,6 +419,11 @@ class WithdrawModalBlocktrades extends React.Component {
             balance = "No funds";
         }
 
+        let fee_asset_choosen="1.3.0";
+        if(this.state.feeAsset){
+            fee_asset_choosen=this.state.feeAsset.get("id");
+        }
+
         return (<form className="grid-block vertical full-width-content">
             <div className="grid-container">
                 <div className="content-block">
@@ -433,7 +437,7 @@ class WithdrawModalBlocktrades extends React.Component {
                         placeholder="0.0"
                         onChange={this.onWithdrawAmountChange.bind(this)}
                         display_balance={balance}
-                    />
+                    /> 
                     {this.state.empty_withdraw_value ? <p className="error_grey no-margin" style={{paddingTop: 4}}><Translate content="transfer.errors.valid" /></p>:null}
                 </div>
                 <div className="content-block gate_fee">                    
@@ -443,7 +447,7 @@ class WithdrawModalBlocktrades extends React.Component {
                         disabled={true}
                         amount={fee}
                         onChange={this.onFeeChanged.bind(this)}
-                        asset={fee_asset_types.indexOf(this.props.asset.get("id"))==-1?fee_asset_types[0]:this.props.asset.get("id")}
+                        asset={fee_asset_choosen}
                         assets={fee_asset_types}
                         tabIndex={tabIndex++}
                     />
