@@ -49,8 +49,7 @@ function server_set(type) {
 
 }
 
-//http://192.168.0.145:8009/api/v0/ol/support     local
-//http://148.251.31.237:6006/api/v0/ol/support    server
+
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
     BASE_OL: "https://openledger.info/coins/api/v0/ol/support",
@@ -70,7 +69,8 @@ export const settingsAPIs = {
     DEFAULT_WS_NODE: "wss://fake.automatic-selection.com",
 };
 
-
+//http://192.168.0.145:8009/api/v0/ol/support     local
+//http://148.251.31.237:6006/api/v0/ol/support    server
 
 //https://openledger.info/coins/
 //https://openledger.info/coins/api/v0/ol/support

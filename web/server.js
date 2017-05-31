@@ -24,9 +24,9 @@ app.use(webpackDevMiddleware(compiler, {
 app.get("*", function(req, res) {
   res.sendFile(__dirname + '/app/assets/index.html')
 })
-app.listen(8080, function(err) {
+app.listen(8080,"0.0.0.0", function(err) {
     if (err) {
         return console.error(err);
     }
-    console.log("http://127.0.0.1:8080");
+    console.log("http://0.0.0.0:8080");
 });
