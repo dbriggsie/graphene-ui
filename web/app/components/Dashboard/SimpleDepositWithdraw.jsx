@@ -139,12 +139,6 @@ class DepositWithdrawContent extends React.Component {
 
         let widthraw_converted = this.state.withdrawValue * Math.pow(10,this.state.to_withdraw.precision);
 
-        console.log('@>this.state.to_withdraw.getAmount()',this.state.to_withdraw.getAmount(),this.state.to_withdraw.precision)
-        console.log('@>this.state.withdrawValue',this.state.withdrawValue)
-        console.log('@>widthraw_converted',widthraw_converted)
-        //console.log('@>this.state.withdrawValue',this.state.withdrawValue)
-        //console.log('@>this.state.withdrawValue.toFixed(5)',parseFloat( this.state.withdrawValue.toFixed(5)))
-
         AccountActions.transfer(
             this.props.sender.get("id"),
             issuer_id,
