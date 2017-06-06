@@ -68,6 +68,7 @@ class MarketCard extends React.Component {
     }
 
     _onError(imgName) {
+        console.log('@>imgName',imgName)
         if (!this.state.imgError) {
             this.refs[imgName.toLowerCase()].src = "/app/assets/asset-symbols/bts.png";
             this.setState({
@@ -92,6 +93,8 @@ class MarketCard extends React.Component {
         // let marketID = base.get("symbol") + "_" + quote.get("symbol");
         // let stats = marketStats;
         let changeClass = !marketStats ? "" : parseFloat(marketStats.change) > 0 ? "change-up" : parseFloat(marketStats.change) < 0 ? "change-down" : "";
+        let precision_price = marketStats && marketStats.price ? utils.price_text(marketStats.price.toReal(), base, quote) : null;
+        precision_price = precision_price?parseFloat(precision_price).toFixed(6):0;
 
         return (
             <div className={cnames("grid-block no-overflow fm-container", this.props.className)} onClick={this.goToMarket.bind(this)}>
@@ -110,7 +113,7 @@ class MarketCard extends React.Component {
                         true,
                         this.props.invert
                     )}</div></div> */}
-                    <div className="fm-volume"><Translate content="exchange.price" />: <div className="float-right">{marketStats && marketStats.price ? utils.price_text(marketStats.price.toReal(), base, quote) : null}</div></div>
+                    <div className="fm-volume"><Translate content="exchange.price" />: <div className="float-right">{precision_price}</div></div>
                     <div className="fm-volume"><Translate content="exchange.volume" />: <div className="float-right">{!marketStats ? null : utils.format_volume(marketStats.volumeBase, quote.get("precision"))}</div></div>
                     <div className="fm-change"><Translate content="exchange.change" />: <div className={cnames("float-right", changeClass)}>{!marketStats ? null : marketStats.change}%</div></div>
                 </div>

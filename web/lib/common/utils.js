@@ -365,13 +365,13 @@ var Utils = {
 
         let useCoreFee = true; // prefer CORE fee by default
         if (balances && balances.length) {
-            balances.forEach(b => {
+            balances.filter(e=>e).forEach(b => {
                 if (b.get("asset_type") === "1.3.0" && b.get("balance") < coreFee.amount) { // User has sufficient CORE, use it (cheapeest)
                     useCoreFee = false;
                 }
             });
 
-            balances.forEach(b => {
+            balances.filter(e=>e).forEach(b => {
                 if (b.get("asset_type") === fee.asset && b.get("balance") < fee.amount) { // User has insufficient {asset}, use CORE instead
                     useCoreFee = true;
                 }
@@ -515,7 +515,6 @@ var Utils = {
     },
 
     replaceName(name, returnFull = false) {
-        //@>
 
         let replacedName ='';
         let prefix ='';
@@ -525,16 +524,13 @@ var Utils = {
         if(~name.indexOf("OPEN.")){
             replacedName = partNames[1]
             prefix = (partNames[0]+'.').toLowerCase();
-            prefix = ''; //hard remove prefix
+            //prefix = ''; //hard remove prefix
         }else{
             replacedName = name;
             prefix = '';
         }
 
-        //bitUSD bitEUR bit bitGOLD bitBTC
-        if(name==='USD'||name==='EUR'||name==='CNY'||name==='GOLD'||name==='BTC'){
-            prefix='bit';
-        }
+
 
         return {
             replacedName,

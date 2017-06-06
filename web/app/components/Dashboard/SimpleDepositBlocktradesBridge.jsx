@@ -126,7 +126,7 @@ class SimpleDepositBlocktradesBridge extends React.Component {
             inputCoinType: props.inputCoinType.toLowerCase(),
             outputCoinType: props.outputCoinType.toLowerCase(),
             outputAddress: props.sender.get("name"),
-            url: blockTradesAPIs.BASE,
+            url: blockTradesAPIs.BASE_OL,
             stateCallback: (receive_address) => {
                 this.addDepositAddress(
                     props.inputCoinType.toLowerCase(),

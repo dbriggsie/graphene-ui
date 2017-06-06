@@ -26,13 +26,13 @@ class Dashboard extends React.Component {
                 ["BTS", "OBITS"],
                 ["BTS", "BTSR"],
                 ["OPEN.EUR", "OPEN.BTC"],
-                ["OPEN.BTC", "OPEN.DCT"],
-                ["OPEN.BTC", "OPEN.INCNT"],
-                ["OPEN.BTC", "OPEN.NXC"],
+                ["CNY", "YOYOW"],
+                ["USD", "ZENGOLD"],
+                ["USD", "OPEN.ETP"],
                 ["BTS", "USD"],
-                ["BTS", "CNY"],
                 ["BTS", "EUR"],
-                ["BTS", "GOLD"]
+                ["BTS", "CNY"],
+                ["USD", "OBITS.WARRANT"]
             ],
             "39f5e2ed": [
                 ["TEST", "PEG.FAKEUSD"],

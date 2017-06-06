@@ -69,8 +69,8 @@ export const settingsAPIs = {
     DEFAULT_WS_NODE: "wss://fake.automatic-selection.com",
 };
 
-//http://192.168.0.145:8009/api/v0/ol/support     local
-//http://148.251.31.237:6006/api/v0/ol/support    server
+//http://192.168.0.145:8009/api/v0/ol/support       local
+//https://openledger.info/coins/api/v0/ol/support   server
 
+//http://148.251.31.237:6006/api/v0/ol/support     
 //https://openledger.info/coins/
-//https://openledger.info/coins/api/v0/ol/support

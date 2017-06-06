@@ -473,17 +473,6 @@ class MyMarkets extends React.Component {
 
         ///### 
         let obj_search = {};
-        function fix_prefix(pr){
-            if(~SettingsStore.marketsOpenList.indexOf(pr)){
-                pr = "OPEN."+pr;
-            }
-
-            if(SettingsStore.checkBit(pr)){
-                return pr.split('BIT').join('');
-            } 
-
-            return pr;
-        }    
  
         // Add some default base options
         let baseGroups = {};
@@ -494,8 +483,6 @@ class MyMarkets extends React.Component {
         let activeMarkets = activeTab === "starred" ? starredMarkets : allMarkets;        
 
         let market_tab = preferredBases.toArray()[this.state.activeMarketTab];
-        let fix_lookupQuote = fix_prefix(lookupQuote);
-        let fix_lookupBase = fix_prefix(lookupBase);
 
         preferredBases.map(e=>{
             baseGroups[e] = [];
@@ -517,17 +504,13 @@ class MyMarkets extends React.Component {
                     quote: e.quote 
                 });
             });
-        }else if(activeTab == 'all' && this.state.activeMarketTab < 5 && fix_lookupQuote){
-            if(fix_lookupQuote.length>1){
+        }else if(activeTab == 'all' && this.state.activeMarketTab < 5 && lookupQuote){
+            if(lookupQuote.length>1){
                 searchAssets.filter(asset => {
 
                     let flag = false;
-                    if(asset.symbol == market_tab ||asset.symbol.indexOf(fix_lookupQuote)==0){                
+                    if(asset.symbol == market_tab ||asset.symbol.indexOf(lookupQuote)==0){                
                         flag = true;
-                    }
-
-                    if(SettingsStore.checkBit(lookupQuote)){
-                        flag =  asset.symbol === fix_lookupQuote;
                     }
 
                     return flag;
@@ -540,31 +523,19 @@ class MyMarkets extends React.Component {
                     }):1;
                 });                
             }
-        }else if(activeTab == 'all' && this.state.activeMarketTab === 5 &&fix_lookupQuote&&fix_lookupBase){
+        }else if(activeTab == 'all' && this.state.activeMarketTab === 5 &&lookupQuote&&lookupBase){
 
-            if(fix_lookupQuote.length>1&&fix_lookupBase.length>1){
+            if(lookupQuote.length>1&&lookupBase.length>1){
                 let left_arr = [];
                 let right_arr = [];
 
                 searchAssets.map(asset => {
-                    if(asset.symbol.indexOf(fix_lookupQuote)==0){
+                    if(asset.symbol.indexOf(lookupQuote)==0){
                         left_arr.push(asset.symbol);
-                    }else if(asset.symbol.indexOf(fix_lookupBase)==0){                       
+                    }else if(asset.symbol.indexOf(lookupBase)==0){                       
                         right_arr.push(asset.symbol);                        
                     }
                 });
-
-                if(SettingsStore.checkBit(lookupQuote)){
-                    left_arr = left_arr.filter(e=>{
-                        return e===fix_lookupQuote;
-                    });
-                }
-
-                if(SettingsStore.checkBit(lookupBase)){
-                    right_arr = right_arr.filter(e=>{
-                        return e===fix_lookupBase;
-                    });           
-                }
 
                 for(let i1 = 0; i1<left_arr.length; i1+=1){
                     for(let i2 = 0; i2<right_arr.length; i2+=1){

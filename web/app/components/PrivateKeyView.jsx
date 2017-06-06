@@ -47,7 +47,7 @@ export default class PrivateKeyView extends Component {
                 <h3><Translate content="account.perm.key_viewer" /></h3>
                 <div className="grid-block vertical">
                     <div className="content-block">
-
+@>
                         <div className="grid-content">
                             <label><Translate content="account.perm.public" /></label>
                             {this.props.pubkey}
