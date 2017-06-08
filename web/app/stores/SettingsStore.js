@@ -13,16 +13,19 @@ const STORAGE_KEY = "__graphene__";
 let ss = new ls(STORAGE_KEY);
 
 let marketsList = [  
+   "APPX.WARRANT",
    "BLOCKPAY",
    "BROWNIE.PTS",
    "BTS",
    "BTWTY",
    "CNY",
    "EUR",
+   "EDEV",
    "USD",
    "BTSR",
    "ICOO",
    "OBITS",
+   "OCASH",
    "OPEN.ARDR",
    "OBITS.WARRANT",
    "OPEN.BTC",
@@ -51,6 +54,7 @@ let marketsList = [
    "OPEN.USD",
    "OPEN.USDT",
    "OPEN.WAVES",
+   "OCASH",
    "SHAREBITS",
    "SOLCERT",
    "HEMPSWEET",
@@ -59,6 +63,7 @@ let marketsList = [
    "OPEN.NBT",
    "QORA",
    "OPEN.EXCL",
+   "REALITY",
    "YOYOW",
    "ZENGOLD"
 ];

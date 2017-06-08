@@ -8,6 +8,8 @@ import MarketsStore from "stores/MarketsStore";
 import { connect } from "alt-react";
 import utils from "common/utils";
 import Translate from "react-translate-component";
+import AssetImage from "../Utility/AssetImage";
+
 
 class MarketCard extends React.Component {
 
@@ -67,28 +69,11 @@ class MarketCard extends React.Component {
         this.context.router.push(`/market/${this.props.base.get("symbol")}_${this.props.quote.get("symbol")}`);
     }
 
-    _onError(imgName) {
-        console.log('@>imgName',imgName)
-        if (!this.state.imgError) {
-            this.refs[imgName.toLowerCase()].src = "/app/assets/asset-symbols/bts.png";
-            this.setState({
-                imgError: true
-            });
-        }
-
-    }
-
     render() {
         let {hide, isLowVolume, base, quote, marketStats} = this.props;
         //if (isLowVolume || hide) return null;
 
-        function getImageName(asset) {
-            let symbol = asset.get("symbol");
-            if (symbol === "OPEN.BTC") return symbol;
-            let imgName = asset.get("symbol").split(".");
-            return imgName.length === 2 ? imgName[1] : imgName[0];
-        }
-        let imgName = getImageName(base);
+
 
         // let marketID = base.get("symbol") + "_" + quote.get("symbol");
         // let stats = marketStats;
@@ -100,7 +85,7 @@ class MarketCard extends React.Component {
             <div className={cnames("grid-block no-overflow fm-container", this.props.className)} onClick={this.goToMarket.bind(this)}>
                 <div className="grid-block vertical shrink">
                     <div className="v-align">
-                        <img className="align-center" ref={imgName.toLowerCase()} onError={this._onError.bind(this, imgName)} style={{maxWidth: 70}} src={"/app/assets/asset-symbols/"+ imgName.toLowerCase() + ".png"} />
+                        <AssetImage style={{maxWidth: 70}} assetName={base.get("symbol")} className="align-center" />
                     </div>
                 </div>
                 <div className="grid-block vertical no-overflow">
