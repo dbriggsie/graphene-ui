@@ -1053,16 +1053,21 @@
 
   #chatbox {
     .chat-text {
-      color: $chat-text-color;
+      color: $light-text-color;
+
+    }
+
+    .chatbox{
+        background-color: $header-color;   
+        color: $light-text-color;   
     }
 
     .chatbox-content {
-        background-color: #ccc;
-        color: $chat-text-color;
+        
     }
 
     .chatbox-title {
-      background-color: $header-color !important;
+      background-color: $panel-bg-color !important;
     }
 
     select {

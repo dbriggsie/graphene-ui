@@ -126,7 +126,7 @@ class Chat extends React.Component {
     }
 
     componentWillMount() {
-        this._connectToServer();
+        //this._connectToServer();
     }
 
     componentWillUnmount() {
@@ -616,6 +616,7 @@ class Chat extends React.Component {
                 </div>
             </div>
         );
+
         return (
             <div
                 id="chatbox"
@@ -634,24 +635,17 @@ class Chat extends React.Component {
                     <div className={"grid-block main-content vertical " + (docked ? "docked" : "flyout")} >
                         <div className="chatbox-title grid-block shrink">
                             <Translate content="chat.title" />
-                            <span>&nbsp;- <Translate content="chat.users" userCount={this.connections.size + 1} /></span>
-                            <div className="chatbox-pin" onClick={this._onToggleDock.bind(this)}>
-                                {docked ? <Icon className="icon-14px rotate" name="thumb-tack"/> : <Icon className="icon-14px" name="thumb-tack"/>}
-                            </div>
-                            <div className="chatbox-settings" onClick={this.onToggleSettings.bind(this)}>
-                                <Icon className="icon-14px" name="cog"/>
-                            </div>
                             <a onClick={this.onToggleChat.bind(this)} className="chatbox-close">&times;</a>
                         </div>
 
-                        {loading ? <div><LoadingIndicator /></div> : !connected ? (
+                        {loading && false? <div><LoadingIndicator /></div> : !connected ? (
                         <div className="grid-block vertical chatbox">
-                            <div style={{padding: 20}}>
-                                <Translate content="chat.disconnected" />
-                                <div style={{paddingTop: 30}}>
-                                    <div onClick={this._resetServer.bind(this)} className="button"><Translate content="chat.reconnect" /></div>
-                                </div>
-                            </div>
+                            <div className="telegramm_messsage">
+                                <p>We're sorry</p>
+                                <p>but trollbox is closed</p>                                     
+                                <p>Please, join our Telegram chat</p> 
+                                <a target="_blank" href="https://telegram.me/OpenLedgerDC">@OpenLedgerDC</a>
+                            </div>                                             
                         </div>) : (
 
                         <div className="grid-block vertical no-overflow chatbox-content"  onScroll={this._onScroll.bind(this)}>

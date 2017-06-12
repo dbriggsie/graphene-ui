@@ -21,6 +21,7 @@ import cnames from "classnames";
 import market_utils from "common/market_utils";
 import {Asset, Price, LimitOrderCreate} from "common/MarketClasses";
 import ConfirmOrderModal from "./ConfirmOrderModal";
+import ConfirmCancelModal from "./ConfirmCancelModal";
 // import IndicatorModal from "./IndicatorModal";
 import OpenSettleOrders from "./OpenSettleOrders";
 import Highcharts from "highcharts/highstock";
@@ -409,6 +410,7 @@ class Exchange extends React.Component {
 
     _cancelLimitOrder(orderID, e) {
         e.preventDefault();
+
         let { currentAccount } = this.props;
         MarketsActions.cancelLimitOrder(
             currentAccount.get("id"),
@@ -1249,6 +1251,11 @@ class Exchange extends React.Component {
                                     ref="sell"
                                     onForce={this._forceSell.bind(this, "sell", sellFeeAsset, quoteBalance, coreBalance)}
                                     diff={sellDiff}
+                                />
+
+                                <ConfirmCancelModal
+                                    ref="cancel_order"
+                                    _cancelLimitOrder={this._cancelLimitOrder}
                                 />
 
                                 {marketLimitOrders.size > 0 && base && quote ? (
