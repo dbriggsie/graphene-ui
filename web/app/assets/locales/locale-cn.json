@@ -1271,7 +1271,10 @@
     "reconnect": "重新连接",
     "users": "%(count)s 用户在线",
     "disabled": "聊天室禁用",
-    "enable": "启用聊天室"
+    "enable": "启用聊天室",
+    "wesorry":"向你们道歉",
+    "buttrollbox":"trollbox关闭了",
+    "pleasejoin":"请参加Telegram讨论群"
   },
   "sync_fail": {
     "title": "无法与API服务器同步连接",

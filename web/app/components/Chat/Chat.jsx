@@ -641,9 +641,9 @@ class Chat extends React.Component {
                         {loading && false? <div><LoadingIndicator /></div> : !connected ? (
                         <div className="grid-block vertical chatbox">
                             <div className="telegramm_messsage">
-                                <p>We're sorry</p>
-                                <p>but trollbox is closed</p>                                     
-                                <p>Please, join our Telegram chat</p> 
+                                <Translate component="p" content="chat.wesorry" />
+                                <Translate component="p" content="chat.buttrollbox" />
+                                <Translate component="p" content="chat.pleasejoin" />
                                 <a target="_blank" href="https://telegram.me/OpenLedgerDC">@OpenLedgerDC</a>
                             </div>                                             
                         </div>) : (

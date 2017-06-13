@@ -13,9 +13,11 @@ class ApplicationApi {
         referrer_percent,
         broadcast = false
     ) {
-
+        //referrer=registrar;
         ChainValidation.required(registrar, "registrar_id");
         ChainValidation.required(referrer, "referrer_id");
+
+
 
         return new Promise((resolve, reject) => {
             return Promise.all([

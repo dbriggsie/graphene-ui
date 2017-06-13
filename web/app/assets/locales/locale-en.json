@@ -1270,7 +1270,10 @@
     "disconnected": "You are currently not connected to any peers or the central server, please click below to reconnect. If you are unable to connect, this might mean the server is down, please try again later.",
     "rate": "Please wait at least 2s before posting a new message",
     "disabled": "Chat disabled",
-    "enable": "Enable chat now"
+    "enable": "Enable chat now",
+    "wesorry":"We're sorry",
+    "buttrollbox":"but trollbox is closed",
+    "pleasejoin":"Please, join our Telegram chat"
     },
     "simple_trade": {
         "max_spend": "Enter the max amount you want to spend",

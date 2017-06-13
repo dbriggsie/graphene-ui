@@ -111,7 +111,6 @@ class WalletActions {
     }
 
     createAccount( account_name, registrar, referrer, referrer_percent, refcode ) {
-
         if( WalletDb.isLocked()) {
             let error = "wallet locked";
             //this.actions.brainKeyAccountCreateError( error )
@@ -129,8 +128,6 @@ class WalletActions {
             );
             return p.catch( error => transaction.abort() );
         };
-
-
 
         let create_account = () => {
             return application_api.create_account(

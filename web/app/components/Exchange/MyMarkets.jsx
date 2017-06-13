@@ -136,10 +136,10 @@ class MarketGroup extends React.Component {
         });
 
         let marketRows = markets
-            .map(market => {
+            .map( (market,key) => {
                 return (
                     <MarketRow
-                        key={market.id}
+                        key={market.id+key}
                         name={base === "others" ? <span> <AssetName name={market.quote} /> : <AssetName name={market.base} /></span> : <AssetName name={market.quote} />}
                         quote={market.quote}
                         base={market.base}

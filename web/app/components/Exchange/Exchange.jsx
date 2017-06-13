@@ -1252,11 +1252,15 @@ class Exchange extends React.Component {
                                     onForce={this._forceSell.bind(this, "sell", sellFeeAsset, quoteBalance, coreBalance)}
                                     diff={sellDiff}
                                 />
-
+{
+    /*
                                 <ConfirmCancelModal
                                     ref="cancel_order"
                                     _cancelLimitOrder={this._cancelLimitOrder}
                                 />
+    */
+}
+
 
                                 {marketLimitOrders.size > 0 && base && quote ? (
                                 <MyOpenOrders
