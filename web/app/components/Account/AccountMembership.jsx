@@ -119,7 +119,7 @@ class AccountMembership extends React.Component {
                             <div>
                                 <h4><Translate content="account.member.referral_link"/></h4>
                                 <Translate content="account.member.referral_text"/>:
-                                <h5>{`https://bitshares.openledger.info?r=${account.name}`}</h5>
+                                <h5>{`${document.domain}?r=${account.name}`}</h5>
                             </div>) : null}
                             <h4><Translate content="account.member.fee_allocation"/></h4>
                             <table className="table key-value-table">
@@ -153,7 +153,7 @@ class AccountMembership extends React.Component {
                                 </tbody>
                             </table>
 
-                            <h4 style={{paddingTop: "1rem"}}><Translate content="account.member.fees_cashback"/></h4>
+                            <h4 ><Translate content="account.member.fees_cashback"/></h4>
                             <table className="table key-value-table">
                                 <Statistics stat_object={account.statistics}/>
                             </table>
