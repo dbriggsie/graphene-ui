@@ -372,7 +372,7 @@ class MarketsActions {
         var tr = wallet_api.new_transaction();
 
         // Set the fee asset to use
-        fee_asset_id = accountUtils.getFinalFeeAsset(order.seller, "call_order_update", order.fee.asset_id);
+        fee_asset_id = accountUtils.getFinalFeeAsset(order.seller, "call_order_update", order.fee.asset_id);11
 
         order.setExpiration();
 
@@ -398,7 +398,7 @@ class MarketsActions {
             });
     }
 
-    cancelLimitOrder(accountID, orderID) {
+    cancelLimitOrder(accountID, orderID,fee_asset_choosen) {
         // Set the fee asset to use
         let fee_asset_id = accountUtils.getFinalFeeAsset(accountID, "limit_order_cancel");
 
@@ -406,7 +406,7 @@ class MarketsActions {
         tr.add_type_operation("limit_order_cancel", {
             fee: {
                 amount: 0,
-                asset_id: fee_asset_id
+                asset_id: fee_asset_choosen||fee_asset_id
             },
             "fee_paying_account": accountID,
             "order": orderID

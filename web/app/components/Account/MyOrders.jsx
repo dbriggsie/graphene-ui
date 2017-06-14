@@ -18,6 +18,7 @@ import BindToChainState from "../Utility/BindToChainState";
 import {RecentTransactions} from "./RecentTransactions";
 import Immutable from "immutable";
 import FormattedAsset from "../Utility/FormattedAsset";
+import ConfirmCancelModal from "../Exchange/ConfirmCancelModal";
 
 class MyOrders extends React.Component {
 
@@ -43,15 +44,20 @@ class MyOrders extends React.Component {
     }
 
 
-    _cancelLimitOrder(orderID, e) {
-        e.preventDefault();
+    _show_order_cancel(orderID, e) {
+        this.refs.cancel.show(orderID);
+    }
 
+    _cancelLimitOrder(e,{orderID,fee_asset_choosen}) {
+        e&&e.preventDefault();
+       
         MarketsActions.cancelLimitOrder(
             this.props.account.get("id"),
-            orderID // order id to cancel
-        ).catch(err => {
-            console.log("cancel order error:", err);
-        });
+            orderID, // order id to cancel
+            fee_asset_choosen
+        );
+
+        this.refs.cancel.close();
     }
 
     _onToggleBids() {
@@ -135,7 +141,7 @@ class MyOrders extends React.Component {
                             cancel_text={cancel}
                             showSymbols={false}
                             invert={true}
-                            onCancel={this._cancelLimitOrder.bind(this, order.id)}
+                            onCancel={this._show_order_cancel.bind(this,order.id)}
                             price={price.full}
                         />
                     );
@@ -173,6 +179,11 @@ class MyOrders extends React.Component {
 
         return (
             <div className="grid-container " style={{minWidth: "50rem", paddingBottom: 15, paddingTop: 40}}>
+                <ConfirmCancelModal
+                    ref="cancel"
+                    type="cancel"
+                    onCancel={this._cancelLimitOrder.bind(this)}
+                />
                 <div className="text-center">
                     <Translate content="header.my_orders" component="h3" />
 

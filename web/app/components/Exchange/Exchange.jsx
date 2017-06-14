@@ -61,7 +61,7 @@ class Exchange extends React.Component {
                 precision: props.quoteAsset.get("precision")
             })
         };
-        bid.price = new Price({base: bid.for_sale, quote: bid.to_receive});
+        bid.price = new Price({base: bid.for_sale, quote: bid.to_receive});11
         let ask = {
             forSaleText: "",
             toReceiveText: "",
@@ -408,14 +408,21 @@ class Exchange extends React.Component {
         }
     }
 
-    _cancelLimitOrder(orderID, e) {
-        e.preventDefault();
+    _show_order_cancel(orderID, e) {
+        this.refs.cancel.show(orderID);
+    }
 
+    _cancelLimitOrder(e,{orderID,fee_asset_choosen}) {
+        e&&e.preventDefault();
         let { currentAccount } = this.props;
+       
         MarketsActions.cancelLimitOrder(
             currentAccount.get("id"),
-            orderID // order id to cancel
+            orderID, // order id to cancel
+            fee_asset_choosen
         );
+
+        this.refs.cancel.close();
     }
 
     _changeBucketSize(size, e) {
@@ -735,11 +742,14 @@ class Exchange extends React.Component {
     }
 
     _setForSale(state, isBid) {
+
         if (state.price.isValid() && state.to_receive.hasAmount()) {
             state.for_sale = state.to_receive.times(state.price, isBid);
             state.forSaleText = state.for_sale.getAmount({real: true}).toString();
+
             return true;
         }
+
         return false;
     }
 
@@ -763,6 +773,7 @@ class Exchange extends React.Component {
             quote: current[isBid ? "to_receive" : "for_sale"],
             real: parseFloat(e.target.value) || 0
         });
+
 
         if (isBid) {
             this._setForSale(current, isBid) || this._setReceive(current, isBid);
@@ -790,6 +801,7 @@ class Exchange extends React.Component {
     }
 
     _onInputReceive(type, isBid, e) {
+
         let current = this.state[type];
         // const isBid = type === "bid";
         current.to_receive.setAmount({real: parseFloat(e.target.value) || 0});
@@ -970,9 +982,9 @@ class Exchange extends React.Component {
                     this.state.flipBuySell ? `order-${buySellTop ? 2 : 5 * orderMultiplier} sell-form` : `order-${buySellTop ? 1 : 4 * orderMultiplier} buy-form`
                 )}
                 type="bid"
-                amount={utils.format_number(bid.toReceiveText, quote.get("precision"))}
-                price={utils.format_number(bid.priceText, base.get("precision"))}
-                total={utils.format_number(bid.forSaleText, base.get("precision"))}
+                amount={utils.format_number(bid.toReceiveText, quote.get("precision"),false)}
+                price={utils.format_number(bid.priceText, base.get("precision"),false)}
+                total={utils.format_number(bid.forSaleText, base.get("precision"),false)}
                 quote={quote}
                 base={base}
                 amountChange={this._onInputReceive.bind(this, "bid", true)}
@@ -1014,9 +1026,9 @@ class Exchange extends React.Component {
                     this.state.flipBuySell ? `order-${buySellTop ? 1 : 4 * orderMultiplier} buy-form` : `order-${buySellTop ? 2 : 5 * orderMultiplier} sell-form`
                 )}
                 type="ask"
-                amount={utils.format_number(ask.forSaleText, quote.get("precision"))} 
-                price={utils.format_number(ask.priceText, base.get("precision"))} 
-                total={utils.format_number(ask.toReceiveText, base.get("precision"))}
+                amount={utils.format_number(ask.forSaleText, quote.get("precision"),false)} 
+                price={utils.format_number(ask.priceText, base.get("precision"),false)} 
+                total={utils.format_number(ask.toReceiveText, base.get("precision"),false)}
                 quote={quote}
                 base={base}
                 amountChange={this._onInputSell.bind(this, "ask", false)}
@@ -1252,14 +1264,12 @@ class Exchange extends React.Component {
                                     onForce={this._forceSell.bind(this, "sell", sellFeeAsset, quoteBalance, coreBalance)}
                                     diff={sellDiff}
                                 />
-{
-    /*
+
                                 <ConfirmCancelModal
-                                    ref="cancel_order"
-                                    _cancelLimitOrder={this._cancelLimitOrder}
+                                    ref="cancel"
+                                    type="cancel"
+                                    onCancel={this._cancelLimitOrder.bind(this)}
                                 />
-    */
-}
 
 
                                 {marketLimitOrders.size > 0 && base && quote ? (
@@ -1277,7 +1287,7 @@ class Exchange extends React.Component {
                                     quote={quote}
                                     baseSymbol={baseSymbol}
                                     quoteSymbol={quoteSymbol}
-                                    onCancel={this._cancelLimitOrder.bind(this)}
+                                    onCancel={this._show_order_cancel.bind(this)}
                                     flipMyOrders={this.props.viewSettings.get("flipMyOrders")}
                                 />) : null}
                             </div>

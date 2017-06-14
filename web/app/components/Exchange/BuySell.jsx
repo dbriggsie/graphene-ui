@@ -10,7 +10,7 @@ import PriceText from "../Utility/PriceText";
 import AssetName from "../Utility/AssetName";
 import SimpleDepositWithdraw from "../Dashboard/SimpleDepositWithdraw";
 import SimpleDepositBlocktradesBridge from "../Dashboard/SimpleDepositBlocktradesBridge";
-import {Asset} from "common/MarketClasses";
+import {Asset} from "common/MarketClasses";11
 
 class BuySell extends React.Component {
 

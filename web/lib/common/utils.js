@@ -85,11 +85,27 @@ var Utils = {
     },
 
     format_number: (number, decimals, trailing_zeros = true) => {
-        //@>        
+        //@#>        11
         if(!number|| !isFinite(number)){
             return "";
         }
-        return parseFloat(number).toFixed(decimals);
+
+        let dozen = Math.pow(10,decimals);
+
+        if(trailing_zeros){
+            return parseFloat(number).toFixed(decimals);
+        }else{
+            number = Math.floor(parseFloat(number)*dozen);
+            return number/dozen+"";
+        }
+
+        
+
+        /*let aaa = parseFloat(number).toFixed(decimals);
+        if(decimals==8){
+            console.log('@>',aaa/);
+        }*/
+        
         /* 
         if(isNaN(number) || !isFinite(number) || number === undefined || number === null) return "";
         let zeros = ".";
@@ -378,7 +394,7 @@ var Utils = {
             });
         }
 
-        if(asset.get("is_currency_fee")){ //@>
+        if(asset.get("is_currency_fee")){ //@#>
             return fee;
         }
 

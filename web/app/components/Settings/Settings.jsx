@@ -73,7 +73,7 @@ class Settings extends React.Component {
     }
 
     _onChangeSetting(setting, e) {
-        if(typeof e == "boolean"){ //@> traderMode
+        if(typeof e == "boolean"){ //@#> traderMode
             let e_original = e; 
             e={
                 target:{
