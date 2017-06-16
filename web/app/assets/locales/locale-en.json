@@ -459,6 +459,7 @@
     "limit_order_create": "Place order to buy %(buy_amount)s for %(sell_amount)s for %(account)s",
     "limit_order_sell": "Place an order to sell {amount} at {price} for {account}",
     "limit_order_buy": "Place an order to buy {amount} at {price} for {account}",
+    "limit_order_cancel": "has proposed to cancel order",
     "committee_member_update_global_parameters": "Update committee global parameters by {account}",
     "action": "Actions",
     "expires": "Expires",

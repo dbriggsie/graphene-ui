@@ -53,30 +53,30 @@ export default class ConfirmCancelModal extends React.Component {
 
     _getAvailableAssets(state = this.state) {
         const { from_account, from_error } = state;
-        let asset_types = [], fee_asset_types = [];
+        let asset_types = [];
+        let fee_asset_types = [];
+
         if (!(from_account && from_account.get("balances") && !from_error)) {
             return {asset_types, fee_asset_types};
         }
         let account_balances = state.from_account.get("balances").toJS();
-        asset_types = Object.keys(account_balances).sort(utils.sortID);
-        fee_asset_types = Object.keys(account_balances).sort(utils.sortID);
+
         for (let key in account_balances) {
             let asset = ChainStore.getObject(key);
             let balanceObject = ChainStore.getObject(account_balances[key]);
-            if (balanceObject && balanceObject.get("balance") === 0) {
-                asset_types.splice(asset_types.indexOf(key), 1);
-                if (fee_asset_types.indexOf(key) !== -1) {
-                    fee_asset_types.splice(fee_asset_types.indexOf(key), 1);
+
+            if (balanceObject && balanceObject.get("balance") > 0) {
+                if(fee_asset_types.indexOf(key)==-1){
+                    asset_types.push(key);
                 }
             }
 
-            if (asset) {
-                if (asset.get("id") !== "1.3.0" && !utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))) {
-                    fee_asset_types.splice(fee_asset_types.indexOf(key), 1);
-                }
+            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>200){
+                fee_asset_types.push(key);
             }
+
         }
-
+        
         return {asset_types, fee_asset_types};
     }
 
@@ -100,11 +100,10 @@ export default class ConfirmCancelModal extends React.Component {
         let feeID = feeAsset ? feeAsset.get("id") : "1.3.0";
         let core = ChainStore.getObject("1.3.0");
 
-        window._eee = ChainStore.getObject;
-
         // Estimate fee
         let globalObject = ChainStore.getObject("2.0.0");
-        let fee = utils.estimateFee("transfer", null, globalObject);
+
+        let fee = utils.estimateFee("limit_order_cancel", null, globalObject);
 
         if (from_account && from_account.get("balances") && !from_error) {
 
@@ -112,21 +111,25 @@ export default class ConfirmCancelModal extends React.Component {
 
             // Finish fee estimation            
             if (feeAsset && feeAsset.get("id") !== "1.3.0" && core) {
-
                 let price = utils.convertPrice(core, feeAsset.getIn(["options", "core_exchange_rate"]).toJS(), null, feeAsset.get("id"));
+                let rate = feeAsset.getIn(["options", "core_exchange_rate"]).toJS();
+
                 fee = utils.convertValue(price, fee, core, feeAsset);
 
                 if (parseInt(fee, 10) !== fee) {
                     fee += 1; // Add 1 to round up;
                 }
-            }
-            if (core) {
-                fee = utils.limitByPrecision(utils.get_asset_amount(fee, feeAsset || core), feeAsset ? feeAsset.get("precision") : core.get("precision"));
+
+                fee = Math.floor(fee)/Math.pow(10,feeAsset.get("precision"));
+
             }else{
-                return null;
+                fee = Math.floor(fee)/Math.pow(10,core.get("precision"));
+            }            
+
+            if (asset_types.length === 1){
+               asset = ChainStore.getAsset(asset_types[0]); 
             }
 
-            if (asset_types.length === 1) asset = ChainStore.getAsset(asset_types[0]);
             if (asset_types.length > 0) {
                 let current_asset_id = asset ? asset.get("id") : asset_types[0];                
                 balance_fee = (<span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} ><Translate component="span" content="transfer.available"/>: <BalanceComponent balance={account_balances[current_asset_id]}/></span>);
@@ -152,7 +155,7 @@ export default class ConfirmCancelModal extends React.Component {
                         refCallback={this.setNestedRef.bind(this)}
                         label="transfer.fee"
                         disabled={true}
-                        amount={fee}
+                        amount={fee.toFixed(total_precision)}
                         onChange={this.onFeeChanged.bind(this)}
                         asset={fee_asset_choosen}
                         assets={fee_asset_types}

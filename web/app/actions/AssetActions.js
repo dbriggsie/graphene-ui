@@ -265,6 +265,7 @@ class AssetActions {
 
     getAssetList(start, count) {
 
+        
         let id = start + "_" + count;
         return (dispatch) => {
             if (!inProgress[id]) {

@@ -85,7 +85,7 @@ var Utils = {
     },
 
     format_number: (number, decimals, trailing_zeros = true) => {
-        //@#>        11
+        //@#>
         if(!number|| !isFinite(number)){
             return "";
         }
@@ -102,10 +102,6 @@ var Utils = {
         
 
         /*let aaa = parseFloat(number).toFixed(decimals);
-        if(decimals==8){
-            console.log('@>',aaa/);
-        }*/
-        
         /* 
         if(isNaN(number) || !isFinite(number) || number === undefined || number === null) return "";
         let zeros = ".";
@@ -466,7 +462,7 @@ var Utils = {
         let quotePrecision = this.get_asset_precision(fromAsset.get("precision"));
         let basePrecision = this.get_asset_precision(toAsset.get("precision"));
 
-        let assetPrice = this.get_asset_price(priceObject.quote.amount, fromAsset, priceObject.base.amount, toAsset);
+        let assetPrice = this.get_asset_price(parseInt(priceObject.quote.amount), fromAsset, parseInt(priceObject.base.amount), toAsset);
 
         let eqValue = fromAsset.get("id") !== toAsset.get("id") ?
             basePrecision * (amount / quotePrecision) / assetPrice :

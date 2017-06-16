@@ -215,7 +215,7 @@ class Header extends React.Component {
             </ActionSheet.Button>
         ) : null;
 
-        //@>
+        //@#>
         let login_with_password = myAccountCount === 0 ? (
             <ActionSheet.Button title="" setActiveState={() => {}}>
                 <a className="button create-account" 
@@ -228,16 +228,6 @@ class Header extends React.Component {
                 </a>
             </ActionSheet.Button>
         ) : null;
-
-        /*
-                                <div className="grp-menu-item overflow-visible" onClick={() => {
-                            SettingsActions.changeSetting({setting: "passwordLogin", value: true});
-                            WalletUnlockActions.unlock.defer();
-                        }}>
-                            <span><Translate content="header.settings" /></span>
-                        </div>
-
-        */
 
         let lock_unlock = ((this.props.current_wallet && myAccountCount) || passwordLogin) ? (
             <div className="grp-menu-item" >

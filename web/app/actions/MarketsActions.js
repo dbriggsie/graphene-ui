@@ -372,7 +372,7 @@ class MarketsActions {
         var tr = wallet_api.new_transaction();
 
         // Set the fee asset to use
-        fee_asset_id = accountUtils.getFinalFeeAsset(order.seller, "call_order_update", order.fee.asset_id);11
+        fee_asset_id = accountUtils.getFinalFeeAsset(order.seller, "call_order_update", order.fee.asset_id);
 
         order.setExpiration();
 

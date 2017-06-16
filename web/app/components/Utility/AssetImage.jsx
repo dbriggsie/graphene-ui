@@ -10,7 +10,7 @@ import React from "react";
 
 
 function _onError(el, imgName) {
-    console.log('@>ERR',imgName);
+    console.log('@#>ERR',imgName);
 
     el.target.style = "visibility: hidden";
 

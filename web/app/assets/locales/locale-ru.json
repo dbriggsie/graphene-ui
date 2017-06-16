@@ -451,6 +451,7 @@
     "limit_order_create":"Разместить ордер на покупку %(buy_amount)s за %(sell_amount)s для %(account)s",
     "limit_order_sell":"Разместить ордер на продажу {amount} за {price} для {account}",
     "limit_order_buy":"Разместить ордер на покупку {amount} за {price} для {account}",
+    "limit_order_cancel": "предложил отменить ордер",
     "committee_member_update_global_parameters":"Обновить глобальные параметры комитета {account}",
     "action":"Действия",
     "expires":"Истекает",

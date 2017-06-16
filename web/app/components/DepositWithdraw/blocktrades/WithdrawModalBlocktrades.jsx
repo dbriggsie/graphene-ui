@@ -244,6 +244,9 @@ class WithdrawModalBlocktrades extends React.Component {
             let total_minus_fee = this.props.balance.get("balance") / utils.get_asset_precision(this.props.asset.get("precision"));
             if(this.props.asset.get("id")==feeID){
                 total_minus_fee=utils.limitByPrecision(total_minus_fee-fee*1.09,total_precision);
+                if(total_minus_fee<0){
+                    total_minus_fee=0;
+                }
             }
 
             this.setState({
