@@ -94,6 +94,8 @@ var Utils = {
 
         if(trailing_zeros){
             return parseFloat(number).toFixed(decimals);
+        }else if(parseFloat(number)==0){
+        	return number.slice(0,decimals);
         }else{
             number = Math.floor(parseFloat(number)*dozen);
             return number/dozen+"";
