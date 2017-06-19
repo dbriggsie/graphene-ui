@@ -13,6 +13,7 @@ BitShares 2.0 - это платформа Финансовых Смарт-Кон
 - [Делегаты](introduction/witness.md)
 - [Работники](introduction/workers.md)
 - [Члены Комитета](introduction/committee.md)
+- [FAQ](dex/faq.md)
 
 ## Аккаунты
 

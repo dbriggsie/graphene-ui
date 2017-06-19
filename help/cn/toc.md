@@ -20,3 +20,4 @@
  * [去中心化交易所](dex/introduction.md)
  * [交易](dex/trading.md)
  * [卖空比特资产](dex/shorting.md)
+ * [FAQ](dex/faq.md)

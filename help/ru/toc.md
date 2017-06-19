@@ -19,3 +19,4 @@
 - [Децентрализованная биржа](dex/introduction.md)
 - [Торговля](dex/trading.md)
 - [Короткая продажа BitAssets](dex/shorting.md)
+- [FAQ](dex/faq.md)

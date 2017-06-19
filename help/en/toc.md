@@ -20,3 +20,4 @@
  * [Decentralized Exchange](dex/introduction.md)
  * [Trading](dex/trading.md)
  * [Short Selling BitAssets](dex/shorting.md)
+ * [FAQ](dex/faq.md)

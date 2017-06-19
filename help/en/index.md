@@ -16,6 +16,7 @@ of this application.
  * [Witnesses](introduction/witness.md)
  * [Workers](introduction/workers.md)
  * [Committe Members](introduction/committee.md)
+ * [FAQ](dex/faq.md)
 
 ## Accounts
  * [Introduction](accounts/general.md)
