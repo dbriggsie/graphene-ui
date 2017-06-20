@@ -10,6 +10,19 @@ import SimpleDashboard from "./SimpleDashboard";
 
 class Content extends React.Component {
 
+    componentWillMount() {
+
+        console.log('@>this.props.children',this.props.children)
+        // Check for wallet and account, if not present redirect to create-account
+        setTimeout(()=>{
+            if (!AccountStore.getMyAccounts().length) {
+                this.props.router.push("/root");
+            } else {
+                accountUtils.getFinalFeeAsset(this.props.account, "transfer");
+            }
+        }, 500)
+    }
+
     render() {
         return this.props.traderMode ? <Dashboard {...this.props} /> : <SimpleDashboard {...this.props} />;
     }

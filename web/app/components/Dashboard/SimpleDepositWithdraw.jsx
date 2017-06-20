@@ -133,12 +133,7 @@ class DepositWithdrawContent extends React.Component {
 
         let issuer_id = this.props.issuer.get("id"); 
         //@#> FEE WALLET
-        if(this.state.to_withdraw.asset_id=="1.3.1388"){
-            issuer_id = "1.2.184026";
-        }
-
-                //@#> FEE WALLET 
-        if(~["OPEN.ETP" ,"OPEN.ZGC" ,"OPEN.GBG" ,"OPEN.GOLOS"].indexOf(this.state.to_withdraw.asset_id)){
+        if(["1.3.1388" ,"1.3.1406" ,"1.3.1412" ,"1.3.1411"].indexOf(this.state.to_withdraw.asset_id)){
             issuer_id = "1.2.184026";
         }
 
