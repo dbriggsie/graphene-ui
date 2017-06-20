@@ -11,7 +11,7 @@ import SettingsActions from "actions/SettingsActions";
 import WalletUnlockActions from "actions/WalletUnlockActions";
 
 
-class Dashboard extends React.Component {
+class Das_root extends React.Component {
 
     constructor() {
         super();
@@ -96,6 +96,7 @@ class Dashboard extends React.Component {
 
 
     render() {
+       // console.log('@>',12)
 
         let { linkedAccounts, myIgnoredAccounts, accountsReady, passwordAccount, traderMode } = this.props;
         let {width, showIgnored, featuredMarkets, newAssets} = this.state;
@@ -206,4 +207,4 @@ class Dashboard extends React.Component {
     }
 }
 
-export default Dashboard;
+export default Das_root;

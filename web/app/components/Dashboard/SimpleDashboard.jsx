@@ -7,7 +7,6 @@ import ps from "perfect-scrollbar";
 import AssetName from "../Utility/AssetName";
 import assetUtils from "common/asset_utils";
 import DashboardAssetList from "./DashboardAssetList";
-import accountUtils from "common/account_utils";
 import WalletDb from "stores/WalletDb";
 import AccountStore from "stores/AccountStore";
 

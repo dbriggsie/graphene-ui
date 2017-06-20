@@ -2,7 +2,7 @@ import React from "react";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import MarketsStore from "stores/MarketsStore";
-
+import accountUtils from "common/account_utils";
 import AltContainer from "alt-container";
 import Dashboard from "./Dashboard";
 
@@ -12,11 +12,11 @@ class Content extends React.Component {
 
     componentWillMount() {
 
-        console.log('@>this.props.children',this.props.children)
+        //console.log('@>this.props.children',this.props.children)
         // Check for wallet and account, if not present redirect to create-account
         setTimeout(()=>{
             if (!AccountStore.getMyAccounts().length) {
-                this.props.router.push("/root");
+                this.props.router.push("/create-account");
             } else {
                 accountUtils.getFinalFeeAsset(this.props.account, "transfer");
             }
