@@ -16,6 +16,7 @@ class Content extends React.Component {
         // Check for wallet and account, if not present redirect to create-account
         setTimeout(()=>{
             if (!AccountStore.getMyAccounts().length) {
+                //this.props.router.push("/root");
                 this.props.router.push("/create-account");
             } else {
                 accountUtils.getFinalFeeAsset(this.props.account, "transfer");

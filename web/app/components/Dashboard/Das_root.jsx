@@ -7,9 +7,6 @@ import MarketCard from "./MarketCard";
 import utils from "common/utils";
 import { Apis } from "bitsharesjs-ws";
 import LoadingIndicator from "../LoadingIndicator";
-import SettingsActions from "actions/SettingsActions";
-import WalletUnlockActions from "actions/WalletUnlockActions";
-
 
 class Das_root extends React.Component {
 
@@ -43,68 +40,34 @@ class Das_root extends React.Component {
         if (chainID) chainID = chainID.substr(0, 8);
 
         this.state = {
-            width: null,
-            showIgnored: false,
             featuredMarkets: marketsByChain[chainID] || marketsByChain["4018d784"],
-            newAssets: [
-
-            ]
+            newAssets: []
         };
 
-        this._setDimensions = this._setDimensions.bind(this);
-        // this._sortMarketsByVolume = this._sortMarketsByVolume.bind(this);
     }
 
     componentDidMount() {
-        this._setDimensions();
-
-        window.addEventListener("resize", this._setDimensions, {capture: false, passive: true});
+        //window.addEventListener("resize", this._setDimensions, {capture: false, passive: true});
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        console.log('@>',nextProps.lowVolumeMarkets)
         return (
             !utils.are_equal_shallow(nextState.featuredMarkets, this.state.featuredMarkets) ||
             !utils.are_equal_shallow(nextProps.lowVolumeMarkets, this.props.lowVolumeMarkets) ||
             !utils.are_equal_shallow(nextState.newAssets, this.state.newAssets) ||
-            nextProps.linkedAccounts !== this.props.linkedAccounts ||
             // nextProps.marketStats !== this.props.marketStats ||
-            nextProps.ignoredAccounts !== this.props.ignoredAccounts ||
-            nextProps.passwordAccount !== this.props.passwordAccount ||
-            nextState.width !== this.state.width ||
-            nextProps.accountsReady !== this.props.accountsReady ||
-            nextState.showIgnored !== this.state.showIgnored
+            nextProps.accountsReady !== this.props.accountsReady 
         );
     }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this._setDimensions);
-    }
-
-    _setDimensions() {
-        let width = window.innerWidth;
-
-        if (width !== this.state.width) {
-            this.setState({width});
-        }
-    }
-
-    _onToggleIgnored() {
-        this.setState({
-            showIgnored: !this.state.showIgnored
-        });
-    }
-
-
     render() {
-       // console.log('@>',12)
 
-        let { linkedAccounts, myIgnoredAccounts, accountsReady, passwordAccount, traderMode } = this.props;
-        let {width, showIgnored, featuredMarkets, newAssets} = this.state;
-        let names = linkedAccounts.toArray().sort();
-        if (passwordAccount && names.indexOf(passwordAccount) === -1) names.push(passwordAccount);
-        let ignored = myIgnoredAccounts.toArray().sort();
+        let { accountsReady, traderMode } = this.props;
+        let { featuredMarkets, newAssets} = this.state;
+        console.log('@>',this.props)
 
-        let accountCount = linkedAccounts.size + myIgnoredAccounts.size + (passwordAccount ? 1 : 0);
+        console.log('@>',this.props.lowVolumeMarkets)
 
         if (!accountsReady) {
             return <LoadingIndicator />;
@@ -118,11 +81,6 @@ class Das_root extends React.Component {
             let isLowVolume = this.props.lowVolumeMarkets.get(pair[1] + "_" + pair[0]) || this.props.lowVolumeMarkets.get(pair[0] + "_" + pair[1]);
             if (!isLowVolume) validMarkets++;
             let className = "";
-            if (validMarkets > 9) {
-                className += ` show-for-${!accountCount ? "xlarge" : "large"}`;
-            } else if (validMarkets > 6) {
-                className += ` show-for-${!accountCount ? "large" : "medium"}`;
-            }
 
             return (
                 <MarketCard
@@ -139,42 +97,11 @@ class Das_root extends React.Component {
             );
         }).filter(a => !!a);
 
-        if (!accountCount && !traderMode) {
-            return (
-                <div ref="wrapper" className="grid-block page-layout vertical">
-                    <div ref="container" className="grid-block vertical medium-horizontal"  style={{padding: "25px 10px 0 10px"}}>
-                        <div className="grid-block vertical small-12 medium-5">
-                            <div className="Dashboard__intro-text">
-                                <h4><img style={{position: "relative", top: -15, margin: 0}} src={'/app/assets/logo.png'} /><Translate content="account.intro_text_title" /></h4>
-
-                                <Translate unsafe content="account.intro_text_1" component="p" />
-                                <Translate unsafe content="account.intro_text_2" component="p" />
-                                <Translate unsafe content="account.intro_text_3" component="p" />
-                                <Translate unsafe content="account.intro_text_4" component="p" />
-                                <div className="button-group">
+        /*
                                     <div className="button create-account" onClick={() => {this.props.router.push("create-account");}}>
                                         <Translate content="account.create_new" />
                                     </div>
-
-                                    <div className="button create-account" onClick={() => {
-                                        SettingsActions.changeSetting({setting: "passwordLogin", value: true});
-                                        WalletUnlockActions.unlock.defer();
-                                    }}>
-                                        <Translate content="account.password_login" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="grid-container small-12 medium-7" style={{paddingTop: 44}}>
-                            <Translate content="exchange.featured" component="h4" style={{paddingLeft: 30}}/>
-                            <div className="grid-block small-up-1 large-up-3 xlarge-up-4 no-overflow fm-outer-container">
-                                {markets}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
+        */
 
         return (
             <div ref="wrapper" className="grid-block page-layout vertical">
@@ -185,21 +112,6 @@ class Das_root extends React.Component {
                     <div className="grid-block small-up-1 medium-up-3 large-up-4 no-overflow fm-outer-container">
                         {markets}
                     </div>
-
-                    {accountCount ? <div className="generic-bordered-box" >
-                        
-                        <Translate content="account.accounts" component="h4" />                        
-                        <div className="box-content">
-                            <DashboardList
-                                accounts={Immutable.List(names)}
-                                ignoredAccounts={Immutable.List(ignored)}
-                                width={width}
-                                onToggleIgnored={this._onToggleIgnored.bind(this)}
-                                showIgnored={showIgnored}
-                            />
-                            {/* {showIgnored ? <DashboardList accounts={Immutable.List(ignored)} width={width} /> : null} */}
-                        </div>
-                    </div> : null}
 
                 </div>
             </div>

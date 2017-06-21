@@ -56,13 +56,12 @@ class Auth extends React.Component {
     render() {return null; }
 }
 
-console.log('@>',Das_root)
-
 const routes = (
     <Route path="/" component={App} onEnter={willTransitionTo}>
         <IndexRoute component={DashboardContainer}/>
         <Route path="/auth/:data" component={Auth}/>
         <Route path="/dashboard" component={DashboardContainer}/>
+        <Route path="/root" component={Das_root}/>
         <Route path="explorer" component={Explorer}/>
 
         <Route path="/explorer/fees" component={FeesContainer} />
