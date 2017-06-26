@@ -105,7 +105,7 @@ class DepositFiatOpenLedger extends React.Component {
                             <h3>Deposit Information</h3>
                          </div>
                          <div className="content-block">
-                           <p>Click <a href={this.state.deposit_info.link} rel="noopener noreferrer" target="_blank">here</a> for deposit instructions</p>
+                           <p>Click <a href="#" onClick={(e)=>{ window.open(this.state.deposit_info.link,'_blank');}} rel="noopener noreferrer" target="_blank">here</a> for deposit instructions</p>
 
                          </div>
                          <div className="content-block">
