@@ -81,6 +81,9 @@ export default class ConfirmCancelModal extends React.Component {
     }
 
     render() {
+        if(!this.state.from_account){
+            return null;
+        }
         let {type, onCancel} = this.props;
         let {orderID} = this.state;
         let fee_asset_choosen="1.3.0";

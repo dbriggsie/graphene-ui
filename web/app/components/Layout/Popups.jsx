@@ -30,7 +30,7 @@ class Popups extends Component {
         } else if (/.+@.+\..+/i.test(subs_email) == false) {
 
             this.setState({
-                error: counterpart.translate("popups.email")
+                error: counterpart.translate("popups.email_error")
             });
             return;
         } else {

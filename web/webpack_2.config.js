@@ -92,6 +92,7 @@ function CreateWebpackConfig(type, options) {
         //this.entry['app'] = path.join(__dirname, 'app', 'a11');
     } else if (type == 'scss') {
         this.entry['files'] = path.join(__dirname, 'app', 'assets', 'files');
+        this.entry['landing'] = path.join(__dirname, 'app', 'assets', 'landing');
         this.entry['app'] = path.join(__dirname, 'app', 'assets', 'stylesheets', 'app');
 
         this.plugins.push(new HtmlWebpackPlugin({

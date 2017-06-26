@@ -135,9 +135,15 @@ class App extends React.Component {
 
     render() {
         let {disableChat, isMobile, showChat, dockedChat, theme} = this.state;
+        let web_path = this.props.location.pathname;
         let content = null;
 
-        let showFooter = this.props.location.pathname.indexOf("market") === -1;
+        let showFooter = true;
+
+        if(~web_path.indexOf("market") || web_path === "/root"){
+            showFooter = false; 
+        }
+
 
         if (this.state.syncFail) {
             content = (

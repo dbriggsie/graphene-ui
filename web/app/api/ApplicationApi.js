@@ -13,11 +13,13 @@ class ApplicationApi {
         referrer_percent,
         broadcast = false
     ) {
-        //referrer=registrar;
+        
+
+        if(typeof referrer == "object" && !referrer.id){
+             referrer=registrar;
+        }
         ChainValidation.required(registrar, "registrar_id");
         ChainValidation.required(referrer, "referrer_id");
-
-
 
         return new Promise((resolve, reject) => {
             return Promise.all([
@@ -67,6 +69,8 @@ class ApplicationApi {
                     console.log("process_transaction catch", err);
                     reject(err);
                 });
+            }).catch(err=>{
+                console.log('err reg',err)
             });
         });
     }

@@ -982,9 +982,9 @@ class Exchange extends React.Component {
                     this.state.flipBuySell ? `order-${buySellTop ? 2 : 5 * orderMultiplier} sell-form` : `order-${buySellTop ? 1 : 4 * orderMultiplier} buy-form`
                 )}
                 type="bid"
-                amount={utils.format_number(bid.toReceiveText, quote.get("precision"),false)}
-                price={utils.format_number(bid.priceText, base.get("precision"),false)}
-                total={utils.format_number(bid.forSaleText, base.get("precision"),false)}
+                amount={bid.toReceiveText}
+                price={bid.priceText}
+                total={bid.forSaleText}
                 quote={quote}
                 base={base}
                 amountChange={this._onInputReceive.bind(this, "bid", true)}
@@ -1026,9 +1026,9 @@ class Exchange extends React.Component {
                     this.state.flipBuySell ? `order-${buySellTop ? 1 : 4 * orderMultiplier} buy-form` : `order-${buySellTop ? 2 : 5 * orderMultiplier} sell-form`
                 )}
                 type="ask"
-                amount={utils.format_number(ask.forSaleText, quote.get("precision"),false)} 
-                price={utils.format_number(ask.priceText, base.get("precision"),false)} 
-                total={utils.format_number(ask.toReceiveText, base.get("precision"),false)}
+                amount={ask.forSaleText} 
+                price={ask.priceText} 
+                total={ask.toReceiveText}
                 quote={quote}
                 base={base}
                 amountChange={this._onInputSell.bind(this, "ask", false)}

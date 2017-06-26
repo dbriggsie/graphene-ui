@@ -21,7 +21,7 @@ class Content extends React.Component {
             } else {
                 accountUtils.getFinalFeeAsset(this.props.account, "transfer");
             }
-        }, 500)
+        }, 100)
     }
 
     render() {
