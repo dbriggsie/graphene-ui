@@ -108,20 +108,14 @@ class BlockTradesGateway extends React.Component {
         if (!coin) coin = filteredCoins[0];
 
         let issuers = {
-            blocktrades: {name: "blocktrades", id: "1.2.32567", support: "support@openledger.info"},
-            openledger: {name: "openledger-wallet", id: "1.2.96397", support: "support@openledger.info"}
+            blocktrades: {name: "blocktrades", support: "support@openledger.info"},
+            openledger: {name: coin.intermediateAccount, support: "support@openledger.info"}
         };
 
         let issuer = issuers[provider];
 
-        //@#> FEE WALLET 
-        if(~["OPEN.ETP" ,"OPEN.ZGC" ,"OPEN.GBG" ,"OPEN.GOLOS"].indexOf(coin.symbol)){
-            issuer.name = "etp-wallet";
-            issuer.id = "1.2.184026";
-        }
-
         let isDeposit = this.state.action === "deposit";
-
+        
         return (
 
             <div style={this.props.style}>

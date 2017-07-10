@@ -10,7 +10,7 @@ import WalletDb from "stores/WalletDb";
 import TimeAgo from "../Utility/TimeAgo";
 import Icon from "../Icon/Icon";
 
-import Popups from "./Popups";
+import Popups from "../Modal/Popups";
 
 class Footer extends React.Component {
 

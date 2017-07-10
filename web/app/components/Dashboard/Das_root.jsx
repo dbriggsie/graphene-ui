@@ -15,6 +15,7 @@ import SettingsStore from "stores/SettingsStore";
 import MarketsStore from "stores/MarketsStore";
 import AltContainer from "alt-container";
 
+import Popups, {Youtube} from "../Modal/Popups";
 
 class Das_root extends React.Component {
 
@@ -252,13 +253,13 @@ class Das_root extends React.Component {
 			        </ul>
 			        <nav className="menu_header">
 			            <ul className="pushy pushy-left"> 
-			                <li><Link className="lnk_brd_bottom" to={"/market/USD_BTS"}>Exchange</Link></li>
-			                <li><a className="lnk_brd_bottom" target="_blank" href="https://blog.openledger.info/">Blog</a></li>
-			                <li><Link className="lnk_brd_bottom" to={"/help"}>Help</Link></li>
+			                <li><Link className="lnk_brd_bottom" to={"/market/USD_BTS"}><Translate component="p" className="menu_header_ancor" content="root.exchange"  /></Link></li>
+			                <li><a className="lnk_brd_bottom" target="_blank" href="https://blog.openledger.info/"><Translate component="p" className="menu_header_ancor" content="root.blog" /></a></li>
+			                <li><Link className="lnk_brd_bottom" to={"/help"}><Translate component="p" content="root.help" className="menu_header_ancor" /></Link></li>
 			            </ul>
 			        </nav>
 			        <div className="header_enter"> 
-			            <Link className="" to={"/create-account"}>Sign up</Link>
+			            <Link className="" to={"/create-account"}><Translate component="p" content="root.sign_up" className="menu_header_ancor" /></Link>
 			        </div>
 			        <div className="site-overlay"></div>
 			    </header>
@@ -267,15 +268,12 @@ class Das_root extends React.Component {
 			            <div className="main_logo">
 			                <img src="/app/assets/landing_files/logo_big.svg" alt="OpenLedger" />
 			                <div className="main_logo__text">
-			                    Blockchain Powered. People Driven.
+			                    <Translate component="span" content="root.blockchain_powered"  />
 			                </div>
-			            </div>
-			            <div className="title_main">
-			                Welcome to the OpenLedger Decentralized Exchange (DEX)
-			            </div>
-			            <p className="main_text">The OpenLedger DEX is a cryptocurrency trading platform acting as the skeleton for constant innovation.
-			                <br /> Designed for high-speed transactions, the OpenLedger DEX allows you to trade assets in real time, securely, with ultra-low fees.
-			            </p>			            
+			            </div>	
+			            <Translate className="title_main" component="div" content="root.welcome_to_the" />
+                        <Translate component="p" className="main_text" content="root.the_openLedger_dex_is_a_cryptocurrency" style={{"margin":"0 0 0 0"}} />                    
+                        <Translate component="p" className="main_text" content="root.designed_for_high_speed_transactions"  />		            
 			            <div className="landCarousel">
 				           	{accountsReady?<div className="owl-carousel slider_markets owl-theme">
 				            	{array_cards} 
@@ -288,110 +286,96 @@ class Das_root extends React.Component {
 					    <section className="sec_features">
 					        <div className="grid-container grid-content">
 					            <div className="text-center">
-					                <h2>Features</h2>
-					                <a href="#"><i className="icon _pdf"></i>Whitepaper</a>
+					                <Translate component="h2" content="root.features" />
+					                <a href="#"><i className="icon _pdf"></i><Translate component="span" content="root.whitepaper" /></a>
 					            </div>
 					            <div className="features_info grid-block">
 					                <div className="large-5">
 					                    <div className="">
 					                        <div className="carousel_info__item">
-					                            <h5 className="text-yellow font_bold">The OpenLedger DEX - Amazing Trading at Your Fingertips</h5>
+					                            <Translate className="text-yellow font_bold" component="h5" content="root.the_openLedger_dex" />
 					                            <section className="features_section_text">
-					                                <div className="text_upper">Speed</div>
-					                                <p>We let you send it anywhere in the world within seconds.</p>
+					                                <Translate component="div" className="text_upper" content="root.speed"  />
+					                                <Translate component="p" content="root.we_let_you_send_it"  />
 					                            </section>
 					                            <section className="features_section_text">
-					                                <div className="text_upper">Security</div>
-					                                <p>You are always in control, and your identity can never be stolen.</p>
+					                                <Translate component="div" className="text_upper" content="root.security"  />
+					                                <Translate component="p" content="root.you_are_always_in_control" />
 					                            </section>
 					                            <section className="features_section_text">
-					                                <div className="text_upper">Acceptance</div>
-					                                <p>You can spend your money instantly using both mobile app and QR codes, and soon, anywhere major debit cards are accepted. We handle the conversions for you.</p>
-					                            </section>
-					                            <section className="features_section_text">
-					                                <div className="text_upper">Trust</div>
-					                                <p>Your money goes directly from you to its destination.</p>
-					                            </section>
-					                            <section className="features_section_text">
-					                                <div className="text_upper">privacy</div>
-					                                <p>Only those you authorize can see your accounts. We make our ledgers public for transparency, but you can keep yours private.</p>
-					                            </section>
-					                            <section className="features_section_text">
-					                                <div className="text_upper">Multi-signature accounts</div>
-					                                <p>Share control of accounts with friends, family, and business associates with complete accountability and flexibility, <b><i>never before</i></b> available in legacy banking.</p>
-					                            </section>
-					                            <section className="features_section_text">
-					                                <div className="text_upper">Streamlined compilance</div>
-					                                <p>Compilance of KYC (Know Your Customer) and AML laws (Anti Money Laundering), same as with any deposit and withdrawals of FIAT Currency.</p>
+					                                <Translate component="div" className="text_upper" content="root.acceptance"  />
+                                                    <Translate component="p" content="root.you_can_spend_your_money_instantly_using" />
+                                                </section>
+                                                <section className="features_section_text">
+                                                    <Translate component="div" className="text_upper" content="root.trust"  />
+					                                <Translate component="p" content="root.your_money_goes_directly_from" />
+                                                </section>
+                                                <section className="features_section_text">
+                                                    <Translate component="div" className="text_upper" content="root.privacy"  />
+                                                    <Translate component="p" content="root.only_those_you_authorize_can"  />
+                                                </section>
+                                                <section className="features_section_text">
+                                                    <Translate component="div" className="text_upper" content="root.multi_signature_accounts"  />
+                                                    <Translate component="p" content="root.share_control_of_accounts_with"  />
+                                                </section>
+                                                <section className="features_section_text">
+                                                    <Translate component="div" className="text_upper" content="root.streamlined_compliance"  />
+                                                    <Translate component="p" content="root.compilance_of_kyc"  />
 					                            </section>
 					                        </div>
 					                    </div>
 					                </div>
 					                <div className="large-7 grid-block_inner features_advantages custom-control">
-					                    <div className="large-4 custom-control__item" data-slide="0">
-					                        <div className="features_advantages__icon">
-					                            <img src="/app/assets/landing_files/land_wallet.svg" alt="wallet" />
-					                        </div>
-					                        <h5 className="features_advantages__title">
-					                                   wallet
-					                                </h5>
-					                        <p>Sign up and use OL as a wallet. 100 500 cryptocoins for trading, sending, withdraw etc.</p>
-					                    </div>
-					                    <div className="large-4 custom-control__item" data-slide="1">
-					                        <div className="features_advantages__icon">
-					                            <img src="/app/assets/landing_files/land_exchange.svg" alt="exchange" />
-					                        </div>
-					                        <h5 className="features_advantages__title">
-					                                    exchange
-					                                </h5>
-					                        <p>Aenean id nisi eu est pulvinar tristique eget non libero. In hac habitasse platea dictumst.</p>
-					                    </div>
-					                    <div className="large-4 custom-control__item" data-slide="2">
-					                        <div className="features_advantages__icon">
-					                            <img src="/app/assets/landing_files/land_star.svg" alt="lifetime" />
-					                        </div>
-					                        <h5 className="features_advantages__title">
-					                                lifetime membership
-					                            </h5>
-					                        <p>Aenean id nisi eu est pulvinar tristique eget non libero. In hac habitasse platea dictumst.</p>
-					                    </div>
+                                        <Link to="/help/introduction/wallets" className="large-4 custom-control__item features_hover" data-slide="0" >
+                                            <div className="features_advantages__icon">
+                                                <img src="/app/assets/landing_files/land_wallet.svg" alt="wallet" />
+                                            </div>
+                                            <Translate component="h5" className="features_advantages__title" content="root.wallet" />
+                                            <Translate component="p" content="root.the_openLedger_offers_the_users_a_wallet" />
+                                        </Link>
+                                        <Link to="/market/OPEN.USD_OPEN.BTC" className="large-4 custom-control__item features_hover" data-slide="1" >
+                                            <div className="features_advantages__icon">
+                                                <img src="/app/assets/landing_files/land_exchange.svg" alt="exchange" />
+                                            </div>
+                                            <Translate component="h5" className="features_advantages__title" content="root.exchange" />
+                                            <Translate component="p" content="root.the_openledger_decentralized_exchange"  />
+                                        </Link>
+                                        <Link to="/help/accounts/membership" className="large-4 custom-control__item features_hover" data-slide="2" >
+                                            <div className="features_advantages__icon">
+                                                <img src="/app/assets/landing_files/land_star.svg" alt="lifetime" />
+                                            </div>
+                                            <Translate component="h5" className="features_advantages__title" content="root.lifetime_membership" />
+                                            <Translate component="p" content="root.lifetime_members_get"  />
+                                        </Link>
 					                    <div className="large-4 custom-control__item" data-slide="3">
 					                        <div className="features_advantages__icon">
 					                            <img src="/app/assets/landing_files/black_stopwatch.svg" alt="instant" />
 					                        </div>
-					                        <h5 className="features_advantages__title">
-					                               instant withdrawal
-					                            </h5>
-					                        <p>Aenean id nisi eu est pulvinar tristique eget non libero. In hac habitasse platea dictumst.</p>
-					                    </div>
+                                            <Translate component="h5" className="features_advantages__title" content="root.instant_withdrawal" />
+                                            <Translate component="p" content="root.openLedger_lets_you_send_money"  />
+                                        </div>
 					                    <div className="large-4 custom-control__item" data-slide="4">
 					                        <div className="features_advantages__icon">
 					                            <img src="/app/assets/landing_files/land_switch.svg" alt="basic/trader modes" />
 					                        </div>
-					                        <h5 className="features_advantages__title">
-					                                basic/trader modes
-					                            </h5>
-					                        <p>Aenean id nisi eu est pulvinar tristique eget non libero. In hac habitasse platea dictumst.</p>
-					                    </div>
+                                            <Translate component="h5" className="features_advantages__title" content="root.basic_trader_modes" />
+                                            <Translate component="p" content="root.use_basic_mode"  />
+    				                    </div>
 					                    <div className="large-4 custom-control__item" data-slide="5">
 					                        <div className="features_advantages__icon">
 					                            <img src="/app/assets/landing_files/land_security.svg" alt="security" />
 					                        </div>
-					                        <h5 className="features_advantages__title">
-					                                security
-					                        </h5>
-					                        <p>Aenean id nisi eu est pulvinar tristique eget non libero. In hac habitasse platea dictumst.</p>
+                                            <Translate component="h5" className="features_advantages__title" content="root.security" />
+                                            <Translate component="p" content="root.no_one_can_freeze"  />					                       
 					                    </div>
 					                </div>
 					            </div>
 					        </div>
-					    </section>
-					    <section className="sec_video">
-					        <a href="https://www.youtube.com/watch?v=JG_XiOdbum8&feature=youtu.be"></a>
-					    </section>
+					    </section>  
+                        <Youtube /> 
 					    <section className="sec_privileges">
 					        <div className="grid-container">
-					            <h3 className="text-center">OpenLegder Issued Tokens</h3>
+					            <Translate className="text-center" component="h3" content="root.openlegder_issued_tokens"  />
 					            <div className="privilegies_icons">
 					                <div className="privilegies_item">
 					                    <a href="https://obits.io/" target="_blank">
@@ -409,13 +393,13 @@ class Das_root extends React.Component {
 					                    </a>
 					                </div>
 					            </div>
-					            <h3 className="text-center">OpenLegder Issued Tokens - For Release</h3>
+                                <Translate className="text-center" component="h3" content="root.openlegder_issued_tokens_for"  />
 					            <div className="privilegies_icons">
 					                <div className="privilegies_item">
 					                    <a target="_blank" href="https://www.apptrade.io/">
-					                           APPX <br />
-					                            LIVE
-					                        </a>
+					                       APPX <br />
+					                       LIVE
+					                   </a>
 					                </div>
 					                <div className="privilegies_item">
 					                    <a target="_blank" href="https://getgame.io/">
@@ -436,9 +420,7 @@ class Das_root extends React.Component {
 			                <p>&copy; 2011-2017 OpenLedger ApS</p>
 			            </div>
 			            <div className="footer_section">
-			                <div className="footer_title">
-			                    Openledger ecosystem
-			                </div>
+			                <Translate className="footer_title" component="div" content="root.openledger_ecosystem"  />
 			                <ul>
 			                    <li><Link to={"/"}>OpenLedger Decentralized Exchange</Link></li>
 			                    <li><a href="https://bloggersclub.net/" target="_blank">Bloggers Club 500</a></li>
@@ -454,9 +436,7 @@ class Das_root extends React.Component {
 			                </ul>
 			            </div>
 			            <div className="footer_section _min">
-			                <div className="footer_title">
-			                    Get in touch
-			                </div>
+		                    <Translate className="footer_title" component="div" content="root.get_in_touch" />
 			                <ul>
 			                    <li><a href="https://www.facebook.com/openledger/?fref=ts" target="_blank">Facebook</a></li>
 			                    <li><a href="https://twitter.com/ccedkopenledger" target="_blank">Twitter</a></li>
@@ -465,19 +445,15 @@ class Das_root extends React.Component {
 			                    <li><a href="https://telegram.me/OpenLedgerDC" target="_blank">Telegram</a></li>
 			                    <li><a href="mailto:ronny@ccedk.com" target="_blank">Email</a></li>
 			                </ul>
-			                <div className="footer_title">
-			                    Additional info
-			                </div>
+                            <Translate className="footer_title" component="div" content="root.additional_info" />
 			                <ul>
 			                    <li><Link to={"/help/"}>FAQ</Link></li>
 			                    <li><Link to={"/help/dex/trading/"}>Terms of use</Link></li>
 			                </ul>
 			            </div>
 			            <div className="footer_section">
-			                <div className="footer_title">
-			                    Sign for newsletter
-			                </div>
-			                <p>Be the 1<sup>st</sup> to know the breaking news from OpenLedger</p>
+			                <Translate className="footer_title" component="div" content="root.sign_for_newsletter"  />
+			                <p><Translate component="span" content="root.input"  />Be the 1<sup>st</sup> to know the breaking news from OpenLedger</p>
 			                <form className="footer_form" action="" >
 			                    <input className="footer_form__input" ref="subs_email" type="text" />
 			                    <button className="footer_form__btn" onClick={this._submit_subs.bind(this)} >Subscribe</button>			              
@@ -485,10 +461,8 @@ class Das_root extends React.Component {
 			                <p className="error" >{this.state.error}</p>
 			            </div>
 			            <div className="footer_section">
-			                <div className="footer_title">
-			                    About
-			                </div>
-			                <p>OpenLedger ApS registrar of
+		                    <Translate className="footer_title" component="div" content="root.about"  />
+			                <p>OpenLedger ApS registrar of 
 			                    <br /> OpenLedger DEX
 			                    <br /> Birkevej 15
 			                    <br /> DK-9490 Pandrup

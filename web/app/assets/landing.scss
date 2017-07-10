@@ -103,7 +103,6 @@
 
 .sec_features a:hover {
     color: #fff;
-    opacity: .7
 }
 
 .sec_features .grid-container {
@@ -157,31 +156,39 @@
 
 .features_info [class*=large-] {
     padding-left: 1rem;
-    padding-right: 1rem
+    padding-right: 1rem;
 }
 
 .features_advantages [class*=large-] {
     text-align: center;
     padding: 1rem;
     transition: all .3s;
-    cursor: pointer
 }
 
-.features_advantages [class*=large-].active,
-.features_advantages [class*=large-]:hover {
-    background-color: #333
+
+.features_hover{
+    cursor: pointer;
+}
+.features_hover:active{
+    color: #fff;    
+}
+
+
+//.features_advantages a.[class*=large-]:hover {
+.features_advantages .features_hover:hover {
+    background-color: #333;
 }
 
 .features_advantages h5 {
     text-transform: uppercase;
-    margin-bottom: 1rem
+    margin-bottom: 1rem;
 }
 
 @media (max-width:75em) and (min-width:35em) {
     .features_advantages [class*=large-] {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 50%;
-        flex: 0 0 50%
+        flex: 0 0 50%;
     }
 }
 
@@ -190,21 +197,25 @@
     margin-left: auto;
     margin-right: auto;
     height: 415px;
-    //background: url(/app/assets/landing_files/bg_video.jpg) no-repeat;
-    background-size: cover;
-    position: relative
+    background:url('/app/assets/landing_files/bg_video.jpg') no-repeat center;
+    background-size:100% auto; 
 }
 
-.sec_video a {
+
+.sec_video .youtube_icon {
     width: 100%;
     height: 100%;
     display: block;
-    //background: url(/app/assets/landing_files/btn_youtube.svg) 50% no-repeat
+    background: url('/app/assets/landing_files/youtube.png') no-repeat center;
+}
+
+.sec_video .modal{
+    max-width: 85%;
 }
 
 .sec_privileges {
     background-color: #000;
-    padding: 10vmin 0
+    padding: 10vmin 0;
 }
 
 .privilegies_icons {
@@ -220,17 +231,17 @@
     flex-wrap: wrap;
     -webkit-box-align: center;
     -ms-flex-align: center;
-    align-items: center
+    align-items: center;
 }
 
 .privilegies_icons:last-child {
-    margin-bottom: 1rem
+    margin-bottom: 1rem;
 }
 
 .privilegies_item {
     display: inline-block;
     vertical-align: top;
-    margin: 1rem 5vmin
+    margin: 1rem 5vmin;
 }
 
 .privilegies_item a {
@@ -243,19 +254,19 @@
 .privilegies_item a:active,
 .privilegies_item a:focus,
 .privilegies_item a:hover {
-    color: #fff
+    color: #fff;
 }
 
 @media (max-width:767px) {
     .privilegies_item {
-        max-width: 100px
+        max-width: 100px;
     }
 }
 
 .privilegies_item__date {
     text-transform: uppercase;
     font-size: .8rem;
-    color: #fff
+    color: #fff;
 }
 
 .g_footer {
@@ -388,7 +399,7 @@
     background-color: #fdff13
 }
 
-div.fm-container {
+.landCarousel div.fm-container {
     max-width: 16rem
 }
 
@@ -465,7 +476,7 @@ div.fm-container {
     margin-right: 2rem;
 }
 
-.menu_header a {
+.menu_header .menu_header_ancor {
     font-weight: 700;
     color: #fff;
     text-transform: none;

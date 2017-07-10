@@ -42,6 +42,9 @@ class DepositWithdrawContent extends React.Component {
             toAddress: WithdrawAddresses.getLast(props.walletType),
             withdrawValue:"",
             amountError: null,
+            symbol:props.asset.get("symbol"),
+            intermediateAccount: props.asset.get("intermediateAccount"),
+            gateFee: props.asset.get("gateFee"),
             to_withdraw: new Asset({
                 asset_id: props.asset.get("id"),
                 precision: props.asset.get("precision")
@@ -65,6 +68,9 @@ class DepositWithdrawContent extends React.Component {
                     asset_id: np.asset.get("id"),
                     precision: np.asset.get("precision")
                 }),
+                gateFee: np.asset.get("gateFee"),
+                intermediateAccount: np.asset.get("intermediateAccount"),
+                symbol:np.asset.get("symbol"),
                 memo: "",
                 withdrawValue: "",
                 receive_address: null,
@@ -131,17 +137,12 @@ class DepositWithdrawContent extends React.Component {
 
         let fee = this._getFee();
 
-        let issuer_id = this.props.issuer.get("id"); 
-        //@#> FEE WALLET
-        if(~["1.3.1388" ,"1.3.1406" ,"1.3.1412" ,"1.3.1411"].indexOf(this.state.to_withdraw.asset_id)){
-            issuer_id = "1.2.184026";
-        }
 
         let widthraw_converted = this.state.withdrawValue * Math.pow(10,this.state.to_withdraw.precision);
 
         AccountActions.transfer(
             this.props.sender.get("id"),
-            issuer_id,
+            this.props.intermediateAccount,
             parseInt(widthraw_converted),
             this.state.to_withdraw.asset_id,
             this.props.backingCoinType.toLowerCase() + ":" + this.state.toAddress + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : ""),
