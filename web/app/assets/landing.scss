@@ -165,14 +165,13 @@
     transition: all .3s;
 }
 
-
-.features_hover{
+.features_hover {
     cursor: pointer;
 }
-.features_hover:active{
-    color: #fff;    
-}
 
+.features_hover:active {
+    color: #fff;
+}
 
 //.features_advantages a.[class*=large-]:hover {
 .features_advantages .features_hover:hover {
@@ -197,10 +196,9 @@
     margin-left: auto;
     margin-right: auto;
     height: 415px;
-    background:url('/app/assets/landing_files/bg_video.jpg') no-repeat center;
-    background-size:100% auto; 
+    background: url('/app/assets/landing_files/bg_video.jpg') no-repeat center;
+    background-size: 100% auto;
 }
-
 
 .sec_video .youtube_icon {
     width: 100%;
@@ -209,7 +207,7 @@
     background: url('/app/assets/landing_files/youtube.png') no-repeat center;
 }
 
-.sec_video .modal{
+.sec_video .modal {
     max-width: 85%;
 }
 
@@ -271,13 +269,13 @@
 
 .g_footer {
     padding: 8vmin 0 4vmin;
-    background-color: #073763
+    background-color: #073763;
 }
 
 .g_footer,
 .g_footer a {
     color: #fff;
-    font-size: 14px
+    font-size: 14px;
 }
 
 .g_footer a:hover {
@@ -286,11 +284,11 @@
 
 .g_footer ul {
     list-style: none;
-    margin-left: 0
+    margin-left: 0;
 }
 
 .g_footer .grid-container {
-    max-width: 100rem
+    max-width: 100rem;
 }
 
 .g_footer .grid-block {
@@ -300,14 +298,14 @@
 
 .footer_logo {
     display: block;
-    margin-bottom: 1rem
+    margin-bottom: 1rem;
 }
 
 .footer_title {
     text-transform: uppercase;
     font-weight: 700;
     margin-top: .5rem;
-    margin-bottom: 1rem
+    margin-bottom: 1rem;
 }
 
 .footer_section {
@@ -318,7 +316,7 @@
     padding: 1rem;
     -webkit-box-ordinal-group: 3;
     -ms-flex-order: 2;
-    order: 2
+    order: 2;
 }
 
 @media (min-width:35rem) {
@@ -326,7 +324,7 @@
         -webkit-box-flex: 0;
         -ms-flex: 0 0 50%;
         flex: 0 0 50%;
-        max-width: 50%
+        max-width: 50%;
     }
 }
 
@@ -335,7 +333,7 @@
         -webkit-box-flex: 0;
         -ms-flex: 0 0 21.5%;
         flex: 0 0 21.5%;
-        max-width: 21.5%
+        max-width: 21.5%;
     }
 }
 
@@ -343,7 +341,7 @@
     .footer_section li {
         display: inline-block;
         vertical-align: top;
-        margin-right: 10px
+        margin-right: 10px;
     }
 }
 
@@ -356,7 +354,7 @@
         -webkit-box-flex: 0;
         -ms-flex: 0 0 14%;
         flex: 0 0 14%;
-        max-width: 14%
+        max-width: 14%;
     }
 }
 
@@ -369,20 +367,20 @@
         max-width: 100%;
         -webkit-box-ordinal-group: 2;
         -ms-flex-order: 1;
-        order: 1
+        order: 1;
     }
     .footer_logo img {
-        max-width: 150px
+        max-width: 150px;
     }
 }
 
 .footer_form {
-    max-width: 300px
+    max-width: 300px;
 }
 
 .footer_form .footer_form__input {
     border-radius: 0!important;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .footer_form .footer_form__btn {
@@ -392,23 +390,23 @@
     border-radius: 0!important;
     border: 1px solid #ffdf1b;
     color: #000;
-    transition: all .3s
+    transition: all .3s;
 }
 
 .footer_form .footer_form__btn:hover {
-    background-color: #fdff13
+    background-color: #fdff13;
 }
 
 .landCarousel div.fm-container {
-    max-width: 16rem
+    max-width: 16rem;
 }
 
-.landCarousel{
+.landCarousel {
     min-height: 390px;
 }
 
 .carousel_info__item {
-    overflow: hidden
+    overflow: hidden;
 }
 
 @media (max-width:74.9em) {
@@ -420,7 +418,7 @@
         margin-right: 0
     }
     .features_advantages {
-        margin-top: 1rem
+        margin-top: 1rem;
     }
 }
 
@@ -444,29 +442,29 @@
     align-items: center;
     padding: 2.5rem 3rem .5rem;
     transition: all .2s;
-    border-bottom: 1px solid transparent
+    border-bottom: 1px solid transparent;
 }
 
 .g_header.scroll {
     padding-top: .5rem;
     background-color: #2c2e37;
-    border-bottom-color: hsla(0, 0%, 50%, .45)
+    border-bottom-color: hsla(0, 0%, 50%, .45);
 }
 
 @media (max-width:1100px) {
     .g_header {
         padding-left: 1rem;
         padding-right: 1rem;
-        padding-top: .5rem
+        padding-top: .5rem;
     }
 }
 
 .menu_header {
-    margin-left: auto
+    margin-left: auto;
 }
 
 .menu_header ul {
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .menu_header li {
@@ -480,6 +478,7 @@
     font-weight: 700;
     color: #fff;
     text-transform: none;
+    margin-bottom: 0;
 }
 
 .land_logo {
@@ -488,16 +487,6 @@
     &>svg {
         width: 41px;
     }
-}
-
-.header_enter {
-    margin-left: 1.5rem;
-    color: #fff;
-}
-
-.header_enter a {
-    color: #fff;
-    text-transform: none;
 }
 
 .lnk_brd_bottom {
@@ -530,7 +519,7 @@
 
 .header_social {
     list-style: none;
-    margin: 0 1rem
+    margin: 0 1rem;
 }
 
 .header_social li {
@@ -538,8 +527,7 @@
     vertical-align: top;
     width: 25px;
     height: 25px;
-    margin-left: .6rem;
-    margin-right: .6rem;
+    margin: 0 0.7rem 0;
     background: url(/app/assets/landing_files/sprite_social.svg) no-repeat;
     background-size: 22px;
     transition: all .2s

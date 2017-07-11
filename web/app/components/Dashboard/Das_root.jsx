@@ -60,6 +60,7 @@ class Das_root extends React.Component {
         //window.addEventListener("resize", this._setDimensions, {capture: false, passive: true});
     	let landing = this.refs.landing.parentNode;
 
+//    <script src="js/vendor/pushy_mod.min.js"></script>
        
         // Fixed header
         landing.onscroll = function() {
@@ -256,11 +257,9 @@ class Das_root extends React.Component {
 			                <li><Link className="lnk_brd_bottom" to={"/market/USD_BTS"}><Translate component="p" className="menu_header_ancor" content="root.exchange"  /></Link></li>
 			                <li><a className="lnk_brd_bottom" target="_blank" href="https://blog.openledger.info/"><Translate component="p" className="menu_header_ancor" content="root.blog" /></a></li>
 			                <li><Link className="lnk_brd_bottom" to={"/help"}><Translate component="p" content="root.help" className="menu_header_ancor" /></Link></li>
+                            <li><Link className="" to={"/create-account"}><Translate component="p" content="root.sign_up" className="menu_header_ancor" /></Link></li>
 			            </ul>
 			        </nav>
-			        <div className="header_enter"> 
-			            <Link className="" to={"/create-account"}><Translate component="p" content="root.sign_up" className="menu_header_ancor" /></Link>
-			        </div>
 			        <div className="site-overlay"></div>
 			    </header>
 			    <main className="g_wrapper olDarkTheme">

@@ -163,7 +163,6 @@ class WithdrawModalBlocktrades extends React.Component {
                 let precision = utils.get_asset_precision(asset.get("precision"));
                 let amount = String.prototype.replace.call(this.state.withdraw_amount, /,/g, "");
 
-
                 AccountActions.transfer(
                     this.props.account.get("id"),
                     this.props.issuer.get("id"),
@@ -215,7 +214,9 @@ class WithdrawModalBlocktrades extends React.Component {
             this.props.issuer.get("id"),
             parseInt(amount * precision, 10),
             asset.get("id"),
-            this.props.output_coin_type + ":" + this.state.withdraw_address + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : "")
+            this.props.output_coin_type + ":" + this.state.withdraw_address + (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : ""),
+            null,
+            this.state.feeAsset ? this.state.feeAsset.get("id") : "1.3.0"
         );
     }
 
@@ -275,30 +276,30 @@ class WithdrawModalBlocktrades extends React.Component {
 
     _getAvailableAssets(state = this.state) {
         const { from_account, from_error } = state;
-        let asset_types = [], fee_asset_types = [];
+        let asset_types = [];
+        let fee_asset_types = [];
+
         if (!(from_account && from_account.get("balances") && !from_error)) {
             return {asset_types, fee_asset_types};
         }
         let account_balances = state.from_account.get("balances").toJS();
-        asset_types = Object.keys(account_balances).sort(utils.sortID);
-        fee_asset_types = Object.keys(account_balances).sort(utils.sortID);
+
         for (let key in account_balances) {
             let asset = ChainStore.getObject(key);
             let balanceObject = ChainStore.getObject(account_balances[key]);
-            if (balanceObject && balanceObject.get("balance") === 0) {
-                asset_types.splice(asset_types.indexOf(key), 1);
-                if (fee_asset_types.indexOf(key) !== -1) {
-                    fee_asset_types.splice(fee_asset_types.indexOf(key), 1);
+
+            if (balanceObject && balanceObject.get("balance") > 0) {
+                if(fee_asset_types.indexOf(key)==-1){
+                    asset_types.push(key);
                 }
             }
 
-            if (asset) {
-                if (asset.get("id") !== "1.3.0" && !utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))) {
-                    fee_asset_types.splice(fee_asset_types.indexOf(key), 1);
-                }
+            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>200){
+                fee_asset_types.push(key);
             }
+
         }
-
+        
         return {asset_types, fee_asset_types};
     }
 
