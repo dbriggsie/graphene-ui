@@ -116,6 +116,17 @@ var Utils = {
         return num*/
     },
 
+    rm_expotencial:(number) => {
+        let num_txt = number+"";
+        if(number&&number<0.000001&&num_txt&&num_txt.indexOf("-")){
+            return number.toFixed(num_txt.split("-")[1]);
+        }else if(number&&number>100000000000000000000&&num_txt&&num_txt.indexOf("+")){            
+            return number.toFixed(num_txt.split("+")[1]);
+        }
+
+        return number;
+    },
+
     format_asset: function(amount, asset, noSymbol, trailing_zeros=true) {
         let symbol;
         let digits = 0

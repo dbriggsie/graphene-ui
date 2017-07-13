@@ -59,14 +59,22 @@ class Das_root extends React.Component {
     componentDidMount() {
         //window.addEventListener("resize", this._setDimensions, {capture: false, passive: true});
     	let landing = this.refs.landing.parentNode;
-
-//    <script src="js/vendor/pushy_mod.min.js"></script>
-       
-        // Fixed header
+          // Fixed header
         landing.onscroll = function() {
             let scrolled = landing.pageYOffset || landing.scrollTop;
             scrolled > 0 ? $('.g_header').addClass('scroll'): $('.g_header').removeClass('scroll');
         }
+
+        setTimeout(()=>{
+            let src = document.createElement('script');
+            src.src = "/pushy_mod.min.js";
+            src.id = "pushy_mod";
+            document.body.appendChild(src);            
+        },500)
+    }
+
+    componentWillUnmount(){
+        document.getElementById("pushy_mod")&&document.getElementById("pushy_mod").remove();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -223,10 +231,10 @@ class Das_root extends React.Component {
         		`}
         		</style>
         		<header className="g_header">
-			        <div className="menu-btn">
+			        <div className="menu-btn" style={{order:5}} >
 			            <span className="icon menu icon-32px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="#FFF" d="M17.5 6h-15a.5.5 0 0 1 0-1h15a.5.5 0 0 1 0 1zM17.5 11h-15a.5.5 0 0 1 0-1h15a.5.5 0 0 1 0 1zM17.5 16h-15a.5.5 0 0 1 0-1h15a.5.5 0 0 1 0 1z"></path></svg></span>
 			        </div>
-			        <a href="#" className="land_logo">
+			        <a href="/root" className="land_logo">
 			            <img src="/app/assets/landing_files/land_logo.svg" alt="OpenLedger" />
 			        </a>
 			        <ul className="header_social">
@@ -374,7 +382,7 @@ class Das_root extends React.Component {
                         <Youtube /> 
 					    <section className="sec_privileges">
 					        <div className="grid-container">
-					            <Translate className="text-center" component="h3" content="root.openlegder_issued_tokens"  />
+					            <Translate className="text-center" component="h2" content="root.openledger_issued_tokens"  />
 					            <div className="privilegies_icons">
 					                <div className="privilegies_item">
 					                    <a href="https://obits.io/" target="_blank">
@@ -392,7 +400,7 @@ class Das_root extends React.Component {
 					                    </a>
 					                </div>
 					            </div>
-                                <Translate className="text-center" component="h3" content="root.openlegder_issued_tokens_for"  />
+                                <Translate className="text-center" component="h2" content="root.openledger_issued_tokens_for"  />
 					            <div className="privilegies_icons">
 					                <div className="privilegies_item">
 					                    <a target="_blank" href="https://www.apptrade.io/">
@@ -457,7 +465,7 @@ class Das_root extends React.Component {
 			                    <input className="footer_form__input" ref="subs_email" type="text" />
 			                    <button className="footer_form__btn" onClick={this._submit_subs.bind(this)} >Subscribe</button>			              
 			                </form>
-			                <p className="error" >{this.state.error}</p>
+			                <p style={{margin:"5px 0 0 0","textTransform": "capitalize"}} className="error" >{this.state.error}</p>
 			            </div>
 			            <div className="footer_section">
 		                    <Translate className="footer_title" component="div" content="root.about"  />
@@ -475,8 +483,6 @@ class Das_root extends React.Component {
 			            </div>
 			        </div>
 			    </footer>
-
-
         	</div>            
         );
     }

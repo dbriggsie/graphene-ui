@@ -966,6 +966,8 @@ class Exchange extends React.Component {
 
         let orderMultiplier = leftOrderBook ? 2 : 1;
 
+        //utils
+
         let buyForm = isFrozen ? null : (
             <BuySell
                 onBorrow={!isNullAccount && baseIsBitAsset ? this._borrowBase.bind(this) : null}
@@ -982,9 +984,9 @@ class Exchange extends React.Component {
                     this.state.flipBuySell ? `order-${buySellTop ? 2 : 5 * orderMultiplier} sell-form` : `order-${buySellTop ? 1 : 4 * orderMultiplier} buy-form`
                 )}
                 type="bid"
-                amount={bid.toReceiveText}
-                price={bid.priceText}
-                total={bid.forSaleText}
+                amount={utils.rm_expotencial(bid.toReceiveText)}
+                price={utils.rm_expotencial(bid.priceText)}
+                total={utils.rm_expotencial(bid.forSaleText)}
                 quote={quote}
                 base={base}
                 amountChange={this._onInputReceive.bind(this, "bid", true)}
@@ -1026,9 +1028,9 @@ class Exchange extends React.Component {
                     this.state.flipBuySell ? `order-${buySellTop ? 1 : 4 * orderMultiplier} buy-form` : `order-${buySellTop ? 2 : 5 * orderMultiplier} sell-form`
                 )}
                 type="ask"
-                amount={ask.forSaleText} 
-                price={ask.priceText} 
-                total={ask.toReceiveText}
+                amount={utils.rm_expotencial(ask.forSaleText)} 
+                price={utils.rm_expotencial(ask.priceText)} 
+                total={utils.rm_expotencial(ask.toReceiveText)}
                 quote={quote}
                 base={base}
                 amountChange={this._onInputSell.bind(this, "ask", false)}

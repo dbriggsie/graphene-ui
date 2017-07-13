@@ -139,7 +139,7 @@ class MarketGroup extends React.Component {
             .map( (market,key) => {
                 return (
                     <MarketRow
-                        key={market.id+key}
+                        key={market.id}
                         name={base === "others" ? <span> <AssetName name={market.quote} /> : <AssetName name={market.base} /></span> : <AssetName name={market.quote} />}
                         quote={market.quote}
                         base={market.base}
@@ -160,6 +160,15 @@ class MarketGroup extends React.Component {
                 let aStats = marketStats.get(a_symbols[0] + "_" + a_symbols[1]);
                 let bStats = marketStats.get(b_symbols[0] + "_" + b_symbols[1]);
 
+                if(marketStats.size==0){
+                    return 0;
+                }
+
+               /* console.log('@>b.key',b.key)
+                console.log('@>111',sortBy)
+                console.log('@>222',b_symbols[0] + "_" + b_symbols[1])
+                console.log('@>333',marketStats.get(b_symbols[0] + "_" + b_symbols[1]))*/
+
                 switch (sortBy) {
 
                 case "name":
@@ -178,7 +187,10 @@ class MarketGroup extends React.Component {
                     }
 
                 case "volume":
+
+
                     if (aStats && bStats) {
+                        console.log('@>bStats.volumeBase',bStats)
                         if (inverseSort) {
                             return bStats.volumeBase - aStats.volumeBase;
                         } else {
