@@ -19,6 +19,7 @@ let marketsList = [
    "BTS",
    "BTWTY",
    "CNY",
+   "CVCOIN",
    "EUR",
    "EDEV",
    "USD",
