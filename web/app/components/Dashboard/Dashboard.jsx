@@ -17,7 +17,7 @@ class Dashboard extends React.Component {
         super();
         let marketsByChain = {
             "4018d784":[
-                ["OPEN.BTC", "BTS", false],
+                ["OPEN.BTC", "CVCOIN"],
                 ["OPEN.BTC", "OPEN.ETH"],
                 ["OPEN.BTC", "OPEN.STEEM"],
                 ["USD", "EDEV"],
