@@ -164,11 +164,6 @@ class MarketGroup extends React.Component {
                     return 0;
                 }
 
-               /* console.log('@>b.key',b.key)
-                console.log('@>111',sortBy)
-                console.log('@>222',b_symbols[0] + "_" + b_symbols[1])
-                console.log('@>333',marketStats.get(b_symbols[0] + "_" + b_symbols[1]))*/
-
                 switch (sortBy) {
 
                 case "name":
@@ -190,7 +185,6 @@ class MarketGroup extends React.Component {
 
 
                     if (aStats && bStats) {
-                        console.log('@>bStats.volumeBase',bStats)
                         if (inverseSort) {
                             return bStats.volumeBase - aStats.volumeBase;
                         } else {
