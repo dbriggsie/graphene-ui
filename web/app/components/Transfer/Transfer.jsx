@@ -203,7 +203,7 @@ class Transfer extends React.Component {
                 }
             }
 
-            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>this._feeBTS||2200){
+            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>(this._feeBTS||2200)){
                 fee_asset_types.push(key);
             }
 

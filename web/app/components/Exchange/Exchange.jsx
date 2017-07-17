@@ -30,6 +30,7 @@ import ButtonsForGraphics from "./ButtonsForGraphics";
 import Translate from "react-translate-component";
 import { Apis } from "bitsharesjs-ws";
 import GatewayActions from "actions/GatewayActions";
+import AccountStore from "stores/AccountStore";
 
 Highcharts.setOptions({
     global: {
@@ -869,7 +870,7 @@ class Exchange extends React.Component {
                 }
             }
 
-            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>this._feeBTS||2200){
+            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>this._feeBTS){
                 fee_asset_types.push(key);
             }
 
@@ -887,8 +888,8 @@ class Exchange extends React.Component {
         const {combinedBids, combinedAsks, lowestAsk, highestBid,
             flatBids, flatAsks, flatCalls, flatSettles} = marketData;
 
-        let {bid, ask, leftOrderBook, showDepthChart, tools, chartHeight,
-            buyDiff, sellDiff, indicators, indicatorSettings, width, buySellTop} = this.state;
+        let {bid, ask, leftOrderBook, showDepthChart, tools, chartHeight, from_account, from_error,
+            buyDiff, sellDiff, indicators, indicatorSettings, width, buySellTop,} = this.state;
         const {isFrozen, frozenAsset} = this.isMarketFrozen();
 
         let base = null, quote = null, accountBalance = null, quoteBalance = null,
@@ -978,6 +979,48 @@ class Exchange extends React.Component {
             buyFeeAssets,
             buyFee
         } = this._getFeeAssets(quote, base, coreAsset);
+
+        let fee = this._feeBTS = utils.estimateFee("limit_order_create", [], ChainStore.getObject("2.0.0")) || 0;
+        let { fee_asset_types } = this._getAvailableAssets();
+
+        if (from_account && from_account.get("balances") && !from_error) { 
+
+            let account_balances = from_account.get("balances").toJS();
+
+            // Finish fee estimation
+            let core = ChainStore.getObject("1.3.0");
+
+            fee_asset_types.push("1.3.0");
+            fee_asset_types = fee_asset_types.filter(e => {
+                let balanceObject = ChainStore.getObject(account_balances[e]);
+                let transferAsset = ChainStore.getObject(e);
+                let amount = 0;
+                if (balanceObject) {
+                        amount = utils.get_asset_amount(balanceObject.get("balance"), transferAsset);
+                } else {
+                        return e;
+                }
+                return amount - fee > fee;
+
+            });
+
+
+
+        }
+
+        buyFeeAssets.map((e)=>{
+            //console.log('@>',e.toJS());
+        })
+
+        //buyFeeAssets = sellFeeAssets = fee_asset_types.map()
+
+
+
+
+
+
+        //console.log('@>fee_asset_types',fee_asset_types)
+       // console.log('@>',buyFeeAssets)
 
         // Decimals
         let hasPrediction = base.getIn(["bitasset", "is_prediction_market"]) || quote.getIn(["bitasset", "is_prediction_market"]);
