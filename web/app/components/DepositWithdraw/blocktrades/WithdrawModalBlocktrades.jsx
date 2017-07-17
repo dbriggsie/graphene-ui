@@ -373,14 +373,13 @@ class WithdrawModalBlocktrades extends React.Component {
         const { from_account, from_error, fee_asset_id } = this.state;
         let feeAsset = this.state.feeAsset;
         let asset = this.state.asset;
+        let fee = this._feeBTS = utils.estimateFee("transfer", null, ChainStore.getObject("2.0.0"));
         let { fee_asset_types } = this._getAvailableAssets();
         let balance_fee = null;
         let feeID = feeAsset ? feeAsset.get("id") : "1.3.0";
         let core = ChainStore.getObject("1.3.0");
 
-        // Estimate fee
-        let globalObject = ChainStore.getObject("2.0.0");
-        let fee = utils.estimateFee("transfer", null, globalObject);
+        // Estimate fee      
 
         if (from_account && from_account.get("balances") && !from_error) {
 

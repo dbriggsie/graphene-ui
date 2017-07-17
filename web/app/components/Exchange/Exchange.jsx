@@ -91,6 +91,8 @@ class Exchange extends React.Component {
         });
 
         return {
+            from_account: ChainStore.getAccount(AccountStore.getState().currentAccount),
+            from_error: null,            
             history: [],
             buySellOpen: ws.get("buySellOpen", true),
             bid,
@@ -845,6 +847,35 @@ class Exchange extends React.Component {
         SettingsActions.changeViewSetting({
             miniDepthChart: !this.props.miniDepthChart
         });
+    }
+
+    _getAvailableAssets(state = this.state) {
+        const { from_account, from_error } = state;
+        let asset_types = [];
+        let fee_asset_types = [];
+
+        if (!(from_account && from_account.get("balances") && !from_error)) {
+            return {asset_types, fee_asset_types};
+        }
+        let account_balances = state.from_account.get("balances").toJS();
+
+        for (let key in account_balances) {
+            let asset = ChainStore.getObject(key);
+            let balanceObject = ChainStore.getObject(account_balances[key]);
+
+            if (balanceObject && balanceObject.get("balance") > 0) {
+                if(fee_asset_types.indexOf(key)==-1){
+                    asset_types.push(key);
+                }
+            }
+
+            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>this._feeBTS||2200){
+                fee_asset_types.push(key);
+            }
+
+        }
+        
+        return {asset_types, fee_asset_types};
     }
 
     render() {

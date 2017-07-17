@@ -203,7 +203,7 @@ class Transfer extends React.Component {
                 }
             }
 
-            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>200){
+            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>this._feeBTS||2200){
                 fee_asset_types.push(key);
             }
 
@@ -235,13 +235,11 @@ class Transfer extends React.Component {
             </span>;
         }
 
+        let fee = this._feeBTS = utils.estimateFee(propose ? "proposal_create" : "transfer", null, ChainStore.getObject("2.0.0"));
         let { asset_types, fee_asset_types } = this._getAvailableAssets();
         let balance = null;
 
         // Estimate fee
-        let globalObject = ChainStore.getObject("2.0.0");
-        let fee = utils.estimateFee(propose ? "proposal_create" : "transfer", null, globalObject);
-
         if (from_account && from_account.get("balances") && !from_error) {
 
             let account_balances = from_account.get("balances").toJS();
@@ -261,14 +259,28 @@ class Transfer extends React.Component {
                 fee = utils.limitByPrecision(utils.get_asset_amount(fee, feeAsset || core), feeAsset ? feeAsset.get("precision") : core.get("precision"));
             }
 
+            let current_asset_id = asset ? asset.get("id") : asset_types[0];
             if (asset_types.length === 1) asset = ChainStore.getAsset(asset_types[0]);
-            if (asset_types.length > 0) {
-                let current_asset_id = asset ? asset.get("id") : asset_types[0];
+            if (asset_types.length > 0) {                
                 let feeID = feeAsset ? feeAsset.get("id") : "1.3.0";
                 balance = (<span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} onClick={this._setTotal.bind(this, current_asset_id, account_balances[current_asset_id], fee, feeID)}><Translate component="span" content="transfer.available"/>: <BalanceComponent balance={account_balances[current_asset_id]}/></span>);
             } else {
                 balance = "No funds";
             }
+
+            fee_asset_types.push("1.3.0");
+            fee_asset_types = fee_asset_types.filter(e => {
+                let balanceObject = ChainStore.getObject(account_balances[e]);
+                let transferAsset = ChainStore.getObject(e);
+                let amount = 0;
+                if (balanceObject) {
+                    amount = utils.get_asset_amount(balanceObject.get("balance"), transferAsset);
+                } else {
+                    return e;
+                }
+                return amount - fee > fee;
+
+            });
         } else {
             let core = ChainStore.getObject("1.3.0");
             fee_asset_types = ["1.3.0"];
@@ -277,6 +289,8 @@ class Transfer extends React.Component {
             }
 
         }
+
+
         let propose_incomplete = propose && ! propose_account;
         let submitButtonClass = "button float-right no-margin";
         if(!from_account || !to_account || !amount || amount === "0"|| !asset || from_error || propose_incomplete)

@@ -118,9 +118,14 @@ var Utils = {
 
     rm_expotencial:(number) => {
         let num_txt = number+"";
-        if(number&&number<0.000001&&num_txt&&num_txt.indexOf("-")){
+
+        if(!parseFloat(number)){
+            return number;
+        }
+
+        if(number<0.000001&&num_txt&&num_txt.indexOf("-")){
             return number.toFixed(num_txt.split("-")[1]);
-        }else if(number&&number>100000000000000000000&&num_txt&&num_txt.indexOf("+")){            
+        }else if(number>100000000000000000000&&num_txt&&num_txt.indexOf("+")){            
             return number.toFixed(num_txt.split("+")[1]);
         }
 

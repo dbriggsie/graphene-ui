@@ -71,7 +71,7 @@ export default class ConfirmCancelModal extends React.Component {
                 }
             }
 
-            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>200){
+            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>this._feeBTS){
                 fee_asset_types.push(key);
             }
 
@@ -98,16 +98,13 @@ export default class ConfirmCancelModal extends React.Component {
         const { from_account, from_error, fee_asset_id } = this.state;
         let feeAsset = this.state.feeAsset;
         let asset = this.state.asset;
+        let fee = this._feeBTS = utils.estimateFee("limit_order_cancel", null, ChainStore.getObject("2.0.0"));
         let { fee_asset_types } = this._getAvailableAssets();
         let balance_fee = null;
         let feeID = feeAsset ? feeAsset.get("id") : "1.3.0";
         let core = ChainStore.getObject("1.3.0");
 
         // Estimate fee
-        let globalObject = ChainStore.getObject("2.0.0");
-
-        let fee = utils.estimateFee("limit_order_cancel", null, globalObject);
-
         if (from_account && from_account.get("balances") && !from_error) {
 
             let account_balances = from_account.get("balances").toJS();
