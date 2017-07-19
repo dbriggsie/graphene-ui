@@ -195,7 +195,7 @@ class Transfer extends React.Component {
 
         for (let key in account_balances) {
             let asset = ChainStore.getObject(key);
-            let balanceObject = ChainStore.getObject(account_balances[key]);
+            let balanceObject = account_balances[key]?ChainStore.getObject(account_balances[key]):null;
 
             if (balanceObject && balanceObject.get("balance") > 0) {
                 if(fee_asset_types.indexOf(key)==-1){
@@ -270,7 +270,7 @@ class Transfer extends React.Component {
 
             fee_asset_types.push("1.3.0");
             fee_asset_types = fee_asset_types.filter(e => {
-                let balanceObject = ChainStore.getObject(account_balances[e]);
+                let balanceObject = account_balances[e]?ChainStore.getObject(account_balances[e]):null;
                 let transferAsset = ChainStore.getObject(e);
                 let amount = 0;
                 if (balanceObject) {
