@@ -161,6 +161,10 @@ class Exchange extends React.Component {
     }
 
     shouldComponentUpdate(nextProps) {
+        if(this.props.sub !== nextProps.sub){
+            return true;
+        }
+
         if (!nextProps.marketReady && !this.props.marketReady) {
             return false;
         }
@@ -901,6 +905,8 @@ class Exchange extends React.Component {
 
         const showVolumeChart = this.props.viewSettings.get("showVolumeChart", true);
 
+
+
         if (quoteAsset.size && baseAsset.size && currentAccount.size) {
             base = baseAsset;
             quote = quoteAsset;
@@ -964,7 +970,6 @@ class Exchange extends React.Component {
                 changeClass = latestPrice.full === oldPrice.full ? "" : latestPrice.full - oldPrice.full > 0 ? "change-up" : "change-down";
             }
         }
-
         // Fees
         let coreAsset = ChainStore.getAsset("1.3.0");
         if (!coreAsset) {
@@ -979,48 +984,6 @@ class Exchange extends React.Component {
             buyFeeAssets,
             buyFee
         } = this._getFeeAssets(quote, base, coreAsset);
-
-        let fee = this._feeBTS = utils.estimateFee("limit_order_create", [], ChainStore.getObject("2.0.0")) || 0;
-        let { fee_asset_types } = this._getAvailableAssets();
-
-        if (from_account && from_account.get("balances") && !from_error) { 
-
-            let account_balances = from_account.get("balances").toJS();
-
-            // Finish fee estimation
-            let core = ChainStore.getObject("1.3.0");
-
-            fee_asset_types.push("1.3.0");
-            fee_asset_types = fee_asset_types.filter(e => {
-                let balanceObject = ChainStore.getObject(account_balances[e]);
-                let transferAsset = ChainStore.getObject(e);
-                let amount = 0;
-                if (balanceObject) {
-                        amount = utils.get_asset_amount(balanceObject.get("balance"), transferAsset);
-                } else {
-                        return e;
-                }
-                return amount - fee > fee;
-
-            });
-
-
-
-        }
-
-        buyFeeAssets.map((e)=>{
-            //console.log('@>',e.toJS());
-        })
-
-        //buyFeeAssets = sellFeeAssets = fee_asset_types.map()
-
-
-
-
-
-
-        //console.log('@>fee_asset_types',fee_asset_types)
-       // console.log('@>',buyFeeAssets)
 
         // Decimals
         let hasPrediction = base.getIn(["bitasset", "is_prediction_market"]) || quote.getIn(["bitasset", "is_prediction_market"]);
@@ -1039,8 +1002,6 @@ class Exchange extends React.Component {
         }
 
         let orderMultiplier = leftOrderBook ? 2 : 1;
-
-        //utils
 
         let buyForm = isFrozen ? null : (
             <BuySell
@@ -1154,6 +1115,10 @@ class Exchange extends React.Component {
                 wrapperClass={`order-${buySellTop ? 3 : 1} xlarge-order-${buySellTop ? 4 : 1}`}
             />
         );
+
+        if(!marketReady){
+            orderBook = sellForm = buyForm = null;            
+        }
 
         return (
             <div className="grid-block page-layout market-layout">

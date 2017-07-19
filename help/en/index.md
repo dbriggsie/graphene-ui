@@ -35,3 +35,12 @@ of this application.
 
 ----------
 [Glossary](glossary.md)
+
+
+OpenLedger ApS registrar of OpenLedger DEX  
+[www.openledger.info](https://openledger.info)  
+Birkevej 15 DK-9490 Pandrup  
+Denmark  
+Tel/Fax: +45 36 98-11-50  
+ronny@ccedk.com  
+VAT/CVR no.: DK35809171

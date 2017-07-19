@@ -127,3 +127,16 @@ Marketing: Branding, Product Validation, Marketing & Business Strategy, Website 
 Public Relations: Press Release Services, Media Coverage, Interview Arrangements
 Legal: Legal Analysis, Regulatory Analysis, Token Structure Advising 
 
+##### I can't login. My password is not working, but it is definitely correct.
+
+The most common reason when people cannot login and receive message that password incorrect - they are trying to login in wrong place.
+Please note that:
+- nobody can change your password except you
+- password is not changing by itself
+
+You can login with ACCOUNT MODEL here https://openledger.io/ with login and password
+
+You can login with WALLET MODEL here  https://openledger.io/existing-account with your backup file and password
+
+Hint. If your account was created before April 2017 then you definitely use wallet model.
+

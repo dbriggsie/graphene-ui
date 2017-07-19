@@ -423,8 +423,8 @@ class Das_root extends React.Component {
 			    <footer className="g_footer">
 			        <div className="grid-container grid-block">
 			            <div className="footer_section footer_logo">
-			                <a className="footer_logo" href="/"><img src="/app/assets/landing_files/logo_big.svg" alt="OpenLedger" /></a>
-			                <p>&copy; 2011-2017 OpenLedger ApS</p>
+			                <a style={{textAlign:"center"}} className="footer_logo" href="/"><img src="/app/assets/landing_files/logo_big.svg" alt="OpenLedger" /></a>
+			                <p style={{textAlign:"center"}} >&copy; 2011-2017 OpenLedger ApS</p>
 			            </div>
 			            <div className="footer_section">
 			                <Translate className="footer_title" component="div" content="root.openledger_ecosystem"  />
@@ -458,7 +458,8 @@ class Das_root extends React.Component {
 			                    <li><Link to={"/help/dex/trading/"}>Terms of use</Link></li>
 			                </ul>
 			            </div>
-			            <div className="footer_section">
+    
+			            <div className="footer_section" style={{maxWidth: "20%", padding: "1rem 3rem 0 0"}} >
 			                <Translate className="footer_title" component="div" content="root.sign_for_newsletter"  />
 			                <p><Translate component="span" content="root.input"  />Be the 1<sup>st</sup> to know the breaking news from OpenLedger</p>
 			                <form className="footer_form" action="" >

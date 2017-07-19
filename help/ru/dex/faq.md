@@ -20,7 +20,7 @@ will be credited by the corresponding asset.
 
 Unfilled orders can be canceled at any time.
 
-##### Как войти на сайт?
+##### How do I log in?
 
 To log into your existing account, you need a backup file and password or brainkey and password. You cannot log in using only login and password.
 There you can sign in:
@@ -126,4 +126,17 @@ Crowdfunding Technology: Asset Issuing, Asset Distribution, Crowdfunding Module,
 Marketing: Branding, Product Validation, Marketing & Business Strategy, Website Design & Creation, Investor Relations, Content Creation, Blog Promotion, Advertising, Whitepaper Creation, Translations, Video Production, Newsletter Coverage 
 Public Relations: Press Release Services, Media Coverage, Interview Arrangements
 Legal: Legal Analysis, Regulatory Analysis, Token Structure Advising 
+
+##### I can't login. My password is not working, but it is definitely correct.
+
+The most common reason when people cannot login and receive message that password incorrect - they are trying to login in wrong place.
+Please note that:
+- nobody can change your password except you
+- password is not changing by itself
+
+You can login with ACCOUNT MODEL here https://openledger.io/ with login and password
+
+You can login with WALLET MODEL here  https://openledger.io/existing-account with your backup file and password
+
+Hint. If your account was created before April 2017 then you definitely use wallet model.
 

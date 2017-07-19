@@ -1,6 +1,29 @@
 import alt from "alt-instance";
 import {ChainConfig} from "bitsharesjs-ws";
 
+function parse_error(err) {
+    let clear_error = "unknown error";
+
+    function reg_exp_err(error) {
+        return error.toLowerCase().split('{')[0].match(/[a-z,0-9,\,\-]+/g).filter((e, i, arr) => {
+            return arr[i] !== arr[i + 1] && arr[i] !== arr[i + 2];
+        }).join(' ');
+    }
+
+    if (~err.indexOf("bitshares-crypto")) {
+        err = err.split("bitshares-crypto")[0];
+        if (~err.indexOf("Insufficient Balance: ")) {
+            let amount = err.split("Insufficient Balance: ")[1].split(",")[0];
+            return `Not enough balance ${amount}, check fees settings and your balances.`;
+        } else {
+            return reg_exp_err(err);
+        }
+    } else {
+        return reg_exp_err(error);
+    }
+
+}
+
 class TransactionConfirmActions {
 
     confirm(transaction, resolve, reject) {
@@ -34,12 +57,13 @@ class TransactionConfirmActions {
                 clearTimeout(broadcast_timeout);
                 // messages of length 1 are local exceptions (use the 1st line)
                 // longer messages are remote API exceptions (use the 2nd line)
-                let splitError = error.message.split( "\n" );
-                let message = splitError[splitError.length === 1 ? 0 : 1];
+
+                let clear_error = parse_error(error.message);
+
                 dispatch({
                     broadcast: false,
                     broadcasting: false,
-                    error: message,
+                    error: clear_error,
                     closed: false
                 });
                 if (reject) reject();
