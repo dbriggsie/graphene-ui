@@ -294,7 +294,7 @@ class Das_root extends React.Component {
 					        <div className="grid-container grid-content">
 					            <div className="text-center">
 					                <Translate component="h2" content="root.features" />
-					                <a href="#"><i className="icon _pdf"></i><Translate component="span" content="root.whitepaper" /></a>
+					                <a href="#" className="whitepaper" ><i className="icon _pdf"></i><Translate component="span" content="root.whitepaper" /></a>
 					            </div>
 					            <div className="features_info grid-block">
 					                <div className="large-5">
