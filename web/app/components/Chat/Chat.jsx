@@ -15,36 +15,6 @@ import TransactionConfirmStore from "stores/TransactionConfirmStore";
 import {FetchChainObjects} from "bitsharesjs/es";
 import TimeAgo from "../Utility/TimeAgo";
 
-let from_local = ["2012-07-14 10:23:00","2013-07-14 11:23:22"];
-
-let from_server = {
-    "2011-07-14 08:23:00": {
-        title: "Blockchain Real Use Case: Land Inventory in Africa and Beyond",
-        content: "In developing countries the right to own landed properties as a priority can be placed just behind the right to life.Using Nigeria as a typical example, every piece of land is claimed, whether on record or not. Besides lands found almost in the middle of nowhere, ancestral owne!",
-        type: "news",
-        link: "https://blog.openledger.info/2017/03/03/obits-is-now-listed-on-livecoin%e2%80%8a-%e2%80%8amajor-altcoin-exchange/"
-    },
-    "2012-07-14 10:23:00": {
-        title: "Wrong adress in bitcoin",
-        content: "Wrong adress a record! Over 222 bitcoin Wrong adressg the OBITS Wrong adressast Sunday. The entire supply of OBITS is now available",
-        type: "warning",
-        link: "https://blog.openledger.info/2017/03/08/ronny-boesing-center-stage-at-the-blockchain-bitcoin-conference-tallinn/"
-    },
-    "2013-07-14 11:23:22": {
-        title: "Milestone in fact",
-        content: "50,000 signed-ups users milestone in fact, already 52,518 and we have been growing by 500",
-        type: "news",
-        link: "https://blog.openledger.info/2017/06/09/denmark-based-openledger-inks-deal-with-chinese-company-raising-11-million-dkk/"
-    },
-    "2014-08-11 07:13:00": {
-        title: "ZenGold Special",
-        content: "Developed on the Metaverse Blockchain, ZenGold creates crypto assets that are backed by physical gold enabling investors to instantly buy and transfer gold, in any quantity, anywhere in the worl",
-        type: "news",
-        link: "https://blog.openledger.info/2017/05/27/zengold-special-ico-prelaunch-exclusively-on-openledger/"        
-    }
-};
-from_server = {"2011-07-14 08:23:00":{"id":"6","title":"Blockchain Real Use Case: Land Inventory in Africa and Beyond","content":"In developing countries the right to own landed properties as a priority can be placed just behind the right to life.Using Nigeria as a typical example, every piece of land is claimed, whether on record or not. Besides lands found almost in the middle of ","type":"news","link":"https:\/\/blog.openledger.info\/2017\/03\/03\/obits-is-now-listed-on-livecoin%e2%80%8a-%e2%80%8amajor-altcoin-exchange\/","show_news":"1"},"2012-07-14 10:23:00":{"id":"8","title":"Wrong adress in bitcoin","content":"In developing countries the right to own landed properties as a priority can be placed just behind the right to life.Using Nigeria as a typical example, every piece of land is claimed, whether on record or not. Besides lands found almost in the middle of ","type":"warning","link":"https:\/\/blog.openledger.info\/2017\/03\/08\/ronny-boesing-center-stage-at-the-blockchain-bitcoin-conference-tallinn\/","show_news":"1"},"2013-07-14 11:23:22":{"id":"9","title":"Milestone in fact","content":"50,000 signed-ups users milestone in fact, already 52,518 and we have been growing by 500","type":"news","link":"https:\/\/blog.openledger.info\/2017\/06\/09\/denmark-based-openledger-inks-deal-with-chinese-company-raising-11-million-dkk\/","show_news":"1"},"2014-08-11 07:13:00":{"id":"10","title":"ZenGold Special","content":"Developed on the Metaverse Blockchain, ZenGold creates crypto assets that are backed by physical gold enabling investors to instantly buy and transfer gold, in any quantity, anywhere in the worl","type":"news","link":"https:\/\/blog.openledger.info\/2017\/05\/27\/zengold-special-ico-prelaunch-exclusively-on-openledger\/","show_news":"0"}};
-
 class Chat extends React.Component {
     constructor(props) {
         super(props);
@@ -95,21 +65,19 @@ class Chat extends React.Component {
     get_news(context,e) {
         e&&e.preventDefault&&e.preventDefault(); 
 
-        //1000-01-01 00:00:00 DATETIME //new Date("2011-07-14 11:23:00".replace(/-/g,"/"));
-
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://openledger.info', true); // 'your api adress'
         xhr.setRequestHeader('Content-Type', 'application/json')
         xhr.onreadystatechange = function() {
             if (this.readyState != 4) return;
-           // var ans = JSON.parse(this.responseText);
+            var ans = JSON.parse(this.responseText);
 
            let { readed } = context.state;
 
 
            context.setState({
                 loading:false,
-                news:from_server,
+                news:ans,
                 chat_error:false //@>
            });
 
