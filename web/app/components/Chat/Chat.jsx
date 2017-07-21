@@ -7,7 +7,6 @@ import {ChainStore} from "bitsharesjs/es";
 import {debounce} from "lodash";
 import SettingsActions from "actions/SettingsActions";
 import SettingsStore from "stores/SettingsStore";
-import Peer from "peerjs";
 import utils from "common/utils";
 import counterpart from "counterpart";
 import LoadingIndicator from "../LoadingIndicator";
@@ -16,71 +15,39 @@ import TransactionConfirmStore from "stores/TransactionConfirmStore";
 import {FetchChainObjects} from "bitsharesjs/es";
 import TimeAgo from "../Utility/TimeAgo";
 
-const PROD = true;
-const hostConfig = PROD ? { // Prod config
-    host: "bitshares.openledger.info",
-    path: "/trollbox",
-    secure: true,
-    port: 443
-} : { // Dev config
-    host: "localhost",
-    path: "/trollbox",
-    port: 9000
+let from_local = ["2012-07-14 10:23:00","2013-07-14 11:23:22"];
+
+let from_server = {
+    "2011-07-14 08:23:00": {
+        title: "Blockchain Real Use Case: Land Inventory in Africa and Beyond",
+        content: "In developing countries the right to own landed properties as a priority can be placed just behind the right to life.Using Nigeria as a typical example, every piece of land is claimed, whether on record or not. Besides lands found almost in the middle of nowhere, ancestral owne!",
+        type: "news",
+        link: "https://blog.openledger.info/2017/03/03/obits-is-now-listed-on-livecoin%e2%80%8a-%e2%80%8amajor-altcoin-exchange/"
+    },
+    "2012-07-14 10:23:00": {
+        title: "Wrong adress in bitcoin",
+        content: "Wrong adress a record! Over 222 bitcoin Wrong adressg the OBITS Wrong adressast Sunday. The entire supply of OBITS is now available",
+        type: "warning",
+        link: "https://blog.openledger.info/2017/03/08/ronny-boesing-center-stage-at-the-blockchain-bitcoin-conference-tallinn/"
+    },
+    "2013-07-14 11:23:22": {
+        title: "Milestone in fact",
+        content: "50,000 signed-ups users milestone in fact, already 52,518 and we have been growing by 500",
+        type: "news",
+        link: "https://blog.openledger.info/2017/06/09/denmark-based-openledger-inks-deal-with-chinese-company-raising-11-million-dkk/"
+    },
+    "2014-08-11 07:13:00": {
+        title: "ZenGold Special",
+        content: "Developed on the Metaverse Blockchain, ZenGold creates crypto assets that are backed by physical gold enabling investors to instantly buy and transfer gold, in any quantity, anywhere in the worl",
+        type: "news",
+        link: "https://blog.openledger.info/2017/05/27/zengold-special-ico-prelaunch-exclusively-on-openledger/"        
+    }
 };
-
-class Comment extends React.Component {
-
-    shouldComponentUpdate(nextProps) {
-        return (
-            !utils.are_equal_shallow(nextProps, this.props)
-        );
-    }
-
-    render() {
-        let {comment, date, user, color} = this.props;
-        let systemUsers = [counterpart.translate("chat.welcome_user"), "SYSTEM"];
-
-        return (
-            <div style={{padding: "3px 1px"}}>
-                {date ?
-                <div style={{paddingTop: 2, fontSize: "90%"}}>
-                    <TimeAgo time={new Date(date)} />
-                </div> : null}
-                <div>
-                    <span
-                        className="clickable"
-                        onClick={this.props.onSelectUser.bind(this, user)}
-                        style={{
-                            fontWeight: "bold",
-                            color: color
-                        }}>
-                            {user}:&nbsp;
-                    </span>
-                    <span className="chat-text">
-                        {systemUsers.indexOf(user) !== -1 ? comment : comment.substr(0, 140)}
-                    </span>
-                </div>
-            </div>
-        );
-    }
-}
+from_server = {"2011-07-14 08:23:00":{"id":"6","title":"Blockchain Real Use Case: Land Inventory in Africa and Beyond","content":"In developing countries the right to own landed properties as a priority can be placed just behind the right to life.Using Nigeria as a typical example, every piece of land is claimed, whether on record or not. Besides lands found almost in the middle of ","type":"news","link":"https:\/\/blog.openledger.info\/2017\/03\/03\/obits-is-now-listed-on-livecoin%e2%80%8a-%e2%80%8amajor-altcoin-exchange\/","show_news":"1"},"2012-07-14 10:23:00":{"id":"8","title":"Wrong adress in bitcoin","content":"In developing countries the right to own landed properties as a priority can be placed just behind the right to life.Using Nigeria as a typical example, every piece of land is claimed, whether on record or not. Besides lands found almost in the middle of ","type":"warning","link":"https:\/\/blog.openledger.info\/2017\/03\/08\/ronny-boesing-center-stage-at-the-blockchain-bitcoin-conference-tallinn\/","show_news":"1"},"2013-07-14 11:23:22":{"id":"9","title":"Milestone in fact","content":"50,000 signed-ups users milestone in fact, already 52,518 and we have been growing by 500","type":"news","link":"https:\/\/blog.openledger.info\/2017\/06\/09\/denmark-based-openledger-inks-deal-with-chinese-company-raising-11-million-dkk\/","show_news":"1"},"2014-08-11 07:13:00":{"id":"10","title":"ZenGold Special","content":"Developed on the Metaverse Blockchain, ZenGold creates crypto assets that are backed by physical gold enabling investors to instantly buy and transfer gold, in any quantity, anywhere in the worl","type":"news","link":"https:\/\/blog.openledger.info\/2017\/05\/27\/zengold-special-ico-prelaunch-exclusively-on-openledger\/","show_news":"0"}};
 
 class Chat extends React.Component {
     constructor(props) {
         super(props);
-
-        let anonName = "anonymous" + Math.round(10000 * Math.random());
-        let myAccounts = this.props.linkedAccounts
-        .filter(a => {
-            let account = ChainStore.getAccount(a);
-            if (!account) {
-                return false;
-            }
-            return AccountStore.isMyAccount(account);
-        })
-        .map(account => {
-            return account;
-        });
 
         this.state = {
             messages: [{
@@ -88,36 +55,28 @@ class Chat extends React.Component {
                 message: counterpart.translate("chat.welcome"),
                 color: "black"
             }],
-            connected: false,
+            readed:JSON.parse(localStorage.getItem("readed"))||[],
+            news:{},
             showChat: props.viewSettings.get("showChat", true),
             myColor: props.viewSettings.get("chatColor", "#904E4E"),
-            userName: props.viewSettings.get("chatUsername", myAccounts.size ? myAccounts.first() : anonName),
             shouldScroll: true,
             loading: true,
-            anonName: anonName,
+            chat_error:true,
             docked: props.viewSettings.get("dockedChat", false),
             hasFetchedHistory: false
         };
 
-        this._peer = null;
+        this.get_news(this);
+        setInterval(()=>{this.get_news(this)}, 20000);
 
-        this.connections = new Map();
-        this._myID = null;
-
-        this.onChangeColor = debounce(this.onChangeColor, 150);
-
-        this._handleMessage = this._handleMessage.bind(this);
-        this.onTrxIncluded = this.onTrxIncluded.bind(this);
-
-        this.lastMessage = null;
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    /*shouldComponentUpdate(nextProps, nextState) {
         return (
             !utils.are_equal_shallow(nextProps, this.props) ||
             !utils.are_equal_shallow(nextState, this.state)
         );
-    }
+    }*/
 
     componentDidUpdate(prevProps) {
         if (this.props.footerVisible !== prevProps.footerVisible) {
@@ -130,134 +89,47 @@ class Chat extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this._peer) {
-            this._peer.destroy();
-        }
+
     }
 
-    _connectToServer() {
-        this._peer = new Peer(hostConfig);
+    get_news(context,e) {
+        e&&e.preventDefault&&e.preventDefault(); 
 
-        this._peer.on("open", id => {
-            // console.log("open, my ID is:", id);
-            this._myID = id;
-            this.setState({
-                connected: true,
-                loading: false,
-                open: true
-            });
+        //1000-01-01 00:00:00 DATETIME //new Date("2011-07-14 11:23:00".replace(/-/g,"/"));
 
-            this._peer.listAllPeers(this._connectToPeers.bind(this, true));
-        });
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://openledger.info', true); // 'your api adress'
+        xhr.setRequestHeader('Content-Type', 'application/json')
+        xhr.onreadystatechange = function() {
+            if (this.readyState != 4) return;
+           // var ans = JSON.parse(this.responseText);
 
-        this._peer.on("connection", this.onConnection.bind(this));
-        // this._peer.on('disconnect', this.onDisconnect.bind(this));
+           let { readed } = context.state;
 
-        this._peer.on("error", err => {
-            console.log(err);
-            if (err.message.indexOf("Lost connection to server") !== -1) {
-                this.setState({
-                    open: false
+
+           context.setState({
+                loading:false,
+                news:from_server,
+                chat_error:false //@>
+           });
+
+            /*if (ans && ans.error) {
+                context.setState({
+                    error: ans.error
                 });
-            }
-            if (err.message.indexOf("Could not get an ID from the server") !== -1) {
-                this.setState({
-                    open: false,
-                    loading: false,
-                    connected: false
+                return;
+            } else if (ans && !ans.error) {
+                context.setState({
+                    error: "",
+                    answer: ans.text
                 });
-            }
+                return;
+            }*/
 
-            // this._peer.reconnect();
-            // this._connectToServer();
-        });
+        }
+        xhr.send();
     }
 
-    _broadCastPeers() {
-        let peersArray = this.connections.map((conn, peer) => {
-            return peer;
-        }).toArray();
-
-        this._broadCastMessage({
-            peers: peersArray
-        }, false);
-    }
-
-    _connectToPeers(broadcast = false, peers) {
-        let shouldUpdate = false;
-        if (!Array.isArray(peers)) {
-            peers = [peers];
-        }
-
-        // this._peers = Immutable.List(peers);
-        peers.forEach(peer => {
-            if (peer !== this._myID && !this.connections.has(peer)) {
-                shouldUpdate = true;
-                let conn = this._peer.connect(peer);
-
-                conn.on("data", this._handleMessage);
-                conn.on("close", this.onDisconnect.bind(this, peer));
-                this.connections.set(peer, conn);
-            }
-        });
-        if (shouldUpdate) {
-            this.forceUpdate();
-        }
-        // if (broadcast) {
-        //     setTimeout(this._broadCastPeers.bind(this), 2000);
-        // }
-
-        // console.log("this.connections:", this.connections);
-    }
-
-
-
-    _handleMessage(data) {
-        if ("peers" in data && data.peers.length) {
-            return this._connectToPeers(false, data.peers);
-        }
-
-        if ("requestHistory" in data) {
-            return this.sendHistory(this.connections.get(data.requestHistory));
-        }
-
-        if (!this.state.fetchingHistory && data.historyCount && !this.state.hasFetchedHistory) {
-            this.setState({
-                fetchingHistory: true
-            });
-            let c = this.connections.get(data.id);
-            return c ? c.send({requestHistory: this._myID}) : null;
-        }
-
-        if ("history" in data && data.history.length) {
-            this.setState({
-                fetchingHistory: false,
-                hasFetchedHistory: true
-            });
-
-            data.history.filter(a => {
-                return (
-                    a.user !== "Welcome to BitShares" &&
-                    a.user !== "Welcome to Openledger"
-                );
-            }).forEach(msg => {
-                this.state.messages.push(msg);
-            });
-            this.forceUpdate();
-
-            this._scrollToBottom();
-        }
-
-        if ("message" in data && data.user && data.color) {
-            this.state.messages.push(data);
-            if (this.state.messages.length >= 100) {
-                this.state.messages.shift();
-            }
-
-            this.forceUpdate(this._scrollToBottom.bind(this));
-        }
-
-    }
 
     _scrollToBottom() {
         if (this.refs.chatbox && this.state.shouldScroll) {
@@ -276,180 +148,6 @@ class Chat extends React.Component {
         }
     }
 
-    sendHistory(c) {
-        c.send({history: this.state.messages.filter((msg) => {return msg.user !== "SYSTEM" && msg.user !== "Welcome to BitShares";})});
-    }
-
-    onConnection(c) {
-        this.connections.set(c.peer, c);
-        c.on("data", this._handleMessage);
-        c.on("close", this.onDisconnect.bind(this, c.peer));
-        setTimeout(() => {c.send({
-            id: this._myID,
-            historyCount: this.state.messages.reduce((value, msg) => {return value + (msg.user !== "SYSTEM" ? 1 : 0);}, 0)});
-        }, 200);
-        this.forceUpdate();
-    }
-
-    onDisconnect(peer) {
-        this.connections.get(peer).close();
-        this.connections.delete(peer);
-        this.forceUpdate();
-
-        if (!this.connections.size && !this.state.open) {
-            this.setState({
-                connected: false
-            });
-        }
-
-        this.forceUpdate();
-    }
-
-    onTip(input) {
-        Promise.all([
-            FetchChainObjects(ChainStore.getAsset, [input.asset]),
-            FetchChainObjects(ChainStore.getAccount, [this.props.currentAccount]),
-            FetchChainObjects(ChainStore.getAccount, [input.to])
-        ])
-        .then(objects => {
-            let asset = objects[0][0];
-            let fromAccount = objects[1][0];
-            let toAccount = objects[2][0];
-            let precision = utils.get_asset_precision(asset.get("precision"));
-
-            AccountActions.transfer(
-                fromAccount.get("id"),
-                toAccount.get("id"),
-                parseInt(input.amount * precision, 10),
-                asset.get("id"),
-                input.memo ? new Buffer(input.memo, "utf-8") : input.memo,
-                null,
-                asset.get("id")
-            ).then( () => {
-                TransactionConfirmStore.unlisten(this.onTrxIncluded);
-                TransactionConfirmStore.listen(this.onTrxIncluded);
-            }).catch( e => {
-                let msg = e.message ? e.message.split( "\n" )[1] : null;
-                console.log( "error: ", e, msg);
-                this.setState({error: msg});
-            });
-        });
-    }
-
-    onTrxIncluded(confirm_store_state) {
-        if(confirm_store_state.included && confirm_store_state.broadcast) {
-            // this.setState(Transfer.getInitialState());
-            TransactionConfirmStore.unlisten(this.onTrxIncluded);
-            TransactionConfirmStore.reset();
-            this._onTipSuccess();
-        } else if (confirm_store_state.closed) {
-            TransactionConfirmStore.unlisten(this.onTrxIncluded);
-            TransactionConfirmStore.reset();
-        }
-    }
-
-    _onTipSuccess() {
-        let tip = this._parseTip();
-        let message = {
-            user: "SYSTEM",
-            message: this.props.currentAccount + " tipped " + tip.to + " " + tip.amount + " " + tip.asset,
-            color: "#B71A00"
-        };
-
-        // Public and local broadcast
-        this._broadCastMessage(message);
-
-        this.refs.input.value = "";
-    }
-
-    _parseTip() {
-        let parsed = this.refs.input.value.split(" ");
-
-        let memo;
-        if (parsed.length > 4) {
-            memo = "";
-            for (let i = 4; i < parsed.length; i++) {
-                memo += parsed[i] + " ";
-            }
-        }
-
-        return {
-            to: parsed[1].toLowerCase(),
-            amount: parseFloat(parsed[2]),
-            asset: parsed[3].toUpperCase(),
-            memo: memo ? memo.trim() : null
-        };
-    }
-
-    submitMessage(e) {
-        if (e) {
-            e.preventDefault();
-        }
-
-        if (this.refs.input.value.indexOf("/tip") === 0) {
-            let tip = this._parseTip();
-            return this.onTip(tip);
-        } else if (this.refs.input.value.indexOf("/help") === 0) {
-            let commands = [
-                "Some useful commands:",
-                "Tipping: /tip username 100 BTS Memo goes here",
-                "This help: /help"
-            ];
-
-            // Only local broadcast
-            commands.forEach(command => {
-                this._handleMessage({
-                    user: "SYSTEM",
-                    message: command,
-                    color: "#B71A00"
-                });
-            });
-
-            return this.refs.input.value = "";
-        }
-
-        let now = new Date().getTime();
-
-        if (!this.refs.input.value.length) {
-            return;
-        }
-
-        if (now - this.lastMessage <= 2000) {
-            console.log("time delta:", now - this.lastMessage, "ms");
-            return this._handleMessage({
-                user: "SYSTEM",
-                message: counterpart.translate("chat.rate"),
-                color: "#B71A00"
-            });
-        }
-
-        let message = {
-            user: this.state.userName,
-            message: this.refs.input.value.substr(0, 140),
-            color: this.state.myColor || "#ffffff",
-            date: new Date().toISOString()
-        };
-
-        // Public and local broadcast
-        this._broadCastMessage(message);
-
-        // Reset input and message timestamp
-        this.refs.input.value = "";
-        this.lastMessage = new Date().getTime();
-    }
-
-    _broadCastMessage(message, local = true) {
-        // Local broadcast
-        if (local) {
-            this._handleMessage(message);
-        }
-        // Public broadcast
-        if (this.connections.size) {
-            this.connections.forEach(c => {
-                c.send(message);
-            });
-        }
-    }
 
     onToggleChat(e) {
         e.preventDefault();
@@ -476,21 +174,6 @@ class Chat extends React.Component {
         });
     }
 
-    onPickAccount(e) {
-        this.setState({
-            userName: e.target.value
-        });
-
-        SettingsActions.changeViewSetting({
-            chatUsername: e.target.value
-        });
-    }
-
-    _resetServer() {
-        this._peer.destroy();
-        this._connectToServer();
-    }
-
     onChangeColor(e) {
 
         if (this.refs.colorInput) {
@@ -505,20 +188,6 @@ class Chat extends React.Component {
         }
     }
 
-    _onSelectUser(userName) {
-        this.refs.input.value += userName + ", ";
-    }
-
-    _onToggleDock() {
-        this.setState({
-            docked: !this.state.docked
-        });
-
-        SettingsActions.changeViewSetting({
-            dockedChat: !this.state.docked
-        });
-    }
-
     disableChat(e) {
         e.preventDefault();
         SettingsActions.changeViewSetting({
@@ -530,32 +199,51 @@ class Chat extends React.Component {
         });
     }
 
+    _set_reader(news_date){
+        let { readed } = this.state;
+        if(readed.indexOf(news_date)==-1){
+            readed.push(news_date);
+            this.setState({
+                readed:readed
+            },localStorage.setItem("readed",JSON.stringify(readed)));
+        }        
+
+    }
+
     render() {
 
-        let {userName, loading, docked} = this.state;
+        let {loading, docked, showChat, news, readed, chat_error} = this.state;    
 
+        let telegram = (<div className="telegramm_messsage">
+            <Translate component="p" content="chat.wesorry" />
+            <Translate component="p" content="chat.butserverwith" />
+            <Translate component="p" content="chat.pleasejoin" />
+            <a target="_blank" href="https://telegram.me/OpenLedgerDC">@OpenLedgerDC</a>
+        </div>);
 
-        let messages = this.state.messages.map((msg, index) => {
-            if (!msg.user || !msg.color || !msg.message) {
-                return null;
+        let news_list = [];
+        let need_to_readed = 0;
+
+        for(let i in news){
+            if(!parseInt(news[i].show_news)){
+                continue;
             }
-            let isMine = msg.user === userName || msg.user === this._myID;
-            return (
-                <Comment
-                    onSelectUser={this._onSelectUser.bind(this)}
-                    key={index}
-                    user={msg.user}
-                    comment={msg.message}
-                    date={msg.date}
-                    color={msg.color}
-                    isMine={isMine}
-                />
-            );
-        }).filter((a) => {
-            return a !== null;
-        });
 
-        let {showChat, showSettings, connected} = this.state;
+            if(readed.indexOf(i)==-1){
+                need_to_readed+=1;
+            }
+
+           let i1 = news[i];
+           news_list.push( <li key={i} className="news_li" > 
+               <a className="news_ancor" href={i1.link} target="_blank" onClick={(e)=>{this._set_reader(i)}} >
+                   <p className="news_title">{i1.title}</p>
+                   <p className="news_date">{i}</p>
+                   <p className="news_content">{i1.content.slice(0,90)}...</p>
+               </a>
+           </li> );
+        }
+
+        showChat = (showChat || need_to_readed);
 
         let chatStyle = {
             display: !showChat ? "none" : !docked ?"block" : "inherit",
@@ -565,57 +253,6 @@ class Chat extends React.Component {
             width: !docked ? 350 : 300,
             marginRight: !docked ? "1rem" : null
         };
-
-        let accountOptions = this.props.linkedAccounts
-        .filter(a => {
-            let account = ChainStore.getAccount(a);
-            if (!account) {
-                return false;
-            }
-            return AccountStore.isMyAccount(account);
-        })
-        .map(account => {
-            return <option key={account} value={account}>{account}</option>;
-        }).toArray();
-
-        accountOptions.push(<option key="default" value={this.state.anonName}>{this.state.anonName}</option>);
-
-
-        let settings = (
-            <div style={{padding: 10}}>
-                {/* Username */}
-                <div className="settings-title"><Translate content="chat.user" />: </div>
-                <select
-                    value={userName}
-                    className="form-control"
-                    onChange={this.onPickAccount.bind(this)}
-                >
-                    {accountOptions}
-                </select>
-                {/* Color */}
-                <div className="settings-title">
-                    <Translate content="chat.color" />:
-                </div>
-                <input
-                    style={{maxWidth: 50, padding: 0}}
-                    ref="colorInput"
-                    defaultValue={this.state.myColor}
-                    onChange={this.onChangeColor.bind(this)}
-                    type="color"
-                />
-
-                <div onClick={this.disableChat.bind(this)} className="button">
-                    <Translate content="settings.disableChat" />
-                </div>
-
-                {/* Done button */}
-                <div style={{position: "absolute", bottom: 5, right: 0}}>
-                    <div onClick={this.onToggleSettings.bind(this)} className="button">
-                        <Translate content="chat.done" />
-                    </div>
-                </div>
-            </div>
-        );
 
         return (
             <div
@@ -628,41 +265,21 @@ class Chat extends React.Component {
             >
                 {!showChat ?
                 <a className="toggle-controlbox" onClick={this.onToggleChat.bind(this)}>
-                    <span className="chat-toggle"><Translate content="chat.button" /></span>
+                    <span className="chat-toggle"><Translate content="chat.button" />{need_to_readed?`(${need_to_readed})`:null}</span>
                 </a> : null}
 
                 <div style={chatStyle} className={"chatbox"}>
                     <div className={"grid-block main-content vertical " + (docked ? "docked" : "flyout")} >
                         <div className="chatbox-title grid-block shrink">
-                            <Translate content="chat.title" />
+                            <Translate content="chat.title" /> {need_to_readed?`(${need_to_readed})`:null}
                             <a onClick={this.onToggleChat.bind(this)} className="chatbox-close">&times;</a>
                         </div>
 
-                        {loading && false? <div><LoadingIndicator /></div> : !connected ? (
+                        {loading ? <div><LoadingIndicator /></div> :  (
                         <div className="grid-block vertical chatbox">
-                            <div className="telegramm_messsage">
-                                <Translate component="p" content="chat.wesorry" />
-                                <Translate component="p" content="chat.buttrollbox" />
-                                <Translate component="p" content="chat.pleasejoin" />
-                                <a target="_blank" href="https://telegram.me/OpenLedgerDC">@OpenLedgerDC</a>
-                            </div>                                             
-                        </div>) : (
-
-                        <div className="grid-block vertical no-overflow chatbox-content"  onScroll={this._onScroll.bind(this)}>
-                            <div className="grid-content" ref="chatbox">
-                                {!showSettings ? <div>{messages}</div> : settings}
-                            </div>
+                            {chat_error?telegram:(<ul className="news_list">{news_list}</ul>)}                                            
                         </div>)}
-
-                        {!showSettings && connected && !loading ? (
-                        <div className="grid-block shrink">
-                            <div >
-                                <form onSubmit={this.submitMessage.bind(this)}  className="button-group" style={{marginBottom: 0}}>
-                                    <input style={{marginBottom: 0, width: !docked ? 350 : 300, paddingTop: 5, paddingBottom: 5, backgroundColor: "white", fontSize: 12}} ref="input" type="text" />
-                                </form>
-                            </div>
-                        </div>) : null}
-
+                        { /*showSettings*/}
                     </div>
                 </div>
             </div>

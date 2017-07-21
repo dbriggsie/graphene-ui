@@ -1259,8 +1259,8 @@
     "fee_paying_account": "付费账户"
   },
   "chat": {
-    "title": "聊天室",
-    "button": "聊天",
+    "title": "News",
+    "button": "News",
     "send": "发送",
     "color": "用户名颜色",
     "user": "用户名",
@@ -1274,7 +1274,7 @@
     "disabled": "聊天室禁用",
     "enable": "启用聊天室",
     "wesorry":"向你们道歉",
-    "buttrollbox":"trollbox关闭了",
+    "butserverwith":"But server with news now is offline",
     "pleasejoin":"请参加Telegram讨论群"
   },
   "sync_fail": {

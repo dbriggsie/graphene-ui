@@ -21,30 +21,7 @@ class Das_root extends React.Component {
 
     constructor() {
         super();
-        let marketsByChain = {
-            "4018d784":[
-                ["OPEN.BTC", "BTS", false],
-                ["OPEN.BTC", "OPEN.ETH"],
-                ["OPEN.BTC", "OPEN.STEEM"],
-                ["USD", "EDEV"],
-                ["USD", "REALITY"],
-                ["OPEN.BTC", "ICOO"],
-                ["BTS", "OBITS"],
-                ["BTS", "BTSR"],
-                ["USD", "APPX.WARRANT"],
-                ["CNY", "YOYOW"],
-                ["USD", "ZENGOLD"],
-                ["USD", "OPEN.ETP"],
-                ["BTS", "USD"],
-                ["BTS", "EUR"],
-                ["BTS", "CNY"],
-                ["USD", "OBITS.WARRANT"]
-            ],
-            "39f5e2ed": [
-                ["TEST", "PEG.FAKEUSD"],
-                ["TEST", "BTWTY"]
-            ]
-        };
+        let marketsByChain = SettingsStore.dashboard_assets;
         let chainID = Apis.instance().chain_id;
         if (chainID) chainID = chainID.substr(0, 8);
 

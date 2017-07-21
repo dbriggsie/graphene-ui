@@ -9,36 +9,15 @@ import { Apis } from "bitsharesjs-ws";
 import LoadingIndicator from "../LoadingIndicator";
 import SettingsActions from "actions/SettingsActions";
 import WalletUnlockActions from "actions/WalletUnlockActions";
+import SettingsStore from "stores/SettingsStore";
+
 
 
 class Dashboard extends React.Component {
 
     constructor() {
         super();
-        let marketsByChain = {
-            "4018d784":[
-                ["OPEN.BTC", "CVCOIN"],
-                ["OPEN.BTC", "OPEN.ETH"],
-                ["OPEN.BTC", "OPEN.STEEM"],
-                ["USD", "EDEV"],
-                ["USD", "REALITY"],
-                ["OPEN.BTC", "ICOO"],
-                ["BTS", "OBITS"],
-                ["BTS", "BTSR"],
-                ["USD", "APPX.WARRANT"],
-                ["CNY", "YOYOW"],
-                ["USD", "ZENGOLD"],
-                ["USD", "OPEN.ETP"],
-                ["BTS", "USD"],
-                ["BTS", "EUR"],
-                ["BTS", "CNY"],
-                ["USD", "OBITS.WARRANT"]
-            ],
-            "39f5e2ed": [
-                ["TEST", "PEG.FAKEUSD"],
-                ["TEST", "BTWTY"]
-            ]
-        };
+        let marketsByChain = SettingsStore.dashboard_assets;
         let chainID = Apis.instance().chain_id;
         if (chainID) chainID = chainID.substr(0, 8);
 
@@ -46,9 +25,7 @@ class Dashboard extends React.Component {
             width: null,
             showIgnored: false,
             featuredMarkets: marketsByChain[chainID] || marketsByChain["4018d784"],
-            newAssets: [
-
-            ]
+            newAssets: []
         };
 
         this._setDimensions = this._setDimensions.bind(this);

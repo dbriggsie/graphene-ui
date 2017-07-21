@@ -1247,8 +1247,8 @@
     "deposit_limit":"Лимит на депозиты"
   },
   "chat":{
-    "title":"Троллбокс",
-    "button":"Чат",
+    "title": "News",
+    "button": "News",
     "send":"Отправить",
     "color":"Цвет имени пользователя",
     "user":"Имя пользователя",
@@ -1262,7 +1262,7 @@
     "disabled":"Чат отключен",
     "enable":"Включить чат",
     "wesorry":"Мы сожалеем",
-    "buttrollbox":"Но trollbox выключен",
+    "butserverwith":"But server with news now is offline",
     "pleasejoin":"Пожалуйста заходите к нам в телеграмм"
   },
   "simple_trade": {

@@ -1259,8 +1259,8 @@
     "deposit_limit": "Deposit limit"
   },
   "chat": {
-    "title": "Trollbox",
-    "button": "Chat",
+    "title": "News",
+    "button": "News",
     "send": "Send",
     "color": "Username color",
     "user": "Username",
@@ -1274,7 +1274,7 @@
     "disabled": "Chat disabled",
     "enable": "Enable chat now",
     "wesorry":"We're sorry",
-    "buttrollbox":"but trollbox is closed",
+    "serverwith":"Server with news now is offline",
     "pleasejoin":"Please, join our Telegram chat"
     },
     "simple_trade": {

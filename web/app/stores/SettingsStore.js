@@ -76,6 +76,31 @@ let topMarkets = {
     ]
 };
 
+let dashboard_assets = {
+    "4018d784": [
+        ["OPEN.BTC", "CVCOIN"],
+        ["OPEN.BTC", "OPEN.ETH"],
+        ["OPEN.BTC", "OPEN.STEEM"],
+        ["USD", "EDEV"],
+        ["USD", "REALITY"],
+        ["OPEN.BTC", "ICOO"],
+        ["BTS", "OBITS"],
+        ["BTS", "BTSR"],
+        ["USD", "APPX.WARRANT"],
+        ["CNY", "YOYOW"],
+        ["USD", "ZENGOLD"],
+        ["USD", "OPEN.ETP"],
+        ["BTS", "USD"],
+        ["BTS", "EUR"],
+        ["BTS", "CNY"],
+        ["USD", "OBITS.WARRANT"]
+    ],
+    "39f5e2ed": [
+        ["TEST", "PEG.FAKEUSD"],
+        ["TEST", "BTWTY"]
+    ]
+};
+
 function checkBit(bit) {
     if (bit == "BITUSD" || bit == "BITEUR" || bit == "BITCNY" || bit == "BITGOLD" || bit == "BITBTC") {
         return true;
@@ -417,6 +442,7 @@ set_obj.fiatAssets = [{
     walletType: "openledger-fiat"
 }];
 
+set_obj.dashboard_assets = dashboard_assets;
 set_obj.lang = lang;
 set_obj.checkBit = checkBit;
 set_obj.marketsList = marketsList;
