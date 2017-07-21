@@ -52,7 +52,7 @@ function server_set(type) {
 
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
-    BASE_OL: "https://openledger.info/coins/api/v0/ol/support",
+    BASE_OL: "https://ol-api1.openledger.info/api/v0/ol/support",
     COINS_LIST: "/coins",
     ACTIVE_WALLETS: "/active-wallets",
     TRADING_PAIRS: "/trading-pairs",
@@ -74,3 +74,5 @@ export const settingsAPIs = {
 
 //http://148.251.31.237:6006/api/v0/ol/support     
 //https://openledger.info/coins/
+
+// BASE_OL: "https://openledger.info/coins/api/v0/ol/support",
