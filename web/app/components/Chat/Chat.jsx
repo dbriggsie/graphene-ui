@@ -66,7 +66,7 @@ class Chat extends React.Component {
         e&&e.preventDefault&&e.preventDefault(); 
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://openledger.info', true); // 'your api adress'
+        xhr.open('GET', 'https://openledger.info/news_list.php', true); // 'your api adress'
         xhr.setRequestHeader('Content-Type', 'application/json')
         xhr.onreadystatechange = function() {
             if (this.readyState != 4) return;
