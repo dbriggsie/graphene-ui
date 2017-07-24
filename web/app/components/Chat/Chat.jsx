@@ -67,7 +67,7 @@ class Chat extends React.Component {
 
         let xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://openledger.info/news_list.php', true); // 'your api adress'
-        xhr.setRequestHeader('Content-Type', 'application/json')
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function() {
             if (this.readyState != 4) return;
             let ans = {};
@@ -207,7 +207,7 @@ class Chat extends React.Component {
             }
 
            let i1 = news[i];
-           news_list.push( <li key={i} className="news_li" > 
+           news_list.unshift( <li key={i} className="news_li" > 
                <a className="news_ancor" href={i1.link} target="_blank" onClick={(e)=>{this._set_reader(i)}} >
                    <p className="news_title">{i1.title}</p>
                    <p className="news_date">{i}</p>
