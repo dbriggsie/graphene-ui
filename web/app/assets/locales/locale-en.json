@@ -1274,7 +1274,7 @@
     "disabled": "Chat disabled",
     "enable": "Enable chat now",
     "wesorry":"We're sorry",
-    "serverwith":"Server with news now is offline",
+    "butserverwith":"But server with news now is offline",
     "pleasejoin":"Please, join our Telegram chat"
     },
     "simple_trade": {

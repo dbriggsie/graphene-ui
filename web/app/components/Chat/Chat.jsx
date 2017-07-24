@@ -241,8 +241,8 @@ class Chat extends React.Component {
                     <span className="chat-toggle"><Translate content="chat.button" />{need_to_readed?`(${need_to_readed})`:null}</span>
                 </a> : null}
 
-                <div style={chatStyle} className={"chatbox"}>
-                    <div className={"grid-block main-content vertical " + (docked ? "docked" : "flyout")} >
+                <div style={chatStyle} >
+                    <div className={"grid-block main-content vertical chatbox " + (docked ? "docked" : "flyout")} >
                         <div className="chatbox-title grid-block shrink">
                             <Translate content="chat.title" /> {need_to_readed?`(${need_to_readed})`:null}
                             <a onClick={this.onToggleChat.bind(this)} className="chatbox-close">&times;</a>
