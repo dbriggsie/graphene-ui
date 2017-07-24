@@ -65,34 +65,39 @@ class Chat extends React.Component {
     get_news(context,e) {
         e&&e.preventDefault&&e.preventDefault(); 
 
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://openledger.info/news_list.php', true); // 'your api adress'
         xhr.setRequestHeader('Content-Type', 'application/json')
         xhr.onreadystatechange = function() {
             if (this.readyState != 4) return;
-            var ans = JSON.parse(this.responseText);
+            let ans = {};
+            let chat_err = false;
 
-           let { readed } = context.state;
+            try{
+                ans = JSON.parse(this.responseText);
+            }catch(err){
+                console.log('news error',err);
+                chat_err = true;
+            }
 
 
-           context.setState({
-                loading:false,
-                news:ans,
-                chat_error:false //@>
-           });
+            let { readed } = context.state;
 
-            /*if (ans && ans.error) {
+            if (chat_err) {
                 context.setState({
-                    error: ans.error
+                    loading:false,
+                    news:{},
+                    chat_error:chat_err //@>
                 });
                 return;
-            } else if (ans && !ans.error) {
+            } else if (ans && !chat_err) {
                 context.setState({
-                    error: "",
-                    answer: ans.text
+                    loading:false,
+                    news:ans,
+                    chat_error:false //@>
                 });
                 return;
-            }*/
+            }
 
         }
         xhr.send();
