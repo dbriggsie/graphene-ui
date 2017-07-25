@@ -14,6 +14,9 @@ import LinkToAccountById from "components/Blockchain/LinkToAccountById";
 import {requestDepositAddress} from "common/blockTradesMethods";
 import { blockTradesAPIs } from "api/apiConfig";
 import counterpart from "counterpart";
+import LoadingIndicator from "../../LoadingIndicator";
+
+let need_change_address = ["steem","ppy","golos","gbg","sbd","etp","mvs.zgc"];
 
 class BlockTradesGatewayDepositRequest extends React.Component {
     static propTypes = {
@@ -75,8 +78,10 @@ class BlockTradesGatewayDepositRequest extends React.Component {
     componentWillMount() {
         let account_name = this.props.account.get("name");
         let receive_address = this.deposit_address_cache.getCachedInputAddress(this.props.gateway, account_name, this.props.deposit_coin_type, this.props.receive_coin_type);
-        if (!receive_address) {
-            requestDepositAddress(this._getDepositObject());
+        if (!receive_address||~need_change_address.indexOf(this.props.deposit_coin_type)) {
+            setTimeout(()=>{
+                requestDepositAddress(this._getDepositObject());
+            },1000)
         }
     }
 
@@ -112,7 +117,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
 
     render() {
 
-        let emptyRow = <div style={{display:"none", minHeight: 150}}></div>;
+        let emptyRow = <LoadingIndicator />;
         if( !this.props.account || !this.props.issuer_account || !this.props.receive_asset )
             return emptyRow;
 
@@ -169,6 +174,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
         // {
         let clipboardText = "";
         let memoText;
+
         if (this.props.deposit_account)
         {
             deposit_address_fragment = (<span>{this.props.deposit_account}</span>);
