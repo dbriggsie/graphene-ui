@@ -25,6 +25,7 @@ class Chat extends React.Component {
                 message: counterpart.translate("chat.welcome"),
                 color: "black"
             }],
+            closed_news_stamp:"",
             readed:JSON.parse(localStorage.getItem("readed"))||[],
             news:{},
             showChat: props.viewSettings.get("showChat", true),
@@ -91,7 +92,9 @@ class Chat extends React.Component {
                 });
                 return;
             } else if (ans && !chat_err) {
+
                 context.setState({
+                    showChat: Object.keys(ans).join("")!==context.state.closed_news_stamp,
                     loading:false,
                     news:ans,
                     chat_error:false //@>
@@ -125,8 +128,12 @@ class Chat extends React.Component {
     onToggleChat(e) {
         e.preventDefault();
         let showChat = !this.state.showChat;
+
+        let closed_news_stamp = Object.keys(this.state.news).join("")
+
         this.setState({
             showChat: showChat,
+            closed_news_stamp,
             docked: (!showChat && this.state.docked) ? false : this.state.docked
         });
 
@@ -198,25 +205,27 @@ class Chat extends React.Component {
         let need_to_readed = 0;
 
         for(let i in news){
+            let new_css_class = "";
+
             if(!parseInt(news[i].show_news)){
                 continue;
             }
 
-            if(readed.indexOf(i)==-1){
+            if(readed.indexOf(i)==-1){               
                 need_to_readed+=1;
+            }else{
+                 new_css_class = "news_visited";
             }
 
            let i1 = news[i];
            news_list.unshift( <li key={i} className="news_li" > 
-               <a className="news_ancor" href={i1.link} target="_blank" onClick={(e)=>{this._set_reader(i)}} >
+               <a className={"news_ancor " + new_css_class} href={i1.link} target="_blank" onClick={(e)=>{this._set_reader(i)}} >
                    <p className="news_title">{i1.title}</p>
                    <p className="news_date">{i}</p>
                    <p className="news_content">{i1.content.slice(0,90)}...</p>
                </a>
            </li> );
         }
-
-        showChat = (showChat || need_to_readed);
 
         let chatStyle = {
             display: !showChat ? "none" : !docked ?"block" : "inherit",
