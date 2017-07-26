@@ -19,13 +19,21 @@ class Chat extends React.Component {
     constructor(props) {
         super(props);
 
+        let closed_news_stamp = "";
+
+        try{
+        	closed_news_stamp = localStorage.getItem("closed_news_stamp")
+        }catch(err){
+        	console.log('err',err);
+        }        
+
         this.state = {
             messages: [{
                 user: counterpart.translate("chat.welcome_user"),
                 message: counterpart.translate("chat.welcome"),
                 color: "black"
             }],
-            closed_news_stamp:"",
+            closed_news_stamp:closed_news_stamp,
             readed:JSON.parse(localStorage.getItem("readed"))||[],
             news:{},
             showChat: props.viewSettings.get("showChat", true),
@@ -135,6 +143,8 @@ class Chat extends React.Component {
             showChat: showChat,
             closed_news_stamp,
             docked: (!showChat && this.state.docked) ? false : this.state.docked
+        },()=>{
+        	localStorage.setItem("closed_news_stamp",closed_news_stamp);
         });
 
         SettingsActions.changeViewSetting({
