@@ -2,6 +2,51 @@ import {ChainStore} from "bitsharesjs/es";
 import utils from "./utils";
 import counterpart from "counterpart";
 
+
+let scamAccountsPolo = [
+    "polonie-wallet",
+    "polonie-xwallet",
+    "poloniewallet",
+    "poloniex-deposit",
+    "poloniex-wallet",
+    "poloniexwall-et",
+    "poloniexwallett",
+    "poloniexwall-t",
+    "poloniexwalle",
+    "poloniex"
+];
+
+let scamAccountsBittrex = [
+    "bittrex-deopsit",
+    "bittrex-deposi",
+    "bittrex-depositt",
+    "bittrex-dposit",
+    "bittrex"
+];
+
+let scamAccountsOL = [
+    "openledger-walle"
+];
+
+let scamAccountsOther = [
+    "coinbase"
+];
+
+
+let xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://openledger.info/ban_list.php', true); // 'your api adress'
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.onreadystatechange = function() {
+    if (this.readyState != 4) return;
+
+    try {
+        scamAccountsOL = scamAccountsOL.concat(JSON.parse(this.responseText).map(e=>e.ban_name));
+    } catch (err) {
+        console.log('ban error', err);
+    }
+}
+xhr.send();
+
 export default class AccountUtils {
 
     /**
@@ -80,36 +125,13 @@ export default class AccountUtils {
     }
 
     static isKnownScammer(account) {
-        const scamAccountsPolo = [
-            "polonie-wallet",
-            "polonie-xwallet",
-            "poloniewallet",
-            "poloniex-deposit",
-            "poloniex-wallet",
-            "poloniexwall-et",
-            "poloniexwallett",
-            "poloniexwall-t",
-            "poloniexwalle",
-            "poloniex"
-        ];
-
-        const scamAccountsBittrex = [
-            "bittrex-deopsit",
-            "bittrex-deposi",
-            "bittrex-depositt",
-            "bittrex-dposit",
-            "bittrex"
-        ];
-
-        const scamAccountsOther = [
-            "coinbase"
-        ];
-
         let scamMessage = null;
         if (scamAccountsPolo.indexOf(account) !== -1) {
             scamMessage = counterpart.translate("account.polo_scam");
         } else if (scamAccountsBittrex.indexOf(account) !== -1) {
             scamMessage = counterpart.translate("account.bittrex_scam");
+        } else if (scamAccountsOL.indexOf(account) !== -1) {
+            scamMessage = counterpart.translate("account.ol_scam");
         } else if (scamAccountsOther.indexOf(account) !== -1) {
             scamMessage = counterpart.translate("account.other_scam");
         }
