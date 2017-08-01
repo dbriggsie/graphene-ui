@@ -96,7 +96,7 @@ class Chat extends React.Component {
                 context.setState({
                     loading:false,
                     news:{},
-                    chat_error:chat_err //@>
+                    chat_error:chat_err 
                 });
                 return;
             } else if (ans && !chat_err) {
@@ -105,7 +105,7 @@ class Chat extends React.Component {
                     showChat: Object.keys(ans).join("")!==context.state.closed_news_stamp,
                     loading:false,
                     news:ans,
-                    chat_error:false //@>
+                    chat_error:false 
                 });
                 return;
             }

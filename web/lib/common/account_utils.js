@@ -24,9 +24,12 @@ let scamAccountsBittrex = [
     "bittrex"
 ];
 
-let scamAccountsOL = [
-    "openledger-walle"
-];
+let scamAccountsSQL = {
+    "openledger-walle":{
+        ban_name:"openledger-walle",
+        real_name:"openledger-wallet"
+    }
+};
 
 let scamAccountsOther = [
     "coinbase"
@@ -40,7 +43,7 @@ xhr.onreadystatechange = function() {
     if (this.readyState != 4) return;
 
     try {
-        scamAccountsOL = scamAccountsOL.concat(JSON.parse(this.responseText).map(e=>e.ban_name));
+        scamAccountsSQL = Object.assign(scamAccountsSQL, JSON.parse(this.responseText));
     } catch (err) {
         console.log('ban error', err);
     }
@@ -121,17 +124,17 @@ export default class AccountUtils {
             fee_asset_id = feeAssets[0];
         }
 
-        return fee_asset_id;
+        return fee_asset_id; 
     }
 
     static isKnownScammer(account) {
         let scamMessage = null;
-        if (scamAccountsPolo.indexOf(account) !== -1) {
-            scamMessage = counterpart.translate("account.polo_scam");
-        } else if (scamAccountsBittrex.indexOf(account) !== -1) {
-            scamMessage = counterpart.translate("account.bittrex_scam");
-        } else if (scamAccountsOL.indexOf(account) !== -1) {
-            scamMessage = counterpart.translate("account.ol_scam");
+
+        if (Object.keys(scamAccountsSQL).indexOf(account) !== -1) {
+            scamMessage = counterpart.translate("account.bans_scam",{
+                ban_name:scamAccountsSQL[account].ban_name,
+                real_name:scamAccountsSQL[account].real_name
+            });
         } else if (scamAccountsOther.indexOf(account) !== -1) {
             scamMessage = counterpart.translate("account.other_scam");
         }

@@ -72,7 +72,11 @@ class AccountSelector extends React.Component {
         let newValue = value.replace("#", "").match(/(?:\/account\/)(.*)(?:\/overview)/);
         if (newValue) value = newValue[1];
 
-        if (this.props.onChange && value !== this.props.accountName) this.props.onChange(value);
+        if (this.props.onChange && value !== this.props.accountName){
+            this.props.onChange(value);
+        }else{
+            this.props.onChange("");
+        }
     }
 
     onKeyDown(event) {
@@ -85,8 +89,12 @@ class AccountSelector extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        if((this.props.onAccountChanged && newProps.account) && newProps.account !== this.props.account)
+
+        if((this.props.onAccountChanged && newProps.account) && newProps.account !== this.props.account){
             this.props.onAccountChanged(newProps.account);
+        }else if ((this.props.onToAccountChanged) && newProps.account !== this.props.account){
+            this.props.onToAccountChanged(newProps.account);
+        }
     }
 
     onAction(e) {

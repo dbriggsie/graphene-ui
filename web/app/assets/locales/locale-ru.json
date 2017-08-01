@@ -117,6 +117,7 @@
     "hide_ignored":"Не отображать скрытые аккаунты",
     "accounts":"Аккаунты",
     "estimate_value":"Текущая стоимость аккаунта",
+    "bans_scam": "This account is not the real %(ban_name)s account, perhaps you meant account: %(real_name)s",    
     "polo_scam":"Этот аккаунт не является реальным аккаунтом Poloniex, пожалуйста, отправьте на этот аккаунт: poloniexwallet.",
     "ol_scam": "This account is not the real Openledger account, please send to this account: openledger-wallet.",
     "bittrex_scam":"Этот аккаунт не является реальным аккаунтом Bittrex, пожалуйста, отправьте на этот аккаунт: bittrex-deposit.",

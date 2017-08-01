@@ -224,6 +224,7 @@ class Transfer extends React.Component {
 
     render() {
         let from_error = null;
+
         let {propose, from_account, to_account, asset, asset_id, propose_account,
             amount, error, to_name, from_name, memo, feeAsset, fee_asset_id} = this.state;
         let from_my_account = AccountStore.isMyAccount(from_account) || from_name === this.props.passwordAccount;
@@ -327,7 +328,7 @@ class Transfer extends React.Component {
                                 label="transfer.to"
                                 accountName={to_name}
                                 onChange={this.toChanged.bind(this)}
-                                onAccountChanged={this.onToAccountChanged.bind(this)}
+                                onToAccountChanged={this.onToAccountChanged.bind(this)}
                                 account={to_name}
                                 size={60}
                                 tabIndex={tabIndex++}

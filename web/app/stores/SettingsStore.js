@@ -106,6 +106,7 @@ function checkBit(bit) {
         return true;
     }
 }
+
 let lang = "en";
 
 if (SET == "EU1") {

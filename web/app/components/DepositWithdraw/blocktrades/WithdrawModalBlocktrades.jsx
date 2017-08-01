@@ -244,7 +244,7 @@ class WithdrawModalBlocktrades extends React.Component {
         if (Object.keys(this.props.account.get("balances").toJS()).includes(this.props.asset.get("id")) ) {
             let total_minus_fee = this.props.balance.get("balance") / utils.get_asset_precision(this.props.asset.get("precision"));
             if(this.props.asset.get("id")==feeID){
-                total_minus_fee=utils.limitByPrecision(total_minus_fee-fee*1.09,total_precision);
+                total_minus_fee=utils.limitByPrecision(total_minus_fee-fee*1.095,total_precision); //@#>
                 if(total_minus_fee<0){
                     total_minus_fee=0;
                 }
@@ -262,10 +262,13 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     _setTotal(asset_id, balance_id, fee, fee_asset_id) {
+
+        const gateFee = parseInt(this.props.gateFee);
+
         let balanceObject = ChainStore.getObject(balance_id);
         let transferAsset = ChainStore.getObject(asset_id);
         if (balanceObject) {
-            let amount = (utils.get_asset_amount(balanceObject.get("balance"), transferAsset) - (asset_id === fee_asset_id ? fee : 0)).toString();
+            let amount = (utils.get_asset_amount(balanceObject.get("balance"), transferAsset) - gateFee - (asset_id === fee_asset_id ? fee : 0)).toString();
             this.setState({amount});
         }
     }
@@ -286,7 +289,7 @@ class WithdrawModalBlocktrades extends React.Component {
 
         for (let key in account_balances) {
             let asset = ChainStore.getObject(key);
-            let balanceObject = ChainStore.getObject(account_balances[key]);
+            let balanceObject = account_balances[key]?ChainStore.getObject(account_balances[key]):null;
 
             if (balanceObject && balanceObject.get("balance") > 0) {
                 if(fee_asset_types.indexOf(key)==-1){
@@ -294,7 +297,7 @@ class WithdrawModalBlocktrades extends React.Component {
                 }
             }
 
-            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>200){
+            if(asset&&utils.isValidPrice(asset.getIn(["options", "core_exchange_rate"]))&&parseInt(asset.getIn(["dynamic", "fee_pool"]), 10)>(this._feeBTS||2200)){
                 fee_asset_types.push(key);
             }
 
