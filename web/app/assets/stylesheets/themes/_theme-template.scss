@@ -1377,4 +1377,26 @@
       }
       color:#fff;
     }
+
+
+    .modal .airbitz_button{
+      margin: 0 0 0 1rem;
+    }
+
+    .checkbox_airbitz{
+      cursor: pointer;
+      margin: 0 0.4rem 0 0;
+      color: $button-bg-color;
+      &>span{
+        font-size: 1.3rem;
+        color: $button-bg-color;
+      }
+    }
+
+    .text_airbitz{
+      color: $button-bg-color;
+      .icon > svg > path {
+          fill: $button-bg-color;
+      }
+    }
 }

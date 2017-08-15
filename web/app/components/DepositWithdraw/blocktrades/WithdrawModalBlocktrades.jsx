@@ -15,33 +15,6 @@ import AccountStore from "stores/AccountStore";
 import {ChainStore} from "bitsharesjs/es";
 
 
-let gate_fees = {
-    AGRS: 0.00032,
-    AMP: 0.00032,
-    BTC: 0.00030,
-    DASH: 0.00010,
-    DGD: 0.00150,
-    DOGE: 1.00000,
-    EMC: 0.30000,
-    ETH: 0.00150,
-    USDT: 0.00032,
-    GAME: 0.00010,
-    GRC: 0.00020,
-    INCNT: 0.00100,
-    LSK: 0.10000,
-    LTC: 0.00300,
-    MAID: 0.00032,
-    MUSE: 8.00000,
-    NBT: 0.01000,
-    NSR: 1.00000,
-    NXC: 0.00150,
-    OMNI: 0.00032,
-    PPC: 0.00010,
-    SBD: 0.00000,
-    STEEM: 0.00000,
-    WAVES: 0.00100
-};
-
 class WithdrawModalBlocktrades extends React.Component {
 
     static propTypes = {
@@ -312,6 +285,8 @@ class WithdrawModalBlocktrades extends React.Component {
         let storedAddress = WithdrawAddresses.get(this.props.output_wallet_type);
         let balance = null;
 
+        console.log('@>',this.props)
+
         // console.log( "account: ", this.props.account.toJS() );
         let account_balances = this.props.account.get("balances").toJS();
         // console.log( "balances: ", account_balances );
@@ -460,11 +435,11 @@ class WithdrawModalBlocktrades extends React.Component {
                         assets={fee_asset_types}
                         tabIndex={tabIndex++}
                     />
-                    {gate_fees[this.props.output_coin_symbol]?
+                    {this.props.gateFee?
                         (<div className="amount-selector right-selector">
                             <label className="left-label">Gate fee</label>
                             <div className="inline-label input-wrapper">
-                                <p className="right-selector-input" >{gate_fees[this.props.output_coin_symbol]} {this.props.output_coin_symbol}</p>
+                                <p className="right-selector-input" >{this.props.gateFee}</p>
                             </div>
                         </div>):null}
                 </div>

@@ -20,6 +20,7 @@ import ReactTooltip from "react-tooltip";
 import utils from "common/utils";
 import SettingsActions from "actions/SettingsActions";
 import counterpart from "counterpart";
+import Icon from "../Icon/Icon";
 
 class CreateAccount extends React.Component {
     constructor() {
@@ -32,9 +33,15 @@ class CreateAccount extends React.Component {
             loading: false,
             hide_refcode: true,
             show_identicon: false,
+            airbitz_backup_option: false,
+            airbitz_show_option: true,
+            user_password: "",
+            //step: 2
             step: 1
         };
         this.onFinishConfirm = this.onFinishConfirm.bind(this);
+        this.switch_airbitz_backup_option = this.switch_airbitz_backup_option.bind(this);
+        this._onBackupDownload = this._onBackupDownload.bind(this);
 
         this.accountNameInput = null;
     }
@@ -154,7 +161,13 @@ class CreateAccount extends React.Component {
             this.createAccount(account_name);
         } else {
             let password = this.refs.password.value();
-            this.createWallet(password).then(() => this.createAccount(account_name));
+            this.createWallet(password)
+            .then(() => this.createAccount(account_name))
+            .then(() => {
+                this.setState({
+                    user_password:password
+                });
+            });
         }
     }
 
@@ -285,20 +298,56 @@ class CreateAccount extends React.Component {
     }
 
     _renderBackup() {
+
         return (
             <div className="backup-submit">
                 <p><Translate unsafe content="wallet.wallet_crucial" /></p>
                 <div className="divider" />
-                <BackupCreate noText downloadCb={this._onBackupDownload}/>
+                <BackupCreate 
+                    noText
+                    airbitz_backup_option={this.state.airbitz_backup_option} 
+                    switch_airbitz_backup_option={this.switch_airbitz_backup_option} 
+                    airbitz_show_option={this.state.airbitz_show_option} 
+                    user_password={this.state.user_password} 
+                    downloadCb={this._onBackupDownload}
+                />
+                {/*
+                    (()=>{
+                        if(this.state.airbitz_show_option){
+                            return (
+                                <div>
+                                    <span className="checkbox_airbitz" onClick={this.switch_airbitz_backup_option} >
+                                        {this.state.airbitz_backup_option?<span>&#9724;</span>:<span>&#9723;</span>}
+                                    </span>
+                                    <span className="text_airbitz" data-tip={"qqqq qwqw qw dfgdf fdg df dfg  sdfgswert we wer df qwe wqeqw2354 wer 234"} data-offset="{'right': 90}" >
+                                        Also create Airbitz backup <Icon className="icon-14px" name="question-circle" />
+                                    </span>                                    
+                                </div>
+                            );
+                        }
+                    })()*/
+                }
+
             </div>
         );
     }
 
-    _onBackupDownload = () => {
+    _onBackupDownload(){
+        console.log('@>_onBackupDownload step',this.state.step)
         this.setState({
             step: 3
         });
     }
+
+    switch_airbitz_backup_option(){
+        console.log('@>',this.state.airbitz_backup_option);
+        this.setState({
+            airbitz_backup_option:!this.state.airbitz_backup_option
+        });
+    }
+
+    // @>   airbitz_show_option:false
+
 
     _renderBackupText() {
         return (
@@ -367,6 +416,11 @@ class CreateAccount extends React.Component {
 
     render() {
         let {step} = this.state;
+       //counterpart.translate("header.trader_mode_tip")
+       console.log('@>step',step)
+
+        //let step = 2;
+
 
         // let my_accounts = AccountStore.getMyAccounts();
         // let firstAccount = my_accounts.length === 0;
@@ -390,15 +444,34 @@ class CreateAccount extends React.Component {
                             <Translate content={"wallet.step_" + step} />
                         </p> : null}
 
-                        {step === 1 ? this._renderAccountCreateForm() : step === 2 ? this._renderBackup() :
-                            this._renderGetStarted()
+                        {
+                            (()=>{
+                                if(step === 1){
+                                    return this._renderAccountCreateForm();
+                                }else if(step === 2){
+                                    return this._renderBackup();
+                                }else{
+                                    return this._renderGetStarted();
+                                }
+                            })()
                         }
+
                     </div>
 
                     <div className="grid-content small-12 medium-4 medium-offset-1">
-                        {step === 1 ? this._renderAccountCreateText() : step === 2 ? this._renderBackupText() :
-                            this._renderGetStartedText()
+
+                        {
+                            (()=>{
+                                if(step === 1){
+                                    return this._renderAccountCreateText();
+                                }else if(step === 2){
+                                    return this._renderBackupText();
+                                }else{
+                                    return this._renderGetStartedText();
+                                }
+                            })()
                         }
+
                     </div>
                 </div>
             </div>

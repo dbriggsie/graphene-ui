@@ -9,6 +9,7 @@ import SettingsStore from "stores/SettingsStore";
 
 let application_api = new ApplicationApi();
 
+
 class WalletActions {
 
     /** Restore and make active a new wallet_object. */

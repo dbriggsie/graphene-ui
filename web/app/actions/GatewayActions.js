@@ -2,7 +2,7 @@ import alt from "alt-instance";
 import { fetchCoins, fetchBridgeCoins, getBackedCoins, getActiveWallets } from "common/blockTradesMethods";
 import { blockTradesAPIs } from "api/apiConfig";
 
-let inProgress = {};
+let inProgress = {};  
 
 class GatewayActions {
 

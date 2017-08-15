@@ -85,7 +85,7 @@ class Chat extends React.Component {
             try{
                 ans = JSON.parse(this.responseText);
             }catch(err){
-                console.log('news error',err);
+                //console.log('news error',err);
                 chat_err = true;
             }
 

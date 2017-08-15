@@ -13,6 +13,13 @@ import cname from "classnames";
 import Translate from "react-translate-component";
 import {ChainConfig} from "bitsharesjs-ws";
 import {PrivateKey} from "bitsharesjs/es";
+import Icon from "../Icon/Icon";
+
+import {makeABCUIContext} from 'airbitz-core-js-ui/lib/abcui.es6';
+import { airbitzAPIs } from "api/apiConfig";
+//import abcui from "airbitz-core-js-ui";
+let _abcUi = makeABCUIContext(airbitzAPIs);
+
 
 const connectObject = {
     listenTo() {
@@ -28,14 +35,30 @@ const connectObject = {
 //The default component is WalletManager.jsx
 class BackupCreate extends Component {
     render() {
+
+        console.log('@>airbitz_backup_option',this.props.airbitz_backup_option)
+
         return (
             <div style={{maxWidth: "40rem"}}>
-            <Create noText={this.props.noText} newAccount={this.props.location ? this.props.location.query.newAccount : null}>
+            <Create 
+                noText={this.props.noText} 
+                newAccount={this.props.location ? this.props.location.query.newAccount : null}
+                airbitz_backup_option={this.props.airbitz_backup_option}
+                switch_airbitz_backup_option={this.props.switch_airbitz_backup_option}
+                airbitz_show_option={this.props.airbitz_show_option}
+                user_password={this.props.user_password}
+            >
                 <NameSizeModified/>
                 {this.props.noText ? null : <Sha1/>}
-                <Download downloadCb={this.props.downloadCb}/>
-            </Create>
+                <Download 
+                    downloadCb={this.props.downloadCb} 
+                    airbitz_backup_option={this.props.airbitz_backup_option}
+                    switch_airbitz_backup_option={this.props.switch_airbitz_backup_option}
+                    airbitz_show_option={this.props.airbitz_show_option}
+                    user_password={this.props.user_password}
 
+                />
+            </Create>
         </div>
     );
     }
@@ -240,22 +263,68 @@ class Download extends Component {
     }
 
     render() {
-        return <div className="button"
-            onClick={this.onDownload.bind(this)}><Translate content="wallet.download" /></div>
+
+        return (
+            <div 
+                className="button"
+                onClick={this.onDownload.bind(this)}
+            >
+                <Translate content={this.props.airbitz_backup_option?"wallet.download_airbitz":"wallet.download"} />
+            </div>
+            );
     }
 
     onDownload() {
-        let blob = new Blob([ this.props.backup.contents ], {
-            type: "application/octet-stream; charset=us-ascii"})
 
-        if(blob.size !== this.props.backup.size)
-            throw new Error("Invalid backup to download conversion")
-        saveAs(blob, this.props.backup.name);
-        WalletActions.setBackupDate();
 
-        if (this.props.downloadCb) {
-            this.props.downloadCb();
+        console.log('@>this.props', this.props)
+        console.log('@>this.props.airbitz_show_option', this.props.airbitz_show_option);
+
+        var was_locked = WalletDb.isLocked()
+        if (this.props.airbitz_show_option&&WalletDb.validatePassword(this.props.user_password, true)) {
+        //if (this.props.airbitz_show_option&&WalletDb.validatePassword("wqeq1231244", true)) {
+            let brainkey = WalletDb.getBrainKey()
+
+            console.log('@>WalletDb.getBrainKey()', brainkey);
+            let _self = this;
+
+
+            _abcUi.openLoginWindow(function(error, account) {
+                if (error) {
+                    console.log(error)
+                }
+
+                account.createWallet(airbitzAPIs.walletType, { brainkey }, function(err, id) {
+                    if (error) {
+                        console.log(error)
+                    } else {
+                        console.log('@>', account.getWallet(id));
+
+                        let blob = new Blob([ _self.props.backup.contents ], {
+                            type: "application/octet-stream; charset=us-ascii"
+                        });
+
+                        if(blob.size !== _self.props.backup.size)
+                            throw new Error("Invalid backup to download conversion")
+                        saveAs(blob, _self.props.backup.name);
+                        WalletActions.setBackupDate();
+
+                        if (_self.props.downloadCb) {
+                            _self.props.downloadCb();
+                        }
+
+                        if (was_locked) {
+                            WalletDb.onLock();
+                        }
+                    }
+                });
+            });
+
+            // this.setState({ brainkey })
+        } else {
+            //this.setState({ invalid_password: true })
         }
+
     }
 }
 Download = connect(Download, connectObject);
@@ -283,7 +352,7 @@ class Create extends Component {
         let has_backup = !!this.props.backup.contents
         if( has_backup ) return <div>{this.props.children}</div>
 
-        let ready = WalletDb.getWallet() != null
+        let ready = WalletDb.getWallet() != null;     
 
         return (
             <div>
@@ -299,6 +368,25 @@ class Create extends Component {
                 >
                     <Translate content="wallet.create_backup_of" name={this.props.wallet.current_wallet} />
                 </div>
+
+                {
+                    (()=>{
+                        if(this.props.airbitz_show_option){
+                            return (
+                                <div>
+                                    <span className="checkbox_airbitz" onClick={this.props.switch_airbitz_backup_option} >
+                                        {this.props.airbitz_backup_option?<span>&#9724;</span>:<span>&#9723;</span>}
+                                    </span>
+                                    <span className="text_airbitz" data-tip={"qqqq qwqw qw dfgdf fdg df dfg  sdfgswert we wer df qwe wqeqw2354 wer 234"} data-offset="{'right': 90}" >
+                                        Also create Airbitz backup <Icon className="icon-14px" name="question-circle" />
+                                    </span>                                    
+                                </div>
+                            );
+                        }
+                    })()
+                }
+
+
                 <LastBackupDate/>
             </div>
         );

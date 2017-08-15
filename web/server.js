@@ -1,4 +1,5 @@
 var path = require("path");
+var url = require("url");
 var webpack = require("webpack");
 var express = require("express");
 var app = express();
@@ -20,10 +21,21 @@ app.use(webpackDevMiddleware(compiler, {
     historyApiFallback: true
 }));
 
-
 app.get("*", function(req, res) {
-  res.sendFile(__dirname + '/app/assets/index.html')
+    let parsedUrl = url.parse(req.url, true);
+
+    if(~parsedUrl.pathname.indexOf("/abcui/assets/")){
+        let filepath = __dirname + parsedUrl.pathname;
+        console.log('@>filepath',filepath)
+        res.sendFile(filepath)
+    }else{
+        res.sendFile(__dirname + '/app/assets/index.html')
+    }
+
+    
 })
+
+
 app.listen(8080,"0.0.0.0", function(err) {
     if (err) {
         return console.error(err);

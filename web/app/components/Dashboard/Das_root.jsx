@@ -156,7 +156,6 @@ class Das_root extends React.Component {
 
         let { accountsReady, traderMode } = this.props;
         let { featuredMarkets, newAssets} = this.state;
-        //console.log('@>',this.props)
 
         let validMarkets = 0;
 

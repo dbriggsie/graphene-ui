@@ -69,6 +69,16 @@ export const settingsAPIs = {
     DEFAULT_WS_NODE: "wss://fake.automatic-selection.com",
 };
 
+export const airbitzAPIs = {
+    apiKey: '16778e725f182af208990a71cbec917a0d16d572',
+    walletType: 'wallet:repo:openledger',
+    appId: 'openledger.application',
+    bundlePath: 'abcui',
+    vendorName: 'OpenLedger',
+    vendorImageUrl: 'https://openledger.io/app/assets/logo.png',
+    walletType: 'wallet:repo:openledger'
+};
+
 //http://192.168.0.183:8009/api/v0/ol/support       local
 //https://openledger.info/coins/api/v0/ol/support   server
 
