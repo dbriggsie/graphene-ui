@@ -10,7 +10,8 @@ export default class BackupSettings extends React.Component {
         super();
         this.state = {
             restoreType: 0,
-            types: ["backup", "brainkey","airbitz"]
+           //@> types: ["backup", "brainkey","airbitz"]
+            types: ["backup", "brainkey"]
         };
     }
 

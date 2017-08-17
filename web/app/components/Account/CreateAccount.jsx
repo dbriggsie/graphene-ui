@@ -34,7 +34,8 @@ class CreateAccount extends React.Component {
             hide_refcode: true,
             show_identicon: false,
             airbitz_backup_option: false,
-            airbitz_show_option: true,
+            //@>airbitz_show_option: true,
+            airbitz_show_option: false,
             user_password: "",
             //step: 2
             step: 1
@@ -104,6 +105,8 @@ class CreateAccount extends React.Component {
             this.setState({loading: true});
 
             AccountActions.createAccount(name, this.state.registrar_account, referralAccount || this.state.registrar_account, 0, refcode).then(() => {
+
+                //console.log('@>inside qw');
                 // User registering his own account
                 if(this.state.registrar_account) {
                     FetchChain("getAccount", name).then(() => {
@@ -306,8 +309,8 @@ class CreateAccount extends React.Component {
                 <BackupCreate 
                     noText
                     airbitz_backup_option={this.state.airbitz_backup_option} 
-                    switch_airbitz_backup_option={this.switch_airbitz_backup_option} 
-                    airbitz_show_option={this.state.airbitz_show_option} 
+                    //switch_airbitz_backup_option={this.switch_airbitz_backup_option} 
+                    //airbitz_show_option={this.state.airbitz_show_option} 
                     user_password={this.state.user_password} 
                     downloadCb={this._onBackupDownload}
                 />
@@ -333,14 +336,14 @@ class CreateAccount extends React.Component {
     }
 
     _onBackupDownload(){
-        console.log('@>_onBackupDownload step',this.state.step)
+        //console.log('@>_onBackupDownload step',this.state.step)
         this.setState({
             step: 3
         });
     }
 
     switch_airbitz_backup_option(){
-        console.log('@>',this.state.airbitz_backup_option);
+        //console.log('@>',this.state.airbitz_backup_option);
         this.setState({
             airbitz_backup_option:!this.state.airbitz_backup_option
         });
@@ -381,8 +384,6 @@ class CreateAccount extends React.Component {
                             <td><Link to="/deposit-withdraw"><Translate content="wallet.link_deposit" /></Link></td>
                         </tr>
 
-
-
                         <tr>
                             <td><Translate content="wallet.tips_transfer" />:</td>
                             <td><Link to="/transfer"><Translate content="wallet.link_transfer" /></Link></td>
@@ -417,7 +418,7 @@ class CreateAccount extends React.Component {
     render() {
         let {step} = this.state;
        //counterpart.translate("header.trader_mode_tip")
-       console.log('@>step',step)
+      // console.log('@>step',step)
 
         //let step = 2;
 

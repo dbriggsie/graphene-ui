@@ -210,17 +210,24 @@ class WalletUnlockModal extends React.Component {
                                     ZfApi.publish(this.props.modalId, "close");
                                     this.context.router.push("/dashboard");
 
-                                    notify.addNotification({
-                                        message: `Incorrect Brain key`,
-                                        level: "error",
-                                        autoDismiss: 10
-                                    })
-
                                     setTimeout(()=>{
                                         if(!AccountStore.getMyAccounts().length){
-                                            window.location.href = "/dashboard";
+                                            notify.addNotification({
+                                                message: `Incorrect Brain key`,
+                                                level: "error",
+                                                autoDismiss: 10
+                                            });
+                                            setTimeout(()=>{window.location.href = "/dashboard"},3000);
+                                        }else{
+
+                                            notify.addNotification({
+                                                message: `You are logined`,
+                                                level: "error",
+                                                autoDismiss: 10
+                                            });
+
                                         }                                        
-                                    },3000)
+                                    },3000);
 
                                 }
 
@@ -313,7 +320,8 @@ class WalletUnlockModal extends React.Component {
                     {
 
                         (()=>{
-                            if(airbitz_mode){
+                            //if(airbitz_mode){
+                            if(false){
                                 return (
                                     <div className="content-block">
                                         <div className="account-selector">
@@ -374,7 +382,7 @@ class WalletUnlockModal extends React.Component {
                         </Trigger>
                     </div>
                     <Translate onClick={this._toggleLoginType.bind(this)} component="div" content="wallet.switch_model_wallet" className="button small outline float-right airbitz_button" />
-                    {!WalletDb.getWallet()?<Translate onClick={this._switch_brain_airbitz.bind(this)} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />:null}
+                    {!WalletDb.getWallet()&&false?<Translate onClick={this._switch_brain_airbitz.bind(this)} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />:null}
                 </div>
             </form>
         );

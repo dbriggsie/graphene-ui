@@ -277,17 +277,17 @@ class Download extends Component {
     onDownload() {
 
 
-        console.log('@>this.props', this.props)
-        console.log('@>this.props.airbitz_show_option', this.props.airbitz_show_option);
+        //console.log('@>this.props', this.props)
+       // console.log('@>this.props.airbitz_show_option', this.props.airbitz_show_option);
 
-        var was_locked = WalletDb.isLocked()
-        if (this.props.airbitz_show_option&&WalletDb.validatePassword(this.props.user_password, true)) {
+        var was_locked = WalletDb.isLocked();
+        let _self = this;
+
+        if (this.props.airbitz_show_option&&this.props.airbitz_backup_option&&WalletDb.validatePassword(this.props.user_password, true)) {
         //if (this.props.airbitz_show_option&&WalletDb.validatePassword("wqeq1231244", true)) {
             let brainkey = WalletDb.getBrainKey()
 
-            console.log('@>WalletDb.getBrainKey()', brainkey);
-            let _self = this;
-
+            //console.log('@>WalletDb.getBrainKey()', brainkey);
 
             _abcUi.openLoginWindow(function(error, account) {
                 if (error) {
@@ -300,28 +300,30 @@ class Download extends Component {
                     } else {
                         console.log('@>', account.getWallet(id));
 
-                        let blob = new Blob([ _self.props.backup.contents ], {
-                            type: "application/octet-stream; charset=us-ascii"
-                        });
-
-                        if(blob.size !== _self.props.backup.size)
-                            throw new Error("Invalid backup to download conversion")
-                        saveAs(blob, _self.props.backup.name);
-                        WalletActions.setBackupDate();
-
-                        if (_self.props.downloadCb) {
-                            _self.props.downloadCb();
-                        }
-
-                        if (was_locked) {
-                            WalletDb.onLock();
-                        }
+                        
                     }
                 });
             });
 
             // this.setState({ brainkey })
         } else {
+
+            let blob = new Blob([_self.props.backup.contents], {
+                type: "application/octet-stream; charset=us-ascii"
+            });
+
+            if (blob.size !== _self.props.backup.size)
+                throw new Error("Invalid backup to download conversion")
+            saveAs(blob, _self.props.backup.name);
+            WalletActions.setBackupDate();
+
+            if (_self.props.downloadCb) {
+                _self.props.downloadCb();
+            }
+
+            if (was_locked) {
+                WalletDb.onLock();
+            }
             //this.setState({ invalid_password: true })
         }
 

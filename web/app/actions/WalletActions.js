@@ -9,6 +9,41 @@ import SettingsStore from "stores/SettingsStore";
 
 let application_api = new ApplicationApi();
 
+function xhr_promise(req_obj) {
+
+    let { address, account_name, referrer, active_private, referrer_percent, owner_private, refcode, registrar } = req_obj;
+
+    return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', address, true); // 'your api adress'
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader('Content-Type', "application/json");
+        xhr.onreadystatechange = function() {
+            if (this.readyState != 4) return;
+            var ans = JSON.parse(this.responseText);
+
+            if (!ans || (ans && ans.error)) {
+                reject(ans);
+            } else {
+                resolve(ans);
+            }
+        }
+        //console.log('@>owner_private',owner_private)
+
+        let message = JSON.stringify({
+            "account": {
+                "name": account_name,
+                "owner_key": owner_private.toPublicKey().toPublicKeyString(),
+                "active_key": active_private.toPublicKey().toPublicKeyString(),
+                "memo_key": active_private.toPublicKey().toPublicKeyString(),
+                //"memo_key": memo_private.private_key.toPublicKey().toPublicKeyString(),
+                "refcode": refcode,
+                "referrer": referrer
+            }
+        });
+        xhr.send(message);     
+    });
+}
 
 class WalletActions {
 
@@ -71,33 +106,18 @@ class WalletActions {
                     faucetAddress = faucetAddress.replace(/http:\/\//, "https://");
                 }
 
-                let create_account_promise = fetch( faucetAddress + "/api/v1/accounts", {
-                    method: "post",
-                    mode: "cors",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "account": {
-                            "name": account_name,
-                            "owner_key": owner_private.toPublicKey().toPublicKeyString(),
-                            "active_key": active_private.toPublicKey().toPublicKeyString(),
-                            "memo_key": active_private.toPublicKey().toPublicKeyString(),
-                            //"memo_key": memo_private.private_key.toPublicKey().toPublicKeyString(),
-                            "refcode": refcode,
-                            "referrer": referrer
-                        }
-                    })
-                }).then(r => r.json().then(res => {
-                    if (!res || (res && res.error)) {
-                        reject(res.error);
-                    } else {
-                        resolve(res);
-                    }
-                })).catch(reject);
+                //console.log('@>owner_private',owner_private)
 
-                return create_account_promise.then(result => {
+                xhr_promise({
+                    address:faucetAddress + "/api/v1/accounts",
+                    owner_private,
+                    active_private,
+                    account_name,
+                    referrer,
+                    referrer_percent,
+                    refcode,
+                    registrar
+                }).then(result => {
                     if (result && result.error) {
                         reject(result.error);
                     } else {
@@ -127,7 +147,7 @@ class WalletActions {
                 //[ owner_private, active_private, memo_private ],
                 transaction
             );
-            return p.catch( error => transaction.abort() );
+            return p;
         };
 
         let create_account = () => {
@@ -153,32 +173,23 @@ class WalletActions {
                 faucetAddress = faucetAddress.replace(/http:\/\//, "https://");
             }
 
-            let create_account_promise = fetch( faucetAddress + "/api/v1/accounts", {
-                method: "post",
-                mode: "cors",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-type": "application/json"
-                },
-                body: JSON.stringify({
-                    "account": {
-                        "name": account_name,
-                        "owner_key": owner_private.private_key.toPublicKey().toPublicKeyString(),
-                        "active_key": active_private.private_key.toPublicKey().toPublicKeyString(),
-                        "memo_key": active_private.private_key.toPublicKey().toPublicKeyString(),
-                        //"memo_key": memo_private.private_key.toPublicKey().toPublicKeyString(),
-                        "refcode": refcode,
-                        "referrer": referrer
-                    }
-                })
-            }).then(r => r.json());
-
-            return create_account_promise.then(result => {
+            return xhr_promise({
+                    address:faucetAddress + "/api/v1/accounts",
+                    owner_private:owner_private.private_key,
+                    active_private:active_private.private_key,
+                    account_name,
+                    referrer,
+                    referrer_percent,
+                    refcode,
+                    registrar
+            }).then(result => {
+                //console.log('@>result',result)
                 if (result.error) {
                     throw result.error;
                 }
                 return updateWallet();
             }).catch(error => {
+                //console.log('@>',error)
                 /*
                 * Since the account creation failed, we need to decrement the
                 * sequence used to generate private keys from the brainkey. Two
