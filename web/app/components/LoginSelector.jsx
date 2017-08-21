@@ -10,7 +10,9 @@ export default class LoginSelector extends React.Component {
         this.state={
             //show_registration_choose:false
             show_registration_choose:true
-        };            
+        };
+
+        this.show_registration_choose = this.show_registration_choose.bind(this);           
         
 
     }
@@ -18,6 +20,15 @@ export default class LoginSelector extends React.Component {
     onSelect(route) {
         this.props.router.push("/create-account/" + route);
     }
+
+
+    show_registration_choose(e){
+        e&&e.preventDefault&&e.preventDefault();
+        this.setState({
+            show_registration_choose:true
+        });
+    }
+
 
     render() {
 
@@ -90,12 +101,12 @@ export default class LoginSelector extends React.Component {
                                                 <Translate unsafe content="wallet.airbitz_create_wallet" component="p" />
                                             </Link>
                                         </div>
-                                        <p className="create_acc_button_another" onClick={()=>{}} >or <a href="#">create account without Airbitz security</a></p>
+                                        <p className="create_acc_button_another" onClick={this.show_registration_choose} >or <a href="#">create account without Airbitz security</a></p>
                                     </div>
                                     <Translate unsafe content="wallet.airbitz_full_description" className="create_acc_airbitz_description" component="p" />
                                     <div className="create_acc_login">
                                         <Translate unsafe content="wallet.have_an_old" component="span" /> &nbsp;
-                                        <a href="#" className="create_acc_airbitz_description" >
+                                        <a href="#" onClick={this.show_registration_choose} className="create_acc_airbitz_description" >
                                             <Translate unsafe content="wallet.login_here" component="span" />
                                         </a>
                                     </div>

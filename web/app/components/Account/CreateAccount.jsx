@@ -34,8 +34,7 @@ class CreateAccount extends React.Component {
             hide_refcode: true,
             show_identicon: false,
             airbitz_backup_option: false,
-            //@>airbitz_show_option: true,
-            airbitz_show_option: false,
+            airbitz_show_option: true,
             user_password: "",
             //step: 2
             step: 1
@@ -44,7 +43,7 @@ class CreateAccount extends React.Component {
         this.switch_airbitz_backup_option = this.switch_airbitz_backup_option.bind(this);
         this._onBackupDownload = this._onBackupDownload.bind(this);
 
-        this.accountNameInput = null;
+        this.accountNameInput = null; 
     }
 
     componentWillMount() {
@@ -302,6 +301,10 @@ class CreateAccount extends React.Component {
 
     _renderBackup() {
 
+        let { airbitz_show_option } = this.state;
+
+        console.log('@>',airbitz_show_option) 
+
         return (
             <div className="backup-submit">
                 <p><Translate unsafe content="wallet.wallet_crucial" /></p>
@@ -309,14 +312,14 @@ class CreateAccount extends React.Component {
                 <BackupCreate 
                     noText
                     airbitz_backup_option={this.state.airbitz_backup_option} 
-                    //switch_airbitz_backup_option={this.switch_airbitz_backup_option} 
-                    //airbitz_show_option={this.state.airbitz_show_option} 
+                    switch_airbitz_backup_option={this.switch_airbitz_backup_option} 
+                    airbitz_show_option={this.state.airbitz_show_option} 
                     user_password={this.state.user_password} 
                     downloadCb={this._onBackupDownload}
                 />
-                {/*
+                {
                     (()=>{
-                        if(this.state.airbitz_show_option){
+                        if(airbitz_show_option){
                             return (
                                 <div>
                                     <span className="checkbox_airbitz" onClick={this.switch_airbitz_backup_option} >
@@ -328,7 +331,7 @@ class CreateAccount extends React.Component {
                                 </div>
                             );
                         }
-                    })()*/
+                    })()
                 }
 
             </div>
@@ -336,21 +339,16 @@ class CreateAccount extends React.Component {
     }
 
     _onBackupDownload(){
-        //console.log('@>_onBackupDownload step',this.state.step)
         this.setState({
             step: 3
         });
     }
 
     switch_airbitz_backup_option(){
-        //console.log('@>',this.state.airbitz_backup_option);
         this.setState({
             airbitz_backup_option:!this.state.airbitz_backup_option
         });
     }
-
-    // @>   airbitz_show_option:false
-
 
     _renderBackupText() {
         return (
@@ -416,13 +414,7 @@ class CreateAccount extends React.Component {
     }
 
     render() {
-        let {step} = this.state;
-       //counterpart.translate("header.trader_mode_tip")
-      // console.log('@>step',step)
-
-        //let step = 2;
-
-
+        let {step, airbitz_show_option} = this.state;
         // let my_accounts = AccountStore.getMyAccounts();
         // let firstAccount = my_accounts.length === 0;
         return (
