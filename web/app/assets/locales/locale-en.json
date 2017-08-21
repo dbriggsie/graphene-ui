@@ -829,7 +829,10 @@
     "trader_mode_true": "Switch to Basic Mode",
     "trader_mode_false": "Switch to Advanced Mode",
     "restore_default_success": "Settings have been reset successfully",
-    "api_closest": "Choose closest automatically"
+    "api_closest": "Choose closest automatically",
+    "wallet_required": "Wallet model required",
+    "wallet_required_text": "In order to restore a backup you will need to switch to the wallet model first, do so by clicking the button below",
+    "enable_wallet": "Enable wallet model"
   },
   "footer": {
     "title": "Openledger",
@@ -952,12 +955,14 @@
   "wallet": {
     "title": "Wallet",
     "confirm": "Wallet password (confirm)",
+    "airbitz_create_wallet": "Create account / login <span>with Airbitz</span>",
     "password": "Wallet password",
     "existing_password": "Existing Password",
     "change_password": "Change Password",
     "change_wallet": "Change Wallet",
     "wallet_created": "Wallet Created",
     "create_wallet": "Create new wallet",
+    "create_account_description": "The OpenLedger DEX is a cryptocurrency trading platform acting as the host and skeleton for constant innovation. <br /> Designed for high-speed transactions, the OpenLedger DEX allows you to trade assets in real time, securely, with ultra-low fees.",
     "create_importkeys_text": "In order to import keys, you first need to create a wallet to contain the keys. Complete the dialog below to create a new wallet.",
     "create_wallet_backup": "Create new wallet from backup",
     "import_bts1": "Import from BitShares 0.9.3c",
@@ -1106,6 +1111,8 @@
     "password_model_2": "The account model lets you login to your wallet from anywhere using only your account name and password, but <strong> your password is vulnerable to brute-force attacks which means it is important to use a very long password, ideally 20+ characters!</strong>",
     "password_model_3": "<li>Single account</li><li>Easy login</li><li>Moderate security</li>",
     "use_wallet": "Use the wallet model",
+    "have_an_old": "Have an old legacy wallet or account?",
+    "login_here": "Login here",
     "use_password": "Use the account model",
     "pass_length": "The password must contain at least %(minLength)s characters. Ideally you should use 20 or more, and a combination of numbers, special characters and letters.",
     "switch_model_wallet": "Switch to wallet model",
@@ -1114,6 +1121,8 @@
     "disable_model_airbitz": "Disable airbitz mode",
     "account_public": "Account Name (Public)",
     "current_pass": "Current password",
+    "welcome_to_the":"Welcome to the OpenLedger Decentralized Exchange (DEX)",
+    "airbitz_full_description":"The Browser you are using has not been fully tested to support the BitShares Wallet. We highly recommend that you backup your wallet and import it using the Chrome Browser until we have had more time to fully test your browser of choice. Use at your own risk. Import it using the Chrome Browser until we have had more time to fully test your browser of choice. Use at your own risk.",
     "no_wallet": "You do not have a wallet yet"
   },
   "borrow": {
@@ -1267,7 +1276,7 @@
       "open_website": "Open Website"
     },
     "purchase": "Purchase %(asset)s",
-    "purchase_1": "Quickly and easily purchase %(outputAsset)s using %(inputAsset)s from an external wallet. This service is provided by <a href='https://blocktrades.us/' target='blank' rel='noopener noreferrer'>Blocktrades</a>",
+    "purchase_1": "Quickly and easily purchase %(outputAsset)s using %(inputAsset)s from an external wallet. This service is provided by <a href='https://openledger.info/' target='blank' rel='noopener noreferrer'>Openledger</a>",
     "deposit_limit": "Deposit limit"
   },
   "chat": {

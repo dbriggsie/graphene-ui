@@ -28,7 +28,6 @@ function xhr_promise(req_obj) {
                 resolve(ans);
             }
         }
-        //console.log('@>owner_private',owner_private)
 
         let message = JSON.stringify({
             "account": {
@@ -106,8 +105,6 @@ class WalletActions {
                     faucetAddress = faucetAddress.replace(/http:\/\//, "https://");
                 }
 
-                //console.log('@>owner_private',owner_private)
-
                 xhr_promise({
                     address:faucetAddress + "/api/v1/accounts",
                     owner_private,
@@ -183,13 +180,11 @@ class WalletActions {
                     refcode,
                     registrar
             }).then(result => {
-                //console.log('@>result',result)
                 if (result.error) {
                     throw result.error;
                 }
                 return updateWallet();
             }).catch(error => {
-                //console.log('@>',error)
                 /*
                 * Since the account creation failed, we need to decrement the
                 * sequence used to generate private keys from the brainkey. Two

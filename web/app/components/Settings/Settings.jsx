@@ -37,7 +37,13 @@ class Settings extends React.Component {
 
     componentWillReceiveProps(np) {
         if (np.settings.get("passwordLogin") !== this.props.settings.get("passwordLogin")) {
+            const currentEntries = this._getMenuEntries(this.props);
             const menuEntries = this._getMenuEntries(np);
+            if (currentEntries.length < menuEntries.length) {
+                this.setState({
+                    activeSetting: this.state.activeSetting + (menuEntries.length - currentEntries.length)
+                });
+            }
             this.setState({
                 menuEntries
             });
@@ -63,6 +69,7 @@ class Settings extends React.Component {
 
         if (props.settings.get("passwordLogin")) {
             menuEntries.splice(4, 1);
+            menuEntries.splice(3, 1);
             menuEntries.splice(1, 1);
         }
         return menuEntries;
@@ -73,6 +80,7 @@ class Settings extends React.Component {
     }
 
     _onChangeSetting(setting, e) {
+
         if(typeof e == "boolean"){ //@#> traderMode
             let e_original = e; 
             e={
@@ -82,6 +90,7 @@ class Settings extends React.Component {
                 preventDefault:()=>{}
             }
         }
+
         e.preventDefault();
 
         let {defaults} = this.props;
@@ -135,7 +144,7 @@ class Settings extends React.Component {
                 apiServer: e.target.value
             });
             break;
-
+        
         case "traderMode":
             SettingsActions.changeSetting({setting: "traderMode", value: e.target.value});
             break;
@@ -208,7 +217,7 @@ class Settings extends React.Component {
             break;
 
         case "restore":
-            entries = <RestoreSettings />;
+            entries = <RestoreSettings passwordLogin={this.props.settings.get("passwordLogin")} />;
             break;
 
         default:

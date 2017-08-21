@@ -1,6 +1,6 @@
 import React from "react";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
-import Modal from "react-foundation-apps/src/modal";
+import BaseModal from "../Modal/BaseModal";
 import Trigger from "react-foundation-apps/src/trigger";
 import Translate from "react-translate-component";
 import { Asset } from "common/MarketClasses";
@@ -126,7 +126,7 @@ class SimpleDepositBlocktradesBridge extends React.Component {
             inputCoinType: props.inputCoinType.toLowerCase(),
             outputCoinType: props.outputCoinType.toLowerCase(),
             outputAddress: props.sender.get("name"),
-            url: blockTradesAPIs.BASE_OL,
+            url: blockTradesAPIs.BASE,
             stateCallback: (receive_address) => {
                 this.addDepositAddress(
                     props.inputCoinType.toLowerCase(),
@@ -202,8 +202,6 @@ class SimpleDepositBlocktradesBridge extends React.Component {
             receiveName +"/" + inputName;
 
         const aboveLimit = this.state.inputAmount > parseFloat(this.state.depositLimit);
-
-
 
         return (
             <div className={!addressValue ? "no-overflow" : ""}>
@@ -415,12 +413,9 @@ export default class SimpleDepositBlocktradesBridgeModal extends React.Component
         if (!this.props.bridges) return null;
 
         return (
-            <Modal className="test" onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true}>
-                <Trigger close={this.props.modalId}>
-                    <a href="#" className="close-button">&times;</a>
-                </Trigger>
+            <BaseModal className="test" onClose={this.onClose.bind(this)} id={this.props.modalId} overlay={true}>
                 {this.state.open ? <StoreWrapper {...this.props} open={this.state.open} /> : null}
-            </Modal>
+            </BaseModal>
         );
     }
 }

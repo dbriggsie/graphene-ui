@@ -22,6 +22,9 @@ export default class WalletChangePassword extends Component {
                 this.setState({success: true});
                 // window.history.back();
             })
+            .then(()=> {
+                WalletDb.transaction_update_keys();
+            })
             .catch( error => {
                 // Programmer or database error ( validation missed something? )
                 // .. translation may be unnecessary

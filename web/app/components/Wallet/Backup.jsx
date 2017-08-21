@@ -251,6 +251,9 @@ class NewWalletName extends Component {
 }
 NewWalletName = connect(NewWalletName, connectObject);
 
+
+
+
 class Download extends Component {
 
     componentWillMount() {
@@ -409,8 +412,8 @@ class LastBackupDate extends Component {
         if (!WalletDb.getWallet()) {
             return null;
         }
-        let backup_date = WalletDb.getWallet().backup_date
-        let last_modified = WalletDb.getWallet().last_modified
+        let backup_date = WalletDb.getWallet().backup_date;
+        let last_modified = WalletDb.getWallet().last_modified;
         let backup_time = backup_date ?
             <h4><Translate content="wallet.last_backup" /> <FormattedDate value={backup_date}/></h4>:
             <Translate style={{paddingTop: 20}} className="facolor-error" component="p" content="wallet.never_backed_up" />
