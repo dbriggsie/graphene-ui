@@ -34,7 +34,8 @@ class CreateAccount extends React.Component {
             hide_refcode: true,
             show_identicon: false,
             airbitz_backup_option: false,
-            airbitz_show_option: true,
+            //airbitz_show_option: true,
+            airbitz_show_option: false,
             user_password: "",
             //step: 2
             step: 1
@@ -303,7 +304,7 @@ class CreateAccount extends React.Component {
 
         let { airbitz_show_option } = this.state;
 
-        console.log('@>',airbitz_show_option) 
+        //console.log('@>',airbitz_show_option) 
 
         return (
             <div className="backup-submit">

@@ -36,7 +36,7 @@ const connectObject = {
 class BackupCreate extends Component {
     render() {
 
-        console.log('@>airbitz_backup_option',this.props.airbitz_backup_option)
+        //console.log('@>airbitz_backup_option',this.props.airbitz_backup_option)
 
         return (
             <div style={{maxWidth: "40rem"}}>
