@@ -34,9 +34,8 @@ const connectObject = {
 
 //The default component is WalletManager.jsx
 class BackupCreate extends Component {
-    render() {
 
-        //console.log('@>airbitz_backup_option',this.props.airbitz_backup_option)
+    render() {
 
         return (
             <div style={{maxWidth: "40rem"}}>
@@ -44,17 +43,13 @@ class BackupCreate extends Component {
                 noText={this.props.noText} 
                 newAccount={this.props.location ? this.props.location.query.newAccount : null}
                 airbitz_backup_option={this.props.airbitz_backup_option}
-                switch_airbitz_backup_option={this.props.switch_airbitz_backup_option}
-                airbitz_show_option={this.props.airbitz_show_option}
                 user_password={this.props.user_password}
             >
-                <NameSizeModified/>
+                {!this.props.airbitz_backup_option?<NameSizeModified/>:null}
                 {this.props.noText ? null : <Sha1/>}
                 <Download 
                     downloadCb={this.props.downloadCb} 
                     airbitz_backup_option={this.props.airbitz_backup_option}
-                    switch_airbitz_backup_option={this.props.switch_airbitz_backup_option}
-                    airbitz_show_option={this.props.airbitz_show_option}
                     user_password={this.props.user_password}
 
                 />
@@ -279,36 +274,32 @@ class Download extends Component {
 
     onDownload() {
 
-
-        //console.log('@>this.props', this.props)
-       // console.log('@>this.props.airbitz_show_option', this.props.airbitz_show_option);
-
         var was_locked = WalletDb.isLocked();
         let _self = this;
 
-        if (this.props.airbitz_show_option&&this.props.airbitz_backup_option&&WalletDb.validatePassword(this.props.user_password, true)) {
-        //if (this.props.airbitz_show_option&&WalletDb.validatePassword("wqeq1231244", true)) {
-            let brainkey = WalletDb.getBrainKey()
+        console.log('@>onDownload this.props.airbitz_backup_option', this.props.airbitz_backup_option)
 
-            //console.log('@>WalletDb.getBrainKey()', brainkey);
+        if (this.props.airbitz_backup_option&&WalletDb.validatePassword(this.props.user_password, true)) {
+        //@> if (this.props.airbitz_backup_option&&WalletDb.validatePassword("testname123123", true)) {
+            let brainkey = WalletDb.getBrainKey()
 
             _abcUi.openLoginWindow(function(error, account) {
                 if (error) {
                     console.log(error)
                 }
 
-                account.createWallet(airbitzAPIs.walletType, { brainkey }, function(err, id) {
+                account.createWallet(airbitzAPIs.walletType, { key:brainkey, model:"wallet" }, function(err, id) {
                     if (error) {
                         console.log(error)
                     } else {
-                        console.log('@>', account.getWallet(id));
-
-                        
+                        console.log('@>', account.getWallet(id));                        
+                        if (_self.props.downloadCb) {
+                            _self.props.downloadCb();
+                        }
                     }
                 });
             });
 
-            // this.setState({ brainkey })
         } else {
 
             let blob = new Blob([_self.props.backup.contents], {
@@ -320,14 +311,9 @@ class Download extends Component {
             saveAs(blob, _self.props.backup.name);
             WalletActions.setBackupDate();
 
-            if (_self.props.downloadCb) {
-                _self.props.downloadCb();
-            }
-
             if (was_locked) {
                 WalletDb.onLock();
             }
-            //this.setState({ invalid_password: true })
         }
 
     }
@@ -335,6 +321,18 @@ class Download extends Component {
 Download = connect(Download, connectObject);
 
 class Create extends Component {
+
+    componentWillMount(){
+        if(this.props.airbitz_backup_option){
+            this.onCreateBackup();
+        }
+    }
+
+    componentDidMount(){
+        setTimeout(()=>{
+            this.refs.create_content.style.display = "block";
+        },500)
+    }
 
     getBackupName() {
         let name = this.props.wallet.current_wallet
@@ -360,7 +358,7 @@ class Create extends Component {
         let ready = WalletDb.getWallet() != null;     
 
         return (
-            <div>
+            <div ref="create_content" style={{"display":"none"}} >
                 {this.props.noText ? null :
                 <div style={{textAlign: "left"}}>
                     {this.props.newAccount ? <Translate component="p" content="wallet.backup_new_account"/> : null}
@@ -373,25 +371,6 @@ class Create extends Component {
                 >
                     <Translate content="wallet.create_backup_of" name={this.props.wallet.current_wallet} />
                 </div>
-
-                {
-                    (()=>{
-                        if(this.props.airbitz_show_option){
-                            return (
-                                <div>
-                                    <span className="checkbox_airbitz" onClick={this.props.switch_airbitz_backup_option} >
-                                        {this.props.airbitz_backup_option?<span>&#9724;</span>:<span>&#9723;</span>}
-                                    </span>
-                                    <span className="text_airbitz" data-tip={"qqqq qwqw qw dfgdf fdg df dfg  sdfgswert we wer df qwe wqeqw2354 wer 234"} data-offset="{'right': 90}" >
-                                        Also create Airbitz backup <Icon className="icon-14px" name="question-circle" />
-                                    </span>                                    
-                                </div>
-                            );
-                        }
-                    })()
-                }
-
-
                 <LastBackupDate/>
             </div>
         );

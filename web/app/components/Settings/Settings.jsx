@@ -57,21 +57,19 @@ class Settings extends React.Component {
     }
 
     _getMenuEntries(props) {
+
+        let is_wallet = !props.settings.get("passwordLogin");
+
         let menuEntries = [
             "general",
-            "wallet",
+            (is_wallet&&"wallet"),
             "accounts",
             "password",
             "backup",
             "restore",
             "access"
-        ];
+        ].filter(e=>e);
 
-        if (props.settings.get("passwordLogin")) {
-            menuEntries.splice(4, 1);
-            menuEntries.splice(3, 1);
-            menuEntries.splice(1, 1);
-        }
         return menuEntries;
     }
 
@@ -213,7 +211,7 @@ class Settings extends React.Component {
             break;
 
         case "backup":
-            entries = <BackupSettings />;
+            entries = <BackupSettings passwordLogin={this.props.settings.get("passwordLogin")} />;
             break;
 
         case "restore":

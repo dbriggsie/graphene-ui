@@ -82,6 +82,7 @@ class WalletActions {
         console.log("new owner pubkey", owner_private.toPublicKey().toPublicKeyString());
 
         return new Promise((resolve, reject) => {
+
             let create_account = () => {
                 return application_api.create_account(
                     owner_private.toPublicKey().toPublicKeyString(),
@@ -91,7 +92,7 @@ class WalletActions {
                     referrer, //referrer_id,
                     referrer_percent, //referrer_percent,
                     true //broadcast
-                ).then(resolve).catch(reject);
+                ).then((ans)=>{resolve(ans)});
             };
 
             if(registrar) {

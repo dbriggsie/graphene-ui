@@ -8,11 +8,12 @@ export default class LoginSelector extends React.Component {
 
         super();
         this.state={
-            //show_registration_choose:false
-            show_registration_choose:true
+            show_registration_choose:false
+            //show_registration_choose:true
         };
 
-        this.show_registration_choose = this.show_registration_choose.bind(this);           
+        this.show_registration_choose = this.show_registration_choose.bind(this);  
+        localStorage.setItem("airbitz_backup_option",false);         
         
 
     }
@@ -29,10 +30,15 @@ export default class LoginSelector extends React.Component {
         });
     }
 
+    go_with_airbitz(){
+        localStorage.setItem("airbitz_backup_option","true")
+    }
+
 
     render() {
 
         let { show_registration_choose } = this.state;
+        console.log('@>,show_registration_choose',show_registration_choose)
 
         if (this.props.children) {
             return this.props.children;
@@ -96,8 +102,8 @@ export default class LoginSelector extends React.Component {
                     }else{
                         return (<div className="grid-block small-10 login-selector">
                                     <div className="box-content">
-                                        <div className="button create_acc_button">
-                                            <Link to="/create-account/password">
+                                        <div className="button create_acc_button" onClick={this.go_with_airbitz} >
+                                            <Link to="/create-account/wallet">
                                                 <Translate unsafe content="wallet.airbitz_create_wallet" component="p" />
                                             </Link>
                                         </div>
@@ -105,10 +111,9 @@ export default class LoginSelector extends React.Component {
                                     </div>
                                     <Translate unsafe content="wallet.airbitz_full_description" className="create_acc_airbitz_description" component="p" />
                                     <div className="create_acc_login">
-                                        <Translate unsafe content="wallet.have_an_old" component="span" /> &nbsp;
-                                        <a href="#" onClick={this.show_registration_choose} className="create_acc_airbitz_description" >
-                                            <Translate unsafe content="wallet.login_here" component="span" />
-                                        </a>
+                                        <Link to="/existing-account">
+                                            <Translate unsafe content="wallet.have_an_old" component="span" />
+                                        </Link>
                                     </div>
                                 </div>);
                     }                    

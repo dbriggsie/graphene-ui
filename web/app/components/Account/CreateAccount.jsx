@@ -33,15 +33,12 @@ class CreateAccount extends React.Component {
             loading: false,
             hide_refcode: true,
             show_identicon: false,
-            airbitz_backup_option: false,
-            //airbitz_show_option: true,
-            airbitz_show_option: false,
+            airbitz_backup_option: JSON.parse(localStorage.getItem("airbitz_backup_option")),
             user_password: "",
-            //step: 2
+           // step: 3
             step: 1
         };
         this.onFinishConfirm = this.onFinishConfirm.bind(this);
-        this.switch_airbitz_backup_option = this.switch_airbitz_backup_option.bind(this);
         this._onBackupDownload = this._onBackupDownload.bind(this);
 
         this.accountNameInput = null; 
@@ -302,9 +299,7 @@ class CreateAccount extends React.Component {
 
     _renderBackup() {
 
-        let { airbitz_show_option } = this.state;
-
-        //console.log('@>',airbitz_show_option) 
+        console.log('@>this.state.airbitz_backup_option',this.state.airbitz_backup_option)
 
         return (
             <div className="backup-submit">
@@ -313,28 +308,9 @@ class CreateAccount extends React.Component {
                 <BackupCreate 
                     noText
                     airbitz_backup_option={this.state.airbitz_backup_option} 
-                    switch_airbitz_backup_option={this.switch_airbitz_backup_option} 
-                    airbitz_show_option={this.state.airbitz_show_option} 
                     user_password={this.state.user_password} 
                     downloadCb={this._onBackupDownload}
                 />
-                {
-                    (()=>{
-                        if(airbitz_show_option){
-                            return (
-                                <div>
-                                    <span className="checkbox_airbitz" onClick={this.switch_airbitz_backup_option} >
-                                        {this.state.airbitz_backup_option?<span>&#9724;</span>:<span>&#9723;</span>}
-                                    </span>
-                                    <span className="text_airbitz" data-tip={"qqqq qwqw qw dfgdf fdg df dfg  sdfgswert we wer df qwe wqeqw2354 wer 234"} data-offset="{'right': 90}" >
-                                        Also create Airbitz backup <Icon className="icon-14px" name="question-circle" />
-                                    </span>                                    
-                                </div>
-                            );
-                        }
-                    })()
-                }
-
             </div>
         );
     }
@@ -342,12 +318,6 @@ class CreateAccount extends React.Component {
     _onBackupDownload(){
         this.setState({
             step: 3
-        });
-    }
-
-    switch_airbitz_backup_option(){
-        this.setState({
-            airbitz_backup_option:!this.state.airbitz_backup_option
         });
     }
 
@@ -405,7 +375,7 @@ class CreateAccount extends React.Component {
             <div>
                 <p style={{fontWeight: "bold"}}><Translate content="wallet.congrat" /></p>
 
-                <p><Translate content="wallet.tips_explore" /></p>
+                <p>{this.state.airbitz_backup_option?<Translate content="wallet.tips_explore_airbitz" />:<Translate content="wallet.tips_explore" />}</p>
 
                 <p><Translate content="wallet.tips_header" /></p>
 
@@ -415,7 +385,7 @@ class CreateAccount extends React.Component {
     }
 
     render() {
-        let {step, airbitz_show_option} = this.state;
+        let { step } = this.state;
         // let my_accounts = AccountStore.getMyAccounts();
         // let firstAccount = my_accounts.length === 0;
         return (
@@ -435,7 +405,7 @@ class CreateAccount extends React.Component {
                 <div className="grid-block wrap">
                     <div className="grid-content small-12 medium-4 medium-offset-2">
                         {step !== 1 ? <p style={{fontWeight: "bold"}}>
-                            <Translate content={"wallet.step_" + step} />
+                            {!this.state.airbitz_backup_option?<Translate content={"wallet.step_" + step} />:"&nbsp;"}
                         </p> : null}
 
                         {

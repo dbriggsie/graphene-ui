@@ -238,7 +238,7 @@ class Das_root extends React.Component {
 			        </ul>
 			        <nav className="menu_header">
 			            <ul className="pushy pushy-left"> 
-			                <li><Link className="lnk_brd_bottom" to={"/market/USD_BTS"}><Translate component="p" className="menu_header_ancor" content="root.exchange"  /></Link></li>
+			                <li><Link className="lnk_brd_bottom" to={"/market/OBITS_BTS"}><Translate component="p" className="menu_header_ancor" content="root.exchange"  /></Link></li>
 			                <li><a className="lnk_brd_bottom" target="_blank" href="https://blog.openledger.info/"><Translate component="p" className="menu_header_ancor" content="root.blog" /></a></li>
 			                <li><Link className="lnk_brd_bottom" to={"/help"}><Translate component="p" content="root.help" className="menu_header_ancor" /></Link></li>
                             <li><Link className="" to={"/create-account"}><Translate component="p" content="root.sign_up" className="menu_header_ancor" /></Link></li>

@@ -7,7 +7,6 @@ import {hash} from "bitsharesjs/es";
 
 import {makeABCUIContext} from 'airbitz-core-js-ui/lib/abcui.es6';
 import { airbitzAPIs } from "api/apiConfig";
-//import abcui from "airbitz-core-js-ui";
 let _abcUi = makeABCUIContext(airbitzAPIs);
 
 export default class BackupBrainkey extends Component {
@@ -26,7 +25,7 @@ export default class BackupBrainkey extends Component {
     }
 
     render() {
-        var content
+        var content;
         var brainkey_backup_date = WalletDb.getWallet().brainkey_backup_date;
 
         var brainkey_backup_time = brainkey_backup_date ?
@@ -45,9 +44,6 @@ export default class BackupBrainkey extends Component {
                 {brainkey_backup_time}
             </div>
         }
-
-        //console.log('@>') airbitzAPIs
-        //console.log('@>this.state.brainkey',this.state.brainkey)
 
         if(!content && this.state.brainkey) {
             var sha1 = hash.sha1(this.state.brainkey).toString('hex').substring(0,4)
@@ -125,25 +121,15 @@ export default class BackupBrainkey extends Component {
                     }
 
                     let air_ids = account.listWalletIds();
-                    if(air_ids.length){
-                        let last_air_key = air_ids[air_ids.length-1];
-                        let acc_keys = account.getWallet(last_air_key);
-                        console.log('@>acc_keys',acc_keys);
-                    }else{
-                        account.createWallet(airbitzAPIs.walletType, {brainkey}, function(err, id) {
-                            if (error) {
-                                console.log(error)
-                            } else {
-                                console.log('@>', account.getWallet(id))
-                            }
-                        });
-                    }
-
+                    account.createWallet(airbitzAPIs.walletType, { key:brainkey, model:"wallet" }, function(err, id) {
+                        if (error) {
+                            console.log(error)
+                        } else {
+                            console.log('@>', account.getWallet(id))
+                        }
+                    });
                 });
             });
-
-
-
 
         } else{
             this.setState({ invalid_password: true })

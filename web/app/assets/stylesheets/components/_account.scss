@@ -108,3 +108,7 @@
 a.action-button > span {
     text-transform: lowercase;
 }
+
+.switch > input {
+  left: -999px;
+}
