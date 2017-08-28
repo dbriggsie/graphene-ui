@@ -4,6 +4,7 @@ import Translate from "react-translate-component";
 import WalletActions from "actions/WalletActions";
 import WalletDb from "stores/WalletDb";
 import {hash} from "bitsharesjs/es";
+import notify from "actions/NotificationActions";
 
 import {makeABCUIContext} from 'airbitz-core-js-ui/lib/abcui.es6';
 import { airbitzAPIs } from "api/apiConfig";
@@ -125,7 +126,12 @@ export default class BackupBrainkey extends Component {
                         if (error) {
                             console.log(error)
                         } else {
-                            console.log('@>', account.getWallet(id))
+                            console.log('@>', account.getWallet(id));
+                            notify.addNotification({
+                                message: `Backup was created`,
+                                level: "info",
+                                autoDismiss: 10
+                            });  
                         }
                     });
                 });

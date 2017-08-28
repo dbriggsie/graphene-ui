@@ -43,10 +43,10 @@ class Das_root extends React.Component {
         }
 
         setTimeout(()=>{
-            let src = document.createElement('script');
-            src.src = "/pushy_mod.min.js";
-            src.id = "pushy_mod";
-            document.body.appendChild(src);            
+            let pushy_mod = document.createElement('script');
+            pushy_mod.src = "/pushy_mod.min.js";
+            pushy_mod.id = "pushy_mod";
+            document.body.appendChild(src);
         },500)
     }
 

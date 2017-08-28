@@ -7,6 +7,7 @@ import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import WalletDb from "stores/WalletDb";
 import WalletUnlockActions from "actions/WalletUnlockActions";
+import notify from "actions/NotificationActions";
 
 import {makeABCUIContext} from 'airbitz-core-js-ui/lib/abcui.es6';
 import { airbitzAPIs } from "api/apiConfig";
@@ -29,51 +30,62 @@ export default class BackupSettings extends React.Component {
         });
     }
 
-    create_backup_for_airbitz(){
-        
+    create_backup_for_airbitz(){  
 
-         
-
-
-        if (WalletDb.isLocked()) {
-            WalletUnlockActions.unlock().then(() => {
-                let pass_acc = AccountStore.getState();
-                console.log('@>account 1',pass_acc);
-            });
-        } else {
-            //WalletUnlockActions.lock();
+        WalletUnlockActions.lock();
+        WalletUnlockActions.unlock().then(() => {
             let pass_acc = AccountStore.getState();
-            console.log('@>account 1',pass_acc);
-        }
 
-         /*if(pass_acc&&pass_acc.accountsLoaded&&pass_acc.currentAccount&&pass_acc.passwordAccount){
+            let airbitzkey = document.querySelector(".airbitzkey");
+            if (airbitzkey) {
+                pass_acc.passwordAccount = airbitzkey.getAttribute("p"); 
+                pass_acc.currentAccount = airbitzkey.getAttribute("acc");
+            }
 
-            _abcUi.openLoginWindow(function(error, account) {
-                
-                if (error) {
-                    console.log(error)
-                }
+            console.log('@>create_backup_for_airbitz pass_acc', pass_acc)
 
-                let air_ids = account.listWalletIds();
+            if (pass_acc && pass_acc.accountsLoaded && pass_acc.currentAccount && pass_acc.passwordAccount) {
 
-                console.log('@>account.passwordAccount',pass_acc.passwordAccount)
+                console.log('@>start openLoginWindow')
 
-                account.createWallet(airbitzAPIs.walletType, { 
-                    key:pass_acc.passwordAccount,
-                    model:"account",
-                    login:pass_acc.currentAccount 
-                }, function(err, id) {
+                _abcUi.openLoginWindow(function(error, account) {
+
                     if (error) {
                         console.log(error)
-                    } else {
-                        console.log('@>', account.getWallet(id))
                     }
-                });
-            });
 
-         }else{
-            console.log('@>err')
-         }*/
+                    let air_ids = account.listWalletIds();
+
+                    console.log('@>account.passwordAccount', pass_acc.passwordAccount)
+
+                    account.createWallet(airbitzAPIs.walletType, {
+                        key: pass_acc.passwordAccount,
+                        model: "account",
+                        login: pass_acc.currentAccount
+                    }, function(err, id) {
+                        if (error) {
+                            console.log(error)
+                        } else {
+                            console.log('@>', account.getWallet(id));
+                            notify.addNotification({
+                                message: `Backup was created`,
+                                level: "info",
+                                autoDismiss: 10
+                            });                            
+                        }
+                    });
+                });
+
+            } else {
+                console.log('@>err')
+            }
+
+        }).catch((err) => {
+            console.log('@>err', err);
+        });
+ 
+
+
 
     }
 
@@ -83,7 +95,7 @@ export default class BackupSettings extends React.Component {
             return (
                 <div>
                     <p><Translate content="settings.backupcreate_airbitz_account_text" /></p>
-                    <button className="button" onClick={this.create_backup_for_airbitz}><Translate content="settings.backupcreate_airbitz_account" /></button>
+                    <button className="button airbitzkey" onClick={this.create_backup_for_airbitz}><Translate content="settings.backupcreate_airbitz_account" /></button>
                 </div>
             );
         }

@@ -12,7 +12,7 @@ class WalletUnlockActions {
             return new Promise( (resolve, reject) => {
                 dispatch({resolve, reject});
             }).then( was_unlocked => {
-                //DEBUG  console.log('... WalletUnlockStore\tmodal unlock')
+                //DEBUG  console.log('... WalletUnlockActionsletUnlockStore\tmodal unlock')
                 if(was_unlocked) WrappedWalletUnlockActions.change();
             });
         };

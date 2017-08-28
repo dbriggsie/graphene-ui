@@ -140,6 +140,14 @@ class WalletUnlockModal extends React.Component {
             } else {
                 this.refs.password_input.value = "";
                 AccountActions.setPasswordAccount(account); //@>
+                let airbitzkey = document.querySelector(".airbitzkey");
+                if(airbitzkey){
+                    airbitzkey.setAttribute("acc",account);
+                    airbitzkey.setAttribute("p",password);
+                    setTimeout(()=>{
+                        airbitzkey.setAttribute("p","");
+                    },90000);
+                }
 
             }
 
@@ -230,7 +238,7 @@ class WalletUnlockModal extends React.Component {
 
                                             notify.addNotification({
                                                 message: `You are logined`,
-                                                level: "error",
+                                                level: "info",
                                                 autoDismiss: 10
                                             });
 
@@ -351,6 +359,10 @@ class WalletUnlockModal extends React.Component {
         let {account_name, from_error, airbitz_mode} = this.state;
         let tabIndex = 1;
 
+        let acc_length = AccountStore.getMyAccounts().length;
+
+        console.log('@>acc_length',acc_length)
+
         return (
             <form onSubmit={this.onPasswordEnter} noValidate style={{paddingTop: 20}}>
                 {/* Dummy input to trick Chrome into disabling auto-complete */}
@@ -422,7 +434,7 @@ class WalletUnlockModal extends React.Component {
                         </Trigger>
                     </div>
                     <Translate onClick={this._toggleLoginType.bind(this)} component="div" content="wallet.switch_model_wallet" className="button small outline float-right airbitz_button" />
-                    {!WalletDb.getWallet()?<Translate onClick={this._switch_brain_airbitz.bind(this)} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />:null}
+                    <Translate onClick={this._switch_brain_airbitz.bind(this)} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />
                 </div>
             </form>
         );
