@@ -25,6 +25,7 @@ import SimpleDepositWithdraw from "../Dashboard/SimpleDepositWithdraw";
 import SimpleDepositBlocktradesBridge from "../Dashboard/SimpleDepositBlocktradesBridge";
 import { Apis } from "bitsharesjs-ws";
 import GatewayActions from "actions/GatewayActions";
+import { blockTradesAPIs } from "api/apiConfig";
 
 class AccountOverview extends React.Component {
 
@@ -573,7 +574,7 @@ class BalanceWrapper extends React.Component {
 
     componentWillMount() {
         if (Apis.instance().chain_id.substr(0, 8) === "4018d784") { // Only fetch this when on BTS main net
-            GatewayActions.fetchCoins({backer: "OPEN"});
+            GatewayActions.fetchCoins({backer: "OPEN",url:blockTradesAPIs.BASE_OL + blockTradesAPIs.COINS_LIST});
         }
     }
 

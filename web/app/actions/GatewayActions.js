@@ -7,7 +7,12 @@ let inProgress = {};
 class GatewayActions {
 
     fetchCoins({ backer, url } = {}) {
+
+
         return (dispatch) => {
+
+            //console.log('@>backer',backer)
+           // console.trace('@>url',url)
             Promise.all([
                 fetchCoins(url),
                 getActiveWallets(blockTradesAPIs.BASE_OL + blockTradesAPIs.ACTIVE_WALLETS)
