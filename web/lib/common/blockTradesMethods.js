@@ -10,7 +10,8 @@ export function fetchCoins(url = (blockTradesAPIs.BASE_OL + blockTradesAPIs.COIN
     });
 }
 
-export function fetchBridgeCoins(url = (blockTradesAPIs.BASE_OL + blockTradesAPIs.TRADING_PAIRS)) {
+
+export function fetchBridgeCoins(url = (blockTradesAPIs.BASE + blockTradesAPIs.TRADING_PAIRS)) {
     return fetch(url, {method: "get", headers: new Headers({"Accept": "application/json"})}).then(reply => reply.json().then(result => {
         return result;
     })).catch(err => {
@@ -18,16 +19,16 @@ export function fetchBridgeCoins(url = (blockTradesAPIs.BASE_OL + blockTradesAPI
     });
 }
 
-export function getDepositLimit(inputCoin, outputCoin, url = (blockTradesAPIs.BASE_OL + blockTradesAPIs.DEPOSIT_LIMIT)) {
+export function getDepositLimit(inputCoin, outputCoin, url = (blockTradesAPIs.BASE + blockTradesAPIs.DEPOSIT_LIMIT)) {
     return fetch(url + "?inputCoinType=" + encodeURIComponent(inputCoin) + "&outputCoinType=" + encodeURIComponent(outputCoin),
-         {method: "get", headers: new Headers({"Accept": "application/json"})}).then(reply => reply.json().then(result => {
+        {method: "get", headers: new Headers({"Accept": "application/json"})}).then(reply => reply.json().then(result => {
         return result;
     })).catch(err => {
         console.log("error fetching deposit limit of", inputCoin, outputCoin, err);
     });
 }
 
-export function estimateOutput(inputAmount, inputCoin, outputCoin, url = (blockTradesAPIs.BASE_OL + blockTradesAPIs.ESTIMATE_OUTPUT)) {
+export function estimateOutput(inputAmount, inputCoin, outputCoin, url = (blockTradesAPIs.BASE + blockTradesAPIs.ESTIMATE_OUTPUT)) {
     return fetch(url + "?inputAmount=" + encodeURIComponent(inputAmount) +"&inputCoinType=" + encodeURIComponent(inputCoin) + "&outputCoinType=" + encodeURIComponent(outputCoin),
          {method: "get", headers: new Headers({"Accept": "application/json"})}).then(reply => reply.json().then(result => {
         return result;
