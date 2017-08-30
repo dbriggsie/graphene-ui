@@ -16,7 +16,8 @@ import { blockTradesAPIs } from "api/apiConfig";
 import counterpart from "counterpart";
 import LoadingIndicator from "../../LoadingIndicator";
 
-let need_change_address = ["steem","ppy","golos","gbg","sbd","etp","mvs.zgc"];
+//let need_change_address = ["steem","ppy","golos","gbg","sbd","etp","mvs.zgc"];
+let need_change_address = [];
 
 class BlockTradesGatewayDepositRequest extends React.Component {
     static propTypes = {
