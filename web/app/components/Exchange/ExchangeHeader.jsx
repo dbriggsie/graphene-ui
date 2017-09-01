@@ -55,7 +55,7 @@ export default class ExchangeHeader extends React.Component {
                         </span>
                             {!hasPrediction ? (
                                 <Link onClick={() => {MarketsActions.switchMarket();}} className="market-symbol" to={`/market/${baseSymbol}_${quoteSymbol}`}>
-                                    <span><AssetName name={quoteSymbol} replace={true} /> : <AssetName name={baseSymbol} replace={true} /></span>
+                                    <span><AssetName name={quoteSymbol} replace={true} /> &#8660; <AssetName name={baseSymbol} replace={true} /></span>
                                 </Link>) : (
                                 <a className="market-symbol">
                                     <span>{`${quoteSymbol} : ${baseSymbol}`}</span>
