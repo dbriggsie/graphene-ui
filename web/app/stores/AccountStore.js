@@ -69,9 +69,7 @@ class AccountStore extends BaseStore {
         }
         if (referralAccount) {
             accountStorage.set("referralAccount", referralAccount); // Reset to empty string when the user returns with no ref code
-        } else {
-            accountStorage.remove("referralAccount");
-        }
+        } 
 
         return {
             update: false,
