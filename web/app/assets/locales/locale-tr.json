@@ -159,7 +159,6 @@
       "explain": "Bekletilen bakiyeler tavsiye programlarından yada geliştirici ödemelerinden elde edilen geilrleri kapsar. Bunların belli bir bekleme süreleri vardır, fonların tümü müsait olana kadar  belli aralıklarla bu bakiyelerin bir kısmı serbest bırakılır."
     },
     "member": {
-      "claim_all": "Tamamını çek",
       "stats": "Üyelik Bilgileri",
       "join": "Katılma tarihi",
       "registrar": "Kaydı yapan",
@@ -365,7 +364,7 @@
     "errors": {
       "not_found": "%(name)s adında bir hesap yok, doğru yazdığınıza emin misiniz?",
       "invalid": "Geçersiz hesap adı",
-      "unknown": "Bilinmeyan hesap",
+      "unknown": "Hesap kayıtlı değil",
       "not_yours": "Hesap sizin değil"
     },
     "collaterals": "Teminat Pozisyonları",
@@ -414,7 +413,9 @@
       "pos": "Miktar pozitif olmak zorundadır.",
       "valid": "Lütfen geçerli bir değer giriniz.",
       "balance": "Kalan bakiye 0'dan büyük olmalıdır.",
-      "insufficient": "Yetersiz bakiye"
+      "insufficient": "Yetersiz bakiye",
+      "noFeeBalance": "Your balance is insufficient to pay fees using this asset, please choose another asset to pay your fees with",
+      "noPoolBalance": "That asset has an insufficient fee pool balance to pay the fees with. Please inform the asset owner or select another asset for paying fees."
     },
     "back": "GERİ",
     "confirm": "ONAYLA",
@@ -761,7 +762,19 @@
       "title": "Kurul üyesi"
     },
     "workers": {
-      "title": "Bütçe Öğeleri"
+      "title": "Bütçe Öğeleri",
+      "period": "Worker duration",
+      "daily_pay": "Daily pay (BTS)",
+      "website": "Website",
+      "vesting_pay": "Salary vesting period (days)",
+      "create": "Create a new worker proposal",
+      "create_text_1": "In order to create your new worker, please fill in the form below. The worker will be created using your currently active account, which must already be a lifetime member.",
+      "create_text_2": "Consider carefully the parameters you choose as they can not be changed once you've published your worker.",
+      "name_text": "The name of your worker should be short and descriptive, something like this: 'Worker Purpose - Account Name'",
+      "date_text": "The start date should be at least a week into the future in order to allow people the time to discover, evaluate and vote for your worker.",
+      "pay_text": "The daily pay defines how much you want to be paid per day and is defined in BTS. The current best practice is to define a salary in USD/CNY, and commit to burning whatever surplus you receive as a result of the BTS price increasing. As long as your worker is active and has sufficient votes to be above the refund worker, you will receive this daily salary.",
+      "url_text": "You should supply a website, github document or google doc that describes in more detail the purpose of the worker and how you intend to use the worker pay.",
+      "vesting_text": "The vesting period defines the number of days that worker earnings will vest before being fully claimable."
     },
     "proposals": {
       "title": "Teklif edilmiş işlemler"
@@ -831,7 +844,10 @@
     "delete_select": "Silinecek cüzdanı seçin",
     "restore_key_count": "Anahtar sayısı",
     "restore_default_success": "Ayarlar başarıyla sıfırlanmıştır.",
-    "api_closest": "En yakın API'yi otomatik seç."
+    "api_closest": "En yakın API'yi otomatik seç.",
+    "wallet_required": "Wallet model required",
+    "wallet_required_text": "In order to restore a backup you will need to switch to the wallet model first, do so by clicking the button below",
+    "enable_wallet": "Enable wallet model"
   },
   "footer": {
     "title": "Bitshares",
@@ -873,6 +889,8 @@
     "horizontal": "Yatay",
     "confirm_buy": "Alış emrini onayla: Miktar :%(buy_amount)s miktarda %(buy_symbol)s. Fiyat: %(price_amount)s %(price_symbol)s",
     "confirm_sell": "Emri teyit et: Sat %(sell_amount)s %(sell_symbol)s fiyat %(price_amount)s %(price_symbol)s",
+    "confirm_no_orders_buy": "You are placing a buy order in a market with no open sell orders. Are you certain you wish to proceed?",
+    "confirm_no_orders_sell": "You are placing a sell order in a market with no open buy orders. Are you certain you wish to proceed?",
     "market_name": "Piyasalarım",
     "quote_supply": "Karşıt arzı",
     "base_supply": "Taban arzı",
@@ -1067,10 +1085,10 @@
     "password_model": "Hesap Sistemi",
     "wallet_model_1": "Cüzdan Sistemi'nde cüzdanınız tarayınızın belleğinde sizin seçtiğiniz şifre ile şifrelenmiş olarak kayıtlı tutulur. Cüzdanı yedeklemek için TekAnahtar ya da .bin dosyası yöntemlerini kullanabilirsiniz.",
     "wallet_model_2": "Cüzdan Sistemi en yüksek güvenlikli yöntemdir, fakat bu sistemi seçtiğinizde bir başka tarayıcı ya da bilgisayardan hesabınıza erişmek için TekAnahtar ya da .bin dosyası gerekmektedir.",
-    "wallet_model_3": "<li>Multiple accounts</li><li>Wallet file backup required</li><li>High security</li>",
+    "wallet_model_3": "<li>Birden fazla sayıda hesap</li><li>Yedekleme dosyası zorunlu</li><li>Yüksek güvenlik</li>",
     "password_model_1": "Hesap Sistemi ile hesabınıza yalnızca kullanıcı adı ve şifrenizle istediğiniz yerden erişim sağlayabilirsinz.",
     "password_model_2": "Hesap Sistemi'nde ekstradan TekAnahtar ya da .bin dosyasını yedeklemenize gerek yoktur, ancak yalnızca şifreniz kullanılarak hesabınıza erişim elde edilebildiğinden, çok uzun ve güvenli bir şifre seçmeniz gerekmektedir.",
-    "password_model_3": "<li>Single account</li><li>Easy login</li><li>Moderate security</li>",
+    "password_model_3": "<li>Tek hesap</li><li>Kolay giriş</li><li>Orta seviye güvenlik</li>",
     "use_wallet": "Cüzdan Sistemi'yle devam et",
     "use_password": "Hesap Sistemi'yle devam et",
     "pass_length": "Şifreniz en az %(minLength)s karakter uzunluğunda olmalıdır. İdeal olarak minimum 20 karakterlik bir şifre kullanmalı, ve harf-rakam-sembol kombinasyonlarını içeren bir şifre seçmelisiniz.",
@@ -1078,7 +1096,11 @@
     "switch_model_password": "Hesap Sistemi'ne geçiş yap",
     "account_public": "Kullanıcı adı (herkese açık)",
     "current_pass": "Şimdiki şifreniz",
-    "no_wallet": "Cüzdanınız bulunmamaktadır."
+    "no_wallet": "Cüzdanınız bulunmamaktadır.",
+    "generated": "Generated password",
+    "understand_1": "I understand that no one can recover my password if I lose or forget it",
+    "understand_2": "I have written down or oherwise stored my password",
+    "bts_rules": "The first rule of Bitshares is: Do not lose your password.<br/>The second rule of Bitshares is: Do not lose your password.<br />The third rule of Bitshares is: We cannot recover your password.<br />The fourth rule: If you can remember the password, it's not secure.<br />The fifth rule: Use only randomly-generated passwords.<br />The sixth rule: Do not tell anyone your password.<br />The seventh rule: Always back up your password."
   },
   "borrow": {
     "title": "%(asset_symbol)s Marjin",
@@ -1149,6 +1171,7 @@
     "fee_paying_account": "Ücreti ödeyen hesap"
   },
   "gateway": {
+    "fee": "Gateway fee",
     "title": "Yatır & Çek",
     "assets": {
         "open": "<br/><br/>Bu dijital varlık Bitshares üzerinde %(backed)s işlemleri yapmanız için OpenLedger tarafından %%100 %(backed)s rezervi ile desteklenmektedir. İstediğiniz zaman 1:1 oranında %(asset)s-%(backed)s dönüşümü yapabilirsiniz.",
@@ -1227,7 +1250,8 @@
     "users": "%(count)s kullanıcı çevrimiçi",
     "welcome": "Bu yöneticisi olmayan ve kullanıcı adlarının gerçek olmama ihtimali olan P2P bir sohbet odasıdır. Ayarlardan kapatılabilir. 2 saniyede 1 mesaj olarak sınırlıdır. Mevcut komutlar için /help yazın.",
     "disconnected": "Şu anda hiçbir ağa ya da sunucuya bağlı değilsiniz, lütfen aşağı tıklayarak tekrar bağlanınız. Bağlanamıyorsanız, bu sunucu çalışmıyor demektir, lütfen sonra tekrar deneyiniz.",
-    "rate": "Yeni bir mesaj göndermeden önce lütfen en az 2 saniye bekleyin."
+    "rate": "Yeni bir mesaj göndermeden önce lütfen en az 2 saniye bekleyin.",
+    "telegram_link": "For a more active discussion group, try the Bitshares Telegram group: <a href='https://t.me/BitSharesDEX' target='blank' rel='noopener noreferrer'>https://t.me/BitSharesDEX</a>"
   },
   "simple_trade": {
       "max_spend": "Enter the maximum amount you want to spend",
@@ -1248,5 +1272,10 @@
       "transfer_actions": "Transfer actions",
       "include_memo": "Include memo",
       "show_all": "Show all assets"
+  },
+  "trx_error": {
+    "expire": "Your transaction has expired without being confirmed, please try again later."
   }
 }
+
+

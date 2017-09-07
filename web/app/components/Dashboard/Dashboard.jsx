@@ -133,6 +133,10 @@ class Dashboard extends React.Component {
 
         let { linkedAccounts, myIgnoredAccounts, accountsReady, passwordAccount, traderMode } = this.props;
         let {width, showIgnored, featuredMarkets, newAssets} = this.state;
+
+        if (passwordAccount && !linkedAccounts.has(passwordAccount)) {
+            linkedAccounts = linkedAccounts.add(passwordAccount);
+        }
         let names = linkedAccounts.toArray().sort();
         if (passwordAccount && names.indexOf(passwordAccount) === -1) names.push(passwordAccount);
         let ignored = myIgnoredAccounts.toArray().sort();
@@ -167,7 +171,7 @@ class Dashboard extends React.Component {
                     base={pair[1]}
                     invert={pair[2]}
                     isLowVolume={isLowVolume}
-                    hide={validMarkets > 16}
+                    hide={validMarkets > 20}
                 />
             );
         }).filter(a => !!a);
@@ -236,7 +240,7 @@ class Dashboard extends React.Component {
 
                     {accountCount ? <RecentTransactions
                         style={{marginBottom: 20, marginTop: 20}}
-                        accountsList={this.props.linkedAccounts}
+                        accountsList={linkedAccounts}
                         limit={10}
                         compactView={false}
                         fullHeight={true}

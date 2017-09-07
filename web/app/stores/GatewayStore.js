@@ -29,6 +29,7 @@ class GatewayStore {
     }
 
     onFetchBridgeCoins({coins, bridgeCoins, wallets} = {}) {
+        // @> console.trace(bridgeCoins)
         if (coins && bridgeCoins) {
             let coins_by_type = {};
             coins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);

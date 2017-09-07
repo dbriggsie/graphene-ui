@@ -6,80 +6,86 @@ import utils from "common/utils";
 import WalletActions from "actions/WalletActions";
 import {Apis} from "bitsharesjs-ws";
 
-const VestingBalance = ({account, vb}) => {
+class VestingBalance extends React.Component {
 
-    const _onClaim = (claimAll, e) => {
+    _onClaim(claimAll, e) {
         e.preventDefault();
-        WalletActions.claimVestingBalance(account.id, vb, claimAll);
-    };
-
-    if (!vb || !account) {
-        return null;
+        WalletActions.claimVestingBalance(this.props.account.id, this.props.vb, claimAll);
     }
 
-    let cvbAsset, vestingPeriod, remaining, earned, secondsPerDay = 60 * 60 * 24,
-        availablePercent, balance;
-    if (vb) {
-        balance = vb.balance.amount;
-        cvbAsset = ChainStore.getAsset(vb.balance.asset_id);
-        earned = vb.policy[1].coin_seconds_earned;
-        vestingPeriod = vb.policy[1].vesting_seconds;
+    render() {
+        let {account, vb} = this.props;
+        if (!this.props.vb) {
+            return null;
+        }
+        // let vb = ChainStore.getObject( this.props.vb );
+        // if (!vb) {
+        //     return null;
+        // }
 
-        availablePercent = earned / (vestingPeriod * balance);
-    }
+        let cvbAsset, vestingPeriod, remaining, earned, secondsPerDay = 60 * 60 * 24,
+            availablePercent, balance;
+        if (vb) {
+            balance = vb.balance.amount;
+            cvbAsset = ChainStore.getAsset(vb.balance.asset_id);
+            earned = vb.policy[1].coin_seconds_earned;
+            vestingPeriod = vb.policy[1].vesting_seconds;
 
-    let account_name = account.name;
+            availablePercent = earned / (vestingPeriod * balance);
+        }
 
-    if (!cvbAsset) {
-        return null;
-    }
+        let account_name = account.name;
 
-    if (!balance) {
-        return null;
-    }
+        if (!cvbAsset) {
+            return null;
+        }
 
-    return (
-        <div style={{paddingBottom: "1rem"}}>
-            <div className="">
-                <div className="grid-content no-padding">
-                    <Translate component="h5" content="account.vesting.balance_number" id={vb.id} />
+        if (!balance) {
+            return null;
+        }
 
-                    <table className="table key-value-table">
-                        <tbody>
-                            <tr>
-                                <td><Translate content="account.member.cashback"/> </td>
-                                <td><FormattedAsset amount={vb.balance.amount} asset={vb.balance.asset_id} /></td>
-                            </tr>
-                            <tr>
-                                <td><Translate content="account.member.earned" /></td>
-                                <td>{utils.format_number(utils.get_asset_amount(earned / secondsPerDay, cvbAsset), 0)} <Translate content="account.member.coindays" /></td>
-                            </tr>
-                            <tr>
-                                <td><Translate content="account.member.required" /></td>
-                                <td>{utils.format_number(utils.get_asset_amount(vb.balance.amount * vestingPeriod / secondsPerDay, cvbAsset), 0)} <Translate content="account.member.coindays" /></td>
-                            </tr>
-                            <tr>
-                                <td><Translate content="account.member.remaining" /></td>
-                                <td>{utils.format_number(vestingPeriod * (1 -  availablePercent) / secondsPerDay, 2)} days</td>
-                            </tr>
-                            <tr>
-                                <td><Translate content="account.member.available" /></td>
-                                <td>{utils.format_number(availablePercent * 100, 2)}% / <FormattedAsset amount={availablePercent * vb.balance.amount} asset={cvbAsset.get("id")} /></td>
-                            </tr>
-                            <tr>
-                                <td colSpan="2" style={{textAlign: "right"}}>
-                                    <button onClick={_onClaim.bind(null, false)} className="button outline"><Translate content="account.member.claim" /></button>
-                                    <button onClick={_onClaim.bind(null, true)} className="button outline"><Translate content="account.member.claim_all" /></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        return (
+            <div style={{paddingBottom: "1rem"}}>
+                <div className="">
+                    <div className="grid-content no-padding">
+                        <Translate component="h5" content="account.vesting.balance_number" id={vb.id} />
+
+                        <table className="table key-value-table">
+                            <tbody>
+                                <tr>
+                                    <td><Translate content="account.member.cashback"/> </td>
+                                    <td><FormattedAsset amount={vb.balance.amount} asset={vb.balance.asset_id} /></td>
+                                </tr>
+                                <tr>
+                                    <td><Translate content="account.member.earned" /></td>
+                                    <td>{utils.format_number(utils.get_asset_amount(earned / secondsPerDay, cvbAsset), 0)} <Translate content="account.member.coindays" /></td>
+                                </tr>
+                                <tr>
+                                    <td><Translate content="account.member.required" /></td>
+                                    <td>{utils.format_number(utils.get_asset_amount(vb.balance.amount * vestingPeriod / secondsPerDay, cvbAsset), 0)} <Translate content="account.member.coindays" /></td>
+                                </tr>
+                                <tr>
+                                    <td><Translate content="account.member.remaining" /></td>
+                                    <td>{utils.format_number(vestingPeriod * (1 -  availablePercent) / secondsPerDay, 2)} days</td>
+                                </tr>
+                                <tr>
+                                    <td><Translate content="account.member.available" /></td>
+                                    <td>{utils.format_number(availablePercent * 100, 2)}% / <FormattedAsset amount={availablePercent * vb.balance.amount} asset={cvbAsset.get("id")} /></td>
+                                </tr>
+                                <tr>
+                                    <td colSpan="2" style={{textAlign: "right"}}>
+                                        <button onClick={this._onClaim.bind(this, false)} className="button outline"><Translate content="account.member.claim" /></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    );
-};
+        );
+    }
+}
 
 class AccountVesting extends React.Component {
     constructor() {
@@ -91,8 +97,21 @@ class AccountVesting extends React.Component {
     }
 
     componentWillMount() {
+        this.retrieveVestingBalances.call(this, this.props.account.get("id"));
+    }
+
+    componentWillUpdate(nextProps){
+        let newId = nextProps.account.get("id");
+        let oldId = this.props.account.get("id");
+
+        if(newId !== oldId){
+            this.retrieveVestingBalances.call(this, newId);
+        }
+    }
+
+    retrieveVestingBalances(accountId){
         Apis.instance().db_api().exec("get_vesting_balances", [
-            this.props.account.get("id")
+            accountId
         ]).then(vbs => {
             this.setState({vbs});
         }).catch(err => {
@@ -118,14 +137,11 @@ class AccountVesting extends React.Component {
 
         return (
             <div className="grid-content" style={{overflowX: "hidden"}}>
-
-                <div className="grid-content">
-                    <Translate content="account.vesting.explain" component="p" />
-                    {!balances.length ? (
-                    <h4 style={{paddingTop: "1rem"}}>
-                        <Translate content={"account.vesting.no_balances"}/>
-                    </h4>) : balances}
-                </div>
+                <Translate content="account.vesting.explain" component="p" />
+                {!balances.length ? (
+                <h4 style={{paddingTop: "1rem"}}>
+                    <Translate content={"account.vesting.no_balances"}/>
+                </h4>) : balances}
             </div>
 );
     }

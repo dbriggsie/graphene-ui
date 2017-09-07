@@ -305,7 +305,7 @@ class AccountVoting extends React.Component {
 
         for (let i = 0; i < 100; i++) {
             let id = "1.14." + i;
-            let worker = ChainStore.getObject(id);
+            let worker = ChainStore.getObject(id, false, false);
             if (worker === null) {
                 break;
             }
@@ -556,8 +556,12 @@ class AccountVoting extends React.Component {
 
                         <Tab title="account.votes.workers_short">
 
-                            <div className={cnames("content-block", {disabled : proxy_is_set})}>
+                            <div className={cnames("content-block")}>
                                 <HelpContent style={{maxWidth: "800px"}} path="components/AccountVotingWorkers" />
+
+                                <div style={{paddingBottom: 20}}>
+                                    <Link to="/create-worker"><div className="button">Create a new worker</div></Link>
+                                </div>
                                 <table>
                                     <tbody>
                                         <tr>

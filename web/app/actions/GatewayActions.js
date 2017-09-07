@@ -5,7 +5,6 @@ import {blockTradesAPIs} from "api/apiConfig";
 let inProgress = {};
 
 class GatewayActions {
-
     fetchCoins({backer = "OPEN", url = undefined} = {}) {
         if (!inProgress["fetchCoins_" + backer]) {
             inProgress["fetchCoins_" + backer] = true;
@@ -38,8 +37,8 @@ class GatewayActions {
             return (dispatch) => {
                 Promise.all([
                     fetchCoins(url),
-                    fetchBridgeCoins(blockTradesAPIs.BASE + blockTradesAPIs.TRADING_PAIRS),
-                    getActiveWallets(blockTradesAPIs.BASE_OL + blockTradesAPIs.ACTIVE_WALLETS)
+                    fetchBridgeCoins(blockTradesAPIs.BASE),
+                    getActiveWallets(url)
                 ]).then(result => {
                     delete inProgress["fetchBridgeCoins"];
                     let [coins, bridgeCoins, wallets] = result;

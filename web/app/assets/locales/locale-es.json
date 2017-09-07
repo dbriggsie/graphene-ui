@@ -22,6 +22,8 @@
     "create_asset": "Crear Activo",
     "lock": "Bloquear",
     "unlock": "Desbloquear",
+    "unlock_password": "Log in using a password",
+    "unlock_short": "Login",
     "help": "Ayuda",
     "locked_tip": "Billetera bloqueada. Click para desbloquear.",
     "unlocked_tip": "Billetera desbloqueada. Click para bloquear",
@@ -235,7 +237,9 @@
       "pos": "El monto debe ser positivo",
       "valid": "Por favor ingresar un número positivo válido",
       "balance": "El balance final debe ser mayor a 0",
-      "insufficient": "Insufficient Balance"
+      "insufficient": "Insufficient Balance",
+      "noFeeBalance": "Your balance is insufficient to pay fees using this asset, please choose another asset to pay your fees with",
+      "noPoolBalance": "That asset has an insufficient fee pool balance to pay the fees with. Please inform the asset owner or select another asset for paying fees."
     },
     "back": "VOLVER",
     "confirm": "CONFIRMAR",
@@ -524,7 +528,19 @@
       "title": "Miembro del Comité"
     },
     "workers": {
-      "title": "Presupuestos por Trabajos"
+      "title": "Presupuestos por Trabajos",
+      "period": "Worker duration",
+      "daily_pay": "Daily pay (BTS)",
+      "website": "Website",
+      "vesting_pay": "Salary vesting period (days)",
+      "create": "Create a new worker proposal",
+      "create_text_1": "In order to create your new worker, please fill in the form below. The worker will be created using your currently active account, which must already be a lifetime member.",
+      "create_text_2": "Consider carefully the parameters you choose as they can not be changed once you've published your worker.",
+      "name_text": "The name of your worker should be short and descriptive, something like this: 'Worker Purpose - Account Name'",
+      "date_text": "The start date should be at least a week into the future in order to allow people the time to discover, evaluate and vote for your worker.",
+      "pay_text": "The daily pay defines how much you want to be paid per day and is defined in BTS. The current best practice is to define a salary in USD/CNY, and commit to burning whatever surplus you receive as a result of the BTS price increasing. As long as your worker is active and has sufficient votes to be above the refund worker, you will receive this daily salary.",
+      "url_text": "You should supply a website, github document or google doc that describes in more detail the purpose of the worker and how you intend to use the worker pay.",
+      "vesting_text": "The vesting period defines the number of days that worker earnings will vest before being fully claimable."
     },
     "proposals": {
       "title": "Propuestas"
@@ -548,7 +564,10 @@
     "remove_ws": "Remover API websocket",
     "faucet_address": "Faucet Address",
     "restore_default_success": "Settings have been reset successfully",
-    "api_closest": "Choose closest automatically"
+    "api_closest": "Choose closest automatically",
+    "wallet_required": "Wallet model required",
+    "wallet_required_text": "In order to restore a backup you will need to switch to the wallet model first, do so by clicking the button below",
+    "enable_wallet": "Enable wallet model"
   },
   "footer": {
     "title": "Openledger",
@@ -600,6 +619,8 @@
     "horizontal": "Horizontal",
     "confirm_buy": "Your order is %(diff)s times higher than the lowest ask, are you sure?",
     "confirm_sell": "Your order is %(diff)s times lower than the highest bid, are you sure?",
+    "confirm_no_orders_buy": "You are placing a buy order in a market with no open sell orders. Are you certain you wish to proceed?",
+    "confirm_no_orders_sell": "You are placing a sell order in a market with no open buy orders. Are you certain you wish to proceed?",
     "market_frozen": "The owner of %(asset)s has disabled trading in this market.",
     "show_star_1": "Show",
     "show_star_2": "only",
@@ -654,7 +675,6 @@
     "verify": "Verificar",
     "invalid_format": "Formato no Válido",
     "enter_password": "Ingresar Password",
-    "download": "Descargar",
     "new_wallet_name": "Nuevo nombre de Billetera",
     "wallet_exist": "Esta Billetera ya existe, elija un nuevo nombre",
     "wallet_exist_with_name": "La Billetera (%(name)s) ya existe,  por favor elija otro nombre",
@@ -705,7 +725,11 @@
     "switch_model_wallet": "Switch to wallet model",
     "switch_model_password": "Switch to account model",
     "account_public": "Account Name (Public)",
-    "current_pass": "Current password"
+    "current_pass": "Current password",
+    "generated": "Generated password",
+    "understand_1": "I understand that no one can recover my password if I lose or forget it",
+    "understand_2": "I have written down or oherwise stored my password",
+    "bts_rules": "The first rule of Bitshares is: Do not lose your password.<br/>The second rule of Bitshares is: Do not lose your password.<br />The third rule of Bitshares is: We cannot recover your password.<br />The fourth rule: If you can remember the password, it's not secure.<br />The fifth rule: Use only randomly-generated passwords.<br />The sixth rule: Do not tell anyone your password.<br />The seventh rule: Always back up your password."
   },
   "borrow": {
     "title": "%(asset_symbol)s Margin",
@@ -748,6 +772,7 @@
     "enter_refcode": "Enter referral code"
   },
   "gateway": {
+    "fee": "Gateway fee",
     "assets": {
         "open": "<br/><br/>The %(asset)s asset is backed 1:1 by real %(backed)s and can be deposited or withdrawn using the gateway service provided by Openledger.",
         "trade": "<br/><br/>The %(asset)s asset is backed 1:1 by real %(backed)s and can be deposited or withdrawn using the gateway service provided by Blocktrades.",
@@ -800,5 +825,25 @@
       "transfer_actions": "Transfer actions",
       "include_memo": "Include memo",
       "show_all": "Show all assets"
+  },
+  "chat": {
+    "title": "Trollbox",
+    "button": "Chat",
+    "send": "Send",
+    "color": "Username color",
+    "user": "Username",
+    "done": "Done",
+    "reconnect": "Reconnect",
+    "welcome_user": "Welcome to BitShares",
+    "users": "%(userCount)s users online",
+    "welcome": "This is a peer to peer chatroom, with no moderation and no guaranteed unique usernames. It can be disabled in the settings. Message frequency is limited to one per 2 seconds, and message length to 140 characters. For a list of available commands, type /help.",
+    "disconnected": "You are currently not connected to any peers or the central server, please click below to reconnect. If you are unable to connect, this might mean the server is down, please try again later.",
+    "rate": "Please wait at least 2s before posting a new message",
+    "disabled": "Chat disabled",
+    "enable": "Enable chat now",
+    "telegram_link": "For a more active discussion group, try the Bitshares Telegram group: <a href='https://t.me/BitSharesDEX' target='blank' rel='noopener noreferrer'>https://t.me/BitSharesDEX</a>"
+  },
+  "trx_error": {
+    "expire": "Your transaction has expired without being confirmed, please try again later."
   }
 }

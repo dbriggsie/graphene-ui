@@ -1,6 +1,6 @@
 import React from "react";
 import Trigger from "react-foundation-apps/src/trigger";
-import Modal from "react-foundation-apps/src/modal";
+import BaseModal from "../Modal/BaseModal";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import PasswordInput from "../Forms/PasswordInput";
 import notify from "actions/NotificationActions";
@@ -118,12 +118,9 @@ class WalletUnlockModal extends React.Component {
     onPasswordEnter(e) {
         e&&e.preventDefault();
         const {passwordLogin} = this.props;
-        console.log('@>this.refs.password_input',this.refs.password_input)
         const password = passwordLogin ? this.refs.password_input.value : this.refs.password_input.value();
         const account = passwordLogin ? this.state.account && this.state.account.get("name") : null;
         this.setState({password_error: null});
-        console.log('@>password',password)
-        console.log('@>account',account)
 
         WalletDb.validatePassword(
             password || "",
@@ -179,9 +176,6 @@ class WalletUnlockModal extends React.Component {
         let airbitz_password_input_1 = this.refs.airbitz_password_input_1.value;
         let airbitz_password_input_2 = this.refs.airbitz_password_input_2.value;
 
-        console.log('@>airbitz_password_input_1',airbitz_password_input_1)
-        console.log('@>airbitz_password_input_2',airbitz_password_input_2)
-
         if(!airbitz_password_input_1||!airbitz_password_input_2){
             this.setState({password_error: true});
         }else if(airbitz_password_input_1!==airbitz_password_input_2){
@@ -195,23 +189,10 @@ class WalletUnlockModal extends React.Component {
                         console.log(error)
                     }
 
-                    /*
-                            acc_keys = {
-                            keys:{
-                                key:"testname5555555",
-                                login:"testname5555555",
-                                model:"account"
-                            }
-                        }
-
-                     */
-
                     let air_ids = account.listWalletIds();
                     if(air_ids.length){
                         let last_air_key = air_ids[air_ids.length-1];
                         let acc_keys = account.getWallet(last_air_key);
-
-                        console.log('@>acc_keys',acc_keys)
 
                         if(acc_keys&&acc_keys.keys&&acc_keys.keys.model==="wallet"&&acc_keys.keys.key){
                             WalletActions.setWallet("default_wallet_airbitz", airbitz_password_input_1, acc_keys.keys.key).then((ans)=>{
@@ -256,10 +237,7 @@ class WalletUnlockModal extends React.Component {
                             });
                         }else if(acc_keys&&acc_keys.keys&&acc_keys.keys.model==="account"&&acc_keys.keys.key&&acc_keys.keys.login){
 
-                            console.log('@>',acc_keys.keys,acc_keys.keys.key,acc_keys.keys.login);
-
                             FetchChain("getAccount", acc_keys.keys.login).then((ans)=>{
-                                console.log('@>ans',ans)
 
                                 WalletDb.validatePassword(
                                     acc_keys.keys.key || "",
@@ -361,8 +339,6 @@ class WalletUnlockModal extends React.Component {
 
         let acc_length = AccountStore.getMyAccounts().length;
 
-        console.log('@>acc_length',acc_length)
-
         return (
             <form onSubmit={this.onPasswordEnter} noValidate style={{paddingTop: 20}}>
                 {/* Dummy input to trick Chrome into disabling auto-complete */}
@@ -449,7 +425,7 @@ class WalletUnlockModal extends React.Component {
         // https://github.com/akiran/react-foundation-apps/issues/34
         return (
             // U N L O C K
-            <Modal id={this.props.modalId} ref="modal" overlay={true} overlayClose={false}>
+            <BaseModal id={this.props.modalId} ref="modal" overlay={true} overlayClose={false}>
                 <Trigger close="">
                     <a href="#" className="close-button">&times;</a>
                 </Trigger>
@@ -467,7 +443,7 @@ class WalletUnlockModal extends React.Component {
                     })()
                 }                
                 {passwordLogin ? this.renderPasswordLogin() : this.renderWalletLogin()}
-            </Modal>
+            </BaseModal>
         );
     }
 

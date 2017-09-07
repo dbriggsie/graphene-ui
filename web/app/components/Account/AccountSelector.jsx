@@ -22,7 +22,7 @@ import FloatingDropdown from "../Utility/FloatingDropdown";
 class AccountSelector extends React.Component {
 
     static propTypes = {
-        label: React.PropTypes.any, // a translation key for the label
+        label: React.PropTypes.string.isRequired, // a translation key for the label
         error: React.PropTypes.element, // the error message override
         placeholder: React.PropTypes.string, // the placeholder text to be displayed when there is no user_input
         onChange: React.PropTypes.func, // a method to be called any time user input changes
@@ -36,7 +36,7 @@ class AccountSelector extends React.Component {
     };
 
     static defaultProps = {
-        noImage: false
+        autosubscribe: false
     };
 
     // can be used in parent component: this.refs.account_selector.getAccount()
@@ -72,11 +72,7 @@ class AccountSelector extends React.Component {
         let newValue = value.replace("#", "").match(/(?:\/account\/)(.*)(?:\/overview)/);
         if (newValue) value = newValue[1];
 
-        if (this.props.onChange && value !== this.props.accountName){
-            this.props.onChange(value);
-        }else{
-            this.props.onChange("");
-        }
+        if (this.props.onChange && value !== this.props.accountName) this.props.onChange(value);
     }
 
     onKeyDown(event) {
@@ -89,12 +85,8 @@ class AccountSelector extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-
-        if((this.props.onAccountChanged && newProps.account) && newProps.account !== this.props.account){
+        if((this.props.onAccountChanged && newProps.account) && newProps.account !== this.props.account)
             this.props.onAccountChanged(newProps.account);
-        }else if ((this.props.onToAccountChanged) && newProps.account !== this.props.account){
-            this.props.onToAccountChanged(newProps.account);
-        }
     }
 
     onAction(e) {
@@ -108,7 +100,6 @@ class AccountSelector extends React.Component {
     }
 
     render() {
-        let {noImage} = this.props;
         let error = this.getError();
         let type = this.getNameType(this.props.accountName);
         let lookup_display;

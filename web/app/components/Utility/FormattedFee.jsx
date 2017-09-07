@@ -2,8 +2,7 @@ import React, {PropTypes} from "react";
 import FormattedAsset from "./FormattedAsset";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
-import utils from "common/utils";
-import {ChainStore} from "bitsharesjs/es";
+import { estimateFee } from "common/trxHelper";
 
 /**
  *
@@ -27,19 +26,7 @@ class FormattedFee extends React.Component {
     };
 
     getFee() { // Return fee via refs
-        let {asset, opType, options, globalObject, balances} = this.props;
-        let coreAsset = ChainStore.getAsset("1.3.0");
-
-        const coreFee = utils.getFee({
-            opType,
-            options,
-            globalObject,
-            asset,
-            coreAsset,
-            balances
-        });
-
-        return coreFee;
+        return estimateFee(this.props.opType, this.props.options, this.props.globalObject);
     }
 
     render() {
@@ -49,7 +36,7 @@ class FormattedFee extends React.Component {
             return null;
         }
 
-        let fee = this.getFee();
+        let amount = estimateFee(opType, options, globalObject);
 
         return <FormattedAsset style={this.props.style} {...fee} />;
     }

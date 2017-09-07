@@ -9,6 +9,7 @@ import AmountSelector from "components/Utility/AmountSelector";
 import BalanceComponent from "components/Utility/BalanceComponent";
 import AccountStore from "stores/AccountStore";
 import {ChainStore} from "bitsharesjs/es";
+import { estimateFee } from "common/trxHelper";
 
 export default class ConfirmCancelModal extends React.Component {
 
@@ -98,7 +99,7 @@ export default class ConfirmCancelModal extends React.Component {
         const { from_account, from_error, fee_asset_id } = this.state;
         let feeAsset = this.state.feeAsset;
         let asset = this.state.asset;
-        let fee = this._feeBTS = utils.estimateFee("limit_order_cancel", null, ChainStore.getObject("2.0.0"));
+        let fee = this._feeBTS = estimateFee("limit_order_cancel", null, ChainStore.getObject("2.0.0"));
         let { fee_asset_types } = this._getAvailableAssets();
         let balance_fee = null;
         let feeID = feeAsset ? feeAsset.get("id") : "1.3.0";

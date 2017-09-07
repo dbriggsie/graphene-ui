@@ -35,7 +35,8 @@ class MarketGroup extends React.Component {
         return {
             open: open !== undefined ? open : true,
             inverseSort: props.viewSettings.get("myMarketsInvert", true),
-            sortBy: props.viewSettings.get("myMarketsSort", "volume")
+            sortBy: props.viewSettings.get("myMarketsSort", "volume"),
+            inputValue: ""
         };
     }
 
@@ -135,8 +136,15 @@ class MarketGroup extends React.Component {
             }
         });
 
+        let obj_for_duplicate = {};
+
         let marketRows = markets
             .map( (market,key) => {
+                if(obj_for_duplicate[market.id]){
+                    return null;
+                }else{
+                    obj_for_duplicate[market.id]=true;
+                }
                 return (
                     <MarketRow
                         key={market.id}
@@ -245,19 +253,19 @@ class MyMarkets extends React.Component {
     constructor(props) {
         super();
 
-        let inputValue = props.viewSettings.get("marketLookupInput", null);
-        let symbols = inputValue ? inputValue.split(":") : [null];
-        let quote = symbols[0];
-        let base = symbols.length === 2 ? symbols[1] : null;
+        // let inputValue = null; // props.viewSettings.get("marketLookupInput", null);
+        // let symbols = inputValue ? inputValue.split(":") : [null];
+        // let quote = symbols[0];
+        // let base = symbols.length === 2 ? symbols[1] : null;
 
         this.state = {
             inverseSort: props.viewSettings.get("myMarketsInvert", true),
             sortBy: props.viewSettings.get("myMarketsSort", "volume"),
             activeTab: props.viewSettings.get("favMarketTab", "starred"),
             activeMarketTab: props.viewSettings.get("activeMarketTab", 0),
-            lookupQuote: quote,
-            lookupBase: base,
-            inputValue: inputValue,
+            lookupQuote: null,
+            lookupBase: null,
+            inputValue: "",
             minWidth: "100%",
             showBaseTab: props.viewSettings.get("activeMarketTab", 0)==5?true:false,
         };
@@ -612,7 +620,7 @@ class MyMarkets extends React.Component {
                     className="table-container grid-block vertical mymarkets-list"
                     ref="favorites"
                 >
-                    {preferredBases.filter(a => {return a === preferredBases.get(this.state.activeMarketTab);}).map((base, index) => {        
+                    {preferredBases.filter(a => {return a === preferredBases.get(this.state.activeMarketTab);}).map((base, index) => { 
                         return <MarketGroup
                             index={index}
                             allowChange={false}

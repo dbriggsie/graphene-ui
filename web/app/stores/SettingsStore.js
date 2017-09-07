@@ -135,7 +135,8 @@ class SettingsStore {
             onHideAsset: SettingsActions.hideAsset,
             onClearSettings: SettingsActions.clearSettings,
             onSwitchLocale: IntlActions.switchLocale,
-            onSetUserMarket: SettingsActions.setUserMarket
+            onSetUserMarket: SettingsActions.setUserMarket,
+            onUpdateLatencies: SettingsActions.updateLatencies
         });
 
         this.initDone = false;
@@ -418,6 +419,10 @@ class SettingsStore {
     _getChainKey(key) {
         const chainId = Apis.instance().chain_id;
         return key + (chainId ? `_${chainId.substr(0, 8)}` : "");
+    }
+
+    onUpdateLatencies(latencies) {
+        this.apiLatencies = latencies;
     }
 }
 

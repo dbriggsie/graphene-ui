@@ -4,7 +4,7 @@ import {ChainStore} from "bitsharesjs/es";
 import ChainTypes from "components/Utility/ChainTypes";
 import BindToChainState from "components/Utility/BindToChainState";
 import WithdrawModalBlocktrades from "./WithdrawModalBlocktrades";
-import Modal from "react-foundation-apps/src/modal";
+import BaseModal from "../../Modal/BaseModal";
 import Trigger from "react-foundation-apps/src/trigger";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import AccountBalance from "../../Account/AccountBalance";
@@ -36,6 +36,10 @@ class BlockTradesGatewayDepositRequest extends React.Component {
         deprecated_message: React.PropTypes.string,
         action: React.PropTypes.string,
         supports_output_memos: React.PropTypes.bool.isRequired
+    };
+
+    static defaultProps = {
+        autosubscribe: false
     };
 
     constructor(props) {
@@ -314,10 +318,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                             <button className="button success" style={{fontSize: "1.3rem"}} onClick={this.onWithdraw.bind(this)}><Translate content="gateway.withdraw_now" /> </button>
                         </div>
                     </div>
-                    <Modal id={withdraw_modal_id} overlay={true}>
-                        <Trigger close={withdraw_modal_id}>
-                            <a href="#" className="close-button">&times;</a>
-                        </Trigger>
+                    <BaseModal id={withdraw_modal_id} overlay={true}>
                         <br/>
                         <div className="grid-block vertical">
                             <WithdrawModalBlocktrades
@@ -335,7 +336,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                                 modal_id={withdraw_modal_id}
                                 balance={this.props.account.get("balances").toJS()[this.props.receive_asset.get("id")]} />
                         </div>
-                    </Modal>
+                    </BaseModal>
                 </div>
             );
         }
