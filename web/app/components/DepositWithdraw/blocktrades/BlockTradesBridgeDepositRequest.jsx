@@ -1103,8 +1103,6 @@ class BlockTradesBridgeDepositRequest extends React.Component {
 
     render() {
 
-                console.log('@>',this.props)
-
         if (!this.props.account || !this.props.issuer_account || !this.props.gateway)
             return  <div></div>;
 

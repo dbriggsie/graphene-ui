@@ -81,6 +81,11 @@ class MarketCard extends React.Component {
         let precision_price = marketStats && marketStats.price ? utils.price_text(marketStats.price.toReal(), base, quote) : null;
         precision_price = precision_price?parseFloat(precision_price).toFixed(6):0;
 
+         //@#>
+        /*let base_symbol = base.get("symbol")==="OPEN.MUSEOL"?"OPEN.MUSE":base.get("symbol")
+        let quote_symbol = quote.get("symbol")==="OPEN.MUSEOL"?"OPEN.MUSE":quote.get("symbol")
+        asset_symbol = asset_symbol==="OPEN.MUSEOL"?"OPEN.MUSE":asset_symbol;*/
+
         return (
             <div className={cnames("grid-block no-overflow fm-container", this.props.className)} onClick={this.goToMarket.bind(this)}>
                 <div className="grid-block vertical shrink">

@@ -8,8 +8,8 @@ export default class LoginSelector extends React.Component {
 
         super();
         this.state={
-            show_registration_choose:false
-            //show_registration_choose:true
+            //show_registration_choose:false
+            show_registration_choose:true
         };
 
         this.show_registration_choose = this.show_registration_choose.bind(this);  

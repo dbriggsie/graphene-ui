@@ -95,6 +95,15 @@ class BlockTradesGateway extends React.Component {
             }
         });
 
+        filteredCoins = filteredCoins.sort((e1,e2)=>{
+            if(!e1.coinPriora&&!e1.coinPriora){
+                return 0;
+            }
+            
+            return e1.coinPriora-e2.coinPriora;
+            
+        })
+
         let coinOptions = filteredCoins.map(coin => {
             let option = action === "deposit" ? coin.backingCoinType.toUpperCase() : coin.symbol;
             return <option value={option} key={coin.symbol}>{option}</option>;
@@ -107,6 +116,8 @@ class BlockTradesGateway extends React.Component {
         })[0];
 
         if (!coin) coin = filteredCoins[0];
+
+        //console.log('@>coin',coin)
 
         let issuers = {
             blocktrades: {name: "blocktrades", id: "1.2.32567", support: "support@blocktrades.us"},

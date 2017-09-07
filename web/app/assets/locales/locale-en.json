@@ -1300,7 +1300,7 @@
     "limit": "Limit: %(amount)s %(symbol)s",
     "bridge_text": "A bridge lets you exchange an asset into another one, for example BTC to BTS.",
     "gateway_text": "Choose whether you want to make a deposit or withdrawal here",
-    "fiat_text": "Fiat deposits and withdrawal are provided by CCEDK. In order to get started you need to complete the registration process. The following conversions are available:",
+    "fiat_text": "Fiat deposits and withdrawal are provided by CCEDK. In order to get started you need to complete the <a href='https://openledger.info/v' target='blank' rel='noopener noreferrer'>verification</a> process. The following conversions are available:",
     "transwiser": {
       "channel": {
         "withdraw": {

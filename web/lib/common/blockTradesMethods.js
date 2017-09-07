@@ -96,6 +96,8 @@ export function getBackedCoins({allCoins, tradingPairs, backer}) {
                 intermediateAccount: coins_by_type[coin_type.backingCoinType].intermediateAccount, //@#>
                 gateFee: coins_by_type[coin_type.backingCoinType].gateFee,
                 walletType: coins_by_type[coin_type.backingCoinType].walletType,
+                coinPriora: coins_by_type[coin_type.backingCoinType].coinPriora,
+                //coinPriora: ""+Math.random()*100|0,
                 backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
                 symbol: coin_type.walletSymbol,
                 supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos,

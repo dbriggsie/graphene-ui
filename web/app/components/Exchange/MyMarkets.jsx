@@ -16,6 +16,23 @@ import AssetActions from "actions/AssetActions";
 import cnames from "classnames";
 import {debounce} from "lodash";
 
+
+function set_sposition_for_active_market() {
+    let table_trs = document.querySelectorAll(".table .clickable");
+    let table_active = document.querySelector(".table .clickable.activeMarket");
+
+    if (table_trs.length > 20) {
+        if (table_active) {
+            let table_area = document.querySelector(".table-container.mymarkets-list");
+            if (table_area && table_area.scrollTop == 0) {
+                table_area.scrollTop = table_active.offsetTop - 28;
+            }
+
+        }
+
+    }
+}
+
 let lastLookup = new Date();
 
 class MarketGroup extends React.Component {
@@ -309,6 +326,8 @@ class MyMarkets extends React.Component {
             this._lookupAssets({target: {value: this.state.inputValue}}, true);
         }
 
+        setTimeout(set_sposition_for_active_market,1000)
+
     }
 
     componentWillMount() {
@@ -335,10 +354,13 @@ class MyMarkets extends React.Component {
     }
 
     componentDidUpdate() {
+
         if (this.refs.favorites) {
             let historyContainer = this.refs.favorites;
             Ps.update(historyContainer);
         }
+        setTimeout(set_sposition_for_active_market,1000)
+
     }
 
     _inverseSort() {
