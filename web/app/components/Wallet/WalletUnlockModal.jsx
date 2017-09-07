@@ -122,8 +122,6 @@ class WalletUnlockModal extends React.Component {
         const password = passwordLogin ? this.refs.password_input.value : this.refs.password_input.value();
         const account = passwordLogin ? this.state.account && this.state.account.get("name") : null;
         this.setState({password_error: null});
-        console.log('@>password',password)
-        console.log('@>account',account)
 
         WalletDb.validatePassword(
             password || "",
@@ -434,7 +432,7 @@ class WalletUnlockModal extends React.Component {
                         </Trigger>
                     </div>
                     <Translate onClick={this._toggleLoginType.bind(this)} component="div" content="wallet.switch_model_wallet" className="button small outline float-right airbitz_button" />
-                    <Translate onClick={this._switch_brain_airbitz.bind(this)} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />
+                    {/*<Translate onClick={this._switch_brain_airbitz.bind(this)} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />*/}
                 </div>
             </form>
         );

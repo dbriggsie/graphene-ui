@@ -233,8 +233,6 @@ class AccountDepositWithdraw extends React.Component {
         let { account } = this.props;
         let { activeService } = this.state;
 
-        console.log('@>this.props',this.props)
-
         let blockTradesGatewayCoins = this.props.blockTradesBackedCoins.filter(coin => {
             if (coin.backingCoinType.toLowerCase() === "muse") {
                 return false;
