@@ -29,7 +29,7 @@ class Settings extends React.Component {
             menuEntries,
             settingEntries: {
                 general: ["locale", "unit", "showSettles", "walletLockTimeout", "themes",
-                "disableChat", "showAssetPercent", "passwordLogin", "reset","traderMode"],
+                "showAssetPercent", "passwordLogin", "reset"],
                 access: ["apiServer", "faucet_address"]
             }
         };
@@ -67,7 +67,8 @@ class Settings extends React.Component {
             "password",
             "backup",
             "restore",
-            "access"
+            "access",
+            "faucet_address"
         ].filter(e=>e);
 
         return menuEntries;
@@ -78,17 +79,6 @@ class Settings extends React.Component {
     }
 
     _onChangeSetting(setting, e) {
-
-        if(typeof e == "boolean"){ //@#> traderMode
-            let e_original = e; 
-            e={
-                target:{
-                    value:e_original
-                },
-                preventDefault:()=>{}
-            }
-        }
-
         e.preventDefault();
 
         let {defaults} = this.props;
@@ -142,10 +132,6 @@ class Settings extends React.Component {
                 apiServer: e.target.value
             });
             break;
-        
-        case "traderMode":
-            SettingsActions.changeSetting({setting: "traderMode", value: e.target.value});
-            break;
 
         case "disableChat":
         case "showSettles":
@@ -187,13 +173,6 @@ class Settings extends React.Component {
         let {settings, defaults} = this.props;
         const {menuEntries, activeSetting, settingEntries} = this.state;
 
-        let traderMode = settings.get("traderMode");
-
-        if (!traderMode) {
-            settingEntries.general = ["locale", "disableChat", "themes",
-            "password", "backup", "unit", "apiServer", "traderMode"];
-        }
-
         let entries;
         let activeEntry = menuEntries[activeSetting] || menuEntries[0];
         switch (activeEntry) {
@@ -211,7 +190,7 @@ class Settings extends React.Component {
             break;
 
         case "backup":
-            entries = <BackupSettings passwordLogin={this.props.settings.get("passwordLogin")} />;
+            entries = <BackupSettings />;
             break;
 
         case "restore":
@@ -242,24 +221,24 @@ class Settings extends React.Component {
 
         return (
             <div className="grid-block page-layout">
-                <div className="grid-block main-content wrap" style={{marginTop: "1rem"}}>
-                    {!traderMode ? null : <div className="grid-content large-offset-2 shrink" >
+                <div className="grid-block main-content wrap">
+                    <div className="grid-content large-offset-2 shrink" >
                         <Translate className="bottom-border" component="h4" content="header.settings" />
+
                         <ul className="settings-menu">
                             {menuEntries.map((entry, index) => {
                                 return <li className={index === activeSetting ? "active" : ""} onClick={this._onChangeMenu.bind(this, entry)} key={entry}><Translate content={"settings." + entry} /></li>;
                             })}
                         </ul>
-                    </div>}
+                    </div>
 
-                    <div className={(traderMode ? "grid-content" : "grid-container")} style={{maxWidth:'1000px'}} >
+                    <div className="grid-content" style={{paddingLeft: "1rem", paddingRight: "1rem", maxWidth: 1000}}>
                         <div className="grid-block small-12 medium-10 no-margin vertical">
                             <Translate component="h4" content={"settings." + menuEntries[activeSetting]} />
-                            <Translate unsafe style={{paddingTop: 10, paddingBottom: 20, marginBottom: 30}} className="bottom-border" content={`settings.${menuEntries[activeSetting]}_text`} />
+                            {activeEntry != "access" && <Translate unsafe style={{paddingTop: 10, paddingBottom: 20, marginBottom: 30}} className="bottom-border" content={`settings.${menuEntries[activeSetting]}_text`} />}
                             {entries}
                         </div>
                     </div>
-
                 </div>
                 <WebsocketAddModal
                     ref="ws_modal"

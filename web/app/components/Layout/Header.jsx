@@ -145,6 +145,13 @@ class Header extends React.Component {
         // this.onClickUser(account_name, e);
     }
 
+    go_with_airbitz(){
+        if(!this.props.currentAccount){
+            localStorage.setItem("airbitz_backup_option","true")
+        }
+        console.log('@>',localStorage.getItem("airbitz_backup_option"))
+    }
+
     // onClickUser(account, e) {
     //     e.stopPropagation();
     //     e.preventDefault();
@@ -208,8 +215,8 @@ class Header extends React.Component {
         );
 
         let createAccountLink = myAccountCount === 0 ? (
-            <ActionSheet.Button title="" setActiveState={() => {}}>
-                <a className="button create-account" onClick={this._onNavigate.bind(this, "/create-account")} style={{padding: "1rem", border: "none"}} >
+            <ActionSheet.Button title="" setActiveState={this.go_with_airbitz.bind(this)}>
+                <a className="button create-account" onClick={this._onNavigate.bind(this, "/create-account/wallet")} style={{padding: "1rem", border: "none"}} >
                     <Icon className="icon-14px" name="user"/> <Translate content="header.create_account" />
                 </a>
             </ActionSheet.Button>

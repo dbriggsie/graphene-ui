@@ -8,14 +8,21 @@ export default class LoginSelector extends React.Component {
 
         super();
         this.state={
-            //show_registration_choose:false
-            show_registration_choose:true
+            show_registration_state:false
         };
 
         this.show_registration_choose = this.show_registration_choose.bind(this);  
         localStorage.setItem("airbitz_backup_option",false);         
         
 
+    }
+
+    componentDidUpdate() {
+        if(this.state.show_registration_state==JSON.parse(localStorage.getItem("airbitz_backup_option"))){
+            this.setState({
+                show_registration_state:!JSON.parse(localStorage.getItem("airbitz_backup_option"))
+            });
+        }
     }
 
     onSelect(route) {
@@ -26,7 +33,7 @@ export default class LoginSelector extends React.Component {
     show_registration_choose(e){
         e&&e.preventDefault&&e.preventDefault();
         this.setState({
-            show_registration_choose:true
+            show_registration_state:true
         });
     }
 
@@ -37,8 +44,7 @@ export default class LoginSelector extends React.Component {
 
     render() {
 
-        let { show_registration_choose } = this.state;
-        console.log('@>,show_registration_choose',show_registration_choose)
+        let { show_registration_state } = this.state;
 
         if (this.props.children) {
             return this.props.children;
@@ -52,8 +58,8 @@ export default class LoginSelector extends React.Component {
                     {/*<span>Blockchain Powered. People Driven.</span>*/}
                     <Translate content="wallet.welcome_to_the" component="h3" />
                     <Translate content="wallet.create_account_description" component="p" unsafe />
-                    {show_registration_choose?<Translate content="wallet.login_type" component="h4" />:null}
-                    {show_registration_choose?<div className="index_button_section" >
+                    {show_registration_state?<Translate content="wallet.login_type" component="h4" />:null}
+                    {show_registration_state?<div className="index_button_section" >
                         <div className="button"><Link to="/create-account/wallet"><Translate content="wallet.use_wallet" /></Link></div>
                         <div className="button"><Link to="/create-account/password"><Translate content="wallet.use_password" /></Link></div>
                     </div>:null}
@@ -61,7 +67,7 @@ export default class LoginSelector extends React.Component {
                 </div>
 
                 {(()=>{
-                    if(show_registration_choose){
+                    if(show_registration_state){
                         return (<div className="grid-block small-10 login-selector">
                             <div className="box small-12 large-6" onClick={this.onSelect.bind(this, "wallet")}>
                                 <div className="block-content-header" style={{position: "relative"}}>
@@ -91,7 +97,7 @@ export default class LoginSelector extends React.Component {
                                     {
                                     //<Translate content="wallet.password_model_1" component="p" />
                                     }
-                                    <Translate unsafe content="wallet.password_model_2"  component="p" />
+                                    <Translate unsafe content="wallet.password_model_2" component="p" />
                                     <Translate unsafe content="wallet.password_model_3" component="ul" />
                                 </div>
                                 {
@@ -107,7 +113,7 @@ export default class LoginSelector extends React.Component {
                                                 <Translate unsafe content="wallet.airbitz_create_wallet" component="p" />
                                             </Link>
                                         </div>
-                                        <p className="create_acc_button_another" onClick={this.show_registration_choose} >or <a href="#">create account without Airbitz security</a></p>
+                                        <p className="create_acc_button_another" onClick={this.show_registration_choose} ><Translate content="wallet.create_without_airbitz" component="a" /></p>
                                     </div>
                                     <Translate unsafe content="wallet.airbitz_full_description" className="create_acc_airbitz_description" component="p" />
                                     <div className="create_acc_login">

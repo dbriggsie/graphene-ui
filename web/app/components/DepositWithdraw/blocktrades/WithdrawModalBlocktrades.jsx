@@ -372,7 +372,7 @@ class WithdrawModalBlocktrades extends React.Component {
         }
 
         // Estimate fee VARIABLES
-        let { fee_asset_types } = this._getAvailableAssets();console.log('@>fee_asset_types11',fee_asset_types)
+        let { fee_asset_types } = this._getAvailableAssets();
 
         if (asset_types.length > 0) {
             let current_asset_id = this.props.asset.get("id");
@@ -391,10 +391,6 @@ class WithdrawModalBlocktrades extends React.Component {
         } else {
             balance = "No funds";
         }
-
-    console.log('@>',this.state.feeAmount&&this.state.feeAmount.getAmount({real: true}));
-    this.state.feeAmount&&console.log('@>this.state.feeAmount.asset_id',this.state.feeAmount.asset_id)
-
 
         return (<form className="grid-block vertical full-width-content">
             <div className="grid-container">

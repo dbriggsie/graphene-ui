@@ -175,13 +175,16 @@ class CreateAccount extends React.Component {
         this.setState({registrar_account});
     }
 
+    go_without_airbitz(){
+        localStorage.setItem("airbitz_backup_option","false")
+    }
+
     // showRefcodeInput(e) {
     //     e.preventDefault();
     //     this.setState({hide_refcode: false});
     // }
 
     _renderAccountCreateForm() {
-
         let {registrar_account} = this.state;
 
         let my_accounts = AccountStore.getMyAccounts();
@@ -258,6 +261,12 @@ class CreateAccount extends React.Component {
                             <Translate content="settings.backup_brainkey" />
                         </Link>
                     </label>
+
+                    <label onClick={this.go_without_airbitz} >
+                        <Link to="/create-account">
+                            <Translate unsafe content="wallet.create_without_airbitz" />
+                        </Link>
+                    </label>                    
                 </div>
 
                 {/* Skip to step 3 */}
@@ -386,6 +395,9 @@ class CreateAccount extends React.Component {
 
     render() {
         let { step } = this.state;
+
+        console.log('@>airbitz_backup_option',localStorage.getItem("airbitz_backup_option"))
+
         // let my_accounts = AccountStore.getMyAccounts();
         // let firstAccount = my_accounts.length === 0;
         return (

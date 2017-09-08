@@ -984,6 +984,7 @@
     "confirm": "Wallet password (confirm)",
     "airbitz_create_wallet": "Create account <span>with Airbitz</span>",
     "password": "Wallet password",
+    "create_without_airbitz": "Create account without Airbitz security",
     "existing_password": "Existing Password",
     "change_password": "Change Password",
     "change_wallet": "Change Wallet",
