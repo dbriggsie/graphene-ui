@@ -5,6 +5,8 @@ let id_regex = /\b\d+\.\d+\.(\d+)\b/;
 import {ChainTypes} from "bitsharesjs/es";
 var {object_type} = ChainTypes;
 
+import { estimateFee } from "./trxHelper";
+
 var Utils = {
     get_object_id: (obj_id) => {
         let id_regex_res = id_regex.exec(obj_id);
@@ -361,7 +363,7 @@ var Utils = {
 
     getFee: function({opType, options, globalObject, asset, coreAsset, balances}) {
         let coreFee = {asset: "1.3.0"};
-        coreFee.amount = this.estimateFee(opType, options, globalObject) || 0;
+        coreFee.amount = estimateFee(opType, options, globalObject) || 0;
 
         if (!asset || asset.get("id") === "1.3.0") return coreFee; // Desired fee is in core asset
 
@@ -376,21 +378,17 @@ var Utils = {
 
         let useCoreFee = true; // prefer CORE fee by default
         if (balances && balances.length) {
-            balances.filter(e=>e).forEach(b => {
+            balances.forEach(b => {
                 if (b.get("asset_type") === "1.3.0" && b.get("balance") < coreFee.amount) { // User has sufficient CORE, use it (cheapeest)
                     useCoreFee = false;
                 }
             });
 
-            balances.filter(e=>e).forEach(b => {
+            balances.forEach(b => {
                 if (b.get("asset_type") === fee.asset && b.get("balance") < fee.amount) { // User has insufficient {asset}, use CORE instead
                     useCoreFee = true;
                 }
             });
-        }
-
-        if(asset.get("is_currency_fee")){ //@#>
-            return fee;
         }
 
         return useCoreFee ? coreFee : fee;

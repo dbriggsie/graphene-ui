@@ -296,6 +296,19 @@ class Download extends Component {
                         if (_self.props.downloadCb) {
                             _self.props.downloadCb();
                         }
+
+                        let blob = new Blob([_self.props.backup.contents], {
+                            type: "application/octet-stream; charset=us-ascii"
+                        });
+
+                        if (blob.size !== _self.props.backup.size)
+                            throw new Error("Invalid backup to download conversion")
+                        saveAs(blob, _self.props.backup.name);
+                        WalletActions.setBackupDate();
+
+                        if (was_locked) {
+                            WalletDb.onLock();
+                        }
                     }
                 });
             });

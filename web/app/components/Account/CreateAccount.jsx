@@ -312,7 +312,7 @@ class CreateAccount extends React.Component {
 
         return (
             <div className="backup-submit">
-                <p><Translate unsafe content="wallet.wallet_crucial" /></p>
+                <Translate unsafe component="p" content={this.state.airbitz_backup_option?"wallet.wallet_crucial_airbitz":"wallet.wallet_crucial"} />
                 <div className="divider" />
                 <BackupCreate 
                     noText
@@ -331,11 +331,13 @@ class CreateAccount extends React.Component {
     }
 
     _renderBackupText() {
+        let { airbitz_backup_option }= this.state;
+
         return (
             <div>
-                <p style={{fontWeight: "bold"}}><Translate content="footer.backup" /></p>
-                <p><Translate content="wallet.wallet_move" unsafe /></p>
-                <p className="txtlabel warning"><Translate unsafe content="wallet.wallet_lose_warning" /></p>
+                <p style={{fontWeight: "bold"}}><Translate content={airbitz_backup_option?"footer.backup_airbitz":"footer.backup"} /></p>
+                <p><Translate content={airbitz_backup_option?"wallet.wallet_move_airbitz":"wallet.wallet_move"} unsafe /></p>
+                <p className="txtlabel warning"><Translate unsafe content={airbitz_backup_option?"wallet.wallet_lose_warning_airbitz":"wallet.wallet_lose_warning"} /></p>
             </div>
         );
     }
@@ -394,9 +396,9 @@ class CreateAccount extends React.Component {
     }
 
     render() {
-        let { step } = this.state;
+        let { step, airbitz_backup_option } = this.state;
 
-        console.log('@>airbitz_backup_option',localStorage.getItem("airbitz_backup_option"))
+        console.log('@>airbitz_backup_option',airbitz_backup_option)
 
         // let my_accounts = AccountStore.getMyAccounts();
         // let firstAccount = my_accounts.length === 0;
@@ -417,7 +419,7 @@ class CreateAccount extends React.Component {
                 <div className="grid-block wrap">
                     <div className="grid-content small-12 medium-4 medium-offset-2">
                         {step !== 1 ? <p style={{fontWeight: "bold"}}>
-                            {!this.state.airbitz_backup_option?<Translate content={"wallet.step_" + step} />:"&nbsp;"}
+                            {!this.state.airbitz_backup_option?<Translate content={"wallet.step_" + step} />:null}
                         </p> : null}
 
                         {

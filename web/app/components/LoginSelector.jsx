@@ -2,25 +2,27 @@ import React from "react";
 import {Link} from "react-router";
 import Translate from "react-translate-component";
 
+if(localStorage.getItem("airbitz_backup_option")===null){
+    localStorage.setItem("airbitz_backup_option","true")
+}     
+
 export default class LoginSelector extends React.Component {
 
     constructor(){
 
         super();
         this.state={
-            show_registration_state:false
+            airbitz_backup_option:JSON.parse(localStorage.getItem("airbitz_backup_option"))
         };
 
-        this.show_registration_choose = this.show_registration_choose.bind(this);  
-        localStorage.setItem("airbitz_backup_option",false);         
-        
+        this.show_registration_choose = this.show_registration_choose.bind(this);        
 
     }
 
     componentDidUpdate() {
-        if(this.state.show_registration_state==JSON.parse(localStorage.getItem("airbitz_backup_option"))){
+        if(this.state.airbitz_backup_option!==JSON.parse(localStorage.getItem("airbitz_backup_option"))){
             this.setState({
-                show_registration_state:!JSON.parse(localStorage.getItem("airbitz_backup_option"))
+                airbitz_backup_option:JSON.parse(localStorage.getItem("airbitz_backup_option"))
             });
         }
     }
@@ -32,19 +34,23 @@ export default class LoginSelector extends React.Component {
 
     show_registration_choose(e){
         e&&e.preventDefault&&e.preventDefault();
+        localStorage.setItem("airbitz_backup_option","false")
         this.setState({
-            show_registration_state:true
+            airbitz_backup_option:false
         });
     }
 
     go_with_airbitz(){
         localStorage.setItem("airbitz_backup_option","true")
+        console.log('@>airbitz_backup_option login',JSON.parse(localStorage.getItem("airbitz_backup_option")))
     }
 
 
     render() {
 
-        let { show_registration_state } = this.state;
+        let { airbitz_backup_option } = this.state;
+
+        console.log('@>airbitz_backup_option',airbitz_backup_option)
 
         if (this.props.children) {
             return this.props.children;
@@ -58,8 +64,8 @@ export default class LoginSelector extends React.Component {
                     {/*<span>Blockchain Powered. People Driven.</span>*/}
                     <Translate content="wallet.welcome_to_the" component="h3" />
                     <Translate content="wallet.create_account_description" component="p" unsafe />
-                    {show_registration_state?<Translate content="wallet.login_type" component="h4" />:null}
-                    {show_registration_state?<div className="index_button_section" >
+                    {!airbitz_backup_option?<Translate content="wallet.login_type" component="h4" />:null}
+                    {!airbitz_backup_option?<div className="index_button_section" >
                         <div className="button"><Link to="/create-account/wallet"><Translate content="wallet.use_wallet" /></Link></div>
                         <div className="button"><Link to="/create-account/password"><Translate content="wallet.use_password" /></Link></div>
                     </div>:null}
@@ -67,7 +73,7 @@ export default class LoginSelector extends React.Component {
                 </div>
 
                 {(()=>{
-                    if(show_registration_state){
+                    if(!airbitz_backup_option){
                         return (<div className="grid-block small-10 login-selector">
                             <div className="box small-12 large-6" onClick={this.onSelect.bind(this, "wallet")}>
                                 <div className="block-content-header" style={{position: "relative"}}>

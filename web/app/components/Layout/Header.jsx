@@ -149,7 +149,7 @@ class Header extends React.Component {
         if(!this.props.currentAccount){
             localStorage.setItem("airbitz_backup_option","true")
         }
-        console.log('@>',localStorage.getItem("airbitz_backup_option"))
+        console.log('@>airbitz_backup_option header',localStorage.getItem("airbitz_backup_option"))
     }
 
     // onClickUser(account, e) {

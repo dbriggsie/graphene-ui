@@ -190,7 +190,7 @@ class Settings extends React.Component {
             break;
 
         case "backup":
-            entries = <BackupSettings />;
+            entries = <BackupSettings passwordLogin={this.props.settings.get("passwordLogin")} />;
             break;
 
         case "restore":
