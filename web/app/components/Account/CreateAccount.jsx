@@ -44,6 +44,14 @@ class CreateAccount extends React.Component {
         this.accountNameInput = null; 
     }
 
+    componentDidUpdate() {
+        if(this.state.airbitz_backup_option!==JSON.parse(localStorage.getItem("airbitz_backup_option"))){
+            this.setState({
+                airbitz_backup_option:JSON.parse(localStorage.getItem("airbitz_backup_option"))
+            });
+        }
+    }
+
     componentWillMount() {
         SettingsActions.changeSetting({
             setting: "passwordLogin",
@@ -201,13 +209,16 @@ class CreateAccount extends React.Component {
 
         let buttonClass = classNames("submit-button button no-margin", {disabled: (!valid || (registrar_account && !isLTM))});
 
+
+        console.log('@>this.state.airbitz_backup_option111',this.state.airbitz_backup_option)
+
         return (
             <form
                 style={{maxWidth: "40rem"}}
                 onSubmit={this.onSubmit.bind(this)}
                 noValidate
             >
-                <p style={{fontWeight: "bold"}}>{firstAccount ? <Translate content="wallet.create_w_a" />  : <Translate content="wallet.create_a" />}</p>
+                <p style={{fontWeight: "bold"}}>{firstAccount ? <Translate content={this.state.airbitz_backup_option?"wallet.create_w_a_airbitz":"wallet.create_w_a"} />  : <Translate content="wallet.create_a" />}</p>
                 <AccountNameInput
                     ref={(ref) => {if (ref) {this.accountNameInput = ref.refs.nameInput;}}}
                     cheapNameOnly={!!firstAccount}
