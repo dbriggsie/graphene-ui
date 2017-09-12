@@ -32,6 +32,8 @@ class AccountPage extends React.Component {
     render() {
         let {myAccounts, linkedAccounts, account_name, searchAccounts, settings, wallet_locked, account, hiddenAssets} = this.props;
 
+        console.log('@>AccountPageaccount',account)
+
         //let isMyAccount = AccountStore.isMyAccount(account);@#> ???
         let isMyAccount = AccountStore.getState().currentAccount==account.get("name");
 

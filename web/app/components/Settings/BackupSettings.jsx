@@ -90,14 +90,17 @@ export default class BackupSettings extends React.Component {
     }
 
     render() {
-        console.log('@>this.props.passwordLogin',this.props.passwordLogin)
-        if (this.props.passwordLogin) {
+        if (this.props.passwordLogin&&AccountStore.getState().currentAccount) {
             return (
                 <div>
                     <p><Translate content="settings.backupcreate_airbitz_account_text" /></p>
                     <button className="button airbitzkey" onClick={this.create_backup_for_airbitz}><Translate content="settings.backupcreate_airbitz_account" /></button>
                 </div>
             );
+        }else{
+            return (
+               <p><Translate content="settings.not_yet_have_account" /></p> 
+            )
         }
 
         let {types, restoreType} = this.state;

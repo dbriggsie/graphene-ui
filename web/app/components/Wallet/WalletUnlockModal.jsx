@@ -271,16 +271,16 @@ class WalletUnlockModal extends React.Component {
         }    
     }
 
-    _switch_brain_airbitz(){
+    _switch_brain_airbitz(mode){
         this.setState({
-            airbitz_mode:!this.state.airbitz_mode
+            airbitz_mode:!!mode
         });
     }
 
-    _toggleLoginType() {
+    _toggleLoginType(mode) {
         SettingsActions.changeSetting({
             setting: "passwordLogin",
-            value: !this.props.passwordLogin
+            value: !!mode
         });
     }
 
@@ -297,10 +297,13 @@ class WalletUnlockModal extends React.Component {
                     <div className="button-group">
                         <div className="button" onClick={this._onCreateWallet.bind(this)}><Translate content="wallet.create_wallet" /></div>
                     </div>
-                    <div onClick={this._toggleLoginType.bind(this)} className="button small outline float-right"><Translate content="wallet.switch_model_password" /></div>
+                    <Translate onClick={()=>{ this._switch_brain_airbitz(false); this._toggleLoginType(true)}} component="div" content="wallet.switch_model_password" className="button small outline float-right airbitz_button" />
+                    <Translate onClick={()=>{ this._switch_brain_airbitz(true); this._toggleLoginType(true)}} component="div" content="wallet.enable_model_airbitz" className="button small outline float-right" />
+
                 </div>
             );
         }
+
         return (
             <form onSubmit={this.onPasswordEnter} noValidate>
                 <PasswordInput
@@ -318,7 +321,7 @@ class WalletUnlockModal extends React.Component {
                             <div className=" button"><Translate content="account.perm.cancel" /></div>
                         </Trigger>
                     </div>              
-                    <div onClick={this._toggleLoginType.bind(this)} className="button small outline float-right"><Translate content="wallet.switch_model_password" /></div>
+                    <div onClick={()=>{ this._toggleLoginType(true)}} className="button small outline float-right"><Translate content="wallet.switch_model_password" />11</div>
                 </div>
             </form>
         );
@@ -409,8 +412,8 @@ class WalletUnlockModal extends React.Component {
                             <div tabIndex={tabIndex++} className=" button"><Translate content="account.perm.cancel" /></div>
                         </Trigger>
                     </div>
-                    <Translate onClick={this._toggleLoginType.bind(this)} component="div" content="wallet.switch_model_wallet" className="button small outline float-right airbitz_button" />
-                    <Translate onClick={this._switch_brain_airbitz.bind(this)} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />
+                    <Translate onClick={()=>{ this._toggleLoginType(false)}} component="div" content="wallet.switch_model_wallet" className="button small outline float-right airbitz_button" />
+                    <Translate onClick={()=>{this._switch_brain_airbitz(airbitz_mode?false:true)}} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />
                 </div>
             </form>
         );
