@@ -7,7 +7,7 @@ import FormattedAsset from "../Utility/FormattedAsset";
 import AssetName from "../Utility/AssetName";
 import AssetImage from "../Utility/AssetImage";
 import SettingsActions from "actions/SettingsActions";
-import Icon from "../Icon/Icon"; 
+import Icon from "../Icon/Icon";
 import utils from "common/utils";
 import SimpleTrade from "./SimpleTrade";
 import SimpleTransfer from "./SimpleTransfer";
@@ -15,11 +15,12 @@ import SimpleDepositWithdraw from "./SimpleDepositWithdraw";
 import {EquivalentValueComponent} from "../Utility/EquivalentValueComponent";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
-import { fetchCoins,getBackedCoins } from "common/blockTradesMethods"; 
+import { fetchCoins,getBackedCoins } from "common/blockTradesMethods";
 import ReactTooltip from "react-tooltip";
 import MarketCard from "./MarketCard";
 import SettingsStore from "stores/SettingsStore";
 import { settingsAPIs } from "api/apiConfig";
+import {Link} from "react-router";
 
 class DashboardAssetList extends React.Component {
 
@@ -117,7 +118,7 @@ class DashboardAssetList extends React.Component {
         if (!isPinned && (!this.props.showZeroBalances && !this.state.filter.length) && (!balance || (balance && balance.amount === 0))) {
             return null;
         }
-        
+
         const hasBalance = !(!balance || balance.amount === 0);
         const canBuy = this._hasOtherBalance(asset.get("id"));
         const canDepositWithdraw = !!this.props.openLedgerBackedCoins.find(a => a.symbol === asset.get("symbol"));
@@ -139,7 +140,7 @@ class DashboardAssetList extends React.Component {
                 <td style={{textAlign: "right"}}>{balance ? <FormattedAsset hide_asset amount={balance.amount} asset={balance.asset_id} /> : null}</td>
                 <td className="column-hide-small" style={{textAlign: "right"}}>{balance ? <EquivalentValueComponent  fromAsset={balance.asset_id} fullPrecision={true} amount={balance.amount} toAsset={this.props.preferredUnit}/> : null}</td>
                 <td style={{textAlign: "center"}}>
-                    {hasBalance && this.props.isMyAccount? <a onClick={this._showTransfer.bind(this, assetName)} ><Translate content="transaction.trxTypes.transfer" /></a> : null}
+                    {hasBalance && this.props.isMyAccount? <Link to={`/transfer?asset=${asset.get("id")}`}><Translate content="transaction.trxTypes.transfer" /></Link> : null}
                     {canDepositWithdraw && this.props.isMyAccount? (
                         <span>
                             {this._getSeparator(hasBalance)}
@@ -167,7 +168,7 @@ class DashboardAssetList extends React.Component {
                     <span>
                         {isPinned ?
                             <Icon className="icon-14px fill-red" name="lnr-cross"/> :
-                            <Icon className="icon-14px fill-red" name="thumb-tack"/> 
+                            <Icon className="icon-14px fill-red" name="thumb-tack"/>
                         }
                     </span>
                 </td>
@@ -260,11 +261,11 @@ class DashboardAssetList extends React.Component {
 
         // Find the current Openledger coins
         const currentDepositAsset = this.props.openLedgerBackedCoins.find(c => {
-            return c.symbol === this.state.depositAsset;
-        }) || {};
+                return c.symbol === this.state.depositAsset;
+            }) || {};
         const currentWithdrawAsset = this.props.openLedgerBackedCoins.find(c => {
-            return c.symbol === this.state.withdrawAsset;
-        }) || {};
+                return c.symbol === this.state.withdrawAsset;
+            }) || {};
         // console.log("currentDepositAsset", currentDepositAsset, "openLedgerBackedCoins:", this.props.openLedgerBackedCoins);
 
 
@@ -278,15 +279,15 @@ class DashboardAssetList extends React.Component {
             let all_AssetKeys = {};
 
             let els_obj = els.map(e=>ChainStore.getAsset(e)).filter(e=>{
-                if(e&&e.toJS){                    
+                if(e&&e.toJS){
                     all_AssetKeys[e.get('id')]=e.toJS();
                     return ~e.get('symbol').indexOf(this.state.filter);
-                }                
-            });            
+                }
+            });
 
             els_obj.map(e=>{
                 this._isPinned(e.get('symbol'))?isPinnedArr.push(e.get('id')):1;
-                assetKeys[e.get('id')] = e.toJS();         
+                assetKeys[e.get('id')] = e.toJS();
             });
 
             this.props.balances.sort((a,b)=>{
@@ -301,7 +302,7 @@ class DashboardAssetList extends React.Component {
                     a_bal = a_bal / Math.pow(10,a_precision.precision);
                     b_bal = b_bal / Math.pow(10,b_precision.precision);
                 }
-               
+
                 if(a_bal>b_bal){
                     return -1;
                 }else if(a_bal<b_bal){
@@ -309,13 +310,13 @@ class DashboardAssetList extends React.Component {
                 }else{
                     return 0;
                 }
-                
+
             }).map(e=>{
-                e&&isBalanceArr.push(e.toJS());                
+                e&&isBalanceArr.push(e.toJS());
             });
 
-            isBalanceArr.map(e1=>{  
-                let isPinned = false;              
+            isBalanceArr.map(e1=>{
+                let isPinned = false;
                 isPinnedArr.map((e2,index)=>{
                     if(e1.asset_type === e2){
                         resultArray.push(e1.asset_type);
@@ -323,7 +324,7 @@ class DashboardAssetList extends React.Component {
                         isPinnedArr[index] = null;
                     }
                 });
-                !isPinned?exceptPinnedResultArray.push(e1.asset_type):1;                
+                !isPinned?exceptPinnedResultArray.push(e1.asset_type):1;
             });
 
             resultArray = resultArray.concat(exceptPinnedResultArray);
@@ -333,7 +334,7 @@ class DashboardAssetList extends React.Component {
                     return all_AssetKeys[e].symbol;
                 }
 
-                return e;                
+                return e;
             });
 
             for(let i in assetKeys){
@@ -347,7 +348,7 @@ class DashboardAssetList extends React.Component {
 
         return (
             <div>
-                <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40, padding: '15px 0 0 0'}} />    
+                <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40, padding: '15px 0 0 0'}} />
                 <Translate content="transfer.my_balance" component="h4"  />
                 <div >
                     <input onChange={this._toggleZeroBalance.bind(this)} checked={!this.props.showZeroBalances && !this.state.filter.length} type="checkbox" />
@@ -355,8 +356,8 @@ class DashboardAssetList extends React.Component {
 
                     <div className="float-right">
                         <div style={{position: "relative", top: -13}}>
-                        <input onChange={this._onSearch.bind(this)} value={this.state.filter} style={{marginBottom: 0, }} type="text" placeholder={counterpart.translate("simple_trade.find_an")} />
-                        {this.state.filter.length ? <span className="clickable" style={{position: "absolute", top: 12, right: 10, color: "black"}} onClick={() => {this.setState({filter: ""});}}>
+                            <input onChange={this._onSearch.bind(this)} value={this.state.filter} style={{marginBottom: 0, }} type="text" placeholder={counterpart.translate("simple_trade.find_an")} />
+                            {this.state.filter.length ? <span className="clickable" style={{position: "absolute", top: 12, right: 10, color: "black"}} onClick={() => {this.setState({filter: ""});}}>
                             <Icon className="icon-14px fill-red" name="lnr-cross"/>
                         </span> : null}
                         </div>
@@ -366,18 +367,18 @@ class DashboardAssetList extends React.Component {
                 <div className="grid-block" style={{maxHeight: 600, width: "100%"}}>
                     <table className="table responsive-text" style={{'overflowY': 'scroll'}} >
                         <thead>
-                            <tr>
-                                <th className="column-hide-small"></th>
-                                <th><Translate content="account.asset" /></th>
-                                <th data-place="top" data-tip={counterpart.translate("tooltip.current_balance")} style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
-                                <th className="column-hide-small" data-place="top" data-tip={counterpart.translate("tooltip.equivalent_balance")} style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
-                                <th style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.transfer_actions")}>{this.props.isMyAccount?<Translate content="simple_trade.transfer_actions" />:null}</th>
-                                <th className="simpe_buy_sell" style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.trade_actions")} ><Translate content="simple_trade.actions" /></th>
-                                <th className="column-hide-small" data-place="top" data-tip={counterpart.translate("tooltip.pinning")} style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
-                            </tr>
+                        <tr>
+                            <th className="column-hide-small"></th>
+                            <th><Translate content="account.asset" /></th>
+                            <th data-place="top" data-tip={counterpart.translate("tooltip.current_balance")} style={{textAlign: "right"}}><Translate content="exchange.balance" /></th>
+                            <th className="column-hide-small" data-place="top" data-tip={counterpart.translate("tooltip.equivalent_balance")} style={{textAlign: "right"}}><Translate content="exchange.value" /></th>
+                            <th style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.transfer_actions")}>{this.props.isMyAccount?<Translate content="simple_trade.transfer_actions" />:null}</th>
+                            <th className="simpe_buy_sell" style={{textAlign: "center"}} data-place="top" data-tip={counterpart.translate("tooltip.trade_actions")} ><Translate content="simple_trade.actions" /></th>
+                            <th className="column-hide-small" data-place="top" data-tip={counterpart.translate("tooltip.pinning")} style={{textAlign: "center"}}><Translate content="simple_trade.pinned" /></th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {sortedAssets.map(a => this._renderRow(a))} 
+                        {sortedAssets.map(a => this._renderRow(a))}
                         </tbody>
                     </table>
                 </div>
@@ -476,7 +477,7 @@ class ListWrapper extends React.Component {
 
         fetchCoins()
             .then(result => {
-                openLedgerBackedCoins = getBackedCoins({ allCoins: result, backer: "OPEN" }).concat(SettingsStore.fiatAssets);
+                openLedgerBackedCoins = getBackedCoins({ allCoins: result, tradingPairs:[], backer: "OPEN" }).concat(SettingsStore.fiatAssets);
                 return fetch(settingsAPIs.RPC_URL, {
                     method: 'POST',
                     headers: new Headers({
@@ -491,7 +492,7 @@ class ListWrapper extends React.Component {
                 if ('result' in json_response){
                     this.setState({
                         openLedgerBackedCoins,
-                        openLedgerBackedFiatCoins: json_response.result 
+                        openLedgerBackedFiatCoins: json_response.result
                     });
                 }else{
                     this.setState({
@@ -500,7 +501,7 @@ class ListWrapper extends React.Component {
                 }
             })
             .catch((error) => {
-                console.log(error);                
+                console.log(error);
             });
     }
 
