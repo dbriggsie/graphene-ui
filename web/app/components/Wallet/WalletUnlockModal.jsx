@@ -39,7 +39,7 @@ class WalletUnlockModal extends React.Component {
     _getInitialState(props = this.props) {
         return {
             password_error: null,
-            airbitz_mode: false,
+            airbitz_mode: true,
             password_input_reset: Date.now(),
             account_name: props.passwordAccount,
             account: null

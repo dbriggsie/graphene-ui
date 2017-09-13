@@ -347,8 +347,6 @@ class AccountOverview extends React.Component {
         let {account, hiddenAssets, settings, orders} = this.props;
         let {showHidden} = this.state;
 
-        console.log('@>this.props',this.props)
-
         if (!account) {
             return null;
         }
