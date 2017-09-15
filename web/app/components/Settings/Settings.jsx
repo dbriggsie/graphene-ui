@@ -64,7 +64,7 @@ class Settings extends React.Component {
             "general",
             (is_wallet&&"wallet"),
             "accounts",
-            "password",
+            (is_wallet&&"password"),
             "backup",
             "restore",
             "access",

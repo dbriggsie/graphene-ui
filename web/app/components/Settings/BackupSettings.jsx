@@ -8,12 +8,15 @@ import counterpart from "counterpart";
 import WalletDb from "stores/WalletDb";
 import WalletUnlockActions from "actions/WalletUnlockActions";
 import notify from "actions/NotificationActions";
+import { connect } from "alt-react";
+
+import SettingsStore from "stores/SettingsStore";
 
 import {makeABCUIContext} from 'airbitz-core-js-ui/lib/abcui.es6';
 import { airbitzAPIs } from "api/apiConfig";
 let _abcUi = makeABCUIContext(airbitzAPIs);
 
-export default class BackupSettings extends React.Component {
+class BackupSettings extends React.Component {
 
     constructor() {
         super();
@@ -39,12 +42,12 @@ export default class BackupSettings extends React.Component {
             let airbitzkey = document.querySelector(".airbitzkey");
             if (airbitzkey) {
                 pass_acc.passwordAccount = airbitzkey.getAttribute("p"); 
-                pass_acc.currentAccount = airbitzkey.getAttribute("acc");
+                pass_acc.passwordAccount = airbitzkey.getAttribute("acc");
             }
 
             console.log('@>create_backup_for_airbitz pass_acc', pass_acc)
 
-            if (pass_acc && pass_acc.accountsLoaded && pass_acc.currentAccount && pass_acc.passwordAccount) {
+            if (pass_acc && pass_acc.accountsLoaded && pass_acc.passwordAccount && pass_acc.passwordAccount) {
 
                 console.log('@>start openLoginWindow')
 
@@ -61,7 +64,7 @@ export default class BackupSettings extends React.Component {
                     account.createWallet(airbitzAPIs.walletType, {
                         key: pass_acc.passwordAccount,
                         model: "account",
-                        login: pass_acc.currentAccount
+                        login: pass_acc.passwordAccount
                     }, function(err, id) {
                         if (error) {
                             console.log(error)
@@ -83,24 +86,25 @@ export default class BackupSettings extends React.Component {
         }).catch((err) => {
             console.log('@>err', err);
         });
- 
-
-
 
     }
 
     render() {
-        if (this.props.passwordLogin&&AccountStore.getState().currentAccount) {
+
+        let { passwordLogin, passwordAccount, accountsLoaded } =  this.props;
+        console.log('@>passwordLogin, passwordAccount, accountsLoaded', passwordLogin, passwordAccount, accountsLoaded)
+
+        if (!accountsLoaded&&!passwordLogin) {
+            return (
+               <p><Translate content="settings.not_yet_have_account" /></p> 
+            )
+        }else if(passwordLogin&&passwordAccount){            
             return (
                 <div>
                     <p><Translate content="settings.backupcreate_airbitz_account_text" /></p>
                     <button className="button airbitzkey" onClick={this.create_backup_for_airbitz}><Translate content="settings.backupcreate_airbitz_account" /></button>
                 </div>
             );
-        }else{
-            return (
-               <p><Translate content="settings.not_yet_have_account" /></p> 
-            )
         }
 
         let {types, restoreType} = this.state;
@@ -140,3 +144,21 @@ export default class BackupSettings extends React.Component {
         );
     }
 };
+
+
+BackupSettings = connect(BackupSettings, {
+    listenTo() {
+        return [SettingsStore,AccountStore];
+    },
+    getProps() {        
+        return {
+            passwordLogin:SettingsStore.getState().settings.get("passwordLogin"),
+            passwordAccount:AccountStore.getState().passwordAccount,
+            accountsLoaded:AccountStore.getState().accountsLoaded
+        }
+    }
+});
+
+
+export default BackupSettings;
+
