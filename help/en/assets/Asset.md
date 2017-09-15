@@ -15,6 +15,7 @@ annual subscriber for just {price} per year.
 #### Fee Division
 Every time {account} pays a transaction fee, that fee is divided among several different accounts.  The network takes
 a {networkFee}% cut, and the Lifetime Member who referred {account} gets a {lifetimeFee}% cut.
+(https://openledger.io/help/components/DepositWithdraw_OL "Fees page like")
 
 The _registrar_ is the account that paid the transaction fee to register {account} with the network.  The registrar gets to decide how to
 divide the remaining {referrerTotalFee}% between themselves and their own _Affiliate Referrer_ program.

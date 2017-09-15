@@ -9,11 +9,13 @@ qualify to earn referral income from users they register with or refer to the ne
 Every time {account} pays a transaction fee, that fee is divided among several different accounts.  The network takes
 a {networkFee}% cut, and the Lifetime Member who referred {account} gets a {lifetimeFee}% cut.
 
+
 The _registrar_ is the account that paid the transaction fee to register {account} with the network.  The registrar gets to decide how to
 divide the remaining {referrerTotalFee}% between themselves and their own _Affiliate Referrer_ program.
 
 {account}'s registrar chose to share {referrerFee}% of the total fee with the _Affiliate Referrer_ and keep {registrarFee}% of the total fee for themselves.
-                            
+        
+[more information about fee](/help/components/DepositWithdraw_OL)
                             
 #### Pending Fees
 Fees paid by {account} are only divided among the network, referrers, and registrars once every maintenance interval ({maintenanceInterval} seconds). The
