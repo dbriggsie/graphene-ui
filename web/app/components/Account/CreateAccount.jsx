@@ -209,9 +209,6 @@ class CreateAccount extends React.Component {
 
         let buttonClass = classNames("submit-button button no-margin", {disabled: (!valid || (registrar_account && !isLTM))});
 
-
-        console.log('@>this.state.airbitz_backup_option111',this.state.airbitz_backup_option)
-
         return (
             <form
                 style={{maxWidth: "40rem"}}

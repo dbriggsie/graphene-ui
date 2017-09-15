@@ -383,7 +383,7 @@ class OrderBook extends React.Component {
 
             return (
                     <div className={classnames("order-3 xlarge-order-4 grid-block orderbook no-padding small-vertical medium-horizontal align-spaced no-overflow small-12 xlarge-8")}>
-                        <div className={classnames("small-12 medium-6 middle-content", this.state.flip ? "order-1" : "order-2")}>
+                        <div className={classnames("small-12 medium-6 middle-content", this.state.flip ? "order-2" : "order-1")}>
                             <div className="exchange-bordered">
                                 <div className="exchange-content-header ask">
                                     <Translate content="exchange.asks" />

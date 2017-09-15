@@ -20,7 +20,7 @@ class MarketHistory extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            activeTab: props.viewSettings.get("historyTab", "history")
+            activeTab: props.viewSettings.get("historyTab", "my_history")
         };
     }
 
@@ -62,6 +62,7 @@ class MarketHistory extends React.Component {
     render() {
         let {history, myHistory, base, quote, baseSymbol, quoteSymbol, flipped, isNullAccount} = this.props;
         let  {activeTab} = this.state;
+
         let historyRows = null;
 
         if (isNullAccount) {

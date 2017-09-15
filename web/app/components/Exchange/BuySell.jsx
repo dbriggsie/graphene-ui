@@ -125,6 +125,7 @@ class BuySell extends React.Component {
 
         let {replacedName, prefix} = utils.replaceName(this.props[isBid ? "base" : "quote"].get("symbol"), !!this.props[isBid ? "base" : "quote"].get("bitasset"));
         let buyBorrowDepositName = (prefix ? prefix : "") + replacedName;
+
         return (
             <div className={this.props.className}>
                 <div className="exchange-bordered buy-sell-container">
@@ -149,7 +150,7 @@ class BuySell extends React.Component {
                                     </div>
 
                                     <div className="grid-block small-5 no-margin no-overflow buy-sell-input">
-                                        <ExchangeInput id="buyPrice" value={price||""} onChange={priceChange} autoComplete="off" placeholder="0.0" />
+                                        <ExchangeInput id="buyPrice" value={price||currentPrice||""} onChange={priceChange} autoComplete="off" placeholder="0.0" />
                                     </div>
                                     <div className="grid-block small-4 no-margin no-overflow buy-sell-box">
                                         <AssetName dataPlace="right" name={base.get("symbol")} />
@@ -225,7 +226,7 @@ class BuySell extends React.Component {
                                                 {currentPrice ? (
                                                 <td style={{paddingLeft: 5, textAlign: "right", paddingTop: 5, verticalAlign: "bottom"}}>
                                                     <span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} onClick={this.props.setPrice.bind(this, type, currentPriceObject.sellPrice())}>
-                                                    <PriceText price={currentPrice} quote={quote} base={base} /> <AssetName name={base.get("symbol")} />
+                                                    <PriceText price={currentPrice} quote={quote} base={base} /> <AssetName name={base.get("symbol")} />@>
                                                     </span>
                                                 </td>) : null}
                                         </tr>

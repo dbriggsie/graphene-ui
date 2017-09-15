@@ -277,9 +277,11 @@ class Download extends Component {
         var was_locked = WalletDb.isLocked();
         let _self = this;
 
-        console.log('@>onDownload this.props.airbitz_backup_option', this.props.airbitz_backup_option)
+        //console.log('@>onDownload this.props.airbitz_backup_option', this.props.airbitz_backup_option)
 
         if (this.props.airbitz_backup_option&&WalletDb.validatePassword(this.props.user_password, true)) {
+
+            console.log('@>this.props.user_password',this.props.user_password)
         //@> if (this.props.airbitz_backup_option&&WalletDb.validatePassword("testname123123", true)) {
             let brainkey = WalletDb.getBrainKey()
 
