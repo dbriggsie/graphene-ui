@@ -291,6 +291,18 @@
     > a, .button {
       color: $primary-text-color !important;
     }
+
+    &.switch_button {
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 1.5rem 1rem 1.5rem 1rem;
+      color: $primary-text-color;
+      border-left: 1px solid $border-color;
+      .assets{
+        margin: 0 0.5rem 0 0;
+      }
+    } 
   }
 
   .header .logo {
@@ -1244,18 +1256,6 @@
             border-bottom: 2px solid #020202;
         }
     }
-
-    .dashboard_logo{
-      padding: 12px 20px;
-      img{
-        height:40px;
-        margin: 0;
-      }
-      &>div{
-        position: absolute;
-      }
-    }
-
 
     .simpleMode_wallet{
         font-size: 9px;

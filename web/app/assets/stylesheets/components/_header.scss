@@ -18,22 +18,20 @@
     }
     &.primary {
         border-bottom: 1px solid $border-color;
+        overflow: hidden;
     }
   padding-left: 0 !important;
-  min-height: 66px;
   text-transform: uppercase;
   .menu-bar > li {
-
-    display: list-item;
     padding: 0;
     border-right: 1px solid $border-color;
     > a {
       font-weight: bold;
-      line-height: 2rem;
-      padding-left: 0.5rem;
-      padding-right: 0.5rem;
+      padding-top:0; 
+      padding-bottom:0; 
       font-size: 0.9rem;
       text-align: center;
+          padding: 1rem 2rem 0 2rem;
       @include breakpoint(large) {
         padding-left: 1.75rem;
         padding-right: 1.75rem;
@@ -68,8 +66,6 @@ div.account-drop-down {
 div.header-right-menu {
     > .grp-menu-item {
         border-left: 1px solid $border-color;
-        line-height: 2rem;
-
         > a {
             @include breakpoint(large) {
               padding-left: 1.25rem;
