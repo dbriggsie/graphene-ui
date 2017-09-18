@@ -63,7 +63,7 @@ class SyncError extends React.Component {
 
         return (
 
-            <div className="grid-frame">
+            <div >
                 <div className="grid-block vertical">
 
 

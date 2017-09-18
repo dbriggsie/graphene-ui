@@ -18,7 +18,8 @@
     }
     &.primary {
         border-bottom: 1px solid $border-color;
-        overflow: hidden;
+        //max-height: 47px;
+            min-height: 39px;
     }
   padding-left: 0 !important;
   text-transform: uppercase;
@@ -27,17 +28,31 @@
     border-right: 1px solid $border-color;
     > a {
       font-weight: bold;
-      padding-top:0; 
-      padding-bottom:0; 
       font-size: 0.9rem;
-      text-align: center;
-          padding: 1rem 2rem 0 2rem;
+      text-align: center;     
+      padding: 0.8rem 2rem 0 2rem;
       @include breakpoint(large) {
         padding-left: 1.75rem;
         padding-right: 1.75rem;
       }
     }
   }
+
+  .grp-menu-item {
+      &.switch_button {
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 0.7rem 1rem 0.7rem 1rem;
+     // color: $primary-text-color;
+      border-left: 1px solid $border-color;
+            color: inherit;
+      .assets{
+        margin: 0 0.5rem 0 0;
+      }
+    }
+  }
+
 }
 
 div.header-balance {

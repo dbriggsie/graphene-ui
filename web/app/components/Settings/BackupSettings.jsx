@@ -80,11 +80,11 @@ class BackupSettings extends React.Component {
                 });
 
             } else {
-                console.log('@>err')
+                console.error('pass_acc err')
             }
 
         }).catch((err) => {
-            console.log('@>err', err);
+            console.error('WalletUnlockActions err ', err);
         });
 
     }
@@ -92,8 +92,6 @@ class BackupSettings extends React.Component {
     render() {
 
         let { passwordLogin, passwordAccount, accountsLoaded } =  this.props;
-        console.log('@>passwordLogin, passwordAccount, accountsLoaded', passwordLogin, passwordAccount, accountsLoaded)
-
         if (!accountsLoaded&&!passwordLogin) {
             return (
                <p><Translate content="settings.not_yet_have_account" /></p> 

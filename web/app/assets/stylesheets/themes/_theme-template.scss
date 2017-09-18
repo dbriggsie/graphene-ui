@@ -290,18 +290,6 @@
   .grp-menu-item {
     > a, .button {
       color: $primary-text-color !important;
-    }
-
-    &.switch_button {
-      font-weight: bold;
-      font-size: 0.9rem;
-      text-align: center;
-      padding: 1.5rem 1rem 1.5rem 1rem;
-      color: $primary-text-color;
-      border-left: 1px solid $border-color;
-      .assets{
-        margin: 0 0.5rem 0 0;
-      }
     } 
   }
 

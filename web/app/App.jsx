@@ -153,14 +153,14 @@ class App extends React.Component {
         } else if (this.props.location.pathname === "/init-error") {
             content = <div className="grid-frame vertical">{this.props.children}</div>;
         } else {
+            //<div className="grid-frame vertical">
             content = (
                 <div className="grid-frame vertical">
                     <Header/>
                     <MobileMenu isUnlocked={this.state.isUnlocked} id="mobile-menu"/>
                     <div className="grid-block">
                         <div className="grid-block vertical">
-                            {this.props.children}
-                        </div>
+                            {this.props.children}                       </div>
                         <div className="grid-block shrink" style={{overflow: "hidden"}}>
                             <Chat
                                 showChat={showChat}
@@ -178,7 +178,7 @@ class App extends React.Component {
 
         return (
             <div style={{backgroundColor: !this.state.theme ? "#2a2a2a" : null}} className={this.state.theme}>
-                <div id="content-wrapper">
+                <div id="content-wrapper" >
                     {content}
                     <NotificationSystem
                         ref="notificationSystem"
