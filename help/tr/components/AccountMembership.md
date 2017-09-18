@@ -19,7 +19,8 @@ paylaştırılır. Ağımız {networkFee}% pay alırken, {account} adlı hesabı
 {referrerTotalFee}% miktarı kendileri ve _Bağlı Getirici_ arasında nasıl pay edileceğini kendi belirler.
 
 {account} adlı hesabın kayıtçısı toplam ücretin {referrerFee}% kadarki kısmını _Bağlı Getirici_ yle paylaşmayı ve {registrarFee}% kadarki kısmını kendine bırakmayı tercih etti.
-                            
+      
+[more information about fee](/help/components/DepositWithdraw_OL)
                             
 #### Bekleyen Ücretler
 {account} adlı hesabın ödediği ücretler her bakım periodu ({maintenanceInterval} seconds) nda sadece ağ, getiriciler ve kayıtçılar arasında paylaştırılır.

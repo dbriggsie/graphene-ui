@@ -160,10 +160,10 @@ class MarketHistory extends React.Component {
             <div className={this.props.className}>
                 <div className="exchange-bordered">
                     <div style={this.props.headerStyle} className="grid-block shrink left-orderbook-header bottom-header">
-                            <div className={cnames(myHistoryClass, {disabled: isNullAccount})} onClick={this._changeTab.bind(this, "my_history")} >
+                            <div className={cnames(myHistoryClass)} onClick={this._changeTab.bind(this, "my_history")} >
                                 <Translate content="exchange.my_history" />
                             </div>
-                        <div className={historyClass} onClick={this._changeTab.bind(this, "history")}>
+                        <div className={cnames(historyClass, {disabled: isNullAccount})} onClick={this._changeTab.bind(this, "history")}>
                             <Translate content="exchange.history" />
                         </div>
                     </div>

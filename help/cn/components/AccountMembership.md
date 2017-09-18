@@ -14,7 +14,8 @@
 _注册人账户_ 是在 {account} 注册时代其支付注册费的账户。注册人账户可自行决定剩余的 {referrerTotalFee}% 手续费如何在它自己及它的 _合作推荐人_ 之间分配。
 
 {account}的注册人账户决定与它的_合作推荐人_分享{referrerFee}%手续费，自己保留{registrarFee}%。
-                            
+
+[more information about fee](/help/components/DepositWithdraw_OL)                         
                             
 #### 待结费用
 {account} 支付的手续费每个维护周期 ({maintenanceInterval} 秒)在网络、推荐人和注册人之间结算一次。下一个维护时间在 {nextMaintenanceTime}。

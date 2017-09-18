@@ -57,14 +57,16 @@ export default class LoginSelector extends React.Component {
         }
         return (
             <div className="grid-content" style={{paddingTop: 30}}>
-                
-                <div className="create_account_index " >
-                    <img src="/app/assets/logo.png" alt=""/> 
-                    <h1 >OpenLedger</h1>
-                    {/*<span>Blockchain Powered. People Driven.</span>*/}
-                    <Translate content="wallet.welcome_to_the" component="h3" />
-                    <Translate content="wallet.create_account_description" component="p" unsafe />
-                    {!airbitz_backup_option?<Translate content="wallet.login_type" component="h4" />:null}
+                <div className="create_account_index" >
+                    {airbitz_backup_option ? <div>
+                        <img src="/app/assets/logo.png" alt=""/>
+                        <h1> OpenLedger </h1>
+                        {/*<span>Blockchain Powered. People Driven.</span>*/}
+                        <Translate content="wallet.welcome_to_the" component="h3"/>
+                        < Translate content="wallet.create_account_description" component="p" unsafe />
+                        {!airbitz_backup_option?<Translate content="wallet.login_type" component="h4" />:null}
+                        </div>:null}
+
                     {!airbitz_backup_option?<div className="index_button_section" >
                         <div className="button"><Link to="/create-account/wallet"><Translate content="wallet.use_wallet" /></Link></div>
                         <div className="button"><Link to="/create-account/password"><Translate content="wallet.use_password" /></Link></div>

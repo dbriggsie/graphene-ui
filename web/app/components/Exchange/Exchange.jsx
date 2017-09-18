@@ -1394,7 +1394,7 @@ class Exchange extends React.Component {
                             />
                         </div>
                         <div style={{padding: !this.props.miniDepthChart ? 0 : "0 0 40px 0"}} className="grid-block no-margin vertical shrink">
-                            <div onClick={this._toggleMiniChart.bind(this)} className="exchange-content-header clickable" style={{textAlign: "left", paddingRight: 10}}>{this.props.miniDepthChart ? <span>&#9660;</span> : <span>&#9650;</span>}</div>
+                            <div onClick={this._toggleMiniChart.bind(this)} className="exchange-content-header clickable" style={{textAlign: "left", paddingRight: 10}}>{this.props.miniDepthChart ? <span>&#9660;</span> : <span>&#9650;</span>}<Translate style={{marginLeft: '5px'}} content="exchange.depth_graphic"  component="span"/></div>
                             {this.props.miniDepthChart ? <DepthHighChart
                                     marketReady={marketReady}
                                     orders={marketLimitOrders}
