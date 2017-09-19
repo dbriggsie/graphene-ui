@@ -73,7 +73,7 @@ class Row extends React.Component {
     }
 
     render() {
-        let {block, fee, color, type, hideOpLabel} = this.props;
+        let {block, fee, color, type, hideOpLabel, operation_id} = this.props;
 
         let last_irreversible_block_num = this.props.dynGlobalObject.get("last_irreversible_block_num" );
         let pending = null;
@@ -87,9 +87,12 @@ class Row extends React.Component {
                 <tr>
                     {hideOpLabel ? null : (
                         <td style={{width: "20%"}} className="left-td column-hide-tiny">
-                            <Link className="inline-block" data-place="bottom" data-tip={counterpart.translate("tooltip.show_block", {block: utils.format_number(this.props.block, 0)})} to={`/block/${this.props.block}`}><TransactionLabel color={color} type={type} /></Link>
+                            <Link className="inline-block" data-place="bottom" data-tip={counterpart.translate("tooltip.show_block", {block: utils.format_number(this.props.block, 0)})} to={`/block/${this.props.block}`}>
+                                <TransactionLabel color={color} type={type} />
+                            </Link>
                         </td>)}
-                    <td style={{padding: "8px 5px"}}>
+                    {hideOpLabel ? null : (<td style={{width: "15%",padding: "0 20px 0 0"}}>id {operation_id}</td>)}
+                    <td style={{padding: "8px 5px"}} >
                         <div>
                             <span>{this.props.info}</span>
                         </div>
@@ -111,6 +114,7 @@ class Operation extends React.Component {
     static defaultProps = {
         op: [],
         current: "",
+        operation_id: "",
         block: null,
         hideOpLabel: false,
         csvExportMode: false
@@ -118,6 +122,7 @@ class Operation extends React.Component {
 
     static propTypes = {
         op: React.PropTypes.array.isRequired,
+        operation_id: React.PropTypes.string,
         current: React.PropTypes.string,
         block: React.PropTypes.number,
         csvExportMode: React.PropTypes.bool
@@ -145,9 +150,11 @@ class Operation extends React.Component {
     }
 
     render() {
-        let {op, current, block} = this.props;
+        let {op, current, block, operation_id} = this.props;
         let line = null, column = null, color = "info";
         let memoComponent = null;
+
+        console.log('@>operation_id ====',operation_id)
 
         switch (ops[op[0]]) { // For a list of trx types, see chain_types.coffee
 
@@ -803,6 +810,7 @@ class Operation extends React.Component {
             <Row
                 block={block}
                 type={op[0]}
+                operation_id={operation_id}
                 color={color}
                 fee={op[1].fee}
                 hideOpLabel={this.props.hideOpLabel}

@@ -193,6 +193,8 @@ class RecentTransactions extends React.Component {
         let history = this._getHistory(accountsList, this.props.showFilters && this.state.filter !== "all" ?  this.state.filter : filter, customFilter).sort(compareOps);
         let historyCount = history.length;
 
+        console.log('@>history',history[0])
+
         style = style ? style : {};
         style.width = "100%";
         style.height = "100%";
@@ -209,9 +211,11 @@ class RecentTransactions extends React.Component {
         const display_history = history.length ?
             history.slice(0, limit)
             .map(o => {
+
                 return (
                     <Operation
                         key={o.id}
+                        operation_id={o.id}
                         op={o.op}
                         result={o.result}
                         block={o.block_num}
@@ -248,6 +252,7 @@ class RecentTransactions extends React.Component {
                             <thead>
                                 <tr>
                                     {compactView ? null : <th className="column-hide-tiny" style={{width: "20%"}}><Translate content="explorer.block.op" /></th>}
+                                    {compactView ? null : <th style={{width: "15%",padding: "0"}} >OPERATION ID</th>}
                                     <th><Translate content="account.votes.info" /></th>
                                 </tr>
                             </thead>
@@ -283,6 +288,7 @@ class RecentTransactions extends React.Component {
                                 return (
                                     <Operation
                                         key={o.id}
+                                        operation_id={o.id}
                                         op={o.op}
                                         result={o.result}
                                         block={o.block_num}
