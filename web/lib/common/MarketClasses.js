@@ -39,7 +39,10 @@ class Asset {
     constructor({asset_id = "1.3.0", amount = 0, precision = 5, real = null} = {}) {
         this.satoshi = precisionToRatio(precision);
         this.asset_id = asset_id;
-        this.setAmount({sats: amount, real});
+        if (real && typeof real === "number") {
+            amount = this.toSats(real);
+        }
+        this.amount = Math.floor(amount);
         this.precision = precision;
     }
 
@@ -52,14 +55,10 @@ class Asset {
     }
 
     setAmount({sats, real}) {
-        if (typeof sats === "string") sats = parseInt(sats, 10);
-        if (typeof real === "string") real = parseFloat(real);
-
         if (typeof sats !== "number" && typeof real !== "number") {
             throw new Error("Invalid arguments for setAmount");
         }
-        if (real && typeof real !== "undefined") {
-            if (typeof real !== "number" || isNaN(real)) throw new Error("Invalid argument 'real' for setAmount");
+        if (typeof real !== "undefined" && typeof real === "number") {
             this.amount = this.toSats(real);
             this._clearCache();
         } else if(typeof sats === "number") {
@@ -92,7 +91,6 @@ class Asset {
     minus(asset) {
         if (asset.asset_id !== this.asset_id) throw new Error("Assets are not the same type");
         this.amount -= asset.amount;
-        this.amount = Math.max(0, this.amount);
         this._clearCache();
     }
 
@@ -118,10 +116,10 @@ class Asset {
             temp = (this.amount * p.quote.amount) / p.base.amount;
             amount = Math.floor(temp);
             /*
-            * Sometimes prices are inexact for the relevant amounts, in the case
-            * of bids this means we need to round up in order to pay 1 sat more
-            * than the floored price, if we don't do this the orders don't match
-            */
+             * Sometimes prices are inexact for the relevant amounts, in the case
+             * of bids this means we need to round up in order to pay 1 sat more
+             * than the floored price, if we don't do this the orders don't match
+             */
             if (isBid && temp !== amount) {
                 amount += 1;
             }
@@ -131,10 +129,10 @@ class Asset {
             temp = (this.amount * p.base.amount) / p.quote.amount;
             amount = Math.floor(temp);
             /*
-            * Sometimes prices are inexact for the relevant amounts, in the case
-            * of bids this means we need to round up in order to pay 1 sat more
-            * than the floored price, if we don't do this the orders don't match
-            */
+             * Sometimes prices are inexact for the relevant amounts, in the case
+             * of bids this means we need to round up in order to pay 1 sat more
+             * than the floored price, if we don't do this the orders don't match
+             */
             if (isBid && temp !== amount) {
                 amount += 1;
             }
@@ -165,17 +163,17 @@ class Asset {
 }
 
 /**
-    * @brief The price struct stores asset prices in the Graphene system.
-    *
-    * A price is defined as a ratio between two assets, and represents a possible exchange rate between those two
-    * assets. prices are generally not stored in any simplified form, i.e. a price of (1000 CORE)/(20 USD) is perfectly
-    * normal.
-    *
-    * The assets within a price are labeled base and quote. Throughout the Graphene code base, the convention used is
-    * that the base asset is the asset being sold, and the quote asset is the asset being purchased, where the price is
-    * represented as base/quote, so in the example price above the seller is looking to sell CORE asset and get USD in
-    * return.
-*/
+ * @brief The price struct stores asset prices in the Graphene system.
+ *
+ * A price is defined as a ratio between two assets, and represents a possible exchange rate between those two
+ * assets. prices are generally not stored in any simplified form, i.e. a price of (1000 CORE)/(20 USD) is perfectly
+ * normal.
+ *
+ * The assets within a price are labeled base and quote. Throughout the Graphene code base, the convention used is
+ * that the base asset is the asset being sold, and the quote asset is the asset being purchased, where the price is
+ * represented as base/quote, so in the example price above the seller is looking to sell CORE asset and get USD in
+ * return.
+ */
 
 class Price {
     constructor({base, quote, real = false} = {}) {
@@ -190,10 +188,10 @@ class Price {
         quote = quote.clone();
         if (real && typeof real === "number") {
             /*
-            * In order to make large numbers work properly, we assume numbers
-            * larger than 100k do not need more than 5 decimals. Without this we
-            * quickly encounter JavaScript floating point errors for large numbers.
-            */
+             * In order to make large numbers work properly, we assume numbers
+             * larger than 100k do not need more than 5 decimals. Without this we
+             * quickly encounter JavaScript floating point errors for large numbers.
+             */
             if (real > 100000) {
                 real = limitByPrecision(real, 5);
             }
@@ -531,10 +529,10 @@ class CallOrder {
         });
 
         /*
-        * The call price is DEBT * MCR / COLLATERAL. This calculation is already
-        * done by the witness_node before returning the orders so it is not necessary
-        * to deal with the MCR (maintenance collateral ratio) here.
-        */
+         * The call price is DEBT * MCR / COLLATERAL. This calculation is already
+         * done by the witness_node before returning the orders so it is not necessary
+         * to deal with the MCR (maintenance collateral ratio) here.
+         */
         this.call_price = new Price({
             base: this.inverted ? quote : base, quote: this.inverted ? base : quote
         });
@@ -601,12 +599,12 @@ class CallOrder {
     }
 
     /*
-    * Assume a USD:BTS market
-    * The call order will always be selling BTS in order to buy USD
-    * The asset being sold is always the collateral, which is call_price.base.asset_id.
-    * The amount being sold depends on how big the debt is, only enough
-    * collateral will be sold to cover the debt
-    */
+     * Assume a USD:BTS market
+     * The call order will always be selling BTS in order to buy USD
+     * The asset being sold is always the collateral, which is call_price.base.asset_id.
+     * The amount being sold depends on how big the debt is, only enough
+     * collateral will be sold to cover the debt
+     */
     amountForSale(isBid = this.isBid()) {
         if (this._for_sale) return this._for_sale;
         // return this._for_sale = new Asset({
