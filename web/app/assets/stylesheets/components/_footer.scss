@@ -1,17 +1,18 @@
 .footer {
+  height: 36px;
+  line-height: 36px;
   text-transform: lowercase;
   font-variant: small-caps;
   font-weight: bold;
-  pre {
-      font-size: 0.8rem;
-  }
   background-color: #777;
-  height: 36px;
-  line-height: 36px;
   vertical-align: middle;
   color: #fff;
   padding-left: 1.75rem;
   padding-right: 1.75rem;
+  /*pre {
+      font-size: 0.8rem;
+  }
+
   a {
     text-decoration: underline;
   }
@@ -31,5 +32,19 @@
   > div > div:last-of-type {
       padding-left: 0.5rem;
       border-left: 1px solid $border-color;
+  }*/
+
+  &>.grid-block{
+    justify-content: center;
+  }
+
+  .popups{
+    position: absolute;
+  }
+
+  .fresh_support{
+    color:inherit;
+    font-weight: bold;
+    font-size: 1.3rem;
   }
 }

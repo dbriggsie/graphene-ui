@@ -9,6 +9,8 @@ import {ChainStore} from "bitsharesjs/es";
 import WalletDb from "stores/WalletDb";
 import TimeAgo from "../Utility/TimeAgo";
 import Icon from "../Icon/Icon";
+import ZfApi from "react-foundation-apps/src/utils/foundation-api";
+import Chat from "../Chat/ChatWrapper";
 
 import Popups from "../Modal/Popups";
 
@@ -36,7 +38,15 @@ class Footer extends React.Component {
        );
     }
 
+    show(modal_id) {
+        this.setState({ open: true }, () => {
+            ZfApi.publish(modal_id, "open");
+        });
+    }
+
     render() {
+
+        let {disableChat, showChat, dockedChat, theme} = this.props;
 
         let block_height = this.props.dynGlobalObject.get("head_block_number");
         let block_time = this.props.dynGlobalObject.get("time") + "+00:00";
@@ -47,15 +57,12 @@ class Footer extends React.Component {
         let version = version_match ? `.${version_match[1]}` : ` ${APP_VERSION}`;
         return (
             <div className="show-for-medium grid-block shrink footer">
+                <a className="align-justify grid-block pointer fresh_support" onClick={(e)=>{e.preventDefault;window.open("https://openledger.freshdesk.com","_blank")}}>  SUPPORT     </a>                
+                <Translate component="div" content="popups.sign_up" className="align-justify grid-block pointer" onClick={()=>{this.show("subscribe")}}  />                
+                <Translate component="div" content="popups.add_coin" className="align-justify grid-block pointer" onClick={()=>{this.show("addcoin")}}  /> 
+                {this.props.rpc_connection_status === "closed" ? <Translate className="align-justify grid-block txtlabel error" component="div" content="footer.connected" /> : null}
+                {this.props.synced ? null : <Translate className="align-justify grid-block txtlabel error" component="div" content="footer.nosync" />}
                 <div className="align-justify grid-block">
-                    <div className="grid-block shrink">
-                        <div className="logo">
-                            <Translate content="footer.title" /> &nbsp; <span className="version">(Powered by BitShares {APP_VERSION})</span>
-                        </div>
-                    </div>
-                    <Popups />
-                    {this.props.synced ? null : <div className="grid-block shrink txtlabel error"><Translate content="footer.nosync" />&nbsp; &nbsp;</div>}
-                    {this.props.rpc_connection_status === "closed" ? <div className="grid-block shrink txtlabel error"><Translate content="footer.connection" />&nbsp; &nbsp;</div> : null}
                     {this.props.backup_recommended ? <span>
                         <div className="grid-block">
                             <a className="shrink txtlabel facolor-alert"
@@ -65,20 +72,25 @@ class Footer extends React.Component {
                             &nbsp;&nbsp;
                         </div>
                     </span> : null}
-                    {this.props.backup_brainkey_recommended ? <span>
-                        <div className="grid-block">
-                            <a className="grid-block shrink txtlabel facolor-alert" onClick={this.onBackupBrainkey.bind(this)}><Translate content="footer.brainkey" /></a>
-                            &nbsp;&nbsp;
-                        </div>
-                    </span>:null}
-                    {block_height ?
-                        (<div className="grid-block shrink">
-                            <Translate content="footer.block" /> &nbsp;
-                            <pre>#{block_height} </pre> &nbsp;
-                            { now - bt > 5 ? <TimeAgo ref="footer_head_timeago" time={block_time} /> : <span data-tip="Synchronized" data-place="left"><Icon name="checkmark-circle" /></span> }
-                        </div>) :
-                        <div className="grid-block shrink"><Translate content="footer.loading" /></div>}
+                </div>                
+                <div className="align-justify grid-block">  
+                {block_height ?
+                    (<div className="grid-block shrink">
+                        <Translate content="footer.block" /> &nbsp;
+                        <pre>#{block_height} </pre> &nbsp;
+                        { now - bt > 5 ? <TimeAgo ref="footer_head_timeago" time={block_time} /> : <span data-tip="Synchronized" data-place="left"><Icon name="checkmark-circle" /></span> }
+                    </div>) :
+                    <div className="grid-block shrink"><Translate content="footer.loading" /></div>
+                }
                 </div>
+                <div className="align-justify grid-block">                             
+                    <Chat
+                        showChat={showChat}
+                        disable={disableChat}
+                        dockedChat={dockedChat}
+                    />  
+                </div>
+                <Popups />
             </div>
         );
     }

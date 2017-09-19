@@ -14,7 +14,6 @@ import SyncError from "./components/SyncError";
 import LoadingIndicator from "./components/LoadingIndicator";
 import Header from "components/Layout/Header";
 import MobileMenu from "components/Layout/MobileMenu";
-import Chat from "./components/Chat/ChatWrapper";
 import ReactTooltip from "react-tooltip";
 import NotificationSystem from "react-notification-system";
 import TransactionConfirm from "./components/Blockchain/TransactionConfirm";
@@ -160,17 +159,10 @@ class App extends React.Component {
                     <MobileMenu isUnlocked={this.state.isUnlocked} id="mobile-menu"/>
                     <div className="grid-block">
                         <div className="grid-block vertical">
-                            {this.props.children}                       </div>
-                        <div className="grid-block shrink" style={{overflow: "hidden"}}>
-                            <Chat
-                                showChat={showChat}
-                                disable={disableChat}
-                                footerVisible={showFooter}
-                                dockedChat={dockedChat}
-                            />
+                            {this.props.children}                       
                         </div>
                     </div>
-                    {showFooter ? <Footer synced={this.state.synced}/> : null}
+                    {showFooter ? <Footer synced={this.state.synced} showChat={showChat} disable={disableChat} dockedChat={dockedChat} /> : null}
                     <ReactTooltip ref="tooltip" place="top" type={theme === "lightTheme" ? "dark" : "light"} effect="solid"/>
                 </div>
             );

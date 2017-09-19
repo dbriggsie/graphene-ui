@@ -150,7 +150,7 @@ class Popups extends Component {
     render() {
 
         return (
-            <div className="popups grid-block" >
+            <div className="popups" >
                 <Modal onClose={this.onClose.bind(this)} id={"subscribe"} overlay={true} className="test">
                     <Trigger close={"subscribe"}>
                         <a href="#" className="close-button">&times;</a>
@@ -190,9 +190,7 @@ class Popups extends Component {
                             {this.state.answer}                         
                         </form>
                     </div>      
-                </Modal>                
-                <div className="grid-block pointer" onClick={()=>{this.show("subscribe")}} >{counterpart.translate("popups.sign_up")}</div>
-                <div className="grid-block pointer" onClick={()=>{this.show("addcoin")}} >{counterpart.translate("popups.add_coin")}</div>
+                </Modal>           
             </div>
         );
     }
@@ -234,7 +232,10 @@ class Youtube extends Component {
     }
 }
 
-
+/*
+                <div className="grid-block pointer" onClick={()=>{this.show("subscribe")}} >{counterpart.translate("popups.sign_up")}</div>
+                <div className="grid-block pointer" onClick={()=>{this.show("addcoin")}} >{counterpart.translate("popups.add_coin")}</div>
+*/
 
 
 

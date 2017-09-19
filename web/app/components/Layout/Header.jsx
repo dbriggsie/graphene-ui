@@ -145,7 +145,6 @@ class Header extends React.Component {
     }
 
     onSwitchTraderMode() {
-        console.log('@>',111)
         if(SettingsStore.getState().settings.get("traderMode")){
             SettingsActions.changeSetting({setting: "traderMode", value: false});
         }else{
@@ -176,7 +175,6 @@ class Header extends React.Component {
     render() {
         let {active} = this.state;
         let {linkedAccounts, currentAccount, starredAccounts, traderMode, passwordLogin} = this.props;
-        console.log('@>traderMode',traderMode)
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
 
@@ -372,7 +370,6 @@ class Header extends React.Component {
 
         const enableDepositWithdraw = Apis.instance().chain_id.substr(0, 8) === "4018d784";
 
-        console.log('@>hasOrders',hasOrders)
         return (
             <div className="header menu-group primary">
                 <div className="show-for-small-only">
