@@ -252,7 +252,9 @@ class RecentTransactions extends React.Component {
                             <thead>
                                 <tr>
                                     {compactView ? null : <th className="column-hide-tiny" style={{width: "20%"}}><Translate content="explorer.block.op" /></th>}
+
                                     {compactView ? null : <th style={{width: "15%",padding: "0"}} >OPERATION ID</th>}
+
                                     <th><Translate content="account.votes.info" /></th>
                                 </tr>
                             </thead>
