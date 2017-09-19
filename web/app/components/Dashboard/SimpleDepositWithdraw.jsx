@@ -141,11 +141,16 @@ class DepositWithdrawContent extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        if (this.state.to_withdraw.getAmount() === 0) {
+        if (this.state.to_withdraw.getAmount() === 0  ||
+            this.state.toAddress.length == 0 ||
+            !this.state.validAddress
+        ) {
             return this.setState({
                 amountError: "transfer.errors.pos"
             });
         }
+
+
 
         if (!this.props.intermediateAccount) return;
 
@@ -201,6 +206,7 @@ class DepositWithdrawContent extends React.Component {
     }
 
     _updateAmount() {
+
         const { feeAmount } = this.state;
         const currentBalance = this._getCurrentBalance();
 
@@ -307,6 +313,7 @@ class DepositWithdrawContent extends React.Component {
     }
 
     _onInputAmount(e) {
+
         try {
             this.state.to_withdraw.setAmount({
                 real: parseFloat(e.target.value || 0)
@@ -386,7 +393,7 @@ class DepositWithdrawContent extends React.Component {
         if(this.state.feeAmount){
             fee_count = this.state.feeAmount.getAmount({real: true})
         }
-        
+
         return (
             <div>
                 <p><Translate content="gateway.withdraw_funds" asset={assetName} /></p>
@@ -407,7 +414,7 @@ class DepositWithdrawContent extends React.Component {
                 </div>
 
                 <div className="SimpleTrade__withdraw-row">
-                     <AmountSelector 
+                     <AmountSelector
                         refCallback={this.setNestedRef.bind(this)}
                         label="transfer.fee"
                         disabled={true}
@@ -415,12 +422,12 @@ class DepositWithdrawContent extends React.Component {
                         onChange={this.onFeeChanged.bind(this)}
                         asset={this.state.fee_asset_id}
                         assets={fee_asset_types}
-                        tabIndex={10} 
-                    /> 
+                        tabIndex={10}
+                    />
                         <div className="inline-label input-wrapper">
                            {/* <input type="text" value={currentFee.getAmount({real: true})} /> */}
 
-                           {/*<AmountSelector 
+                           {/*<AmountSelector
                                 refCallback={this.setNestedRef.bind(this)}
                                 label="transfer.fee"
                                 disabled={true}
@@ -428,10 +435,10 @@ class DepositWithdrawContent extends React.Component {
                                 onChange={this.onFeeChanged.bind(this)}
                                 asset={this.state.fee_asset_id}
                                 assets={fee_asset_types}
-                                tabIndex={10} 
-                            /> */} 
+                                tabIndex={10}
+                            /> */}
 
-                           
+
 
                             <div className="form-label select floating-dropdown">
                                 {/*<div className="dropdown-wrapper inactive">
@@ -567,7 +574,7 @@ class DepositWithdrawContent extends React.Component {
         // });
 
 
-        /*let result_withdrawal = 0; 
+        /*let result_withdrawal = 0;
         if(currentBalance){
             result_withdrawal = currentBalance.get("balance");
             if()
