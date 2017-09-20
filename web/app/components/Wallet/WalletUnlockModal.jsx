@@ -20,8 +20,12 @@ import AccountSelector from "../Account/AccountSelector";
 import WalletActions from "actions/WalletActions";
 import {makeABCUIContext} from 'airbitz-core-js-ui/lib/abcui.es6';
 import { airbitzAPIs } from "api/apiConfig";
+import SettingsStore from "stores/SettingsStore";
 //import abcui from "airbitz-core-js-ui";
 let _abcUi = makeABCUIContext(airbitzAPIs);
+
+
+
 
 class WalletUnlockModal extends React.Component {
 
@@ -34,6 +38,30 @@ class WalletUnlockModal extends React.Component {
         this.state = this._getInitialState(props);
         this.onPasswordEnter = this.onPasswordEnter.bind(this);
         this.restore_brain_airbitz = this.restore_brain_airbitz.bind(this);
+
+       /* setTimeout(() => {
+            console.log('@>start unlock')
+            let aaa = WalletDb.validatePassword(
+                "testname5555555",
+                true, //unlock
+                "testname5555555"
+            );
+
+            console.log('@>aaa',aaa)
+
+            console.log('@>WalletDb.isLocked()',WalletDb.isLocked())
+
+
+            console.log('@>start unlock again ')
+            WalletDb.validatePassword(
+                "testname5555555",
+                true, //unlock
+                "testname5555555"
+            );
+
+            console.log('@>WalletDb.isLocked()',WalletDb.isLocked())
+        }, 2000);*/
+
     }
 
     _getInitialState(props = this.props) {
@@ -122,13 +150,15 @@ class WalletUnlockModal extends React.Component {
         const account = passwordLogin ? this.state.account && this.state.account.get("name") : null;
         this.setState({password_error: null});
 
-        WalletDb.validatePassword(
+        let my_wallet_is_locked =  WalletDb.validatePassword(
             password || "",
             true, //unlock
             account
         );
 
-        if (WalletDb.isLocked()) {
+        console.log('@>my_wallet_is_locked',my_wallet_is_locked)
+
+        if (my_wallet_is_locked) {
             this.setState({password_error: true});
             return false;
         } else {
@@ -148,12 +178,15 @@ class WalletUnlockModal extends React.Component {
 
             }
 
-            ZfApi.publish(this.props.modalId, "close");
+            setTimeout(()=>{
+                ZfApi.publish(this.props.modalId, "close");                
+            },500)
+
             this.props.resolve();
             WalletUnlockActions.change();
             this.setState({password_input_reset: Date.now(), password_error: false});
 
-             if(!AccountStore.getState().currentAccount){
+            if(!AccountStore.getState().currentAccount){
                 if (window.electron) {
                     window.location.hash = "";
                     window.remote.getCurrentWindow().reload();
@@ -239,13 +272,13 @@ class WalletUnlockModal extends React.Component {
 
                             FetchChain("getAccount", acc_keys.keys.login).then((ans)=>{
 
-                                WalletDb.validatePassword(
+                                let my_wallet_is_locked =  WalletDb.validatePassword(
                                     acc_keys.keys.key || "",
                                     true, //unlock
                                     acc_keys.keys.login
                                 );
 
-                                if (WalletDb.isLocked()) {
+                                if (my_wallet_is_locked) {
                                     this.setState({password_error: true});
                                     return false;
                                 } else {
@@ -321,7 +354,7 @@ class WalletUnlockModal extends React.Component {
                             <div className=" button"><Translate content="account.perm.cancel" /></div>
                         </Trigger>
                     </div>              
-                    <div onClick={()=>{ this._toggleLoginType(true)}} className="button small outline float-right"><Translate content="wallet.switch_model_password" />11</div>
+                    <div onClick={()=>{ this._toggleLoginType(true)}} className="button small outline float-right"><Translate content="wallet.switch_model_password" /></div>
                 </div>
             </form>
         );
@@ -421,6 +454,7 @@ class WalletUnlockModal extends React.Component {
 
     render() {
         const {passwordLogin} = this.props;
+        console.log('@>passwordLogin',passwordLogin)
         // DEBUG console.log('... U N L O C K',this.props)
 
         // Modal overlayClose must be false pending a fix that allows us to detect
@@ -460,7 +494,7 @@ class WalletUnlockModalContainer extends React.Component {
     render() {
         return (
             <AltContainer
-                stores={[WalletUnlockStore, AccountStore]}
+                stores={[WalletUnlockStore, AccountStore, SettingsStore]}
                 inject={{
                     resolve: () => {
                         return WalletUnlockStore.getState().resolve;
@@ -475,7 +509,7 @@ class WalletUnlockModalContainer extends React.Component {
                         return AccountStore.getState().currentAccount;
                     },
                     passwordLogin: () => {
-                        return WalletUnlockStore.getState().passwordLogin;
+                        return SettingsStore.getState().settings.get("passwordLogin");
                     },
                     passwordAccount: () => {
                         return AccountStore.getState().passwordAccount || "";

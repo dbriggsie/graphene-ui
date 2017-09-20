@@ -45,11 +45,7 @@ class BackupSettings extends React.Component {
                 pass_acc.passwordAccount = airbitzkey.getAttribute("acc");
             }
 
-            console.log('@>create_backup_for_airbitz pass_acc', pass_acc)
-
             if (pass_acc && pass_acc.accountsLoaded && pass_acc.passwordAccount && pass_acc.passwordAccount) {
-
-                console.log('@>start openLoginWindow')
 
                 _abcUi.openLoginWindow(function(error, account) {
 
@@ -92,6 +88,8 @@ class BackupSettings extends React.Component {
     render() {
 
         let { passwordLogin, passwordAccount, accountsLoaded } =  this.props;
+
+        console.log('@>passwordLogin',passwordLogin)
         if (!accountsLoaded&&!passwordLogin) {
             return (
                <p><Translate content="settings.not_yet_have_account" /></p> 

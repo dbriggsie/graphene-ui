@@ -59,7 +59,6 @@ class PrivateKeyStore extends BaseStore {
         this.setState(this._getInitialState());
         let keys = Immutable.Map().asMutable();
         let p = idb_helper.cursor("private_keys", cursor => {
-
             if( ! cursor) {
                 this.setState({ keys: keys.asImmutable() });
                 return;

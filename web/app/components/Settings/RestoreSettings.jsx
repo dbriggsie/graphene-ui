@@ -5,6 +5,7 @@ import {CreateWalletFromBrainkey} from "../Wallet/WalletCreate";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import SettingsActions from "actions/SettingsActions";
+import WalletUnlockActions from "actions/WalletUnlockActions";
 
 export default class RestoreSettings extends React.Component {
 
@@ -21,6 +22,7 @@ export default class RestoreSettings extends React.Component {
             setting: "passwordLogin",
             value: false
         });
+        WalletUnlockActions.lock();
     }
 
     _changeType(e) {

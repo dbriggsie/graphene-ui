@@ -212,17 +212,6 @@ class Header extends React.Component {
             </a>
         );
 
-        /*let switchTraderMode = (
-            <div data-tip={counterpart.translate("header.trader_mode_tip")} className="grp-menu-item" onClick={this.onSwitchTraderMode}>
-                <div className="button">
-                    <Icon className="icon-14px" name="assets"/>
-                    <span style={{paddingLeft: 10}}>{traderMode?<Translate content="header.switch_basic" />:<Translate content="header.switch_advanced" />}</span>
-                </div>
-            </div> 
-        );*/
-
-
-
         let switchTraderMode = (
             <ActionSheet.Button title="" setActiveState={() => {}}  >
                 <a className="grp-menu-item switch_button" onClick={this.onSwitchTraderMode} >
@@ -241,12 +230,19 @@ class Header extends React.Component {
 
         //@#>
         let login_with_password = myAccountCount === 0 ? (
-            <ActionSheet.Button title="" setActiveState={() => {}}>
+            <ActionSheet.Button title="" setActiveState={(e) => {
+
+
+                SettingsActions.changeSetting({
+                    setting: "passwordLogin",
+                    value: true
+                });
+
+
+                WalletUnlockActions.unlock();
+            }}>
                 <a className="button create-account" 
-                    onClick={() => {
-                            SettingsActions.changeSetting({setting: "passwordLogin", value: true});
-                            WalletUnlockActions.unlock.defer();
-                        }} 
+                    onClick={(e) => e.preventDefault()}
                     style={{border: "none"}} >
                     <Icon className="icon-14px" name="key"/> <Translate content="header.login" />
                 </a>
