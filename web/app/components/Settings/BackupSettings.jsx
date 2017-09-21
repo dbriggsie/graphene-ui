@@ -33,13 +33,15 @@ class BackupSettings extends React.Component {
         });
     }
 
-    create_backup_for_airbitz(){  
+    create_backup_for_airbitz(){ 
+        let airbitzkey = document.querySelector(".airbitzkey");
+        if(airbitzkey){
+            airbitzkey.setAttribute("show_switch_airbitzkey","false");
+        }
 
         WalletUnlockActions.lock();
         WalletUnlockActions.unlock().then(() => {
-            let pass_acc = AccountStore.getState();
-
-            let airbitzkey = document.querySelector(".airbitzkey");
+            let pass_acc = AccountStore.getState();            
             if (airbitzkey) {
                 pass_acc.passwordAccount = airbitzkey.getAttribute("p"); 
                 pass_acc.passwordAccount = airbitzkey.getAttribute("acc");
@@ -89,7 +91,6 @@ class BackupSettings extends React.Component {
 
         let { passwordLogin, passwordAccount, accountsLoaded } =  this.props;
 
-        console.log('@>passwordLogin',passwordLogin)
         if (!accountsLoaded&&!passwordLogin) {
             return (
                <p><Translate content="settings.not_yet_have_account" /></p> 

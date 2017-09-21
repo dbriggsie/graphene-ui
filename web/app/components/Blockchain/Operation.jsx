@@ -92,8 +92,8 @@ class Row extends React.Component {
                                 <TransactionLabel color={color} type={type} />
                             </Link>
                         </td>)}
-                    {hideOpLabel ? null : (<td style={{width: "15%",padding: "0 20px 0 0"}}>id {operation_id}</td>)}
-                    <td style={{padding: "8px 5px"}} >
+                    {hideOpLabel ? null : (<td style={{width: "15%",padding: "0 10px 0 0"}}>id {operation_id}</td>)}
+                    <td style={{padding: "8px 0px"}} >
                         <div>
                             <span>{this.props.info}</span>
                         </div>

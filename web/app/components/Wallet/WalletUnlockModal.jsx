@@ -38,30 +38,6 @@ class WalletUnlockModal extends React.Component {
         this.state = this._getInitialState(props);
         this.onPasswordEnter = this.onPasswordEnter.bind(this);
         this.restore_brain_airbitz = this.restore_brain_airbitz.bind(this);
-
-       /* setTimeout(() => {
-            console.log('@>start unlock')
-            let aaa = WalletDb.validatePassword(
-                "testname5555555",
-                true, //unlock
-                "testname5555555"
-            );
-
-            console.log('@>aaa',aaa)
-
-            console.log('@>WalletDb.isLocked()',WalletDb.isLocked())
-
-
-            console.log('@>start unlock again ')
-            WalletDb.validatePassword(
-                "testname5555555",
-                true, //unlock
-                "testname5555555"
-            );
-
-            console.log('@>WalletDb.isLocked()',WalletDb.isLocked())
-        }, 2000);*/
-
     }
 
     _getInitialState(props = this.props) {
@@ -80,11 +56,22 @@ class WalletUnlockModal extends React.Component {
 
     componentWillReceiveProps(np) {
 
+        let airbitzkey = document.querySelector(".airbitzkey");
+
         if (np.passwordAccount && !this.state.account_name) {
             this.setState({
                 account_name: np.passwordAccount
             });
         }
+
+
+        if(airbitzkey&&airbitzkey.getAttribute("show_switch_airbitzkey")=="false"){
+            let show_switch_airbitzkey = JSON.parse(airbitzkey.getAttribute("show_switch_airbitzkey"));
+            this.setState({
+                airbitz_mode: show_switch_airbitzkey
+            });
+        }
+        
     }
 
     shouldComponentUpdate(np, ns) {
@@ -150,54 +137,67 @@ class WalletUnlockModal extends React.Component {
         const account = passwordLogin ? this.state.account && this.state.account.get("name") : null;
         this.setState({password_error: null});
 
-        let my_wallet_is_locked =  WalletDb.validatePassword(
-            password || "",
+        WalletDb.validatePassword(
+            password,
             true, //unlock
             account
         );
+        setTimeout(()=>{
 
-        console.log('@>my_wallet_is_locked',my_wallet_is_locked)
+            let account_is_valid = WalletDb.validatePassword(
+                password,
+                true, //unlock
+                account
+            );
 
-        if (my_wallet_is_locked) {
-            this.setState({password_error: true});
-            return false;
-        } else {
-            if (!passwordLogin) {
-                this.refs.password_input.clear();
+            if (!account_is_valid) {
+                this.setState({password_error: true});
+                return false;
             } else {
-                this.refs.password_input.value = "";
-                AccountActions.setPasswordAccount(account); //@>
-                let airbitzkey = document.querySelector(".airbitzkey");
-                if(airbitzkey){
-                    airbitzkey.setAttribute("acc",account);
-                    airbitzkey.setAttribute("p",password);
-                    setTimeout(()=>{
-                        airbitzkey.setAttribute("p","");
-                    },90000);
+                if (!passwordLogin) {
+                    this.refs.password_input.clear();
+                } else {
+                    this.refs.password_input.value = "";
+                    AccountActions.setPasswordAccount(account); //@>
+                    let airbitzkey = document.querySelector(".airbitzkey");
+                    if(airbitzkey){
+                        airbitzkey.setAttribute("acc",account);
+                        airbitzkey.setAttribute("p",password);
+                        setTimeout(()=>{
+                            airbitzkey.setAttribute("p","");
+                        },90000);
+                    }
+
                 }
 
+                setTimeout(()=>{
+                    ZfApi.publish(this.props.modalId, "close");                
+                },500)
+
+                this.props.resolve();
+                WalletUnlockActions.change();
+                this.setState({password_input_reset: Date.now(), password_error: false});
+
+                if(!AccountStore.getState().currentAccount){
+                    if (window.electron) {
+                        window.location.hash = "";
+                        window.remote.getCurrentWindow().reload();
+                    } else{
+                        console.log('@>AccountStore.getState().currentAccount',AccountStore.getState().currentAccount)
+                        //window.location.href = "/dashboard";
+                    } 
+                }
+                
+
             }
 
-            setTimeout(()=>{
-                ZfApi.publish(this.props.modalId, "close");                
-            },500)
 
-            this.props.resolve();
-            WalletUnlockActions.change();
-            this.setState({password_input_reset: Date.now(), password_error: false});
 
-            if(!AccountStore.getState().currentAccount){
-                if (window.electron) {
-                    window.location.hash = "";
-                    window.remote.getCurrentWindow().reload();
-                } else{
-                    console.log('@>AccountStore.getState().currentAccount',AccountStore.getState().currentAccount)
-                    //window.location.href = "/dashboard";
-                } 
-            }
-            
+        },300)
 
-        }
+
+
+
         return false;
     }
 
@@ -272,13 +272,13 @@ class WalletUnlockModal extends React.Component {
 
                             FetchChain("getAccount", acc_keys.keys.login).then((ans)=>{
 
-                                let my_wallet_is_locked =  WalletDb.validatePassword(
+                                let account_is_valid =  WalletDb.validatePassword(
                                     acc_keys.keys.key || "",
                                     true, //unlock
                                     acc_keys.keys.login
                                 );
 
-                                if (my_wallet_is_locked) {
+                                if (!account_is_valid) {
                                     this.setState({password_error: true});
                                     return false;
                                 } else {
@@ -305,6 +305,7 @@ class WalletUnlockModal extends React.Component {
     }
 
     _switch_brain_airbitz(mode){
+        localStorage.setItem("airbitz_backup_option",!!mode+"");
         this.setState({
             airbitz_mode:!!mode
         });
@@ -374,6 +375,7 @@ class WalletUnlockModal extends React.Component {
         let tabIndex = 1;
 
         let acc_length = AccountStore.getMyAccounts().length;
+        let airbitzkey = document.querySelector(".airbitzkey");
 
         return (
             <form onSubmit={this.onPasswordEnter} noValidate style={{paddingTop: 20}}>
@@ -444,9 +446,19 @@ class WalletUnlockModal extends React.Component {
                         <Trigger close={this.props.modalId}>
                             <div tabIndex={tabIndex++} className=" button"><Translate content="account.perm.cancel" /></div>
                         </Trigger>
-                    </div>
-                    <Translate onClick={()=>{ this._toggleLoginType(false)}} component="div" content="wallet.switch_model_wallet" className="button small outline float-right airbitz_button" />
-                    <Translate onClick={()=>{this._switch_brain_airbitz(airbitz_mode?false:true)}} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />
+                    </div>                    
+                    {
+                        (()=>{
+                            if(airbitzkey&&airbitzkey.getAttribute("show_switch_airbitzkey")=="false"){
+                                return null;
+                            }else {
+                                return [
+                                <Translate onClick={()=>{ this._toggleLoginType(false)}} component="div" content="wallet.switch_model_wallet" className="button small outline float-right airbitz_button" />,
+                                <Translate onClick={()=>{this._switch_brain_airbitz(airbitz_mode?false:true)}} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />
+                                ];
+                            }
+                        })()                    
+                    }
                 </div>
             </form>
         );

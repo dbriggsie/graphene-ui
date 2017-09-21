@@ -101,6 +101,11 @@ class Header extends React.Component {
 
     _toggleLock(e) {
         e.preventDefault();
+        let airbitzkey = document.querySelector(".airbitzkey");
+        if(airbitzkey){
+            airbitzkey.setAttribute("show_switch_airbitzkey","true");
+        }
+
         if (WalletDb.isLocked()) {
             WalletUnlockActions.unlock().then(() => {
                 AccountActions.tryToSetCurrentAccount();

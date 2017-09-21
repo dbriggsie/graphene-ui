@@ -903,7 +903,12 @@ class Exchange extends React.Component {
             showCallLimit = false, latestPrice, changeClass;
 
 
-        let isNullAccount = currentAccount.get("id") === "1.2.3";
+        let isNullAccount = currentAccount.get("id") === "1.2.3"; //@>
+        if(isNullAccount&&AccountStore.getState().passwordAccount){
+            isNullAccount =false;
+        }
+
+        console.log('@>AccountStore.getState().currentAccount',AccountStore.getState())
 
         const showVolumeChart = this.props.viewSettings.get("showVolumeChart", true);
 

@@ -84,17 +84,6 @@ export default class ChatWrapper extends React.Component {
             content = <Chat {...this.props} />;
         }
 
-        return (
-            <div
-                id="chatbox"
-                className={dockedChat ? "chat-docked grid-block" : "chat-floating"}
-                style={{
-                    bottom: this.props.footerVisible && !dockedChat ? 36 : null,
-                    height: !dockedChat ? 35 : null
-                }}
-            >
-                {content}
-            </div>
-        );
+        return content;
     }
 }
