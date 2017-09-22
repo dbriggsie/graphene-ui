@@ -584,13 +584,6 @@ class SimpleTradeContent extends React.Component {
                         <h3><Translate content="simple_trade.sell_for" sell={assetName} for={activeAssetName} /></h3>
                     }
 
-                    <div style={{paddingBottom: 10}}>
-                        {isBuy ? <Translate content="simple_trade.current_sell" /> : <Translate content="simple_trade.current_receive" />}:
-                    </div>
-                    <div style={{overflowY: "auto", maxHeight: 188, padding: "0 10px", border: "1px solid black"}}>
-                        {assetSelections}
-                    </div>
-
                     {/* {this._renderCurrentBalance()} */}
 
                 </div>
@@ -604,7 +597,7 @@ class SimpleTradeContent extends React.Component {
                         <div className="SimpleTrade__withdraw-row">
                             <div>
                                 <div className="SimpleTrade__help-text">
-                                    <div data-tip={counterpart.translate("tooltip.apply_price")} onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid ? highestBid.invert() : highestBid)} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
+                                    <div data-tip={counterpart.translate("tooltip.apply_price")} onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid )} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
                                         <span>{isBuy ? lowestAsk && lowestAsk.toReal() : highestBid && highestBid.toReal()} {isBuy ? activeAssetName : assetName}</span>
                                     </div>
                                 </div>
