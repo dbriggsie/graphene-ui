@@ -214,7 +214,9 @@ class WalletUnlockModal extends React.Component {
         }else if(airbitz_password_input_1!==airbitz_password_input_2){
             this.setState({password_error: true});
         }else if(airbitz_password_input_1==airbitz_password_input_2){
-            this.setState({password_error: false},()=>{              
+            this.setState({password_error: false},()=>{     
+
+            console.log('@>111')         
 
                 _abcUi.openLoginWindow((error, account) =>{
                     
@@ -226,6 +228,7 @@ class WalletUnlockModal extends React.Component {
                     if(air_ids.length){
                         let last_air_key = air_ids[air_ids.length-1];
                         let acc_keys = account.getWallet(last_air_key);
+                        console.log('@>acc_keys',acc_keys)
 
                         if(acc_keys&&acc_keys.keys&&acc_keys.keys.model==="wallet"&&acc_keys.keys.key){
                             WalletActions.setWallet("default_wallet_airbitz", airbitz_password_input_1, acc_keys.keys.key).then((ans)=>{
@@ -272,27 +275,40 @@ class WalletUnlockModal extends React.Component {
 
                             FetchChain("getAccount", acc_keys.keys.login).then((ans)=>{
 
-                                let account_is_valid =  WalletDb.validatePassword(
-                                    acc_keys.keys.key || "",
+                                WalletDb.validatePassword(
+                                    acc_keys.keys.key,
                                     true, //unlock
                                     acc_keys.keys.login
                                 );
 
-                                if (!account_is_valid) {
-                                    this.setState({password_error: true});
-                                    return false;
-                                } else {
-                                    AccountActions.setPasswordAccount(acc_keys.keys.login); 
-                                    ZfApi.publish(this.props.modalId, "close");
-                                    this.props.resolve();
-                                    WalletUnlockActions.change();
-                                    this.setState({password_input_reset: Date.now(), password_error: false});
+                                console.log('@>acc_keys.keys.key',acc_keys.keys.key)
+                                console.log('@>acc_keys.keys.login',acc_keys.keys.login)
+                                setTimeout(()=>{
 
-                                    SettingsActions.changeSetting({
-                                        setting: "passwordLogin",
-                                        value: true
-                                    });
-                                }
+                                    let account_is_valid =  WalletDb.validatePassword(
+                                        acc_keys.keys.key || "",
+                                        true, //unlock
+                                        acc_keys.keys.login
+                                    );
+
+                                    if (!account_is_valid) {
+                                        this.setState({password_error: true});
+                                        return false;
+                                    } else {
+                                        AccountActions.setPasswordAccount(acc_keys.keys.login); 
+                                        ZfApi.publish(this.props.modalId, "close");
+                                        this.props.resolve();
+                                        WalletUnlockActions.change();
+                                        this.setState({password_input_reset: Date.now(), password_error: false});
+
+                                        SettingsActions.changeSetting({
+                                            setting: "passwordLogin",
+                                            value: true
+                                        });
+                                    }
+
+                                },300)
+
 
                             }).catch((err)=>{
                                 console.log('@>err',err)

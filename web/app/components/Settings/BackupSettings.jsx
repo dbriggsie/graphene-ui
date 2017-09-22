@@ -44,10 +44,11 @@ class BackupSettings extends React.Component {
             let pass_acc = AccountStore.getState();            
             if (airbitzkey) {
                 pass_acc.passwordAccount = airbitzkey.getAttribute("p"); 
-                pass_acc.passwordAccount = airbitzkey.getAttribute("acc");
+                pass_acc.currentAccount = airbitzkey.getAttribute("acc");
+                console.log('@>',pass_acc)
             }
 
-            if (pass_acc && pass_acc.accountsLoaded && pass_acc.passwordAccount && pass_acc.passwordAccount) {
+            if (pass_acc && pass_acc.accountsLoaded && pass_acc.passwordAccount && pass_acc.currentAccount) {
 
                 _abcUi.openLoginWindow(function(error, account) {
 
@@ -62,7 +63,7 @@ class BackupSettings extends React.Component {
                     account.createWallet(airbitzAPIs.walletType, {
                         key: pass_acc.passwordAccount,
                         model: "account",
-                        login: pass_acc.passwordAccount
+                        login: pass_acc.currentAccount
                     }, function(err, id) {
                         if (error) {
                             console.log(error)

@@ -35,7 +35,7 @@ class CreateAccount extends React.Component {
             show_identicon: false,
             airbitz_backup_option: JSON.parse(localStorage.getItem("airbitz_backup_option")),
             user_password: "",
-           // step: 3
+           // step: 2
             step: 1
         };
         this.onFinishConfirm = this.onFinishConfirm.bind(this);

@@ -57,7 +57,9 @@ class Footer extends React.Component {
         let version = version_match ? `.${version_match[1]}` : ` ${APP_VERSION}`;
         return (
             <div className="show-for-medium grid-block shrink footer">
-                <a className="align-justify grid-block pointer fresh_support" onClick={(e)=>{e.preventDefault;window.open("https://openledger.freshdesk.com","_blank")}}>  SUPPORT     </a>                
+                <div className="grid-block">  
+                    <a className="pointer fresh_support" onClick={(e)=>{e.preventDefault;window.open("https://openledger.freshdesk.com","_blank")}}>  SUPPORT     </a>                
+                </div>
                 <Translate component="div" content="popups.sign_up" className="align-justify grid-block pointer" onClick={()=>{this.show("subscribe")}}  />                
                 <Translate component="div" content="popups.add_coin" className="align-justify grid-block pointer" onClick={()=>{this.show("addcoin")}}  /> 
                 {this.props.rpc_connection_status === "closed" ? <Translate className="align-justify grid-block txtlabel error" component="div" content="footer.connected" /> : null}
@@ -65,7 +67,7 @@ class Footer extends React.Component {
                 <div className="align-justify grid-block">
                     {this.props.backup_recommended ? <span>
                         <div className="grid-block">
-                            <a className="shrink txtlabel facolor-alert"
+                            <a className="shrink facolor-alert"
                                 data-tip="Please understand that you are responsible for making your own backup&hellip;"
                                 data-type="warning"
                                 onClick={this.onBackup.bind(this)}><Translate content="footer.backup" /></a>
@@ -77,13 +79,13 @@ class Footer extends React.Component {
                 {block_height ?
                     (<div className="grid-block shrink">
                         <Translate content="footer.block" /> &nbsp;
-                        <pre>#{block_height} </pre> &nbsp;
+                        <span className="footer_number" >#{block_height} </span> &nbsp;
                         { now - bt > 5 ? <TimeAgo ref="footer_head_timeago" time={block_time} /> : <span data-tip="Synchronized" data-place="left"><Icon name="checkmark-circle" /></span> }
                     </div>) :
                     <div className="grid-block shrink"><Translate content="footer.loading" /></div>
                 }
                 </div>
-                <div className="align-justify grid-block">                             
+                <div className="grid-block">                             
                     <Chat
                         showChat={showChat}
                         disable={disableChat}
