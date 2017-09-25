@@ -4,11 +4,9 @@
     text-align: center;
 
     &.chat-floating {
-        position: fixed;
-        right: 5rem;
-        display: block;
-        width: auto;
+        position: absolute;
         bottom: 0;
+        right: 0;
     }
     &.chat-docked {
     }

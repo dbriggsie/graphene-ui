@@ -257,7 +257,7 @@ class Chat extends React.Component {
             >
                 {!showChat ?
                 <a className="toggle-controlbox" onClick={this.onToggleChat.bind(this)}>
-                    <span className="chat-toggle"><Translate content="chat.button" />{need_to_readed?`(${need_to_readed})`:null}</span>
+                    <span className="chat-toggle"><Translate content="chat.button" /> <span className="footer_number">({12})</span></span>
                 </a> : null}
 
                 <div style={chatStyle} >

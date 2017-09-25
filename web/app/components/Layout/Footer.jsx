@@ -85,7 +85,8 @@ class Footer extends React.Component {
                     <div className="grid-block shrink"><Translate content="footer.loading" /></div>
                 }
                 </div>
-                <div className="grid-block">                             
+                <div className="grid-block" style={{"overflow":"inherit"}} > 
+                    <a className="pointer fresh_support invisible" > SUPPORT     </a>                                
                     <Chat
                         showChat={showChat}
                         disable={disableChat}
