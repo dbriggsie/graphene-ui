@@ -1442,3 +1442,28 @@
   text-align: right;
   width: 100%;
 }
+
+.starToAccount{
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: 35px;
+  & + .floating-dropdown .dropdown-wrapper{
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+.iconRemoveFavorites{
+  position: absolute;
+  z-index: 10;
+  top: 0px;
+  right: 0px;
+  .icon{
+    top: 2px;
+    padding: 0 !important;
+    & > svg > path{
+      fill: #E1424A;
+    }
+  }
+}

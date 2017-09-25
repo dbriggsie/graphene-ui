@@ -17,6 +17,7 @@ import { checkFeeStatusAsync, checkBalance } from "common/trxHelper";
 import { debounce } from "lodash";
 import { Asset } from "common/MarketClasses";
 
+
 class Transfer extends React.Component {
 
     constructor(props) {
@@ -45,6 +46,16 @@ class Transfer extends React.Component {
         this._updateFee = debounce(this._updateFee.bind(this), 250);
         this._checkFeeStatus = this._checkFeeStatus.bind(this);
         this._checkBalance = this._checkBalance.bind(this);
+
+        let toAccountFavorites = [];
+
+        try{
+            toAccountFavorites = JSON.parse(localStorage.getItem("toAccountFavorites"))
+        }catch(err){
+            console.log('error account favorites: ',err);
+        }
+
+        this.state.toAccountFavorites = toAccountFavorites;
     }
 
     static getInitialState() {
@@ -318,6 +329,15 @@ class Transfer extends React.Component {
         }
     }
 
+    _onDropdownFavorites(toAccountFavorites) {
+        if (toAccountFavorites) {
+            this.setState({
+                to_name: toAccountFavorites,
+                to_account: toAccountFavorites
+            });
+        }
+    }
+
     render() {
         let from_error = null;
         let {propose, from_account, to_account, asset, asset_id, propose_account, feeAmount,
@@ -389,6 +409,8 @@ class Transfer extends React.Component {
                                 account={to_name}
                                 size={60}
                                 tabIndex={tabIndex++}
+                                onDropdownFavorites={this._onDropdownFavorites.bind(this)}
+                                dropdownFavorites={this.state.toAccountFavorites}
                             />
                         </div>
                         {/*  A M O U N T   */}

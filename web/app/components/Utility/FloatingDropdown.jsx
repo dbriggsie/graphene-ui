@@ -1,5 +1,6 @@
 import React from "react";
 import utils from "common/utils";
+import Icon from "../Icon/Icon";
 
 class Dropdown extends React.Component {
 
@@ -76,17 +77,32 @@ class Dropdown extends React.Component {
         });
     }
 
+    onChangeWithDel(value, e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.props.onChange(value);
+        this.setState({
+            active: false
+        });
+        this.props.coincidenceFav(value)
+    }
+
     _toggleDropdown() {
         this.setState({
             active: !this.state.active
         });
     }
 
+    _removeFavorites(value){
+       this.props.favoritesDel(value);
+       this.props.coincidenceFav(value);
+    }
+
     render() {
         const {entries, value} = this.props;
         let {active} = this.state;
         if(entries.length === 0) return null;
-        if(entries.length == 1) {
+        if(entries.length == 1 && this.props.label !== "transfer.to") {
             return (
                 <div className={"dropdown-wrapper inactive" + (this.props.upperCase ? " upper-case" : "")}>
                     <div>
@@ -98,11 +114,19 @@ class Dropdown extends React.Component {
             let options = entries.map(value => {
                 return <li className={this.props.upperCase ? "upper-case" : ""} key={value} onClick={this.onChange.bind(this, this.props.values[value])}><span>{value}</span></li>;
             });
+            let optionsWithDel = entries.map(value => {
+                return <li style={{position: 'relative'}} className={this.props.upperCase ? "upper-case" : ""} key={value} >
+                    <span onClick={this.onChangeWithDel.bind(this, this.props.values[value])} style={{paddingRight: '35px'}}>{value}</span>
+                    <span className="iconRemoveFavorites" onClick={this._removeFavorites.bind(this,value)}>
+                        <Icon  name="cross-circle" className="icon-14px" />
+                    </span>
+                    </li>;
+            });
             return (
                 <div onClick={this._toggleDropdown.bind(this)} className={"dropdown-wrapper" + (active ? " active" : "")  + (this.props.upperCase ? " upper-case" : "")}>
                     <div style={{paddingRight: 15}}>{value ? value : <span className="hidden">A</span>}</div>
                     <ul className="dropdown" style={{overflow: entries.length > 9 ? "auto": "hidden"}}>
-                        {options}
+                        {this.props.label == "transfer.to" ? optionsWithDel : options}
                     </ul>
                 </div>
             );
