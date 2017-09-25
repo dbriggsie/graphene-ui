@@ -95,7 +95,7 @@ class Dropdown extends React.Component {
 
     _removeFavorites(value){
        this.props.favoritesDel(value);
-        this.props.coincidenceFav(value);
+       this.props.coincidenceFav(value);
     }
 
     render() {

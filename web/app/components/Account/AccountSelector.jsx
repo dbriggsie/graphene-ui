@@ -26,7 +26,7 @@ class AccountSelector extends React.Component {
 
         this.state = {
             starred : false,
-            storageAccountFavorites : JSON.parse(localStorage.getItem("toAccountFavorites"))
+            storageAccountFavorites : JSON.parse(localStorage.getItem("toAccountFavorites"))  || localStorage.setItem("toAccountFavorites",JSON.stringify([]))
         };
     }
 
@@ -83,12 +83,14 @@ class AccountSelector extends React.Component {
 
         if (this.props.onChange && value !== this.props.accountName) this.props.onChange(value);
 
-        this.coincidenceFavorites(value);
+        event.target.id == 'input_to' ? this.coincidenceFavorites(value) : null;
+
     }
 
     onKeyDown(event) {
         if (event.keyCode === 13) this.onAction(event);
     }
+
 
     componentDidMount() {
         if(this.props.onAccountChanged && this.props.account)
@@ -113,20 +115,18 @@ class AccountSelector extends React.Component {
     _onStar() {
         let currentName = this.props.accountName,
         сoincidenceFavorites = false;
-        this.state.storageAccountFavorites == null ? localStorage.setItem("toAccountFavorites",JSON.stringify([])) : null;
 
         if (this.state.storageAccountFavorites.length !== 0){
             сoincidenceFavorites = this.state.storageAccountFavorites.some(function(item){
                 return  item == currentName
             })
         }
-
+    
         if (currentName !== "" && !сoincidenceFavorites){
             let storageFavotites = this.state.storageAccountFavorites.slice();
             storageFavotites.push(currentName);
             this.setState({storageAccountFavorites : storageFavotites});
             localStorage.setItem("toAccountFavorites", JSON.stringify(storageFavotites));
-
         }
 
         if (currentName !== "" ){
@@ -159,9 +159,13 @@ class AccountSelector extends React.Component {
     }
 
     coincidenceFavorites(valInp){
-       let itemFav = this.state.storageAccountFavorites.some(function(item){
-           return item == valInp;
-        });
+        let itemFav;
+        if(this.state.storageAccountFavorites.length){
+            itemFav = this.state.storageAccountFavorites.some(function(item){
+                return item == valInp;
+            });
+        }
+
         itemFav ? this.setState({starred : true}) : this.setState({starred : false});
     }
 
@@ -197,7 +201,7 @@ class AccountSelector extends React.Component {
                             {type === "pubkey" ? <div className="account-image"><Icon name="key" size="4x"/></div> :
                             <AccountImage size={{height: this.props.size || 80, width: this.props.size || 80}}
                                 account={this.props.account ? this.props.account.get("name") : null} custom_image={null}/>}
-                                <input type="text"
+                                <input id={this.props.label == 'transfer.to' ? 'input_to': null} type="text"
                                     value={this.props.accountName || ""}
                                     placeholder={this.props.placeholder || counterpart.translate("account.name")}
                                     ref="user_input"
