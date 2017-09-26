@@ -908,11 +908,7 @@ class Exchange extends React.Component {
             isNullAccount =false;
         }
 
-        console.log('@>AccountStore.getState().currentAccount',AccountStore.getState())
-
         const showVolumeChart = this.props.viewSettings.get("showVolumeChart", true);
-
-
 
         if (quoteAsset.size && baseAsset.size && currentAccount.size) {
             base = baseAsset;

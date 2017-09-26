@@ -36,7 +36,7 @@
 }
 
 .order-table {
-  width: 100%;
+	width: 100%;
     > thead > tr > th {
         font-size: 14px;
         padding: 5px 5px;
@@ -54,7 +54,7 @@
 }
 
 p.order-table-title {
-  display: none;
+	display: none;
 }
 
 
@@ -64,7 +64,7 @@ p.order-table-title {
 .notification.warning,
 .notification.alert,
 .notification.cancel {
-  font-size: 0.75rem;
+	font-size: 0.75rem;
 }
 
 .backingWarning { color: yellow; }

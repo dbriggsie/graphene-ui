@@ -210,24 +210,6 @@ export default class ButtonsForGraphics extends React.Component {
         // return null;
         return (
             <div className="grid-block shrink" >
-                    <ul className="grid-block market-stats stats bottom-stats">
-                        {/* Chart controls */}
-                        {!showDepthChart ? (
-                            <li className="stat">
-                                <span className="zoom_mobile" >
-                                    <span ><Translate content="exchange.zoom" />:&nbsp;</span>
-                                    <span  >{zoomOptions}</span>
-                                </span>
-                            </li>) : null}
-                        {!showDepthChart ? (
-                            <li className="stat zoom_mobile">
-                                <span>
-                                    <span><Translate content="exchange.time" />:&nbsp;</span>
-                                    <span>{bucketOptions}</span>
-                                </span>
-                            </li>) : null}
-                        </ul>
-
                         <ul className="grid-block market-stats stats bottom-stats no-over zoom_mobile" style={{ "justifyContent": "flex-end",overflow:"visible",margin:"0 20px 0 0"}}>
                         {showIndicators ?
                             <li className="stat custom-dropdown" style={{margin:"0 10px"}}>
@@ -278,12 +260,6 @@ export default class ButtonsForGraphics extends React.Component {
                                     <Translate content="exchange.borrow" />&nbsp;{quoteAsset.get("symbol")}
                                 </div>
                             </li>) : null}
-
-                            <li className="stat clickable" onClick={this.props.onToggleCharts}>
-                                <div className="indicators label bucket-option">
-                                    {!showDepthChart ? <Translate content="exchange.order_depth" /> : <Translate content="exchange.price_history" />}
-                                </div>
-                            </li>
 
                         {onBorrowBase ? 
                             <li className="stat clickable" onClick={onBorrowBase}>
