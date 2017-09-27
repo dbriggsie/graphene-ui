@@ -216,7 +216,7 @@ class WalletUnlockModal extends React.Component {
         }else if(airbitz_password_input_1==airbitz_password_input_2){
             this.setState({password_error: false},()=>{     
 
-            console.log('@>111')         
+            console.log('@>111')
 
                 _abcUi.openLoginWindow((error, account) =>{
                     
@@ -403,7 +403,6 @@ class WalletUnlockModal extends React.Component {
 
                         (()=>{
                             if(airbitz_mode){
-                            //if(false){
                                 return (
                                     <div className="content-block">
                                         <div className="account-selector">
@@ -462,7 +461,7 @@ class WalletUnlockModal extends React.Component {
                         <Trigger close={this.props.modalId}>
                             <div tabIndex={tabIndex++} className=" button"><Translate content="account.perm.cancel" /></div>
                         </Trigger>
-                    </div>                    
+                    </div>
                     {
                         (()=>{
                             if(airbitzkey&&airbitzkey.getAttribute("show_switch_airbitzkey")=="false"){
@@ -473,7 +472,7 @@ class WalletUnlockModal extends React.Component {
                                 <Translate onClick={()=>{this._switch_brain_airbitz(airbitz_mode?false:true)}} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />
                                 ];
                             }
-                        })()                    
+                        })()
                     }
                 </div>
             </form>
