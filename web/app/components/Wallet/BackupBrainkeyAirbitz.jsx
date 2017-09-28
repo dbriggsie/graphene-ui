@@ -114,26 +114,37 @@ export default class BackupBrainkey extends Component {
         console.log('@>this.state.password',this.state.password)
         if(WalletDb.validatePassword(this.state.password, true)) {
             let brainkey = WalletDb.getBrainKey()
-            if(was_locked) WalletDb.onLock()
-            this.setState({ brainkey },
-            ()=>{
+            if(was_locked) WalletDb.onLock();
+
+            this.setState({ brainkey }, () => {
+
                 _abcUi.openLoginWindow(function(error, account) {
-                    
+
                     if (error) {
                         console.log(error)
                     }
 
                     let air_ids = account.listWalletIds();
-                    account.createWallet(airbitzAPIs.walletType, { key:brainkey, model:"wallet" }, function(err, id) {
+
+                    console.log('@>brainkey',brainkey)
+                    account.createWallet(airbitzAPIs.walletType, { key: brainkey, model: "wallet" }, function(err, id) {
                         if (error) {
                             console.log(error)
-                        } else {
-                            console.log('@>', account.getWallet(id));
+                        } else if (id ) {
+
+                            console.log('@>id account', id, account.getWallet(id));
                             notify.addNotification({
                                 message: `Backup was created`,
                                 level: "info",
                                 autoDismiss: 10
-                            });  
+                            });
+                        } else {
+                             console.log('@>id account', id, account.getWallet(id));
+                            notify.addNotification({
+                                message: `Some problem with airbitz server`,
+                                level: "error",
+                                autoDismiss: 10
+                            });
                         }
                     });
                 });

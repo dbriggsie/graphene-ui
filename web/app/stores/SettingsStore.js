@@ -27,6 +27,7 @@ let marketsList = [
    "ICOO",
    "OBITS",
    "OCASH",
+   "FUNC",
    "OPEN.ARDR",
    "OBITS.WARRANT",
    "OPEN.BTC",

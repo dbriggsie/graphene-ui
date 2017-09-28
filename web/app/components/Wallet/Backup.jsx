@@ -256,11 +256,39 @@ class Download extends Component {
     }
 
     componentDidMount() {
-        if( ! this.isFileSaverSupported )
+        var was_locked = WalletDb.isLocked();
+        if( ! this.isFileSaverSupported ){
+
             notify.error("File saving is not supported")
+        }else{
+                    let _self = this;
+
+            setTimeout(() => {
+                if(window.location.pathname=="/create-account/wallet"){
+                    let blob = new Blob([_self.props.backup.contents], {
+                        type: "application/octet-stream; charset=us-ascii"
+                    });
+
+                    if (blob.size !== _self.props.backup.size)
+                        throw new Error("Invalid backup to download conversion")
+                    saveAs(blob, _self.props.backup.name);
+                    WalletActions.setBackupDate();
+
+                    if (was_locked) {
+                        WalletDb.onLock();
+                    }
+                }
+
+
+            }, 300);
+        }
     }
 
     render() {
+
+
+
+
 
         return (
             <div 
@@ -279,10 +307,10 @@ class Download extends Component {
 
         //console.log('@>onDownload this.props.airbitz_backup_option', this.props.airbitz_backup_option)
 
-        if (this.props.airbitz_backup_option&&WalletDb.validatePassword(this.props.user_password, true)) {
+        if (this.props.airbitz_backup_option && WalletDb.validatePassword(this.props.user_password, true)) {
 
-            console.log('@>this.props.user_password',this.props.user_password)
-        //@> if (this.props.airbitz_backup_option&&WalletDb.validatePassword("testname123123", true)) {
+            console.log('@>this.props.user_password', this.props.user_password)
+            //@> if (this.props.airbitz_backup_option&&WalletDb.validatePassword("testname123123", true)) {
             let brainkey = WalletDb.getBrainKey()
 
             _abcUi.openLoginWindow(function(error, account) {
@@ -290,11 +318,11 @@ class Download extends Component {
                     console.log(error)
                 }
 
-                account.createWallet(airbitzAPIs.walletType, { key:brainkey, model:"wallet" }, function(err, id) {
+                account.createWallet(airbitzAPIs.walletType, { key: brainkey, model: "wallet" }, function(err, id) {
                     if (error) {
                         console.log(error)
-                    } else {
-                        console.log('@>', account.getWallet(id));                        
+                    } else if (id) {
+                        console.log('@>', account.getWallet(id));
                         if (_self.props.downloadCb) {
                             _self.props.downloadCb();
                         }
@@ -303,14 +331,12 @@ class Download extends Component {
                             type: "application/octet-stream; charset=us-ascii"
                         });
 
-                        if (blob.size !== _self.props.backup.size)
-                            throw new Error("Invalid backup to download conversion")
-                        saveAs(blob, _self.props.backup.name);
-                        WalletActions.setBackupDate();
-
-                        if (was_locked) {
-                            WalletDb.onLock();
-                        }
+                    } else {
+                        notify.addNotification({
+                            message: `Some problem with airbitz server`,
+                            level: "error",
+                            autoDismiss: 10
+                        });
                     }
                 });
             });
@@ -330,7 +356,6 @@ class Download extends Component {
                 WalletDb.onLock();
             }
         }
-
     }
 }
 Download = connect(Download, connectObject);
