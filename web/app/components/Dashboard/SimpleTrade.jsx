@@ -303,6 +303,9 @@ class SimpleTradeContent extends React.Component {
         console.log(p);
         let updated = false;
 
+        let priceVal = this.props.action === "buy" ? p._samebase_real : p._not_samebase_real;
+        console.log(priceVal);
+
         if (p) {
             this.setState({
                 price : p
@@ -317,16 +320,17 @@ class SimpleTradeContent extends React.Component {
             updated = true;
         }
 
-        let price = this.props.action === "buy" ? p._samebase_real : p._not_samebase_real;
+
 
         if (updated) {
-            this.state.priceValue = price;
+            this.state.priceValue = priceVal;
             this.forceUpdate();
         };
         return updated;
     }
 
     _updateToReceive(r = null) {
+
         let updated = false;
         if (r) {
             this.state.to_receive.setAmount({sats: r});
@@ -362,10 +366,12 @@ class SimpleTradeContent extends React.Component {
 
     _onInputPrice(e) {
         this.state.price = new Price({
-            base: this.state.for_sale,
-            quote: this.state.to_receive,
-            real: parseFloat(e.target.value)
-        });
+                base: this.state.for_sale,
+                quote: this.state.to_receive,
+                real: parseFloat(e.target.value)
+            });
+
+
         this._updateToReceive() || this._updateForSale();
 
         this.setState({
@@ -463,7 +469,7 @@ class SimpleTradeContent extends React.Component {
     }
 
     render() {
-        
+
         let {modalId, asset, assets, lowVolumeMarkets, action, lowestAsk, highestBid, currentBalance} = this.props;
 
         let {activeAssetId, for_sale, to_receive, price} = this.state;

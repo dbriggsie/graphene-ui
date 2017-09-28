@@ -113,7 +113,6 @@ class Transaction extends React.Component {
         let {trx} = this.props;
         let info = null;
         info = [];
-
         let opCount = trx.operations.length;
         let memo = null;
 

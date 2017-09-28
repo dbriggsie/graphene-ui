@@ -211,6 +211,7 @@ class Transfer extends React.Component {
             return;
         }
         this.setState({amount, asset, asset_id: asset.get("id"), error: null}, this._checkBalance);
+
     }
 
     onFeeChanged({asset}) {
@@ -245,6 +246,7 @@ class Transfer extends React.Component {
         e.preventDefault();
         this.setState({error: null});
         const {asset, amount} = this.state;
+
         const sendAmount = new Asset({real: amount, asset_id: asset.get("id"), precision: asset.get("precision")});
 
         AccountActions.transfer(

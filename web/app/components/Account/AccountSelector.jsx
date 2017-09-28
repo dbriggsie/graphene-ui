@@ -121,7 +121,7 @@ class AccountSelector extends React.Component {
                 return  item == currentName
             })
         }
-    
+
         if (currentName !== "" && !сoincidenceFavorites){
             let storageFavotites = this.state.storageAccountFavorites.slice();
             storageFavotites.push(currentName);
@@ -142,7 +142,7 @@ class AccountSelector extends React.Component {
         this.setState({starred : true});
 
     }
-    
+
     starOff(){
         this.setState({starred : false});
         this.removeFavorites(this.props.accountName);
