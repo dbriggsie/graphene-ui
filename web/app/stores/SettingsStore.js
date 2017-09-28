@@ -88,13 +88,17 @@ let dashboard_assets = {
         ["BTS", "OBITS"],
         ["BTS", "BTSR"],
         ["USD", "APPX.WARRANT"],
-        ["CNY", "YOYOW"],
+        ["CNY", "OBITS.WARRANT"],
         ["OPEN.BTC", "OPEN.MUSEOL"],
         ["USD", "OPEN.ETP"],
         ["BTS", "USD"],
         ["BTS", "EUR"],
         ["BTS", "CNY"],
-        ["USD", "OBITS.WARRANT"]
+        ["USD", "OBITS.WARRANT"],
+        ["BTS", "FUNC"],
+        ["OPEN.BTC", "OPEN.WAVES"],
+        ["BTS", "OPEN.INCNT"],
+        ["OPEN.BTC", "OPEN.LISK"]
     ],
     "39f5e2ed": [
         ["TEST", "PEG.FAKEUSD"],
