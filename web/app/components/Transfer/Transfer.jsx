@@ -246,6 +246,9 @@ class Transfer extends React.Component {
         this.setState({error: null});
         const {asset, amount} = this.state;
         const sendAmount = new Asset({real: amount, asset_id: asset.get("id"), precision: asset.get("precision")});
+        console.log('@>asset, amount',asset.toJS(), amount);
+
+        console.log('@>sendAmount.getAmount()',sendAmount.getAmount())
 
         AccountActions.transfer(
             this.state.from_account.get("id"),

@@ -193,8 +193,6 @@ class RecentTransactions extends React.Component {
         let history = this._getHistory(accountsList, this.props.showFilters && this.state.filter !== "all" ?  this.state.filter : filter, customFilter).sort(compareOps);
         let historyCount = history.length;
 
-        console.log('@>history',history[0])
-
         style = style ? style : {};
         style.width = "100%";
         style.height = "100%";
