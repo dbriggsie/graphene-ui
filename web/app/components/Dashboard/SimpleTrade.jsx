@@ -48,10 +48,12 @@ class SimpleTradeContent extends React.Component {
             price: null,
             saleValue: "",
             receiveValue: "",
+            priceValueNull: "",
             activeAssetId,
             to_receive: this._getToReceive(props, {activeAssetId}),
             for_sale: this._getForSale(props, {activeAssetId}),
             showOrders: false
+
         };
 
         // this.state.price = new Price({
@@ -243,7 +245,9 @@ class SimpleTradeContent extends React.Component {
         this._setActiveAsset(e.target.value);
 
         this.setState({
-            priceValue: ''
+            priceValue: '',
+            saleValue: '',
+            receiveValue: ''
         })
         // this._setAssetSetting(e.target.value);
         // this.setState({
@@ -300,11 +304,9 @@ class SimpleTradeContent extends React.Component {
     }
 
     _updatePrice(p = null) {
-        console.log(p);
         let updated = false;
 
         let priceVal = this.props.action === "buy" ? p._samebase_real : p._not_samebase_real;
-        console.log(priceVal);
 
         if (p) {
             this.setState({
@@ -319,8 +321,6 @@ class SimpleTradeContent extends React.Component {
             });
             updated = true;
         }
-
-
 
         if (updated) {
             this.state.priceValue = priceVal;
@@ -371,12 +371,12 @@ class SimpleTradeContent extends React.Component {
                 real: parseFloat(e.target.value)
             });
 
-
         this._updateToReceive() || this._updateForSale();
 
         this.setState({
             priceValue: e.target.value
         });
+
     }
 
     _onInputSell(e) {
@@ -399,6 +399,7 @@ class SimpleTradeContent extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
+        console.log( this.state);
         let order = new LimitOrderCreate({
             for_sale: this.state.for_sale,
             to_receive: this.state.to_receive,
@@ -471,6 +472,8 @@ class SimpleTradeContent extends React.Component {
     render() {
 
         let {modalId, asset, assets, lowVolumeMarkets, action, lowestAsk, highestBid, currentBalance} = this.props;
+        
+        console.log(this.state.priceValue);
 
         let {activeAssetId, for_sale, to_receive, price} = this.state;
         const isBuy = action === "buy";
@@ -627,13 +630,13 @@ class SimpleTradeContent extends React.Component {
                             <div>
                                 <div className="SimpleTrade__help-text">
                                     <div data-tip={counterpart.translate("tooltip.apply_price")} onClick={this._updatePrice.bind(this, isBuy ? lowestAsk : highestBid )} style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} className="float-right">
-                                        <span>{isBuy ? lowestAsk && lowestAsk._samebase_real : highestBid && highestBid._not_samebase_real} {isBuy ? activeAssetName : assetName}</span>
+                                        <span>{isBuy ? lowestAsk && lowestAsk._samebase_real : highestBid && highestBid._not_samebase_real} {isBuy ? activeAssetName : assetName} = 1 {isBuy ? assetName : activeAssetName}</span>
                                     </div>
                                 </div>
                                 <label style={{width: "100%"}}>
                                     <Translate content="exchange.price" />:
                                     <span className="inline-label">
-                                        <input type="text" value={this.state.priceValue} onChange={this._onInputPrice.bind(this)}/>
+                                        <input type="text" value={this.state.priceValue || this.state.priceValueNull} onChange={this._onInputPrice.bind(this)}/>
                                         <span className="form-label" style={{minWidth: "10rem"}}><AssetName name={isBuy ? activeAsset.get("symbol") : asset} /></span>
                                     </span>
                                 </label>
