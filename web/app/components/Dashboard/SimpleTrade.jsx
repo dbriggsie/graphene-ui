@@ -564,7 +564,7 @@ class SimpleTradeContent extends React.Component {
 
         const assetSelector = <div>
             <div className="SimpleTrade__help-text">
-                {isBuy ? rBalance : fsBalance}
+                {isBuy ? rBalance : null&&fsBalance}
             </div>
             <label style={{width: "100%"}}>
                 {isBuy ? spendSellText : receiveText}:
@@ -594,7 +594,7 @@ class SimpleTradeContent extends React.Component {
 
         const receiveAsset = <div>
             <div className="SimpleTrade__help-text">
-                {isBuy ? fsBalance : rBalance}
+                {isBuy ? null&&fsBalance : rBalance}
             </div>
             <label style={{width: "100%"}}>
                 {isBuy ? receiveText : spendSellText}:
@@ -612,7 +612,7 @@ class SimpleTradeContent extends React.Component {
             <div className="SimpleTrade__modal">
                 <div className="Modal__header">
                     {isBuy ?
-                        <h3><Translate content="simple_trade.buy_with" buy={assetName} /></h3> :
+                        <h3><Translate content="simple_trade.buy_with" buy={assetName} />{activeAssetName}</h3> :
                         <h3><Translate content="simple_trade.sell_for" sell={assetName} for={activeAssetName} /></h3>
                     }
 
