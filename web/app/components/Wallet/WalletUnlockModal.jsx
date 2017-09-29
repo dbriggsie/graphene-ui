@@ -260,7 +260,7 @@ class WalletUnlockModal extends React.Component {
                                             });
 
                                         }                                        
-                                    },3000);
+                                    },3500);
 
                                 }
 
