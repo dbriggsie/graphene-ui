@@ -401,7 +401,9 @@ class SimpleTradeContent extends React.Component {
     }
 
     _onInputReceive(e) {
-        this.state.to_receive.setAmount({real: parseFloat(e.target.value)});
+        if(parseFloat(e.target.value) ) {
+            this.state.to_receive.setAmount({real: parseFloat(e.target.value)});
+        }
         this._updateForSale() || this._updatePrice();
 
         this.setState({
