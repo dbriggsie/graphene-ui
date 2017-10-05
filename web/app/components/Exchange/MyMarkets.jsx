@@ -15,7 +15,10 @@ import SettingsActions from "actions/SettingsActions";
 import AssetActions from "actions/AssetActions";
 import cnames from "classnames";
 import {debounce} from "lodash";
+import Icon from "../Icon/Icon";
 
+import {ChainStore} from "bitsharesjs/es";
+import MarketsActions from "actions/MarketsActions";
 
 function set_sposition_for_active_market() {
     let table_trs = document.querySelectorAll(".table .clickable");
@@ -53,26 +56,76 @@ class MarketGroup extends React.Component {
             open: open !== undefined ? open : true,
             inverseSort: props.viewSettings.get("myMarketsInvert", true),
             sortBy: props.viewSettings.get("myMarketsSort", "volume"),
-            inputValue: ""
+            inputValue: "",
+            market_list:[]
         };
+    }
+
+    componentWillMount() {
+
+
+        this.set_interval = setInterval(() => {
+
+            let {
+                columns,
+                markets,
+                base,
+                marketStats,
+                starredMarkets,
+                current,
+                maxRows
+            } = this.props;            
+
+            let obj_for_duplicate = {};
+
+            let market_list = markets.map((market, key) => {
+
+                let market_base = ChainStore.getAsset(market.base);
+                let market_quote = ChainStore.getAsset(market.quote);
+
+                if (obj_for_duplicate[market.id]) {
+                    return null;
+                } else {
+                    obj_for_duplicate[market.id] = true;
+                }
+
+                if (market_base && market_quote) {
+                    MarketsActions.getMarketStats.defer(market_base, market_quote);
+                } else {
+                    return null;
+                }               
+
+                return {
+                    key: market.id,
+                    name:base === ("others" ? <span> <AssetName name={market.quote} /> : <AssetName name={market.base} /></span> : <AssetName name={market.quote} />),
+                    base: market_base,
+                    quote: market_quote,
+                    columns,
+                    leftAlign: true,
+                    compact: true,
+                    noSymbols: true,
+                    stats: marketStats.get(market.id),
+                    starred: starredMarkets.has(market.id),
+                    current: current === market.id
+                }
+            }).filter(m=>m&&m.base&&m.quote);
+
+            this.setState({
+                market_list
+            });            
+
+        }, 500);
+
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.set_interval);
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.forceOpen !== this.props.forceOpen) {
             this.setState(this._getInitialState(nextProps));
         }
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (!nextProps.markets || !this.props.markets) {
-            return true;
-        }
-        return (
-            !utils.are_equal_shallow(nextState, this.state) ||
-            !utils.are_equal_shallow(nextProps.markets, this.props.markets) ||
-            nextProps.starredMarkets !== this.props.starredMarkets ||
-            nextProps.marketStats !== this.props.marketStats
-        );
     }
 
     _inverseSort() {
@@ -120,7 +173,7 @@ class MarketGroup extends React.Component {
     render() {
         let {columns, markets, base, marketStats, starredMarkets,
             current, maxRows} = this.props;
-        let {sortBy, inverseSort, open} = this.state;
+        let {sortBy, inverseSort, open, market_list} = this.state;
 
 
         if (!markets || !markets.length) {
@@ -130,14 +183,18 @@ class MarketGroup extends React.Component {
 
         let headers = columns.map(header => {
             switch (header.name) {
+
+            case "star":
+                return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "star")}><Icon className="gold-star" name="fi-star"/></th>;
+
             case "market":
-                return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "name")}><Translate content="exchange.market" /></th>;
+                return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "name")}><Translate content="exchange.market" />{sortBy=="name"&&(inverseSort?"⇑":"⇓")}</th>;
 
             case "vol":
-                return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "volume")}style={{textAlign: "right"}}><Translate content="exchange.vol_short" /></th>;
+                return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "volume")}style={{textAlign: "right"}}><Translate content="exchange.vol_short" />{sortBy=="volume"&&(inverseSort?"⇓":"⇑")}</th>;
 
             case "price":
-                return <th key={header.name} style={{textAlign: "right"}}><Translate content="exchange.price" /></th>;
+                return <th key={header.name} style={{textAlign: "right"}} className="clickable" onClick={this._changeSort.bind(this, "price")} ><Translate content="exchange.price" />{sortBy=="price"&&(inverseSort?"⇑":"⇓")}</th>;
 
             case "quoteSupply":
                 return <th key={header.name}><Translate content="exchange.quote_supply" /></th>;
@@ -146,50 +203,32 @@ class MarketGroup extends React.Component {
                 return <th key={header.name}><Translate content="exchange.base_supply" /></th>;
 
             case "change":
-                return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "change")} style={{textAlign: "right"}}><Translate content="exchange.change" /></th>;
+                return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "change")} style={{textAlign: "right"}}><Translate content="exchange.change" />{sortBy=="change"&&(inverseSort?"⇓":"⇑")}</th>;
 
             default:
                 return <th key={header.name}></th>;
             }
         });
 
-        let obj_for_duplicate = {};
 
-        let marketRows = markets
-            .map( (market,key) => {
-                if(obj_for_duplicate[market.id]){
-                    return null;
-                }else{
-                    obj_for_duplicate[market.id]=true;
-                }
-                return (
-                    <MarketRow
-                        key={market.id}
-                        name={base === "others" ? <span> <AssetName name={market.quote} /> : <AssetName name={market.base} /></span> : <AssetName name={market.quote} />}
-                        quote={market.quote}
-                        base={market.base}
-                        columns={columns}
-                        leftAlign={true}
-                        compact={true}
-                        noSymbols={true}
-                        stats={marketStats.get(market.id)}
-                        starred={starredMarkets.has(market.id)}
-                        current={current === market.id}
-                    />
-                );
-            }).filter(a => {
-                return a !== null;
-            }).sort((a, b) => {
-                let a_symbols = a.key.split("_");
-                let b_symbols = b.key.split("_");
-                let aStats = marketStats.get(a_symbols[0] + "_" + a_symbols[1]);
-                let bStats = marketStats.get(b_symbols[0] + "_" + b_symbols[1]);
 
-                if(marketStats.size==0){
-                    return 0;
-                }
 
-                switch (sortBy) {
+
+        let marketRows = market_list.sort((a, b) => {
+
+            let a_symbols = a.key.split("_");
+            let b_symbols = b.key.split("_");
+            let aStats = a.stats;
+            let bStats = b.stats;
+
+            let aStar = a.starred;
+            let bStar = b.starred;
+
+            if (marketStats.size == 0) {
+                return 0;
+            }
+
+            switch (sortBy) {
 
                 case "name":
                     if (a_symbols[0] > b_symbols[0]) {
@@ -207,13 +246,25 @@ class MarketGroup extends React.Component {
                     }
 
                 case "volume":
-
-
                     if (aStats && bStats) {
                         if (inverseSort) {
                             return bStats.volumeBase - aStats.volumeBase;
                         } else {
                             return aStats.volumeBase - bStats.volumeBase;
+                        }
+                    } else {
+                        return 0;
+                    }
+
+                case "star":
+                    if (aStats && bStats) {
+                        if (aStar == bStar) {
+                            return 0;
+                        }
+                        if (inverseSort) {
+                            return aStar && !bStar ? 1 : -1;
+                        } else {
+                            return !aStar && bStar ? 1 : -1;
                         }
                     } else {
                         return 0;
@@ -229,8 +280,46 @@ class MarketGroup extends React.Component {
                     } else {
                         return 0;
                     }
-                }
-            });
+
+                case "price":
+                    let a_price = 0;
+                    let b_price = 0;
+                    if (aStats && aStats.price) {
+                        a_price = (aStats.price.base.amount / aStats.price.base.satoshi) / (aStats.price.quote.amount / aStats.price.quote.satoshi);
+                    }
+
+                    if (bStats && bStats.price) {
+                        b_price = (bStats.price.base.amount / bStats.price.base.satoshi) / (bStats.price.quote.amount / bStats.price.quote.satoshi);
+                    }
+
+                    if (inverseSort) {
+                        return a_price-b_price;
+                    } else {
+                        return b_price-a_price;
+                    }
+
+            }
+
+
+        }).map( (market,key) => {
+            return (
+                <MarketRow
+                    key={market.id}
+                    name={base === "others" ? <span> <AssetName name={market.quote.get("symbol")} /> : <AssetName name={market.base.get("symbol")} /></span> : <AssetName name={market.quote.get("symbol")} />}
+                    quote={market.quote}
+                    base={market.base}
+                    columns={columns}
+                    leftAlign={true}
+                    compact={true}
+                    noSymbols={true}
+                    stats={market.stats}
+                    starred={market.starred}
+                    current={current === market.id}
+                />
+            );
+        }).filter(a => {
+            return !!a;
+        }); 
 
         let caret = open ? <span>&#9660;</span> : <span>&#9650;</span>;
 

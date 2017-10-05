@@ -84,7 +84,7 @@ class AccountLeftPanel extends React.Component {
 							<AccountInfo account={account.get("id")} image_size={{height: 140, width: 140}} my_account={isMyAccount}/>
 							<div className="grid-container no-margin">
 								{ linkBtn }
-								<Link className="pay-button button small block-button" to={`/transfer/?to=${account_name}`}><Translate content="account.pay"/></Link>
+								{isMyAccount?null:<Link className="pay-button button small block-button" to={`/transfer/?to=${account_name}`}><Translate content="account.pay"/></Link>}
 							</div>
 						</div>
 						<section className="block-list">
