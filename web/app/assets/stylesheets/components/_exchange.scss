@@ -551,7 +551,10 @@ form.hide-container {
     font-size: 85%;
     padding-left: 10px;
     text-transform: lowercase;
+  a{
     text-decoration: underline;
+  }
+
 
     > a > span.asset-name {
         text-transform: none;

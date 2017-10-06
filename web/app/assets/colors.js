@@ -1,15 +1,15 @@
 module.exports = {
     olLightTheme: {
-        bidColor: "#000",
-        bidFillColor: "rgba(80, 210, 194, 0.5)",
+        bidColor: "rgba(36, 255, 41, 0.5)",
+        bidFillColor: "rgb(36, 255, 41)",
         askColor: "#E3745B",
-        askFillColor: "rgba(227, 116, 91, 0.5)",
+        askFillColor: "rgba(241, 0, 0, 1)",
         callColor: "#BBBF2B",
         settleColor: "rgba(125, 134, 214, 1)",
         settleFillColor: "rgba(125, 134, 214, 0.5)",
-        positiveColor: "#6BA583",
-        negativeColor: "#DB0000",
-        primaryText: "#e0e0e0",
+        positiveColor: "#24FF29",
+        negativeColor: "#FF2B2A",
+        primaryText: "#404040",
         volumeColor: "#848484",
 
         //tooltip

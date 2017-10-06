@@ -3,7 +3,7 @@
 // variables
 $name-theme: olLightTheme;
 
-$light-text-color: #fff;
+$light-text-color: #3E3E3E;
 $dark-text-color: #444;
 $primary-text-color: #404040;
 $header-link-text-color: #fff;
@@ -11,9 +11,9 @@ $secondary-text-color: darken($primary-text-color, 20%);
 $link-text-color: #4A90E2;
 $error-text-color: #E3745B;
 
-$bg-color: #fafafa;
+$bg-color: #fafafa;                 //+
 $panel-bg-color: #003EDB;
-$light-panel-bg-color: #353742;
+$light-panel-bg-color: #D7D7D7;     //+
 $super-light-panel-bg-color: lighten($light-panel-bg-color, 8%);
 $button-bg-color: #4A90E2;
 $secondary-button-bg-color: #546979;
@@ -27,12 +27,12 @@ $fee-color: $secondary-text-color;
 
 // Exchange colors
 $bid-color: #50D2C2;
-$ask-color: #E3745B;
+$ask-color: #FF2A2B;
 $call-color: #BBBF2B;
-$positive-color: #6EC105;
+$positive-color: #24FF29; //+
 $negative-color: #E1424A;
 $row-accent-color: #3C3C3C;
-$header-color: linear-gradient(#FEFEFE, #D7D7D7);
+$header-color: linear-gradient(#FEFEFE, #D7D7D7); //+
 
 // Chat colors
 $chat-text-color: #000;
@@ -71,15 +71,172 @@ $chat-text-color: #000;
       color:  $header-link-text-color !important;
     }
   }
+  
+  .left-orderbook-header{
+    background: linear-gradient(#FEFEFE, #D7D7D7);
+  }
+
+  .modal{
+    background: lighten($light-panel-bg-color, 5%);
+  }
+
+  .bucket-option{
+    background: $header-color;
+  }
+
+  div.custom-dropdown-content{
+    background: $light-panel-bg-color;
+    & > ul > li.clickable:hover,
+    & > ul > li > div.clickable:hover{
+      background: darken($light-panel-bg-color, 10%);
+    }
+  }
+
+  .mymarkets-tabs {
+    background: $header-color;
+  }
+
+  .mymarkets-tabs > li{
+    background: $header-color;
+  }
+
+  .mymarkets-tabs > li.active{
+    color: #fff;
+    background: linear-gradient(#031A64, #273F89, #031A64);
+  }
+
+  .mymarkets-tabs > li{
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+  
+  .SimpleTrade__modal .Modal__header{
+    background: $light-panel-bg-color;
+  }
+
+  .buy-sell-input input,
+  .buy-sell-box{
+    box-shadow:inset 0 1px 4px 0 rgba(0,0,0,.1);
+  }
+
+  .ask{
+    background: linear-gradient(#F50000, #5F0101);
+    border: transparent;
+    font-weight: bold;
+  }
+  .bid{
+    background: linear-gradient(#01C104, #024F00);
+    border: transparent;
+    font-weight: bold;
+  }
+
+  .exchange-bordered{
+    padding-left: 2px;
+    padding-right: 2px;
+    border-radius: 5px;
+    border-top: 2px solid $panel-bg-color;
+    border-bottom: 2px solid $panel-bg-color;
+    background-image: linear-gradient( $panel-bg-color 0%, #3acfd5 50%, $panel-bg-color 100%), linear-gradient($panel-bg-color 0%,#3acfd5 50%, $panel-bg-color 100%);
+    -moz-background-size: 2px 100%;
+    background-size: 2px 100%;
+    background-position: 0 0, 100% 0;
+    background-repeat: no-repeat;
+  }
+
+  .exchange-content-header{
+    border-radius: 6px 6px 0 0;
+  }
+
+  .page-layout .left-column{
+    background: $bg-color;
+  }
+
+  .account-left-menu > li > a.active,
+  .account-left-menu > li > a:hover{
+    background: darken($bg-color, 10%);
+  }
+
+  .font-secondary{
+    color: $primary-text-color !important;
+  }
+  
+  .footer{
+    .footer svg > path{
+      fill: #fff;
+    }
+  }
+
+  .mymarkets-header{
+    border-width: 2px;
+  }
+
+  .exchange-content-header.bid{
+    border-color: $positive-color;
+    border-width: 2px;
+  }
+
+  .exchange-content-header.ask{
+    border-color: $ask-color;
+    border-width: 2px;
+  }
+
+  .label{
+    background-color: transparent;
+  }
+
+  .icon.thumb-tack {
+    background-color: $light-panel-bg-color;
+  }
+
+  .footer{
+    color: #fff;
+    background: linear-gradient(#003EDB, #00186B);
+    svg > path{
+      fill: #fff;
+    }
+  }
+  li.stat.input:hover{
+    background-color: $light-panel-bg-color;
+  }
+
+  .menu-group.primary, .menu-group.primary .menu-bar {
+    background: linear-gradient($panel-bg-color, #00186B);
+  }
+
+  .card{
+    background: darken($bg-color, 10%);
+    &:hover{
+      background: $light-panel-bg-color;
+    }
+
+  }
+
+  .asset-card .card-divider{
+    background: $light-panel-bg-color;
+  }
+
 
 }
+// ----------------------
 
 .olLightTheme .menu-group.primary .menu-bar > li > a,
-.header .grp-menu-item.switch_button,
-.olLightTheme .font-secondary{
+.header .grp-menu-item.switch_button{
   color: #fff;
 }
 
-.olLightTheme .header-right-menu svg > path{
-  fill: #fff
+.olLightTheme .header-balance .font-secondary{
+  color: #fff !important;
 }
+
+.olLightTheme .header-right-menu svg > path{
+  fill: #fff;
+  &:hover{
+    fill: #fff
+  }
+}
+
+.olLightTheme .header-right-menu svg:hover > path{
+  fill: #fff
+ }
