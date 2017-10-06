@@ -44,12 +44,14 @@ class SettleOrderRow extends React.Component {
 
         let amountSymbol = showSymbols ? " " + quote.get("symbol") : null;
 
+        let d = order.settlement_date;
+
         return (
             <tr>
                 <td>{utils.format_number(order.getPrice(), quote.get("precision"))} {amountSymbol}</td>
                 <td><FormattedAsset amount={order[!order.isBid() ? "amountForSale" : "amountToReceive"]().getAmount()} asset={order[!order.isBid() ? "amountForSale" : "amountToReceive"]().asset_id} /></td>
                 <td>
-                    <TimeAgo time={order.settlement_date} />
+                {`${d.getDate()}/${d.getMonth()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`}                
                 </td>
             </tr>
         );

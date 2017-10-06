@@ -89,7 +89,7 @@ class MarketHistory extends React.Component {
                 return a.get("block_num") - a.get("block_num");
             })
             .map(trx => {
-                let order  = trx.toJS().op[1];
+                let order  = trx.toJS().op[1];console.log('@>order',order)
                 keyIndex++;
                 let paysAsset, receivesAsset, isAsk = false;
                 if (order.pays.asset_id === base.get("id")) {
@@ -104,6 +104,8 @@ class MarketHistory extends React.Component {
 
                 let parsed_order = market_utils.parse_order_history(order, paysAsset, receivesAsset, isAsk, flipped);
                 const block_num = trx.get("block_num");
+
+                //console.log('@>order.time',order,parsed_order)
                 return (
                     <tr key={"my_history_" + keyIndex}>
                         <td className={parsed_order.className}>
@@ -111,7 +113,9 @@ class MarketHistory extends React.Component {
                         </td>
                         <td>{parsed_order.receives}</td>
                         <td>{parsed_order.pays}</td>
+                        {/*<td data-tip={new Date(order.time)}>{parsed_order.time}</td>*/}
                         <td><Link to={`/block/${block_num}`}>#{utils.format_number(block_num, 0)}</Link></td>
+
                     </tr>
                 );
             }).toArray();
@@ -138,7 +142,7 @@ class MarketHistory extends React.Component {
                     receivesAsset = base;
                 }
 
-                let parsed_order = market_utils.parse_order_history(order, paysAsset, receivesAsset, isAsk, flipped);
+                let parsed_order = market_utils.parse_order_history(order, paysAsset, receivesAsset, isAsk, flipped); console.log('@>market',order,parsed_order)
                 return (
                     <tr key={"history_" + keyIndex}>
                         <td className={parsed_order.className}>
@@ -146,7 +150,7 @@ class MarketHistory extends React.Component {
                         </td>
                         <td>{parsed_order.receives}</td>
                         <td>{parsed_order.pays}</td>
-                        <td data-tip={new Date(order.time)}>{parsed_order.time}</td>
+                        <td data-tip={new Date(order.time)}>{parsed_order.time} 333</td>
                     </tr>
                 );
             }).toArray();

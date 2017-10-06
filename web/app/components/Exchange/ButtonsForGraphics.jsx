@@ -254,14 +254,14 @@ export default class ButtonsForGraphics extends React.Component {
                                 </div> : null}
                             </li>) : null}                      
                         {/* Borrow buttons */}
-                        {onBorrowQuote ? (
+                        {showIndicators&&onBorrowQuote ? (
                             <li className="stat clickable" onClick={onBorrowQuote}>
                                 <div className="indicators label bucket-option">
                                     <Translate content="exchange.borrow" />&nbsp;{quoteAsset.get("symbol")}
                                 </div>
                             </li>) : null}
 
-                        {onBorrowBase ? 
+                        {showIndicators&&onBorrowBase ? 
                             <li className="stat clickable" onClick={onBorrowBase}>
                                 <div className="indicators label bucket-option">
                                    <Translate content="exchange.borrow" />&nbsp;{baseAsset.get("symbol")}
