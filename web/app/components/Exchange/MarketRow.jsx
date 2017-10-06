@@ -10,10 +10,11 @@ import SettingsActions from "actions/SettingsActions";
 
 class MarketRow extends React.Component {
 
-    static propTypes = {
+    /*
+    @>>static propTypes = {
         quote: ChainTypes.ChainAsset.isRequired,
         base: ChainTypes.ChainAsset.isRequired
-    };
+    };*/
 
     static defaultProps = {
         noSymbols: false,
@@ -39,13 +40,13 @@ class MarketRow extends React.Component {
     }
 
     componentDidMount() {
-        MarketsActions.getMarketStats.defer(this.props.base, this.props.quote);
+        //MarketsActions.getMarketStats.defer(this.props.base, this.props.quote);
         this.statsChecked = new Date();
-        this.statsInterval = setInterval(MarketsActions.getMarketStats.bind(this, this.props.base, this.props.quote), 35 * 1000);
+        //this.statsInterval = setInterval(MarketsActions.getMarketStats.bind(this, this.props.base, this.props.quote), 35 * 1000);
     }
 
     componentWillUnmount() {
-        clearInterval(this.statsInterval);
+        //clearInterval(this.statsInterval);
     }
 
     shouldComponentUpdate(nextProps) {
@@ -55,6 +56,7 @@ class MarketRow extends React.Component {
     }
 
     _onStar(quote, base, e) {
+
         e.preventDefault();
         if (!this.props.starred) {
             SettingsActions.addStarMarket(quote, base);
@@ -75,8 +77,6 @@ class MarketRow extends React.Component {
         let dynamic_data = quote.get("dynamic");
         let base_dynamic_data = base.get("dynamic");
 
-        let price = utils.convertPrice(quote, base);
-
         let rowStyles = {};
         if (this.props.leftAlign) {
             rowStyles.textAlign = "left";
@@ -88,8 +88,9 @@ class MarketRow extends React.Component {
             buttonClass += " no-margin";
             buttonStyle = {marginBottom: 0, fontSize: "0.75rem" , padding: "4px 10px" , borderRadius: "0px" , letterSpacing: "0.05rem"};
         }
-
+            
         let columns = this.props.columns.map(column => {
+
             switch (column.name) {
             case "star":
                 let starClass = starred ? "gold-star" : "grey-star";
@@ -124,28 +125,16 @@ class MarketRow extends React.Component {
                     </td>
                 );
 
+
             case "market":
                 return (<td onClick={this._onClick.bind(this, marketID)} key={column.index}>
                         {this.props.name}
                     </td>);
 
             case "price":
-                let finalPrice = stats && stats.latestPrice ?
-                    stats.latestPrice :
-                    stats && stats.close && (stats.close.quote.amount && stats.close.base.amount) ?
-                    utils.get_asset_price(stats.close.quote.amount, quote, stats.close.base.amount, base, true) :
-                    utils.get_asset_price(price.base.amount, base, price.quote.amount, quote);
-
-                let highPrecisionAssets = ["BTC", "OPEN.BTC", "TRADE.BTC", "GOLD", "SILVER"];
-                let precision = 6;
-                if (highPrecisionAssets.indexOf(base.get("symbol")) !== -1) {
-                    precision = 8;
-                }
-
-
                 return (
                     <td onClick={this._onClick.bind(this, marketID)} className="text-right" key={column.index}>
-                        {utils.format_number(finalPrice, finalPrice > 1000 ? 0 : finalPrice > 10 ? 2 : precision)}
+                        {utils.finalOrderPrice(stats, base, quote)}
                     </td>
                 );
 
@@ -197,6 +186,7 @@ class MarketRow extends React.Component {
         }).sort((a,b) => {
             return a.key > b.key;
         });
+
 
         let className = "clickable";
 

@@ -545,6 +545,24 @@ var Utils = {
             replacedName,
             prefix
         };
+    },
+
+    finalOrderPrice(stats, base, quote) {
+        let price = this.convertPrice(quote, base);
+        //console.log('@>price', price)
+        let finalPrice = stats && stats.latestPrice ?
+            stats.latestPrice :
+            stats && stats.close && (stats.close.quote.amount && stats.close.base.amount) ?
+            this.get_asset_price(stats.close.quote.amount, quote, stats.close.base.amount, base, true) :
+            this.get_asset_price(price.base.amount, base, price.quote.amount, quote);
+
+        let highPrecisionAssets = ["BTC", "OPEN.BTC", "TRADE.BTC", "GOLD", "SILVER"];
+        let precision = 6;
+        if (highPrecisionAssets.indexOf(base.get("symbol")) !== -1) {
+            precision = 8;
+        }
+
+        return this.format_number(finalPrice, finalPrice > 1000 ? 0 : finalPrice > 10 ? 2 : precision);
     }
 };
 

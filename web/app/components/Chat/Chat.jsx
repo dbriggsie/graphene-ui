@@ -48,6 +48,20 @@ class Chat extends React.Component {
         this.get_news(this);
         setInterval(()=>{this.get_news(this)}, 20000);
 
+
+        document.body.addEventListener("click",(e)=>{
+            let chat_div = document.getElementById("chatbox");
+            if(e.target.id=="chatbox"||chat_div.contains(e.target)){
+                return false;
+            }else{
+                if(chat_div.childNodes[0].style.display==="block"){
+                    this.onToggleChat();
+                }    
+                return false; 
+            }
+
+        });
+
     }
 
     /*shouldComponentUpdate(nextProps, nextState) {
@@ -65,6 +79,7 @@ class Chat extends React.Component {
 
     componentWillMount() {
         //this._connectToServer();
+
     }
 
     componentWillUnmount() {
@@ -134,7 +149,7 @@ class Chat extends React.Component {
 
 
     onToggleChat(e) {
-        e.preventDefault();
+        e&&e.preventDefault&&e.preventDefault();
         let showChat = !this.state.showChat;
 
         let closed_news_stamp = Object.keys(this.state.news).join("")
