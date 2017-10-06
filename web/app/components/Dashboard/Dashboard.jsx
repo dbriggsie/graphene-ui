@@ -27,7 +27,6 @@ class Dashboard extends React.Component {
             featuredMarkets: marketsByChain[chainID] || marketsByChain["4018d784"],
             newAssets: []
         };
-
         this._setDimensions = this._setDimensions.bind(this);
         // this._sortMarketsByVolume = this._sortMarketsByVolume.bind(this);
     }

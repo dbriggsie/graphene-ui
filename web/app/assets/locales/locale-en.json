@@ -808,6 +808,7 @@
     "darkTheme": "Dark theme",
     "lightTheme": "Light theme",
     "olDarkTheme": "Openledger dark",
+    "olLightTheme": "Openledger light",
     "reset": "Reset settings",
     "disableChat": "Disable chat",
     "general": "General",

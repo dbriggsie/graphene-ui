@@ -30,7 +30,6 @@ class Content extends React.Component {
 }
 
 class DashboardContainer extends React.Component {
-  
 
     render() {
         return (
@@ -41,7 +40,7 @@ class DashboardContainer extends React.Component {
                         return AccountStore.getState().linkedAccounts;
                     },
                     my_accounts: () => {
-                        return AccountStore.getMyAccounts();
+                        return AccountStore.getMyAccounts;
                     },
                     myIgnoredAccounts: () => {
                         return AccountStore.getState().myIgnoredAccounts;

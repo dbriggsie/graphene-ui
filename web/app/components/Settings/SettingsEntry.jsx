@@ -11,6 +11,7 @@ export default class SettingsEntry extends React.Component {
         this.state = {
             message: null
         };
+
     }
 
     _setMessage(key) {
@@ -37,8 +38,8 @@ export default class SettingsEntry extends React.Component {
                 value = selected;
                 options = defaults.map(entry => {
                     let translationKey = "languages." + entry;
-                    let value = counterpart.translate(translationKey);
 
+                    let value = counterpart.translate(translationKey);
                     return <option key={entry} value={entry}>{value}</option>;
                 });
 

@@ -289,9 +289,10 @@
 
   .grp-menu-item {
     > a, .button {
-      color: $primary-text-color !important;
-    } 
+      color: $primary-text-color /*!important*/;
+    }
   }
+
 
   .header .logo {
     color: $secondary-text-color;
@@ -787,7 +788,7 @@
   }
 
   .menu-group.primary, .menu-group.primary .menu-bar {
-      background-color: $panel-bg-color;
+      background: linear-gradient($panel-bg-color, #00186B);
 
       .menu-bar > li {
 
@@ -826,7 +827,7 @@
 
   .exchange-content-header {
     color: $light-text-color;
-    background-color: $header-color !important;
+    background: $header-color !important;
     border-bottom: 1px solid $button-bg-color;
     &.bid {
       border-bottom: 1px solid $bid-color;
@@ -1006,7 +1007,7 @@
   }
 
   div.exchange-content-header {
-    background-color: $header-color !important;
+    background: $header-color !important;
   }
 
   .table > tbody > tr:nth-of-type(even) {
