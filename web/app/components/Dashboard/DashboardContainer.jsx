@@ -30,6 +30,8 @@ class Content extends React.Component {
 }
 
 class DashboardContainer extends React.Component {
+  
+
     render() {
         return (
             <AltContainer
