@@ -147,7 +147,7 @@ class CreateAccount extends React.Component {
 
     createWallet(password) {
         return WalletActions.setWallet(
-            "default", //wallet name
+            this.state.accountName||"default", //wallet name
             password
         ).then(()=> {
             console.log("Congratulations, your wallet was successfully created.");

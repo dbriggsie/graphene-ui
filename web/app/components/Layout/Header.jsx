@@ -237,7 +237,6 @@ class Header extends React.Component {
         let login_with_password = myAccountCount === 0 ? (
             <ActionSheet.Button title="" setActiveState={(e) => {
 
-
                 SettingsActions.changeSetting({
                     setting: "passwordLogin",
                     value: true
@@ -263,8 +262,8 @@ class Header extends React.Component {
         )
 
         let tradeLink = this.props.lastMarket ?
-            <a className={cnames({active: active.indexOf("market/") !== -1})} onClick={this._onNavigate.bind(this, `/market/${this.props.lastMarket}`)}><Translate component="span" content="header.exchange" /></a>:
-            <a className={cnames({active: active.indexOf("market/") !== -1})} onClick={this._onNavigate.bind(this, "/market/USD_BTS")}><Translate component="span" content="header.exchange" /></a>;
+        	<Link to={`/market/${this.props.lastMarket}`}	className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>:
+        	<Link to="/market/USD_BTS" 						className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>;
 
         let hasOrders = linkedAccounts.reduce((final, a) => {
             let account = ChainStore.getAccount(a);
@@ -395,9 +394,9 @@ class Header extends React.Component {
                 <div className="grid-block show-for-medium">
                     <ul className="menu-bar">
                         <li>{dashboard}</li>
-                        {(!traderMode && hasOrders) ? <li><Link to={"/my-orders"} activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}
+                        {(!traderMode && hasOrders) ? <li><Link to="/my-orders" activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}
                         {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} className={cnames({active: active.indexOf("account/") !== -1})}><Translate content="header.account" /></Link></li>}
-                        {!traderMode ? null : <li><a className={cnames({active: active.indexOf("transfer") !== -1})} onClick={this._onNavigate.bind(this, "/transfer")}><Translate component="span" content="header.payments" /></a></li>}
+                        {!traderMode ? null : <li><Link to="/transfer" className={cnames({active: active.indexOf("transfer") !== -1})} ><Translate component="span" content="header.payments" /></Link></li>}
                         {!traderMode ? null : <li>{tradeLink}</li>}
                         {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                     </ul>

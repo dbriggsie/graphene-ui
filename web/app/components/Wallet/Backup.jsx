@@ -310,7 +310,6 @@ class Download extends Component {
         if (this.props.airbitz_backup_option && WalletDb.validatePassword(this.props.user_password, true)) {
 
             console.log('@>this.props.user_password', this.props.user_password)
-            //@> if (this.props.airbitz_backup_option&&WalletDb.validatePassword("testname123123", true)) {
             let brainkey = WalletDb.getBrainKey()
 
             _abcUi.openLoginWindow(function(error, account) {
