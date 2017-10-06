@@ -125,6 +125,7 @@
 
   .__react_component_tooltip.type-light {
     @include color($light-text-color, $super-light-panel-bg-color, true);
+    filter: drop-shadow(0 0 0px #080808);
     &.place-bottom:after {
       border-bottom-color: $super-light-panel-bg-color !important;
     }
@@ -289,9 +290,10 @@
 
   .grp-menu-item {
     > a, .button {
-      color: $primary-text-color !important;
-    } 
+      color: $primary-text-color /*!important*/;
+    }
   }
+
 
   .header .logo {
     color: $secondary-text-color;
@@ -787,8 +789,7 @@
   }
 
   .menu-group.primary, .menu-group.primary .menu-bar {
-      background-color: $panel-bg-color;
-
+    background-color: $panel-bg-color;
       .menu-bar > li {
 
           > a {
@@ -826,7 +827,7 @@
 
   .exchange-content-header {
     color: $light-text-color;
-    background-color: $header-color !important;
+    background: $header-color !important;
     border-bottom: 1px solid $button-bg-color;
     &.bid {
       border-bottom: 1px solid $bid-color;
@@ -1006,7 +1007,7 @@
   }
 
   div.exchange-content-header {
-    background-color: $header-color !important;
+    background: $header-color !important;
   }
 
   .table > tbody > tr:nth-of-type(even) {

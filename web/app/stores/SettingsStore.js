@@ -197,7 +197,8 @@ class SettingsStore {
             themes: [
                 "darkTheme",
                 "lightTheme",
-                "olDarkTheme"
+                "olDarkTheme",
+                "olLightTheme"
             ],
             passwordLogin: [
                 {translate: "yes"},

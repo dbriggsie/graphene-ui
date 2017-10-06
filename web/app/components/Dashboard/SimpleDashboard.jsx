@@ -12,21 +12,13 @@ import AccountStore from "stores/AccountStore";
 
 class SimpleDashboard extends React.Component {
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return (
-            nextProps.linkedAccounts !== this.props.linkedAccounts ||
-            nextProps.currentAccount !== this.props.currentAccount ||
-            nextProps.viewSettings !== this.props.viewSettings ||
-            nextProps.preferredUnit || this.props.preferredUnit
-        );
-    }
-
     render() {
-
         let {linkedAccounts, myIgnoredAccounts, currentAccount, isMyAccount} = this.props;
-        let accountCount = linkedAccounts.size + myIgnoredAccounts.size;
+
+        let accountCount = linkedAccounts.size + myIgnoredAccounts.size + (this.props.passwordAccount ? 1 : 0);
+
+        typeof isMyAccount !== 'boolean' ? isMyAccount=true : 1;
         
-        typeof isMyAccount !== 'boolean'?isMyAccount=true:1;
 
         return (
             <div ref="wrapper" className={"grid-block page-layout vertical "+this.props.className} >

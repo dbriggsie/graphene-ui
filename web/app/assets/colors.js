@@ -1,4 +1,27 @@
 module.exports = {
+    olLightTheme: {
+        bidColor: "rgba(36, 255, 41, 0.5)",
+        bidFillColor: "rgb(36, 255, 41)",
+        askColor: "#E3745B",
+        askFillColor: "rgba(241, 0, 0, 1)",
+        callColor: "#BBBF2B",
+        settleColor: "rgba(125, 134, 214, 1)",
+        settleFillColor: "rgba(125, 134, 214, 0.5)",
+        positiveColor: "#24FF29",
+        negativeColor: "#FF2B2A",
+        primaryText: "#404040",
+        volumeColor: "#848484",
+
+        //tooltip
+        tooltipBackgroundColor: "rgba(0, 0, 0, 0.4)",
+        tooltipColor: "#fff",
+        tooltipFillColor: "#fff",
+        //axis
+        axisLabelsColor: "#fff",
+        axisLineColor: "#AAAAAA",
+        indicatorLineColor: "#FFFFFF"
+
+    },
     olDarkTheme: {
         bidColor: "#50D2C2",
         bidFillColor: "rgba(80, 210, 194, 0.5)",

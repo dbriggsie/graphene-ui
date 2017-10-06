@@ -44,6 +44,7 @@ class Header extends React.Component {
         };
 
         this.unlisten = null;
+
     }
 
     componentWillMount() {
@@ -150,6 +151,7 @@ class Header extends React.Component {
     }
 
     onSwitchTraderMode() {
+
         if(SettingsStore.getState().settings.get("traderMode")){
             SettingsActions.changeSetting({setting: "traderMode", value: false});
         }else{

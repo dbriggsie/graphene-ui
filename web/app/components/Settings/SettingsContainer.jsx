@@ -7,7 +7,6 @@ import Settings from "./Settings";
 class SettingsContainer extends React.Component {
 
     render() {
-
         return (
               <AltContainer
                   stores={[SettingsStore]}
