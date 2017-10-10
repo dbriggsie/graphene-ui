@@ -103,10 +103,17 @@ class Transfer extends React.Component {
                 }
             }
         }
+
+        if(!ns.to_name||!ChainStore.getAccount(ns.to_name)){
+            this.setState({
+                to_account:null
+            });
+        }
         return true;
     }
 
     componentWillReceiveProps(np) {
+
         if (np.currentAccount !== this.state.from_name && np.currentAccount !== this.props.currentAccount) {
             this.setState({
                 from_name: np.currentAccount,
@@ -116,6 +123,10 @@ class Transfer extends React.Component {
                 feeAmount: new Asset({amount: 0})
             }, () => {this._updateFee(); this._checkFeeStatus(ChainStore.getAccount(np.currentAccount));});
         }
+    }
+
+    componentWillUpdate(nextProps, nextState){
+
     }
 
     _checkBalance() {

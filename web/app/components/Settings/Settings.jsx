@@ -219,6 +219,12 @@ class Settings extends React.Component {
             break;
         }
 
+        let part_translate = menuEntries[activeSetting];
+
+        if(this.props.settings.get("passwordLogin")&&part_translate==="backup"){
+            part_translate+="_account_model";
+        }
+
         return (
             <div className="grid-block page-layout">
                 <div className="grid-block main-content wrap">
@@ -235,7 +241,7 @@ class Settings extends React.Component {
                     <div className="grid-content" style={{paddingLeft: "1rem", paddingRight: "1rem", maxWidth: 1000}}>
                         <div className="grid-block small-12 medium-10 no-margin vertical">
                             <Translate component="h4" content={"settings." + menuEntries[activeSetting]} />
-                            {activeEntry != "access" && <Translate unsafe style={{paddingTop: 10, paddingBottom: 20, marginBottom: 30}} className="bottom-border" content={`settings.${menuEntries[activeSetting]}_text`} />}
+                            {activeEntry != "access" && <Translate unsafe style={{paddingTop: 10, paddingBottom: 20, marginBottom: 30}} className="bottom-border" content={`settings.${part_translate}_text`} />}
                             {entries}
                         </div>
                     </div>
