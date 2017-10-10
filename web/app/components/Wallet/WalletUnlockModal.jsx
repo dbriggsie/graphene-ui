@@ -21,6 +21,7 @@ import WalletActions from "actions/WalletActions";
 import {makeABCUIContext} from 'airbitz-core-js-ui/lib/abcui.es6';
 import { airbitzAPIs } from "api/apiConfig";
 import SettingsStore from "stores/SettingsStore";
+import Residents_confirm from "../Modal/Residents_confirm";
 //import abcui from "airbitz-core-js-ui";
 let _abcUi = makeABCUIContext(airbitzAPIs);
 
@@ -334,9 +335,10 @@ class WalletUnlockModal extends React.Component {
         });
     }
 
-    _onCreateWallet() {
+    reg_continue() {
         ZfApi.publish(this.props.modalId, "close");
-        this.context.router.push("/create-account/wallet");
+        ZfApi.publish("residents_confirm", "open");
+        
     }
 
     renderWalletLogin() {
@@ -345,7 +347,7 @@ class WalletUnlockModal extends React.Component {
                 <div>
                     <Translate content="wallet.no_wallet" component="p" />
                     <div className="button-group">
-                        <div className="button" onClick={this._onCreateWallet.bind(this)}><Translate content="wallet.create_wallet" /></div>
+                        <div className="button" onClick={this.reg_continue.bind(this)}><Translate content="wallet.create_wallet" /></div>
                     </div>
                     <Translate onClick={()=>{ this._switch_brain_airbitz(false); this._toggleLoginType(true)}} component="div" content="wallet.switch_model_password" className="button small outline float-right airbitz_button" />
                     <Translate onClick={()=>{ this._switch_brain_airbitz(true); this._toggleLoginType(true)}} component="div" content="wallet.enable_model_airbitz" className="button small outline float-right" />

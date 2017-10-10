@@ -46,6 +46,7 @@ import BackupBrainkey from "./components/Wallet/BackupBrainkey";
 import Brainkey from "./components/Wallet/Brainkey";
 import Help from "./components/Help";
 import InitError from "./components/InitError";
+import Residents_unsupported from "./components/Residents_unsupported";
 
 import MyOrders from "./components/Account/MyOrders";
 import LoginSelector from "./components/LoginSelector";
@@ -131,6 +132,7 @@ const routes = (
         <Route path="deposit-withdraw" component={AccountDepositWithdraw} />
         <Route path="create-worker" component={CreateWorker} />
         <Route path="/init-error" component={InitError} />
+        <Route path="/residents-unsupported" component={Residents_unsupported} />
         <Route path="/help" component={Help} >
             <Route path=":path1" component={Help} >
                 <Route path=":path2" component={Help} >
