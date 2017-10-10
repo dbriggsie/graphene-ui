@@ -1,6 +1,7 @@
 import React from "react";
 import {Link} from "react-router";
 import Translate from "react-translate-component";
+import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 
 if(localStorage.getItem("airbitz_backup_option")===null){
     localStorage.setItem("airbitz_backup_option","true")
@@ -8,7 +9,13 @@ if(localStorage.getItem("airbitz_backup_option")===null){
 
 export default class LoginSelector extends React.Component {
 
-    constructor(){
+    static contextTypes = {
+        location: React.PropTypes.object.isRequired,
+        router: React.PropTypes.object.isRequired
+    };
+
+    constructor(context){
+
 
         super();
         this.state={
@@ -40,11 +47,11 @@ export default class LoginSelector extends React.Component {
         });
     }
 
-    go_with_airbitz(){
-        localStorage.setItem("airbitz_backup_option","true")
-        console.log('@>airbitz_backup_option login',JSON.parse(localStorage.getItem("airbitz_backup_option")))
-    }
 
+    open_residents_confirm(type_registration_wallet,e){
+        window._type_registration_wallet = type_registration_wallet;
+        ZfApi.publish("residents_confirm", "open");       
+    }
 
     render() {
 
@@ -63,13 +70,13 @@ export default class LoginSelector extends React.Component {
                         <h1> OpenLedger </h1>
                         {/*<span>Blockchain Powered. People Driven.</span>*/}
                         <Translate content="wallet.welcome_to_the" component="h3"/>
-                        < Translate content="wallet.create_account_description" component="p" unsafe />
+                        <Translate content="wallet.create_account_description" component="p" unsafe />
                         {!airbitz_backup_option?<Translate content="wallet.login_type" component="h4" />:null}
                         </div>:null}
 
                     {!airbitz_backup_option?<div className="index_button_section" >
-                        <div className="button"><Link to="/create-account/wallet"><Translate content="wallet.use_wallet" /></Link></div>
-                        <div className="button"><Link to="/create-account/password"><Translate content="wallet.use_password" /></Link></div>
+                        <Translate className="button" onClick={this.open_residents_confirm.bind(this,"wallet")} content="wallet.use_wallet" />
+                        <Translate className="button" onClick={this.open_residents_confirm.bind(this,"password")} content="wallet.use_password" />
                     </div>:null}
 
                 </div>
@@ -77,7 +84,7 @@ export default class LoginSelector extends React.Component {
                 {(()=>{
                     if(!airbitz_backup_option){
                         return (<div className="grid-block small-10 login-selector">
-                            <div className="box small-12 large-6" onClick={this.onSelect.bind(this, "wallet")}>
+                            <div className="box small-12 large-6" onClick={this.open_residents_confirm.bind(this, "wallet")}>
                                 <div className="block-content-header" style={{position: "relative"}}>
                                     <Translate content="wallet.wallet_model" component="h3" />
                                     <Translate content="wallet.wallet_model_sub" component="h4" />
@@ -96,7 +103,7 @@ export default class LoginSelector extends React.Component {
 
                             </div>
 
-                            <div className="box small-12 large-6 vertical" onClick={this.onSelect.bind(this, "password")}>
+                            <div className="box small-12 large-6 vertical" onClick={this.open_residents_confirm.bind(this, "password")}>
                                 <div className="block-content-header" style={{position: "relative"}}>
                                     <Translate content="wallet.password_model" component="h3" />
                                     <Translate content="wallet.password_model_sub" component="h4" />
@@ -116,10 +123,8 @@ export default class LoginSelector extends React.Component {
                     }else{
                         return (<div className="grid-block small-10 login-selector">
                                     <div className="box-content">
-                                        <div className="button create_acc_button" onClick={this.go_with_airbitz} >
-                                            <Link to="/create-account/wallet">
-                                                <Translate unsafe content="wallet.airbitz_create_wallet" component="p" />
-                                            </Link>
+                                        <div className="button create_acc_button" onClick={(e)=>{localStorage.setItem("airbitz_backup_option","true");this.open_residents_confirm("wallet")}} >
+                                            <Translate unsafe content="wallet.airbitz_create_wallet" component="p" className="create_acc_button_p" />
                                         </div>
                                         <p className="create_acc_button_another" onClick={this.show_registration_choose} ><Translate content="wallet.create_without_airbitz" component="a" /></p>
                                     </div>
@@ -132,8 +137,7 @@ export default class LoginSelector extends React.Component {
                                 </div>);
                     }                    
 
-                })()}
-               
+                })()}             
 
 
             </div>
