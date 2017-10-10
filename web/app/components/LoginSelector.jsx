@@ -84,7 +84,7 @@ export default class LoginSelector extends React.Component {
                 {(()=>{
                     if(!airbitz_backup_option){
                         return (<div className="grid-block small-10 login-selector">
-                            <div className="box small-12 large-6" onClick={this.onSelect.bind(this, "wallet")}>
+                            <div className="box small-12 large-6" onClick={this.open_residents_confirm.bind(this, "wallet")}>
                                 <div className="block-content-header" style={{position: "relative"}}>
                                     <Translate content="wallet.wallet_model" component="h3" />
                                     <Translate content="wallet.wallet_model_sub" component="h4" />
@@ -103,7 +103,7 @@ export default class LoginSelector extends React.Component {
 
                             </div>
 
-                            <div className="box small-12 large-6 vertical" onClick={this.onSelect.bind(this, "password")}>
+                            <div className="box small-12 large-6 vertical" onClick={this.open_residents_confirm.bind(this, "password")}>
                                 <div className="block-content-header" style={{position: "relative"}}>
                                     <Translate content="wallet.password_model" component="h3" />
                                     <Translate content="wallet.password_model_sub" component="h4" />
