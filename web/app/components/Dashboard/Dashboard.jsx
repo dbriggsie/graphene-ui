@@ -129,7 +129,6 @@ class Dashboard extends React.Component {
     // }
 
     render() {
-
         let { linkedAccounts, myIgnoredAccounts, accountsReady, passwordAccount, traderMode } = this.props;
         let {width, showIgnored, featuredMarkets, newAssets} = this.state;
 

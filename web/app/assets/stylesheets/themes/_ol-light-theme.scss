@@ -216,6 +216,13 @@ $chat-text-color: #000;
   .asset-card .card-divider{
     background: $light-panel-bg-color;
   }
+  
+  .chatbox .news_li a{
+    color: #4a90e2;
+    &:hover{
+      color: #2e598b;
+    }
+  }
 
 
 }

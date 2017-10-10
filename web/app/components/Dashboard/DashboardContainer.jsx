@@ -46,7 +46,7 @@ class DashboardContainer extends React.Component {
                         return AccountStore.getState().myIgnoredAccounts;
                     },
                     currentAccount: () => {
-                        return AccountStore.getState().currentAccount;
+                        return AccountStore.getState().passwordAccount;
                     },
                     viewSettings: () => {
                         return SettingsStore.getState().viewSettings;
