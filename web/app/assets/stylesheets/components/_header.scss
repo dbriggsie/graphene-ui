@@ -46,7 +46,7 @@
       font-weight: bold;
       font-size: 0.9rem;
       text-align: center;
-      padding: 0.7rem 1rem 0.7rem 1rem;
+      padding: 0.71rem 1rem 0.71rem 1rem;
      // color: $primary-text-color;
       border-left: 1px solid $border-color;
             color: inherit;
@@ -109,7 +109,7 @@ div.header-right-menu {
   > a, .button {
     font-family: 'Roboto-Light', arial, sans-serif;
     font-weight: bold;
-    padding: 0.6rem;
+    padding: 0.5rem;
     @include breakpoint(large) {
       padding-left: 0.75rem;
       padding-right: 0.75rem;

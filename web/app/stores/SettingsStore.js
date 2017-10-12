@@ -67,7 +67,9 @@ let marketsList = [
    "OPEN.EXCL",
    "REALITY",
    "YOYOW",
-   "ZENGOLD"
+   "ZENGOLD",
+    "OPEN.OMG",
+    "OPEN.EOS"
 ];
 
 let topMarkets = {
@@ -90,7 +92,7 @@ let dashboard_assets = {
         ["USD", "APPX.WARRANT"],
         ["CNY", "OBITS.WARRANT"],
         ["OPEN.BTC", "OPEN.MUSEOL"],
-        ["USD", "OPEN.ETP"],
+        ["OPEN.BTC" , "OPEN.EOS"],
         ["BTS", "USD"],
         ["BTS", "EUR"],
         ["BTS", "CNY"],
@@ -98,7 +100,7 @@ let dashboard_assets = {
         ["BTS", "FUNC"],
         ["OPEN.BTC", "OPEN.WAVES"],
         ["BTS", "OPEN.INCNT"],
-        ["OPEN.BTC", "OPEN.LISK"]
+        ["OPEN.BTC", "OPEN.OMG"]
     ],
     "39f5e2ed": [
         ["TEST", "PEG.FAKEUSD"],

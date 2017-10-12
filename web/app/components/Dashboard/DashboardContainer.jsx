@@ -25,6 +25,7 @@ class Content extends React.Component {
     }
 
     render() {
+        console.log(this.props);
         return this.props.traderMode ? <Dashboard {...this.props} /> : <SimpleDashboard {...this.props} />;
     }
 }
@@ -46,7 +47,7 @@ class DashboardContainer extends React.Component {
                         return AccountStore.getState().myIgnoredAccounts;
                     },
                     currentAccount: () => {
-                        return AccountStore.getState().passwordAccount;
+                        return AccountStore.getState().passwordAccount || AccountStore.getState().currentAccount;
                     },
                     viewSettings: () => {
                         return SettingsStore.getState().viewSettings;
