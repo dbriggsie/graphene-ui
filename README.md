@@ -31,6 +31,7 @@ Before launching the GUI you will need to install the npm packages for each subd
 cd web
 npm install
 ```
+Create empty file metrika.html in folder 'web'.
 
 ## Running the dev server
 
