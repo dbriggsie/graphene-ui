@@ -185,7 +185,7 @@ class WalletUnlockModal extends React.Component {
                         window.remote.getCurrentWindow().reload();
                     } else{
                         console.log('@>AccountStore.getState().currentAccount',AccountStore.getState().currentAccount)
-                        //window.location.href = "/dashboard";
+                        setTimeout(()=>{window.location.href = "/dashboard"},3000);  
                     } 
                 }
                 
@@ -245,8 +245,7 @@ class WalletUnlockModal extends React.Component {
                                                 message: `Incorrect Brain key`,
                                                 level: "error",
                                                 autoDismiss: 10
-                                            });
-                                            setTimeout(()=>{window.location.href = "/dashboard"},3000);
+                                            });                                            
                                         }else{
 
                                             SettingsActions.changeSetting({
@@ -260,7 +259,9 @@ class WalletUnlockModal extends React.Component {
                                                 autoDismiss: 10
                                             });
 
-                                        }                                        
+                                        }
+
+                                        setTimeout(()=>{window.location.href = "/dashboard"},3000);                                        
                                     },3500);
 
                                 }

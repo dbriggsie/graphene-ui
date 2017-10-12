@@ -153,11 +153,6 @@ class Dashboard extends React.Component {
             let isLowVolume = this.props.lowVolumeMarkets.get(pair[1] + "_" + pair[0]) || this.props.lowVolumeMarkets.get(pair[0] + "_" + pair[1]);
             if (!isLowVolume) validMarkets++;
             let className = "";
-            if (validMarkets > 9) {
-                className += ` show-for-${!accountCount ? "xlarge" : "large"}`;
-            } else if (validMarkets > 6) {
-                className += ` show-for-${!accountCount ? "large" : "medium"}`;
-            }
 
             return (
                 <MarketCard
