@@ -21,7 +21,6 @@ import notify from "actions/NotificationActions";
 import IntlActions from "actions/IntlActions";
 import AccountImage from "../Account/AccountImage";
 import SettingsActions from "actions/SettingsActions";
-import Residents_confirm from "../Modal/Residents_confirm";
 
 import {ChainStore} from "bitsharesjs/es";
 
@@ -171,11 +170,6 @@ class Header extends React.Component {
             localStorage.setItem("airbitz_backup_option","true")
         }
         console.log('@>airbitz_backup_option header',localStorage.getItem("airbitz_backup_option"))
-    }
-
-    open_residents_confirm(){
-        window._type_registration_wallet = "wallet";
-        ZfApi.publish("residents_confirm", "open");      
     }    
 
     // onClickUser(account, e) {
@@ -235,7 +229,7 @@ class Header extends React.Component {
 
         let createAccountLink = myAccountCount === 0 ? (
             <ActionSheet.Button title="" setActiveState={this.go_with_airbitz.bind(this)}>
-                <a className="button create-account" onClick={this.open_residents_confirm} style={{ border: "none"}} >
+                <a className="button create-account" onClick={this._onNavigate.bind(this, "/create-account/wallet")} style={{ border: "none"}} >
                     <Icon className="icon-14px" name="user"/> <Translate content="header.create_account" />
                 </a>
             </ActionSheet.Button>
@@ -270,8 +264,8 @@ class Header extends React.Component {
         )
 
         let tradeLink = this.props.lastMarket ?
-        	<Link to={`/market/${this.props.lastMarket}`}	className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>:
-        	<Link to="/market/USD_BTS" 						className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>;
+            <Link to={`/market/${this.props.lastMarket}`}   className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>:
+            <Link to="/market/USD_BTS"                      className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>;
 
         let hasOrders = linkedAccounts.reduce((final, a) => {
             let account = ChainStore.getAccount(a);
@@ -441,11 +435,6 @@ class Header extends React.Component {
                         {!myAccountCount ? null : lock_unlock}
                     </div>
                 </div>
-                <Residents_confirm
-                    ref = "residents_confirm"
-                    type ="residents_confirm"
-                    type_registration = "wallet"
-                />
             </div>
         );
     }

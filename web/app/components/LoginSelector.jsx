@@ -75,8 +75,8 @@ export default class LoginSelector extends React.Component {
                         </div>:null}
 
                     {!airbitz_backup_option?<div className="index_button_section" >
-                        <Translate className="button" onClick={this.open_residents_confirm.bind(this,"wallet")} content="wallet.use_wallet" />
-                        <Translate className="button" onClick={this.open_residents_confirm.bind(this,"password")} content="wallet.use_password" />
+                        <Translate className="button" onClick={this.onSelect.bind(this,"wallet")} content="wallet.use_wallet" />
+                        <Translate className="button" onClick={this.onSelect.bind(this,"password")} content="wallet.use_password" />
                     </div>:null}
 
                 </div>
@@ -84,7 +84,7 @@ export default class LoginSelector extends React.Component {
                 {(()=>{
                     if(!airbitz_backup_option){
                         return (<div className="grid-block small-10 login-selector">
-                            <div className="box small-12 large-6" onClick={this.open_residents_confirm.bind(this, "wallet")}>
+                            <div className="box small-12 large-6" onClick={this.onSelect.bind(this, "wallet")}>
                                 <div className="block-content-header" style={{position: "relative"}}>
                                     <Translate content="wallet.wallet_model" component="h3" />
                                     <Translate content="wallet.wallet_model_sub" component="h4" />
@@ -103,7 +103,7 @@ export default class LoginSelector extends React.Component {
 
                             </div>
 
-                            <div className="box small-12 large-6 vertical" onClick={this.open_residents_confirm.bind(this, "password")}>
+                            <div className="box small-12 large-6 vertical" onClick={this.onSelect.bind(this, "password")}>
                                 <div className="block-content-header" style={{position: "relative"}}>
                                     <Translate content="wallet.password_model" component="h3" />
                                     <Translate content="wallet.password_model_sub" component="h4" />
@@ -123,7 +123,7 @@ export default class LoginSelector extends React.Component {
                     }else{
                         return (<div className="grid-block small-10 login-selector">
                                     <div className="box-content">
-                                        <div className="button create_acc_button" onClick={(e)=>{localStorage.setItem("airbitz_backup_option","true");this.open_residents_confirm("wallet")}} >
+                                        <div className="button create_acc_button" onClick={(e)=>{localStorage.setItem("airbitz_backup_option","true");this.onSelect("wallet")}} >
                                             <Translate unsafe content="wallet.airbitz_create_wallet" component="p" className="create_acc_button_p" />
                                         </div>
                                         <p className="create_acc_button_another" onClick={this.show_registration_choose} ><Translate content="wallet.create_without_airbitz" component="a" /></p>

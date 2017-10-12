@@ -338,7 +338,8 @@ class WalletUnlockModal extends React.Component {
 
     reg_continue() {
         ZfApi.publish(this.props.modalId, "close");
-        ZfApi.publish("residents_confirm", "open");
+        //ZfApi.publish("residents_confirm", "open");
+        this.context.router.push(`/create-account/${window._type_registration_wallet||"wallet"}`);
         
     }
 
