@@ -313,7 +313,6 @@ class DepositWithdrawContent extends React.Component {
     }
 
     _onInputAmount(e) {
-
         try {
             this.state.to_withdraw.setAmount({
                 real: parseFloat(e.target.value || 0)
