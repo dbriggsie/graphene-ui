@@ -109,6 +109,13 @@ class Transfer extends React.Component {
                 to_account:null
             });
         }
+
+        if(ns.amount&&!parseFloat(ns.amount)){
+            this.setState({
+                error:counterpart.translate("transfer.errors.balance")
+            });
+        }
+
         return true;
     }
 
@@ -384,7 +391,7 @@ class Transfer extends React.Component {
 
         let propose_incomplete = propose && ! propose_account;
         let submitButtonClass = "button float-right no-margin";
-        if(!from_account || !to_account || !amount || amount === "0"|| !asset || from_error || propose_incomplete || balanceError)
+        if(!from_account || !to_account || !amount || amount === "0"|| error ||!asset || from_error || propose_incomplete || balanceError)
             submitButtonClass += " disabled";
 
         let accountsList = Immutable.Set();
