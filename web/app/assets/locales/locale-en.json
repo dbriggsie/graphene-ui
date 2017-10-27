@@ -393,7 +393,7 @@
     "to": "To",
     "memo": "Memo",
     "warn_name_unable_read_memo": "Warning: %(name)s will be unable to read this memo",
-    "fee": "Fee",
+    "fee": "Withdraw Fee",
     "send": "Send",
     "final": "Final balance",
     "balances": "Balances",

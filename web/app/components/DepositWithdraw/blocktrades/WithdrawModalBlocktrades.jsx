@@ -48,7 +48,7 @@ class WithdrawModalBlocktrades extends React.Component {
             withdraw_address_first: true,
             empty_withdraw_value: false,
             from_account: ChainStore.getAccount(AccountStore.getState().currentAccount),
-            fee_asset_id: "1.3.0"
+            fee_asset_id: this.props.asset.get("id")
         };
 
 
@@ -379,9 +379,9 @@ class WithdrawModalBlocktrades extends React.Component {
             if( current_asset_id ){
                 let current = account_balances[current_asset_id];
                 balance = (
-                    <span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}}>
+                    <span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} onClick={this.onAccountBalance.bind(this)}>
                         <Translate component="span" content="transfer.available"/>&nbsp;:&nbsp;
-                        <span className="set-cursor" onClick={this.onAccountBalance.bind(this)}>
+                        <span className="set-cursor">
                             {current ? <BalanceComponent balance={account_balances[current_asset_id]}/> : 0}
                         </span>
                     </span>
@@ -408,8 +408,10 @@ class WithdrawModalBlocktrades extends React.Component {
                         onChange={this.onWithdrawAmountChange.bind(this)}
                         display_balance={balance}
                     />
-                    {this.state.empty_withdraw_value ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.valid" /></p>:null}
-                    {this.state.balanceError ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.insufficient" /></p>:null}
+                    {this.state.empty_withdraw_value ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.valid" />
+                    <span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer", marginLeft: 5}} onClick={this.onAccountBalance.bind(this)} >click here to recount max value</span>
+                    </p>:null}
+                    {this.state.balanceError ? <p className="has-error no-margin" style={{paddingTop: 10}} ref={this.onAccountBalance.bind(this)}><Translate content="transfer.errors.insufficient" /></p>:null}
                 </div>
 
                 {/* Fee selection */}
@@ -426,9 +428,9 @@ class WithdrawModalBlocktrades extends React.Component {
                     /> 
                     {this.props.gateFee? (
                     <div className="amount-selector right-selector">
-                        <label className="left-label">Gate fee</label>
+                        <label className="left-label">Gate fee:</label>
                         <div className="inline-label input-wrapper">
-                            <p className="right-selector-input">{this.props.gateFee}</p>
+                            <input type="text" className="right-selector-input" style={{marginLeft: 15}} disabled={true} value={(this.props.gateFee)+" "+(this.props.output_coin_symbol)} tabIndex="2"/>
                         </div>
                     </div>):null}
                     {!this.state.hasBalance ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.noFeeBalance" /></p> : null}

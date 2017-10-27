@@ -253,4 +253,3 @@ class Root extends React.Component {
 }
 
 export default supplyFluxContext(alt)(Root);
-

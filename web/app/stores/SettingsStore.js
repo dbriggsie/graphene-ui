@@ -69,7 +69,9 @@ let marketsList = [
    "YOYOW",
    "ZENGOLD",
     "OPEN.OMG",
-    "OPEN.EOS"
+    "OPEN.EOS",
+    "OPEN.ZRX",
+    "OPEN.SONM"
 ];
 
 let topMarkets = {
@@ -85,12 +87,12 @@ let dashboard_assets = {
         ["OPEN.BTC", "OPEN.ETH"],
         ["OPEN.BTC", "OPEN.STEEM"],
         ["USD", "EDEV"],
-        ["USD", "REALITY"],
+        ["OPEN.BTC", "OPEN.ZRX"],
         ["OPEN.BTC", "ICOO"],
         ["BTS", "OBITS"],
         ["BTS", "BTSR"],
         ["USD", "APPX.WARRANT"],
-        ["CNY", "OBITS.WARRANT"],
+        ["OPEN.BTC", "OPEN.SONM"],
         ["OPEN.BTC", "OPEN.MUSEOL"],
         ["OPEN.BTC" , "OPEN.EOS"],
         ["BTS", "USD"],
@@ -200,7 +202,7 @@ class SettingsStore {
                 "darkTheme",
                 "lightTheme",
                 "olDarkTheme",
-                "olLightTheme"
+                //"olLightTheme"
             ],
             passwordLogin: [
                 {translate: "yes"},
