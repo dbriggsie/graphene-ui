@@ -43,6 +43,7 @@ import WalletChangePassword from "./components/Wallet/WalletChangePassword";
 import {WalletManager, WalletOptions, ChangeActiveWallet, WalletDelete} from "./components/Wallet/WalletManager";
 import BalanceClaimActive from "./components/Wallet/BalanceClaimActive";
 import BackupBrainkey from "./components/Wallet/BackupBrainkey";
+import Login from "./components/Login/Login";
 import Brainkey from "./components/Wallet/Brainkey";
 import Help from "./components/Help";
 import InitError from "./components/InitError";
@@ -51,6 +52,8 @@ import Residents_unsupported from "./components/Residents_unsupported";
 import MyOrders from "./components/Account/MyOrders";
 import LoginSelector from "./components/LoginSelector";
 import CreateWorker from "./components/Account/CreateWorker";
+
+import Welcome from "./components/Welcome/Welcome";
 
 const history = __HASH_HISTORY__ ? hashHistory : browserHistory;
 
@@ -64,6 +67,7 @@ const routes = (
         <Route path="/auth/:data" component={Auth}/>
         <Route path="/dashboard" component={DashboardContainer}/>
         <Route path="/root" component={Das_root}/>
+        <Route path="/welcome" component={Welcome}/>
         <Route path="explorer" component={Explorer}/>
 
         <Route path="/explorer/fees" component={FeesContainer} />
@@ -103,6 +107,8 @@ const routes = (
             <Route path="wallet" component={CreateAccount} />
             <Route path="password" component={CreateAccountPassword} />
         </Route>
+
+        <Route path="login" component={Login} />
 
         <Route path="existing-account" component={ExistingAccount} >
             <IndexRoute component={BackupRestore} />

@@ -113,16 +113,23 @@ class BackupRestore extends Component {
 
         return (
             <div>
+                <Translate component="h3" content="header.unlock_wallet" />
                 <Translate style={{textAlign: "left", maxWidth: "30rem"}} component="p" content="wallet.import_backup_choose" />
                 {(new FileReader).readAsBinaryString ? null : <p className="error">Warning! You browser doesn't support some some file operations required to restore backup, we recommend you to use Chrome or Firefox browsers to restore your backup.</p>}
-                <Upload>
-                    <NameSizeModified/>
-                    <DecryptBackup saveWalletObject={true}>
-                        <NewWalletName>
-                            <Restore/>
-                        </NewWalletName>
-                    </DecryptBackup>
-                </Upload>
+                    <Upload >
+                        <NameSizeModified/>
+                        <DecryptBackup saveWalletObject={true}>
+                            <NewWalletName>
+                                <Restore/>
+                            </NewWalletName>
+                        </DecryptBackup>
+                    </Upload>
+
+                    <Link to="/create-wallet-brainkey">
+                        <div className="button " style={{marginTop: 15}}>
+                            <Translate content="settings.backup_brainkey_btn" />
+                        </div>
+                    </Link>
             </div>
         );
     }
@@ -461,7 +468,7 @@ class Upload extends Component {
             <div style={{paddingTop: 20}}>
                 <div
                     onClick={this.reset.bind(this)}
-                    className={cname("button outline", {disabled: !this.props.backup.contents})}
+                    className={cname("button ", {disabled: !this.props.backup.contents})}
                 >
                     <Translate content="wallet.reset" />
                 </div>

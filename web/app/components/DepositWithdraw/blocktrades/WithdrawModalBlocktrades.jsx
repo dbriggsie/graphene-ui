@@ -418,7 +418,7 @@ class WithdrawModalBlocktrades extends React.Component {
                 {this.state.feeAmount?<div className="content-block gate_fee">
                     <AmountSelector 
                         refCallback={this.setNestedRef.bind(this)}
-                        label="transfer.fee"
+                        label="transfer.withdraw_fee"
                         disabled={true}
                         amount={this.state.feeAmount.getAmount({real: true})}
                         onChange={this.onFeeChanged.bind(this)}

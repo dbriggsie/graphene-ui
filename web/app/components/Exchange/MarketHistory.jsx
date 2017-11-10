@@ -142,7 +142,7 @@ class MarketHistory extends React.Component {
                     receivesAsset = base;
                 }
 
-                let parsed_order = market_utils.parse_order_history(order, paysAsset, receivesAsset, isAsk, flipped); console.log('@>market',order,parsed_order)
+                let parsed_order = market_utils.parse_order_history(order, paysAsset, receivesAsset, isAsk, flipped);
                 return (
                     <tr key={"history_" + keyIndex}>
                         <td className={parsed_order.className}>

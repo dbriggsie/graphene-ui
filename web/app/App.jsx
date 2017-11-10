@@ -139,7 +139,7 @@ class App extends React.Component {
         let showFooter = true;
 
         if(~web_path.indexOf("market") || web_path === "/root"){
-            showFooter = false; 
+            showFooter = false;
         }
 
 
@@ -159,7 +159,7 @@ class App extends React.Component {
                     <MobileMenu isUnlocked={this.state.isUnlocked} id="mobile-menu"/>
                     <div className="grid-block">
                         <div className="grid-block vertical">
-                            {this.props.children}                       
+                            {this.props.children}
                         </div>
                     </div>
                     {showFooter ? <Footer synced={this.state.synced} showChat={showChat} disable={disableChat} dockedChat={dockedChat} /> : null}

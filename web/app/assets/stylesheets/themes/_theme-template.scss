@@ -25,7 +25,14 @@
   $row-accent-color,
   $header-color,
   $chat-text-color,
-  $input-background
+  $input-background,
+  $account-header,
+  $account-cells,
+  $account-green,
+  $account-primarytext,
+  $account-dimmed,
+  $account-border,
+  $account-background
   ) {
 
   .font-secondary {
@@ -265,17 +272,17 @@
   }
 
   .header .button,  .header .button:active {
-    background-color: $panel-bg-color !important;
+    background-color: transparent !important;
   }
 
   .header a.button.create-account {
     transition: color 0s !important;
-    color: $button-bg-color !important;
+    //color: $button-bg-color !important;
     > span > svg > path {
         fill: $button-bg-color;
     }
     &:hover {
-        color: lighten($button-bg-color, 10%) !important;
+       // color: lighten($button-bg-color, 10%) !important;
         > span > svg > path {
             fill: lighten($button-bg-color, 10%);
         }
@@ -487,12 +494,24 @@
     }
   }
 
+ .login div.service-selector{
+    border-bottom: transparent !important;
+  }
+
   ul.button-group.segmented {
-      > li.is-active > a {
-          background: $input-background;
+    > li > a {
+      background: $input-background;
+      color: $primary-text-color;
+      border-bottom: 1px solid $button-bg-color;
+    }
+     > li.is-active > a {
+          background: #27384B;
           color: $primary-text-color;
-          border-bottom: 1px solid $button-bg-color;
+          border-bottom: 1px solid #27384B;
       }
+    > li > a{
+      color: $secondary-text-color;
+    }
   }
   // Tabs
 
@@ -1424,6 +1443,26 @@
 
     .create_acc_login{
       margin: 27px 0 90px 0;
+    }
+
+    div.account-creation {
+        background-color: $account-cells;
+
+        div.button > a {
+            color: $primary-text-color;
+        }
+    }
+
+    .panel.login {
+        background: none;
+    }
+
+    .panel.login .grid-content {
+        background-color: $account-cells;
+    }
+
+    .welcome h4 {
+        border: none;
     }
 }
 

@@ -229,7 +229,7 @@ class Header extends React.Component {
 
         let createAccountLink = myAccountCount === 0 ? (
             <ActionSheet.Button title="" setActiveState={this.go_with_airbitz.bind(this)}>
-                <a className="button create-account" onClick={this._onNavigate.bind(this, "/create-account/wallet")} style={{ border: "none"}} >
+                <a className="button create-account" onClick={this._onNavigate.bind(this, "/create-account")} style={{ border: "none"}} >
                     <Icon className="icon-14px" name="user"/> <Translate content="header.create_account" />
                 </a>
             </ActionSheet.Button>
@@ -237,22 +237,11 @@ class Header extends React.Component {
 
         //@#>
         let login_with_password = myAccountCount === 0 ? (
-            <ActionSheet.Button title="" setActiveState={(e) => {
-
-                SettingsActions.changeSetting({
-                    setting: "passwordLogin",
-                    value: true
-                });
-
-
-                WalletUnlockActions.unlock();
-            }}>
-                <a className="button create-account" 
-                    onClick={(e) => e.preventDefault()}
-                    style={{border: "none"}} >
-                    <Icon className="icon-14px" name="key"/> <Translate content="header.login" />
-                </a>
-            </ActionSheet.Button>
+            <Link className="button create-account"
+                to="/login"
+                style={{border: "none"}} >
+                <Icon className="icon-14px" name="key"/> <Translate content="header.login" />
+            </Link>
         ) : null;
 
         let lock_unlock = (
@@ -265,7 +254,7 @@ class Header extends React.Component {
 
         let tradeLink = this.props.lastMarket ?
             <Link to={`/market/${this.props.lastMarket}`}   className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>:
-            <Link to="/market/USD_BTS"                      className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>;
+            <Link to="/market/USD_BTS"  className={cnames({active: active.indexOf("market/") !== -1})} ><Translate component="span" content="header.exchange" /></Link>;
 
         let hasOrders = linkedAccounts.reduce((final, a) => {
             let account = ChainStore.getAccount(a);

@@ -17,7 +17,7 @@ class Content extends React.Component {
         setTimeout(()=>{
             if (!AccountStore.getMyAccounts().length) {
                 //this.props.router.push("/root");
-                this.props.router.push("/create-account");
+                this.props.router.push("/welcome");
             } else {
                 accountUtils.getFinalFeeAsset(this.props.account, "transfer");
             }
@@ -25,7 +25,6 @@ class Content extends React.Component {
     }
 
     render() {
-        console.log(this.props);
         return this.props.traderMode ? <Dashboard {...this.props} /> : <SimpleDashboard {...this.props} />;
     }
 }
