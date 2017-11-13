@@ -74,7 +74,7 @@ class OpenLedgerFiatDepositWithdrawCurrency extends React.Component {
         {
             deposit_fragment =
                             <td>
-                                <button className={"button outline"} onClick={this.onDeposit.bind(this)}> <Translate content="gateway.deposit" /> </button>
+                                <button className={"button outline disabled"} onClick={this.onDeposit.bind(this)}> <Translate content="gateway.deposit" /> </button>
                                 <BaseModal id={deposit_modal_id} overlay={true}>
                                     <Trigger close={deposit_modal_id}>
                                         <a href="#" className="close-button">&times;</a>
