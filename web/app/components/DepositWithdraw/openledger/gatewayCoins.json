@@ -66,12 +66,6 @@
     "symbol": "OPEN.EURT"
   },
   {
-    "backingCoinType": "LISK",
-    "name": "Lisk",
-    "walletType": "lisk",
-    "symbol": "OPEN.LISK"
-  },
-  {
     "backingCoinType": "LTC",
     "name": "Litecoin",
     "walletType": "litecoin",
@@ -110,12 +104,6 @@
     "symbol": "OPEN.NSR"
   },
   {
-    "backingCoinType": "OMNI",
-    "name": "Omni",
-    "walletType": "omni",
-    "symbol": "OPEN.OMNI"
-  },
-  {
     "backingCoinType": "PPC",
     "name": "Peercoin",
     "walletType": "peercoin",
@@ -134,11 +122,5 @@
     "name": "Synereo",
     "walletType": "omni",
     "symbol": "OPEN.AMP"
-  },
-  {
-    "backingCoinType": "USDT",
-    "name": "USD Tether",
-    "walletType": "omni",
-    "symbol": "OPEN.USDT"
   }
 ]
