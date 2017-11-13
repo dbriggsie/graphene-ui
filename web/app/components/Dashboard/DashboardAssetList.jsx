@@ -144,8 +144,8 @@ class DashboardAssetList extends React.Component {
                     {canDepositWithdraw && this.props.isMyAccount? (
                         <span>
                             {this._getSeparator(hasBalance)}
-                            <a onClick={this._showDepositWithdraw.bind(this, "deposit_modal", assetName, fiatModal)}>
-                                <Translate content="gateway.deposit" />
+                            <a className={fiatModal ? "disabled" : ""} onClick={!fiatModal ? this._showDepositWithdraw.bind(this, "deposit_modal", assetName, fiatModal) : null}>
+                               <Translate content="gateway.deposit" />
                             </a>
                         </span>
                     ) : null}
