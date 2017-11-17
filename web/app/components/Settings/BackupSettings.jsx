@@ -2,7 +2,6 @@ import React from "react";
 import {BackupCreate} from "../Wallet/Backup";
 import BackupBrainkey from "../Wallet/BackupBrainkey";
 import AccountStore from "stores/AccountStore";
-import BackupBrainkeyAirbitz from "../Wallet/BackupBrainkeyAirbitz";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
 import WalletDb from "stores/WalletDb";
@@ -22,7 +21,7 @@ class BackupSettings extends React.Component {
         super();
         this.state = {
             restoreType: 0,
-            types: ["backup", "brainkey","airbitz"]
+            types: ["backup", "brainkey"]
         };
     }
 
@@ -96,7 +95,7 @@ class BackupSettings extends React.Component {
             return (
                <p><Translate content="settings.not_yet_have_account" /></p> 
             )
-        }else if(passwordLogin&&passwordAccount){            
+        }else if(passwordLogin&&passwordAccount){
             return (
                 <div>
                     <p><Translate content="settings.backupcreate_airbitz_account_text" /></p>
@@ -119,9 +118,6 @@ class BackupSettings extends React.Component {
 
         case "brainkey":
             content = <BackupBrainkey />;
-            break;
-        case "airbitz":
-            content = <BackupBrainkeyAirbitz />;
             break;
         default:
             break;

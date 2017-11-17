@@ -6,12 +6,6 @@
       "symbol": "OPEN.BTC"
     },
   {
-    "backingCoinType": "AGRS",
-    "name": "Agoras Tokens",
-    "walletType": "omni",
-    "symbol": "OPEN.AGRS"
-  },
-  {
     "backingCoinType": "BKS",
     "name": "BlockShares",
     "walletType": "blockshares",
@@ -58,12 +52,6 @@
     "name": "Ether",
     "walletType": "ethereum",
     "symbol": "OPEN.ETH"
-  },
-  {
-    "backingCoinType": "EURT",
-    "name": "Euro Tether",
-    "walletType": "omni",
-    "symbol": "OPEN.EURT"
   },
   {
     "backingCoinType": "LTC",

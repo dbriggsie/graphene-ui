@@ -69,8 +69,12 @@ class Settings extends React.Component {
             "restore",
             "access",
             "faucet_address"
-        ].filter(e=>e);
-
+        ]
+        if (props.settings.get("passwordLogin")) {
+            menuEntries.splice(4, 1);
+            menuEntries.splice(3, 1);
+            menuEntries.splice(1, 1);
+        }
         return menuEntries;
     }
 
@@ -175,8 +179,8 @@ class Settings extends React.Component {
 
         let entries;
         let activeEntry = menuEntries[activeSetting] || menuEntries[0];
-        switch (activeEntry) {
 
+        switch (activeEntry) {
         case "accounts":
             entries = <AccountsSettings />;
             break;

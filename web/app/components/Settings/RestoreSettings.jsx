@@ -48,7 +48,7 @@ export default class RestoreSettings extends React.Component {
         let options = types.map(type => {
             return <option key={type} value={type}>{counterpart.translate(`settings.backup_${type}`)} </option>;
         });
-
+        
         let content;
 
         switch (types[restoreType]) {

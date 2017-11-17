@@ -72,7 +72,7 @@ class WalletUnlockModal extends React.Component {
                 airbitz_mode: show_switch_airbitzkey
             });
         }
-        
+
     }
 
     shouldComponentUpdate(np, ns) {
@@ -100,7 +100,7 @@ class WalletUnlockModal extends React.Component {
                         notify.error("This wallet was intended for a different block-chain; expecting " +
                             WalletDb.getWallet().chain_id.substring(0,4).toUpperCase() + ", but got " +
                             Apis.instance().chain_id.substring(0,4).toUpperCase());
-                            ZfApi.publish(this.props.modalId, "close");
+                        ZfApi.publish(this.props.modalId, "close");
                         return;
                     }
                 }
@@ -122,9 +122,9 @@ class WalletUnlockModal extends React.Component {
             if (WalletDb.isLocked()){
                 ZfApi.publish(this.props.modalId, "open");
                 /*setTimeout(()=>{
-                   this.props.resolve();
-                   ZfApi.publish(this.props.modalId, "close");
-                },1000)*/
+                 this.props.resolve();
+                 ZfApi.publish(this.props.modalId, "close");
+                 },1000)*/
             }else{
                 //this.props.resolve()
             }
@@ -172,7 +172,7 @@ class WalletUnlockModal extends React.Component {
                 }
 
                 setTimeout(()=>{
-                    ZfApi.publish(this.props.modalId, "close");                
+                    ZfApi.publish(this.props.modalId, "close");
                 },500)
 
                 this.props.resolve();
@@ -185,10 +185,10 @@ class WalletUnlockModal extends React.Component {
                         window.remote.getCurrentWindow().reload();
                     } else{
                         console.log('@>AccountStore.getState().currentAccount',AccountStore.getState().currentAccount)
-                        setTimeout(()=>{window.location.href = "/dashboard"},3000);  
-                    } 
+                        setTimeout(()=>{window.location.href = "/dashboard"},3000);
+                    }
                 }
-                
+
 
             }
 
@@ -215,12 +215,12 @@ class WalletUnlockModal extends React.Component {
         }else if(airbitz_password_input_1!==airbitz_password_input_2){
             this.setState({password_error: true});
         }else if(airbitz_password_input_1==airbitz_password_input_2){
-            this.setState({password_error: false},()=>{     
+            this.setState({password_error: false},()=>{
 
-            console.log('@>111')
+                console.log('@>111')
 
                 _abcUi.openLoginWindow((error, account) =>{
-                    
+
                     if (error) {
                         console.log(error)
                     }
@@ -234,7 +234,7 @@ class WalletUnlockModal extends React.Component {
                         if(acc_keys&&acc_keys.keys&&acc_keys.keys.model==="wallet"&&acc_keys.keys.key){
                             WalletActions.setWallet("default_wallet_airbitz", airbitz_password_input_1, acc_keys.keys.key).then((ans)=>{
 
-                                if(WalletDb.getWallet()){ 
+                                if(WalletDb.getWallet()){
                                     this.props.resolve();
                                     ZfApi.publish(this.props.modalId, "close");
                                     this.context.router.push("/dashboard");
@@ -245,7 +245,7 @@ class WalletUnlockModal extends React.Component {
                                                 message: `Incorrect Brain key`,
                                                 level: "error",
                                                 autoDismiss: 10
-                                            });                                            
+                                            });
                                         }else{
 
                                             SettingsActions.changeSetting({
@@ -261,7 +261,7 @@ class WalletUnlockModal extends React.Component {
 
                                         }
 
-                                        setTimeout(()=>{window.location.href = "/dashboard"},3000);                                        
+                                        setTimeout(()=>{window.location.href = "/dashboard"},3000);
                                     },3500);
 
                                 }
@@ -297,7 +297,7 @@ class WalletUnlockModal extends React.Component {
                                         this.setState({password_error: true});
                                         return false;
                                     } else {
-                                        AccountActions.setPasswordAccount(acc_keys.keys.login); 
+                                        AccountActions.setPasswordAccount(acc_keys.keys.login);
                                         ZfApi.publish(this.props.modalId, "close");
                                         this.props.resolve();
                                         WalletUnlockActions.change();
@@ -308,10 +308,7 @@ class WalletUnlockModal extends React.Component {
                                             value: true
                                         });
                                     }
-
                                 },300)
-
-
                             }).catch((err)=>{
                                 console.log('@>err',err)
                             });
@@ -319,7 +316,7 @@ class WalletUnlockModal extends React.Component {
                     }
                 });
             });
-        }    
+        }
     }
 
     _switch_brain_airbitz(mode){
@@ -340,46 +337,46 @@ class WalletUnlockModal extends React.Component {
         ZfApi.publish(this.props.modalId, "close");
         //ZfApi.publish("residents_confirm", "open");
         this.context.router.push(`/create-account/${window._type_registration_wallet||"wallet"}`);
-        
     }
 
     renderWalletLogin() {
-        if (!WalletDb.getWallet()) {
-            return (
-                <div>
-                    <Translate content="wallet.no_wallet" component="p" />
-                    <div className="button-group">
-                        <div className="button" onClick={this.reg_continue.bind(this)}><Translate content="wallet.create_wallet" /></div>
-                    </div>
-                    <Translate onClick={()=>{ this._switch_brain_airbitz(false); this._toggleLoginType(true)}} component="div" content="wallet.switch_model_password" className="button small outline float-right airbitz_button" />
-                    <Translate onClick={()=>{ this._switch_brain_airbitz(true); this._toggleLoginType(true)}} component="div" content="wallet.enable_model_airbitz" className="button small outline float-right" />
+        this._toggleLoginType(false);
 
-                </div>
+            if (!WalletDb.getWallet()) {
+                return (
+                    <div>
+                        <Translate content="wallet.no_wallet" component="p" />
+                        <div className="button-group">
+                            <div className="button" onClick={this.reg_continue.bind(this)}><Translate content="wallet.create_wallet" /></div>
+                        </div>
+                        <Translate onClick={()=>{ this._switch_brain_airbitz(false); this._toggleLoginType(true)}} component="div" content="wallet.switch_model_password" className="button small outline float-right airbitz_button" />
+                        <Translate onClick={()=>{ this._switch_brain_airbitz(true); this._toggleLoginType(true)}} component="div" content="wallet.enable_model_airbitz" className="button small outline float-right" />
+
+                    </div>
+                );
+            }
+
+            return (
+                <form onSubmit={this.onPasswordEnter} noValidate>
+                    <PasswordInput
+                        ref="password_input"
+                        onEnter={this.onPasswordEnter}
+                        key={this.state.password_input_reset}
+                        wrongPassword={this.state.password_error}
+                        noValidation
+                    />
+
+                    <div>
+                        <div className="button-group">
+                            <button className="button" data-place="bottom" data-html data-tip={counterpart.translate("tooltip.login")} onClick={this.onPasswordEnter}><Translate content="header.unlock" /></button>
+                            <Trigger close={this.props.modalId}>
+                                <div className=" button"><Translate content="account.perm.cancel" /></div>
+                            </Trigger>
+                        </div>
+                    </div>
+                </form>
             );
         }
-
-        return (
-            <form onSubmit={this.onPasswordEnter} noValidate>
-                <PasswordInput
-                    ref="password_input"
-                    onEnter={this.onPasswordEnter}
-                    key={this.state.password_input_reset}
-                    wrongPassword={this.state.password_error}
-                    noValidation
-                />
-
-                <div>
-                    <div className="button-group">
-                        <button className="button" data-place="bottom" data-html data-tip={counterpart.translate("tooltip.login")} onClick={this.onPasswordEnter}><Translate content="header.unlock" /></button>
-                        <Trigger close={this.props.modalId}>
-                            <div className=" button"><Translate content="account.perm.cancel" /></div>
-                        </Trigger>
-                    </div>              
-                    <div onClick={()=>{ this._toggleLoginType(true)}} className="button small outline float-right"><Translate content="wallet.switch_model_password" /></div>
-                </div>
-            </form>
-        );
-    }
 
     accountChanged(account_name) {
         if (!account_name) this.setState({account: null});
@@ -403,53 +400,26 @@ class WalletUnlockModal extends React.Component {
                 <input type="text" className="no-padding no-margin" style={{visibility: "hidden", height: 0}}/>
 
                 <div className="content-block">
-                    {
 
-                        (()=>{
-                            if(airbitz_mode){
-                                return (
-                                    <div className="content-block">
-                                        <div className="account-selector">
-                                            <div className="content-area">
-                                                <div className="header-area">
-                                                    <Translate className="left-label" component="label" content="settings.password_airbitz_1" />
-                                                </div>
-                                                <div className="input-area">
-                                                    <div className="inline-label input-wrapper">
-                                                        <div className="account-image">
-                                                            <img src="/app/assets/airbitz.png" alt="" style={{height:"2.4rem",width:"2.4rem"}} />
-                                                        </div>
-                                                        <input ref="airbitz_password_input_1" type="password" tabIndex={tabIndex++} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    );
-                            }else{
-                                return (
-                                    <AccountSelector label="account.name" ref="account_input"
-                                        accountName={account_name}
-                                        onChange={this.accountChanged.bind(this)}
-                                        onAccountChanged={this.onAccountChanged.bind(this)}
-                                        account={account_name}
-                                        size={60}
-                                        error={from_error}
-                                        tabIndex={tabIndex++}
-                                    />);
-                            }
-                        })()
-                    }
+                        <AccountSelector label="account.name" ref="account_input"
+                                         accountName={account_name}
+                                         onChange={this.accountChanged.bind(this)}
+                                         onAccountChanged={this.onAccountChanged.bind(this)}
+                                         account={account_name}
+                                         size={60}
+                                         error={from_error}
+                                         tabIndex={tabIndex++}
+                        />
                 </div>
 
                 <div className="content-block">
                     <div className="account-selector">
                         <div className="content-area">
                             <div className="header-area">
-                                <Translate className="left-label" component="label" content={"settings."+(airbitz_mode?"password_airbitz_2":"password")} />
+                                <Translate className="left-label" component="label" content={"settings.password"} />
                             </div>
                             <div className="input-area" style={{marginLeft: "3.5rem"}}>
-                                <input ref={airbitz_mode?"airbitz_password_input_2":"password_input"} type="password" tabIndex={tabIndex++} />
+                                <input ref={"password_input"} type="password" tabIndex={tabIndex++} />
                             </div>
                             {this.state.password_error ? <div className="error-area">
                                 <Translate content="wallet.pass_incorrect" />
@@ -461,23 +431,12 @@ class WalletUnlockModal extends React.Component {
 
                 <div style={{marginLeft: "3.5rem"}}>
                     <div className="button-group">
-                        <Translate component="button" className="button" onClick={airbitz_mode?this.restore_brain_airbitz:this.onPasswordEnter} content="header.unlock_short" tabIndex={tabIndex++} />
+                        <Translate component="button" className="button" onClick={this.onPasswordEnter} content="header.unlock_short" tabIndex={tabIndex++} />
                         <Trigger close={this.props.modalId}>
                             <div tabIndex={tabIndex++} className=" button"><Translate content="account.perm.cancel" /></div>
                         </Trigger>
                     </div>
-                    {
-                        (()=>{
-                            if(airbitzkey&&airbitzkey.getAttribute("show_switch_airbitzkey")=="false"){
-                                return null;
-                            }else {
-                                return [
-                                <Translate onClick={()=>{ this._toggleLoginType(false)}} component="div" content="wallet.switch_model_wallet" className="button small outline float-right airbitz_button" />,
-                                <Translate onClick={()=>{this._switch_brain_airbitz(airbitz_mode?false:true)}} component="div" content={"wallet."+(airbitz_mode?"disable_model_airbitz":"enable_model_airbitz")} className="button small outline float-right airbitz_button" />
-                                ];
-                            }
-                        })()
-                    }
+
                 </div>
             </form>
         );
@@ -488,29 +447,21 @@ class WalletUnlockModal extends React.Component {
         console.log('@>passwordLogin',passwordLogin)
         // DEBUG console.log('... U N L O C K',this.props)
 
-        // Modal overlayClose must be false pending a fix that allows us to detect
-        // this event and clear the password (via this.refs.password_input.clear())
-        // https://github.com/akiran/react-foundation-apps/issues/34
+        let renderModalTitle;
+        if(passwordLogin){
+            renderModalTitle = (<Translate component="h3" content="header.unlock_password" />);
+        }else{
+            renderModalTitle = (<Translate component="h3" content="header.unlock" />);
+        }
+
         return (
             // U N L O C K
             <BaseModal id={this.props.modalId} ref="modal" overlay={true} overlayClose={false}>
                 <Trigger close="">
                     <a href="#" className="close-button">&times;</a>
                 </Trigger>
-                {
-                    (()=>{
-                        if(passwordLogin){
-                            if(this.state.airbitz_mode){
-                                return (<Translate component="h3" content="header.unlock_airbitz" />);
-                            }else{
-                                return (<Translate component="h3" content="header.unlock_password" />);
-                            }                            
-                        }else{
-                            return (<Translate component="h3" content="header.unlock" />);
-                        }
-                    })()
-                }                
-                {passwordLogin ? this.renderPasswordLogin() : this.renderWalletLogin()}
+                {renderModalTitle}
+                {WalletDb.getWallet() ? this.renderWalletLogin() : this.renderPasswordLogin()}
             </BaseModal>
         );
     }

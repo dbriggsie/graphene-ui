@@ -40,7 +40,6 @@ let marketsList = [
    "OPEN.ETH",
    "OPEN.EUR",
    "OPEN.ETP",
-   "OPEN.EURT",
    "OPEN.GAME",
    "OPEN.GRC",
    "OPEN.HEAT",
@@ -68,7 +67,8 @@ let marketsList = [
     "OPEN.OMG",
     "OPEN.EOS",
     "OPEN.ZRX",
-    "OPEN.SONM"
+    "OPEN.SONM",
+    "OPEN.XPO"
 ];
 
 let topMarkets = {

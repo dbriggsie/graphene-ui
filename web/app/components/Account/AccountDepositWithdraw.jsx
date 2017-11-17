@@ -187,7 +187,7 @@ class AccountDepositWithdraw extends React.Component {
                     </div>)
         });
 
-        serList.push({
+     /*   serList.push({
             name: "Transwiser",
             template: (
                 <div>
@@ -202,30 +202,30 @@ class AccountDepositWithdraw extends React.Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {/* <TranswiserDepositWithdraw
+                        {/!* <TranswiserDepositWithdraw
                             issuerAccount="transwiser-wallet"
                             account={account.get("name")}
-                            receiveAsset="TCNY" /> */}
+                            receiveAsset="TCNY" /> *!/}
                         <TranswiserDepositWithdraw
                             issuerAccount="transwiser-wallet"
                             account={account.get("name")}
                             receiveAsset="CNY" />
-                        {/*
+                        {/!*
                         <TranswiserDepositWithdraw
                             issuerAccount="transwiser-wallet"
                             account={this.props.account.get("name")}
                             receiveAsset="BOTSCNY" />
-                        */}
+                        *!/}
                         </tbody>
                     </table>
                 </div>
             )
-        });
+        });*/
 
-        serList.push({
+       /* serList.push({
             name: "BitKapital",
             template: (<BitKapital viewSettings={this.props.viewSettings} account={account}/>)
-        });
+        });*/
 
         return serList;
     }

@@ -229,7 +229,6 @@ class WalletUnlockModal extends React.Component {
                                                 autoDismiss: 10
                                             });
                                         }else{
-
                                             SettingsActions.changeSetting({
                                                 setting: "passwordLogin",
                                                 value: false
@@ -474,7 +473,7 @@ class WalletUnlockModalContainer extends React.Component {
                         return AccountStore.getState().currentAccount;
                     },
                     passwordLogin: () => {
-                        return true;
+                        return SettingsStore.getState().settings.get("passwordLogin");
                     },
                     passwordAccount: () => {
                         return AccountStore.getState().passwordAccount || "";

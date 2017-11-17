@@ -494,21 +494,29 @@
     }
   }
 
- .login div.service-selector{
-    border-bottom: transparent !important;
+  .login .service-selector{
+    border-bottom: none;
   }
 
+  ul.button-group.segmented.login-tabs{
+    > li.is-active > a {
+      color: $primary-text-color;
+
+    }
+  }
+
+
   ul.button-group.segmented {
+      > li.is-active > a {
+        background: darken($input-background, 10%);
+        color: $primary-text-color;
+      //  border-bottom: 1px solid $button-bg-color;
+      }
     > li > a {
       background: $input-background;
       color: $primary-text-color;
-      border-bottom: 1px solid $button-bg-color;
+    //  border-bottom: 1px solid $button-bg-color;
     }
-     > li.is-active > a {
-          background: #27384B;
-          color: $primary-text-color;
-          border-bottom: 1px solid #27384B;
-      }
     > li > a{
       color: $secondary-text-color;
     }

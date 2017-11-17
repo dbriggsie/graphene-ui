@@ -79,4 +79,15 @@ $account-background: black;
     $account-border,
     $account-background
   );
+
+  ul.button-group.segmented.login-tabs{
+    > li.is-active > a {
+      background: #27384B;
+      color: $primary-text-color;
+    }
+  }
+
+
+
 }
+

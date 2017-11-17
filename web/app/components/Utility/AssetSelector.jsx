@@ -7,6 +7,7 @@ import counterpart from "counterpart";
 import FloatingDropdown from "./FloatingDropdown";
 import FormattedAsset from "./FormattedAsset";
 import Immutable from "immutable";
+import classnames from "classnames";
 
 class AssetDropdown extends React.Component {
 
@@ -84,7 +85,10 @@ class AssetSelector extends React.Component {
     }
 
     onKeyDown(event) {
-        if (event.keyCode === 13) this.onFound(event);
+        if (event.keyCode === 13) {
+            this.onFound(event);
+            this.onAction(event);
+        }
     }
 
     componentDidMount() {
@@ -112,8 +116,17 @@ class AssetSelector extends React.Component {
         }
     }
 
+    onAction(e) {
+        e.preventDefault();
+        if(this.props.onAction && !this.getError() && !this.props.disableActionButton) {
+            if (this.props.asset)
+                this.props.onAction(this.props.asset);
+        }
+    }
+
     render() {
         let {disabled, noLabel} = this.props;
+
         let error = this.getError();
         let lookup_display;
         if (!disabled) {
@@ -123,37 +136,46 @@ class AssetSelector extends React.Component {
                 error = counterpart.translate("explorer.asset.not_found", {name: this.props.assetInput});
             }
         }
+
+        let action_class = classnames("button", {"disabled" : !(this.props.asset) || error || this.props.disableActionButton});
+
         return (
-            <div className="asset-selector" style={this.props.style}>
+        <div className="asset-selector" style={this.props.style}>
                 <div>
                     <div className="header-area">
-                        {error || noLabel ? null : <label className="right-label">&nbsp; <span>{lookup_display}</span></label>}
-                        <Translate component="label" content={this.props.label}/>
+                       {/*  {error || noLabel ? null : <label className="right-label">&nbsp; <span>{lookup_display}</span></label>}
+                        <Translate component="label" content={this.props.label}/>*/}
                     </div>
                     <div className="input-area">
-                      <div className="inline-label input-wrapper">
-                        <input
-                            style={this.props.inputStyle}
-                            disabled={this.props.disabled}
-                            type="text"
-                            value={this.props.assetInput || ""}
-                            placeholder={counterpart.translate("explorer.assets.symbol")}
-                            ref="user_input"
-                            onChange={this.onInputChanged.bind(this)}
-                            onKeyDown={this.onKeyDown.bind(this)}
-                            tabIndex={this.props.tabIndex}
-                        />
-                        <div className="form-label select floating-dropdown">
-                            {this.props.asset ? (
-                                <AssetDropdown
-                                    ref={this.props.refCallback}
-                                    value={this.props.asset.get("symbol")}
-                                    assets={Immutable.List(this.props.assets)}
-                                    onChange={this.onAssetSelect.bind(this)}
-                                />) : null}
+                        <div className="inline-label input-wrapper">
+                            <input
+                                style={this.props.inputStyle}
+                                disabled={this.props.disabled}
+                                type="text"
+                                value={this.props.assetInput || ""}
+                                placeholder={counterpart.translate("explorer.assets.symbol")}
+                                ref="user_input"
+                                onChange={this.onInputChanged.bind(this)}
+                                onKeyDown={this.onKeyDown.bind(this)}
+                                tabIndex={this.props.tabIndex}
+                            />
+                            <div className="form-label select floating-dropdown">
+                                {this.props.asset ? (
+                                    <AssetDropdown
+                                        ref={this.props.refCallback}
+                                        value={this.props.asset.get("symbol")}
+                                        assets={Immutable.List(this.props.assets)}
+                                        onChange={this.onAssetSelect.bind(this)}
+                                    />) : null}
+                            </div>
+                            { this.props.children }
+                            { this.props.onAction ? (
+                                <button className={action_class}
+                                        onClick={this.onAction.bind(this)}>
+                                    <Translate content={this.props.action_label}/>
+                                </button>
+                            ) : null }
                         </div>
-                        { this.props.children }
-                    </div>
                     </div>
                     <div className="error-area" style={{paddingBottom: "10px"}}>
                         <span style={{wordBreak: "break-all"}}>{error}</span>

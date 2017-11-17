@@ -1372,7 +1372,7 @@ class Exchange extends React.Component {
                         {/* Market History */}
                         <div className="grid-block no-padding no-margin vertical" >
                             <MyMarkets
-                                className="left-order-book no-padding no-overflow"
+                                className="left-order-book no-padding "
                                 headerStyle={{paddingTop: 0}}
                                 columns={
                                     [

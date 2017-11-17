@@ -12,7 +12,7 @@ export default class Login extends React.Component {
                 <div className="grid-block shrink vertical">
                     <div className="grid-content shrink text-center">
                     <Tabs
-                        tabsClass="bordered-header no-padding horiz-tabs"
+                        tabsClass="bordered-header no-padding horiz-tabs login-tabs"
                         setting="whitelistTab"
                         contentClass="shrink small-vertical medium-horizontal tab-content" >
                             <Tab title="account.login.account">
