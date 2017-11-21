@@ -68,7 +68,9 @@ let marketsList = [
     "OPEN.EOS",
     "OPEN.ZRX",
     "OPEN.SONM",
-    "OPEN.XPO"
+    "OPEN.XPO",
+    "OPEN.KRM",
+    "OPEN.ATM"
 ];
 
 let topMarkets = {
