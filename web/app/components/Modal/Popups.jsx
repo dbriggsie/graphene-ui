@@ -12,7 +12,8 @@ class Popups extends Component {
         this.state = {
             open: false,
             error: "",
-            answer: ""
+            answer: "",
+            captcha: ""
         };
     }
 
@@ -73,6 +74,9 @@ class Popups extends Component {
         ob.website = this.refs.website.value;
         ob.details = this.refs.details.value;
 
+        ob.captcha = this.refs.captcha.value.toUpperCase();
+
+
         let error_p = "";
         let request_p = [];
 
@@ -101,9 +105,68 @@ class Popups extends Component {
             });
         }
 
-        var xhr = new XMLHttpRequest();
+       function httpGet(url, typeRequest) {
+            return new Promise(function(resolve, reject) {
+
+                var xhr = new XMLHttpRequest();
+                xhr.open(typeRequest, url, true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+
+                xhr.onload = function() {
+                    if (this.status == 200) {
+                        resolve(this.response);
+                    } else {
+                        var error = new Error(this.statusText);
+                        error.code = this.status;
+                        reject(error);
+                    }
+                };
+
+                xhr.onerror = function() {
+                    reject(new Error("Network Error"));
+                };
+
+                if(typeRequest == 'POST'){
+                    var message = request_p.join("&");
+                    xhr.send(message);
+                }
+
+            });
+        }
+
+        httpGet("https://openledger.info/create_asset/action_create_asset.php", 'POST')
+            .then(
+                response => {
+                    var ans = JSON.parse(response);
+                    console.log(ans)
+                    if (ans && ans.error) {
+                        context.setState({
+                            error: ans.error
+                        });
+                        setTimeout(function () {
+                            window.location.href = "/";
+                        }, 1500)
+                        return;
+                    } else if (ans && !ans.error) {
+                        context.setState({
+                            error: "",
+                            answer: ans.text
+                        });
+                        return;
+                    }
+                })
+            .catch(error => console.log(`Rejected: ${error}`))
+
+
+
+        //-------------------------
+
+
+      /*  var xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://openledger.info/create_asset/action_create_asset.php', true); // 'your api adress'
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+
+
         xhr.onreadystatechange = function() {
             if (this.readyState != 4) return;
             var ans = JSON.parse(this.responseText);
@@ -112,6 +175,9 @@ class Popups extends Component {
                 context.setState({
                     error: ans.error
                 });
+                setTimeout(function () {
+                    window.location.href = "/";
+                }, 1500)
                 return;
             } else if (ans && !ans.error) {
                 context.setState({
@@ -120,10 +186,10 @@ class Popups extends Component {
                 });
                 return;
             }
-
         }
+
         var message = request_p.join("&");
-        xhr.send(message);
+        xhr.send(message);*/
     }
 
     show(modal_id) {
@@ -186,6 +252,8 @@ class Popups extends Component {
                             <input type="text" ref="repository" placeholder={counterpart.translate("popups.link_to")} />
                             <input type="text" ref="website" placeholder={counterpart.translate("popups.official_website")} />
                             <textarea ref="details" cols="1" defaultValue={counterpart.translate("popups.detailed")} rows="2"></textarea>
+                            <div style={{marginBottom: 10}}><img src="https://openledger.info/create_asset/captcha.php" alt="OL"/></div>
+                            <input type="text" ref="captcha" name="captcha" placeholder='Captcha'  />
                             <input type="button" value={counterpart.translate("popups.add_coin")} className="button" onClick={(e)=>{this.add_coin(e)}} />
                             {this.state.answer}                         
                         </form>
