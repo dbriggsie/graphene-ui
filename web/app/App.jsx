@@ -158,7 +158,7 @@ class App extends React.Component {
                     <Header/>
                     <MobileMenu isUnlocked={this.state.isUnlocked} id="mobile-menu"/>
                     <div className="grid-block">
-                        <div className="grid-block vertical">
+                        <div className="grid-block align-center">
                             {this.props.children}
                         </div>
                     </div>

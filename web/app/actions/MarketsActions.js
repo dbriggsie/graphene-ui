@@ -9,7 +9,6 @@ import Immutable from "immutable";
 
 let subs = {};
 let currentBucketSize;
-let wallet_api = new WalletApi();
 let marketStats = {};
 let statTTL = 60 * 2 * 1000; // 2 minutes
 
@@ -69,9 +68,9 @@ class MarketsActions {
                     ]),
                     Apis.instance().history_api().exec("get_fill_order_history", [base.get("id"), quote.get("id"), 1])
                 ])
-                .then(result => {
-                    dispatch({history: result[0], last: result[1], market: marketName, base, quote});
-                });
+                    .then(result => {
+                        dispatch({history: result[0], last: result[1], market: marketName, base, quote});
+                    });
             }
         };
     }
@@ -80,7 +79,7 @@ class MarketsActions {
         return true;
     }
 
-    subscribeMarket(base, quote, bucketSize=86400) {
+    subscribeMarket(base, quote, bucketSize) {
         clearBatchTimeouts();
         let subID = quote.get("id") + "_" + base.get("id");
 
@@ -135,10 +134,10 @@ class MarketsActions {
                         // Only check for call and settle orders if either the base or quote is the CORE asset
                         if (isMarketAsset) {
                             callPromise = Apis.instance().db_api().exec("get_call_orders", [
-                                marketAsset.id, 200
+                                marketAsset.id, 300
                             ]);
                             settlePromise = Apis.instance().db_api().exec("get_settle_orders", [
-                                marketAsset.id, 200
+                                marketAsset.id, 300
                             ]);
                         }
 
@@ -159,7 +158,7 @@ class MarketsActions {
                         // of operations received in the subscription update
                         Promise.all([
                             Apis.instance().db_api().exec("get_limit_orders", [
-                                base.get("id"), quote.get("id"), 200
+                                base.get("id"), quote.get("id"), 300
                             ]),
                             onlyLimitOrder ? null : callPromise,
                             onlyLimitOrder ? null : settlePromise,
@@ -177,22 +176,22 @@ class MarketsActions {
                                 base.get("id"), quote.get("id"), bucketSize, startDate3.toISOString().slice(0, -5) , startDate2.toISOString().slice(0, -5)
                             ])
                         ])
-                        .then(results => {
-                            const data1 = results[6] || [];
-                            const data2 = results[7] || [];
-                            dispatch({
-                                limits: results[0],
-                                calls: !onlyLimitOrder && results[1],
-                                settles: !onlyLimitOrder && results[2],
-                                price: hasFill && data1.concat(data2.concat(results[3])),
-                                history: hasFill && results[4],
-                                recent: hasFill && results[5],
-                                market: subID,
-                                base: base,
-                                quote: quote,
-                                inverted: inverted
-                            });
-                        }).catch((error) => {
+                            .then(results => {
+                                const data1 = results[6] || [];
+                                const data2 = results[7] || [];
+                                dispatch({
+                                    limits: results[0],
+                                    calls: !onlyLimitOrder && results[1],
+                                    settles: !onlyLimitOrder && results[2],
+                                    price: hasFill && data1.concat(data2.concat(results[3])),
+                                    history: hasFill && results[4],
+                                    recent: hasFill && results[5],
+                                    market: subID,
+                                    base: base,
+                                    quote: quote,
+                                    inverted: inverted
+                                });
+                            }).catch((error) => {
                             console.log("Error in MarketsActions.subscribeMarket: ", error);
                         });
                     }, subBatchTime);
@@ -210,10 +209,10 @@ class MarketsActions {
 
                 if (isMarketAsset) {
                     callPromise = Apis.instance().db_api().exec("get_call_orders", [
-                        marketAsset.id, 200
+                        marketAsset.id, 300
                     ]);
                     settlePromise = Apis.instance().db_api().exec("get_settle_orders", [
-                        marketAsset.id, 200
+                        marketAsset.id, 300
                     ]);
                 }
 
@@ -233,7 +232,7 @@ class MarketsActions {
                         subscription, base.get("id"), quote.get("id")
                     ]),
                     Apis.instance().db_api().exec("get_limit_orders", [
-                        base.get("id"), quote.get("id"), 200
+                        base.get("id"), quote.get("id"), 300
                     ]),
                     callPromise,
                     settlePromise,
@@ -252,27 +251,27 @@ class MarketsActions {
                         base.get("id"), quote.get("id"), bucketSize, startDate3.toISOString().slice(0, -5) , startDate2.toISOString().slice(0, -5)
                     ])
                 ])
-                .then((results) => {
-                    const data1 = results[9] || [];
-                    const data2 = results[8] || [];
-                    subs[subID] = subscription;
-                    if (__DEV__) console.timeEnd("Fetch market data");
-                    dispatch({
-                        limits: results[1],
-                        calls: results[2],
-                        settles: results[3],
-                        price: data1.concat(data2.concat(results[4])),
-                        buckets: results[5],
-                        history: results[6],
-                        recent: results[7],
-                        market: subID,
-                        base: base,
-                        quote: quote,
-                        inverted: inverted
+                    .then((results) => {
+                        const data1 = results[9] || [];
+                        const data2 = results[8] || [];
+                        subs[subID] = subscription;
+                        if (__DEV__) console.timeEnd("Fetch market data");
+                        dispatch({
+                            limits: results[1],
+                            calls: results[2],
+                            settles: results[3],
+                            price: data1.concat(data2.concat(results[4])),
+                            buckets: results[5],
+                            history: results[6],
+                            recent: results[7],
+                            market: subID,
+                            base: base,
+                            quote: quote,
+                            inverted: inverted
+                        });
+                    }).catch((error) => {
+                        console.log("Error in MarketsActions.subscribeMarket: ", error);
                     });
-                }).catch((error) => {
-                    console.log("Error in MarketsActions.subscribeMarket: ", error);
-                });
             }
             return Promise.resolve(true);
         };
@@ -307,7 +306,7 @@ class MarketsActions {
 
     createLimitOrder(account, sellAmount, sellAsset, buyAmount, buyAsset, expiration, isFillOrKill, fee_asset_id) {
 
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
 
         let feeAsset = ChainStore.getAsset(fee_asset_id);
         if( feeAsset.getIn(["options", "core_exchange_rate", "base", "asset_id"]) === "1.3.0" && feeAsset.getIn(["options", "core_exchange_rate", "quote", "asset_id"]) === "1.3.0" ) {
@@ -337,16 +336,16 @@ class MarketsActions {
                 dispatch(true);
                 return true;
             })
-            .catch(error => {
-                console.log("order error:", error);
-                dispatch({error});
-                return {error};
-            });
+                .catch(error => {
+                    console.log("order error:", error);
+                    dispatch({error});
+                    return {error};
+                });
         };
     }
 
     createLimitOrder2(order) {
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
 
         // let feeAsset = ChainStore.getAsset(fee_asset_id);
         // if( feeAsset.getIn(["options", "core_exchange_rate", "base", "asset_id"]) === "1.3.0" && feeAsset.getIn(["options", "core_exchange_rate", "quote", "asset_id"]) === "1.3.0" ) {
@@ -361,15 +360,15 @@ class MarketsActions {
         return WalletDb.process_transaction(tr, null, true).then(result => {
             return true;
         })
-        .catch(error => {
-            console.log("order error:", error);
-            return {error};
-        });
+            .catch(error => {
+                console.log("order error:", error);
+                return {error};
+            });
     }
 
     createPredictionShort(order, collateral, account, sellAmount, sellAsset, buyAmount, collateralAmount, buyAsset, expiration, isFillOrKill, fee_asset_id = "1.3.0") {
 
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
 
         // Set the fee asset to use
         fee_asset_id = accountUtils.getFinalFeeAsset(order.seller, "call_order_update", order.fee.asset_id);
@@ -398,23 +397,44 @@ class MarketsActions {
             });
     }
 
-    cancelLimitOrder(accountID, orderID,fee_asset_choosen) {
+    cancelLimitOrder(accountID, orderID) {
         // Set the fee asset to use
         let fee_asset_id = accountUtils.getFinalFeeAsset(accountID, "limit_order_cancel");
 
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
         tr.add_type_operation("limit_order_cancel", {
             fee: {
                 amount: 0,
-                asset_id: fee_asset_choosen||fee_asset_id
+                asset_id: fee_asset_id
             },
             "fee_paying_account": accountID,
             "order": orderID
         });
         return WalletDb.process_transaction(tr, null, true)
-        .catch(error => {
-            console.log("cancel error:", error);
+            .catch(error => {
+                console.log("cancel error:", error);
+            });
+    }
+
+    cancelLimitOrders(accountID, orderIDs){
+        let fee_asset_id = accountUtils.getFinalFeeAsset(accountID, "limit_order_cancel");
+
+        var tr = WalletApi.new_transaction();
+        orderIDs.forEach(id => {
+            tr.add_type_operation("limit_order_cancel", {
+                fee: {
+                    amount: 0,
+                    asset_id: fee_asset_id
+                },
+                "fee_paying_account": accountID,
+                "order": id
+            });
         });
+
+        return WalletDb.process_transaction(tr, null, true)
+            .catch(error => {
+                console.log("cancel error:", error);
+            });
     }
 
     cancelLimitOrderSuccess(ids) {

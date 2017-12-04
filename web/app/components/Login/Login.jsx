@@ -21,7 +21,7 @@ export default class Login extends React.Component {
                             <Tab title="account.login.wallet"> 
                                 <BackupRestore />
                             </Tab>
-                            <Tab title="account.login.airBits">
+                            <Tab title="account.login.airBitz">
                                 <AirBitzWalletUnlock  />
                             </Tab>
                         </Tabs>

@@ -79,7 +79,7 @@ class HelpContent extends React.Component {
             window._show_footer_popup();
             return false;
         }
-        
+
         let path = (__HASH_HISTORY__ ? e.target.hash : e.target.pathname).split("/").filter(p => p && p !== "#");
         if (path.length === 0) return false;
         let route = "/" + path.join("/");

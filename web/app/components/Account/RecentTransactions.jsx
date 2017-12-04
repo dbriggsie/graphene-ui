@@ -9,8 +9,11 @@ import {ChainTypes as grapheneChainTypes} from "bitsharesjs/es";
 import TransitionWrapper from "../Utility/TransitionWrapper";
 import ps from "perfect-scrollbar";
 import counterpart from "counterpart";
+import Icon from "../Icon/Icon";
 
 const {operations} = grapheneChainTypes;
+const alignLeft = {textAlign: "left"};
+const alignRight = {textAlign: "right"};
 
 function compareOps(b, a) {
     if (a.block_num === b.block_num) {
@@ -73,24 +76,22 @@ class RecentTransactions extends React.Component {
         }
     }
 
-    shouldComponentUpdate(np, ns) {
-        if(!utils.are_equal_shallow(this.props.accountsList, np.accountsList)) return true;
-        if(this.props.maxHeight !== np.maxHeight) return true;
-        if(this.state.headerHeight !== ns.headerHeight) return true;
-        if(this.state.filter !== ns.filter) return true;
-        if (this.props.customFilter && np.customFilter) {
-            if(!utils.are_equal_shallow(this.props.customFilter.fields, np.customFilter.fields) ||
-                !utils.are_equal_shallow(this.props.customFilter.values, np.customFilter.values)) {
+    shouldComponentUpdate(nextProps, nextState) {
+        if(!utils.are_equal_shallow(this.props.accountsList, nextProps.accountsList)) return true;
+        if(this.props.maxHeight !== nextProps.maxHeight) return true;
+        if(this.state.headerHeight !== nextState.headerHeight) return true;
+        if(this.state.filter !== nextState.filter) return true;
+        if (this.props.customFilter) {
+            if(!utils.are_equal_shallow(this.props.customFilter.fields, nextProps.customFilter.fields) ||
+                !utils.are_equal_shallow(this.props.customFilter.values, nextProps.customFilter.values)) {
                 return true;
             };
-        } else if (this.props.customFilter && !np.customFilter) {
-            return true;
         }
 
-        if(this.props.maxHeight !== np.maxHeight) return true;
-        if (ns.limit !== this.state.limit || ns.csvExport !== this.state.csvExport) return true;
-        for(let key = 0; key < np.accountsList.length; ++key) {
-            let npa = np.accountsList[key];
+        if(this.props.maxHeight !== nextProps.maxHeight) return true;
+        if (nextState.limit !== this.state.limit || nextState.csvExport !== this.state.csvExport) return true;
+        for(let key = 0; key < nextProps.accountsList.length; ++key) {
+            let npa = nextProps.accountsList[key];
             let nsa = this.props.accountsList[key];
             if(npa && nsa && (npa.get("history") !== nsa.get("history"))) return true;
         }
@@ -140,34 +141,21 @@ class RecentTransactions extends React.Component {
             }
         }
         if (filterOp) {
-            if (!Array.isArray(filterOp)) {
-                filterOp = [filterOp];
-            }
-
             history = history.filter(a => {
-                return filterOp.reduce((ret, op) => {
-                    return ret || a.op[0] === operations[op];
-                }, false);
+                return a.op[0] === operations[filterOp];
             });
         }
 
         if (customFilter) {
             history = history.filter(a => {
                 let finalValue = customFilter.fields.reduce((final, filter) => {
-                    let filterValue = customFilter.values[filter];
                     switch (filter) {
-                    case "asset_id":
-                        if (a.op[0] === 1) { // limit_order_create
-                            return final && (a.op[1]["amount_to_sell"][filter] === filterValue || a.op[1]["min_to_receive"][filter] === filterValue);
-                        }
-                        if (a.op[0] === 4) { // fill_order
-                            return final && (a.op[1]["pays"][filter] === filterValue || a.op[1]["receives"][filter] === filterValue);
-                        }
-                        return final && a.op[1]["amount"][filter] === filterValue;
-                        break;
-                    default:
-                        return final && a.op[1][filter] === filterValue;
-                        break;
+                        case "asset_id":
+                            return final && a.op[1]["amount"][filter] === customFilter.values[filter];
+                            break;
+                        default:
+                            return final && a.op[1][filter] === customFilter.values[filter];
+                            break;
                     }
                 }, true)
                 return finalValue;
@@ -200,20 +188,19 @@ class RecentTransactions extends React.Component {
         let options = null;
         if (true || this.props.showFilters) {
             options = ["all", "transfer", "limit_order_create", "limit_order_cancel", "fill_order", "account_create", "account_update", "asset_create",
-            "witness_withdraw_pay", "vesting_balance_withdraw", "asset_publish_feed"]
+            "witness_withdraw_pay", "vesting_balance_withdraw"]
             .map(type => {
                 return <option value={type} key={type}>{counterpart.translate("transaction.trxTypes." + type)}</option>;
             });
         }
 
-        const display_history = history.length ?
+        let display_history = history.length ?
             history.slice(0, limit)
             .map(o => {
-
                 return (
                     <Operation
+                        style={alignLeft}
                         key={o.id}
-                        operation_id={o.id}
                         op={o.op}
                         result={o.result}
                         block={o.block_num}
@@ -223,41 +210,44 @@ class RecentTransactions extends React.Component {
                         hideOpLabel={compactView}
                     />
                 );
-            }) : <tr><td colSpan={compactView ? "2" : "3"}><Translate content="operation.no_recent" /></td></tr>;
+            }) : [<tr key="no_recent"><td colSpan={compactView ? "2" : "3"}><Translate content="operation.no_recent" /></td></tr>];
+        display_history.push(
+            <tr className="total-value" key="total_value">
+                <td className="column-hide-tiny">
+                </td>
+                <td style={alignRight}>
+                    {historyCount > 0 ?
+                    <span>
+                        <a
+                            className="inline-block"
+                            onClick={this._downloadCSV.bind(this)}
+                            data-tip={counterpart.translate("transaction.csv_tip")}
+                            data-place="bottom"
+                        >
+                            <Icon name="csv" className="icon-14px" />
+                        </a>
+
+                    </span> : null}
+                </td>
+                <td style={{textAlign: "center"}}>
+                    &nbsp;{this.props.showMore && historyCount > this.props.limit || 20 && limit < historyCount ? (
+                        <a onClick={this._onIncreaseLimit.bind(this)}>
+                            <Icon name="chevron-down" className="icon-14px" />
+                        </a>
+                    ) : null}
+                </td>
+            </tr>
+        );
 
         return (
             <div className="recent-transactions no-overflow" style={style}>
-                    <div ref="header">
-                        <h4>{this.props.title ? this.props.title : <Translate content="account.recent" />}</h4>
+                <div className="generic-bordered-box">
+                    {this.props.dashboard ? null : <div ref="header">
 
-                        {historyCount > 0 ?
-                        <span >
-                            <a
-                                className="inline-block"
-                                onClick={this._downloadCSV.bind(this)}
-                                data-tip={counterpart.translate("transaction.csv_tip")}
-                                data-place="bottom"
-                            >
-                                <Translate content="transaction.csv" />
-                            </a>                                
-                        </span> : null}
-
-                        {this.props.showFilters ? (
-                        <div className="float-right">
-                            <select data-place="left" data-tip={counterpart.translate("tooltip.filter_ops")} style={{paddingTop: 0}} className="bts-select" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
-                        </div>) : null}
-                        <table className={"table" + (compactView ? " compact" : "")}>
-                            <thead>
-                                <tr>
-                                    {compactView ? null : <th className="column-hide-tiny" style={{width: "20%"}}><Translate content="explorer.block.op" /></th>}
-
-                                    {compactView ? null : <th style={{width: "15%",padding: "0"}} >OPERATION ID</th>}
-
-                                    <th><Translate content="account.votes.info" /></th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                        <div className="block-content-header">
+                            <span>{this.props.title ? this.props.title : <Translate content="account.recent" />}</span>
+                        </div>
+                    </div>}
 
                     <div
                         className="box-content grid-block no-margin"
@@ -265,7 +255,18 @@ class RecentTransactions extends React.Component {
                             maxHeight: maxHeight - headerHeight
                         } : null}
                         ref="transactions">
-                        <table className={"table" + (compactView ? " compact" : "")}>
+                        <table className={"table" + (compactView ? " compact" : "") + (this.props.dashboard ? " dashboard-table" : "")}>
+                            <thead>
+                                <tr>
+                                    {compactView ? null : <th style={alignLeft} className="column-hide-tiny">
+                                        {this.props.showFilters ? (
+                                            <select data-place="left" data-tip={counterpart.translate("tooltip.filter_ops")} style={{paddingTop: 5, width: "auto"}} className="bts-select no-margin" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
+                                        ) : null}
+                                    </th>}
+                                    <th style={alignLeft}><Translate content="account.votes.info" /></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
                             <TransitionWrapper
                                 component="tbody"
                                 transitionName="newrow"
@@ -288,7 +289,6 @@ class RecentTransactions extends React.Component {
                                 return (
                                     <Operation
                                         key={o.id}
-                                        operation_id={o.id}
                                         op={o.op}
                                         result={o.result}
                                         block={o.block_num}
@@ -300,14 +300,8 @@ class RecentTransactions extends React.Component {
                         }
                     </div>
                 }
+                </div>
 
-                {this.props.showMore && historyCount > this.props.limit || 20 && limit < historyCount ? (
-                    <div className="account-info more-button">
-                        <button className="button outline small" onClick={this._onIncreaseLimit.bind(this)}>
-                            <Translate content="account.more" />
-                        </button>
-                    </div>
-                    ) : null}
             </div>
         );
     }
@@ -333,4 +327,3 @@ class TransactionWrapper extends React.Component {
 TransactionWrapper = BindToChainState(TransactionWrapper);
 
 export {RecentTransactions, TransactionWrapper};
-

@@ -70,63 +70,6 @@ class Dashboard extends React.Component {
         });
     }
 
-    // _sortMarketsByVolume(a, b) {
-    //     let idA = a[1] + "_" + a[0];
-    //     let idB = b[1] + "_" + b[0];
-    //     let statsA = this.props.marketStats.get(idA);
-    //     let statsB = this.props.marketStats.get(idB);
-    //     if (!statsA || !statsB) return -1;
-    //
-    //     function getEquivalentVolume(stats, market, marketStats) {
-    //         let coreVolume = stats.volumeBaseAsset.asset_id === "1.3.0" ? stats.volumeBaseAsset :
-    //            stats.volumeQuoteAsset.asset_id === "1.3.0" ? stats.volumeQuoteAsset : 0;
-    //
-    //         if (!coreVolume) {
-    //             let options = [
-    //                 `${market[1]}_BTS`,
-    //                 `BTS_${market[1]}`,
-    //                 `${market[0]}_BTS`,
-    //                 `BTS_${market[0]}`,
-    //             ];
-    //             let convertUsingStats;
-    //             for (var i = 0; i < options.length; i++) {
-    //                 convertUsingStats = marketStats.get(options[i]);
-    //                 if (convertUsingStats) break;
-    //             }
-    //
-    //             if (convertUsingStats && convertUsingStats.price) {
-    //                 if (convertUsingStats.price.base.asset_id === "1.3.0") {
-    //                     if (stats.volumeBaseAsset.asset_id === convertUsingStats.price.quote.asset_id) {
-    //                         coreVolume = stats.volumeBaseAsset.times(convertUsingStats.price);
-    //                     } else if (stats.volumeQuoteAsset.asset_id === convertUsingStats.price.quote.asset_id) {
-    //                         coreVolume = stats.volumeQuoteAsset.times(convertUsingStats.price);
-    //                     }
-    //                 } else if (convertUsingStats.price.quote.asset_id === "1.3.0") {
-    //                     if (stats.volumeBaseAsset.asset_id === convertUsingStats.price.base.asset_id) {
-    //                         coreVolume = stats.volumeBaseAsset.times(convertUsingStats.price);
-    //                     } else if (stats.volumeQuoteAsset.asset_id === convertUsingStats.price.base.asset_id) {
-    //                         coreVolume = stats.volumeQuoteAsset.times(convertUsingStats.price);
-    //                     }
-    //                 }
-    //
-    //                 console.log(market, "coreVolume", coreVolume && coreVolume.getAmount(), coreVolume && coreVolume.asset_id);
-    //
-    //             } else {
-    //                 console.log(market, "*** Unable to convert price ***");
-    //             }
-    //         }
-    //
-    //         return coreVolume;
-    //     }
-    //
-    //     let coreVolumeA = getEquivalentVolume(statsA, a, this.props.marketStats);
-    //     let coreVolumeB =  getEquivalentVolume(statsB, b, this.props.marketStats);
-    //
-    //     if (coreVolumeA && coreVolumeB) {
-    //         return coreVolumeB.getAmount() - coreVolumeA.getAmount();
-    //     }
-    //     return 0;
-    // }
 
     render() {
         let { linkedAccounts, myIgnoredAccounts, accountsReady, passwordAccount, traderMode } = this.props;

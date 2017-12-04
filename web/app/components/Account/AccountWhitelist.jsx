@@ -6,11 +6,9 @@ import Immutable from "immutable";
 import Translate from "react-translate-component";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
-import LinkToAccountById from "../Blockchain/LinkToAccountById";
+import LinkToAccountById from "../Utility/LinkToAccountById";
 import WalletApi from "api/WalletApi";
 import WalletDb from "stores/WalletDb.js";
-
-let wallet_api = new WalletApi();
 
 class AccountRow extends React.Component {
 
@@ -42,7 +40,7 @@ class AccountList extends React.Component {
     _onRemove(listing, account, e) {
         if (account) {
             let currentState = this.props.getCurrentState(account);
-            let tr = wallet_api.new_transaction();
+            let tr = WalletApi.new_transaction();
             tr.add_type_operation("account_whitelist", {
                 "fee": {
                     "amount": 0,
@@ -83,7 +81,7 @@ class AccountList extends React.Component {
         }
 
         return (
-            <table className="table compact">
+            <table className="table compact dashboard-table">
                 {showHeaders ? (
                     <thead>
                         <tr>
@@ -136,7 +134,7 @@ class AccountWhitelist extends React.Component {
         let currentState = this._getCurrentState(accountToList);
 
         if (accountToList) {
-            let tr = wallet_api.new_transaction();
+            let tr = WalletApi.new_transaction();
             tr.add_type_operation("account_whitelist", {
                 "fee": {
                     "amount": 0,

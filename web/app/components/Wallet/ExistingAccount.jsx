@@ -32,7 +32,7 @@ class ExistingAccount extends Component {
                         <Link to="/create-wallet-brainkey">
                             <Translate content="settings.backup_brainkey" />
                         </Link>
-                        
+
                         <div className="content-block" style={{'padding':'20px 0 0 0'}} >
                             {this.props.children}
                         </div>

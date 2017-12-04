@@ -184,15 +184,10 @@ class WalletUnlockModal extends React.Component {
                         window.location.hash = "";
                         window.remote.getCurrentWindow().reload();
                     } else{
-                        console.log('@>AccountStore.getState().currentAccount',AccountStore.getState().currentAccount)
-                        setTimeout(()=>{window.location.href = "/dashboard"},3000);
+                        console.log('@>AccountStore.getState().currentAccount', AccountStore.getState().currentAccount)
                     }
                 }
-
-
             }
-
-
 
         },300)
 
@@ -444,7 +439,6 @@ class WalletUnlockModal extends React.Component {
 
     render() {
         const {passwordLogin} = this.props;
-        console.log('@>passwordLogin',passwordLogin)
         // DEBUG console.log('... U N L O C K',this.props)
 
         let renderModalTitle;

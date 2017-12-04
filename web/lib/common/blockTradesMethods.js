@@ -37,6 +37,15 @@ export function estimateOutput(inputAmount, inputCoin, outputCoin, url = (blockT
     });
 }
 
+export function estimateInput(outputAmount, inputCoin, outputCoin, url = (blockTradesAPIs.BASE + blockTradesAPIs.ESTIMATE_INPUT)) {
+    return fetch(url + "?outputAmount=" + encodeURIComponent(outputAmount) +"&inputCoinType=" + encodeURIComponent(inputCoin) + "&outputCoinType=" + encodeURIComponent(outputCoin), {
+        method: "get", headers: new Headers({"Accept": "application/json"})}).then(reply => reply.json().then(result => {
+        return result;
+    })).catch(err => {
+        console.log("error fetching deposit limit of", inputCoin, outputCoin, err);
+    });
+}
+
 export function getActiveWallets(url = (blockTradesAPIs.BASE_OL + blockTradesAPIs.ACTIVE_WALLETS)) {
     return fetch(url).then(reply => reply.json().then(result => {
         return result;
@@ -93,11 +102,9 @@ export function getBackedCoins({allCoins, tradingPairs, backer}) {
 
             blocktradesBackedCoins.push({
                 name: coins_by_type[coin_type.backingCoinType].name,
-                intermediateAccount: coins_by_type[coin_type.backingCoinType].intermediateAccount, //@#>
+                intermediateAccount: coins_by_type[coin_type.backingCoinType].intermediateAccount,
                 gateFee: coins_by_type[coin_type.backingCoinType].gateFee,
                 walletType: coins_by_type[coin_type.backingCoinType].walletType,
-                coinPriora: coins_by_type[coin_type.backingCoinType].coinPriora,
-                //coinPriora: ""+Math.random()*100|0,
                 backingCoinType: coins_by_type[coin_type.backingCoinType].walletSymbol,
                 symbol: coin_type.walletSymbol,
                 supportsMemos: coins_by_type[coin_type.backingCoinType].supportsOutputMemos,

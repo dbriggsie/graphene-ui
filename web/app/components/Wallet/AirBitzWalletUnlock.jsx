@@ -1,4 +1,5 @@
 import React from "react";
+import {browserHistory} from "react-router/es";
 import Trigger from "react-foundation-apps/src/trigger";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import PasswordInput from "../Forms/PasswordInput";
@@ -178,13 +179,10 @@ class WalletUnlockModal extends React.Component {
                 this.setState({password_input_reset: Date.now(), password_error: false});
 
                 if(!AccountStore.getState().currentAccount){
-                    window.location.href = "/dashboard";
+                    browserHistory.push('/dashboard');
                     if (window.electron) {
                         window.location.hash = "";
                         window.remote.getCurrentWindow().reload();
-                    } else{
-                        console.log('@>AccountStore.getState().currentAccount',AccountStore.getState().currentAccount)
-                        setTimeout(()=>{},3000);
                     }
                 }
             }
@@ -245,8 +243,8 @@ class WalletUnlockModal extends React.Component {
                                                 autoDismiss: 10
                                             });
                                         }
-                                        window.location.href = "/dashboard"
-                                    },3500);
+                                        browserHistory.push('/dashboard');
+                                    },1500);
                                 }
                             }).catch((err)=>{console.error('@>err',err)});
 
@@ -446,11 +444,7 @@ class WalletUnlockModal extends React.Component {
         return (
             // U N L O C K
             <div>
-                {
-                    (()=>{
-                        return (<Translate component="h3" content="header.unlock_airbitz" />);
-                    })()
-                }
+                <Translate component="h3" content="header.unlock_airbitz" />
                 {/*{passwordLogin ? this.renderPasswordLogin() : this.renderWalletLogin()}*/}
                 {this.renderPasswordLogin()}
             </div>

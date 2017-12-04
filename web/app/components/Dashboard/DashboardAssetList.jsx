@@ -21,6 +21,7 @@ import MarketCard from "./MarketCard";
 import SettingsStore from "stores/SettingsStore";
 import { settingsAPIs } from "api/apiConfig";
 import {Link} from "react-router";
+import GatewayStore from "stores/GatewayStore";
 
 class DashboardAssetList extends React.Component {
 
@@ -131,6 +132,7 @@ class DashboardAssetList extends React.Component {
                 let canFiatWith = ~this.props.openLedgerBackedFiatCoins.withdraw.indexOf(e.backingCoinType)?'canFiatWith':'';
                 fiatModal=canFiatDep+' '+canFiatWith;
             }
+
         });
 
         return (
@@ -260,14 +262,13 @@ class DashboardAssetList extends React.Component {
         }).filter(a => !!a);
 
         // Find the current Openledger coins
-        const currentDepositAsset = this.props.openLedgerBackedCoins.find(c => {
-                return c.symbol === this.state.depositAsset;
-            }) || {};
-        const currentWithdrawAsset = this.props.openLedgerBackedCoins.find(c => {
-                return c.symbol === this.state.withdrawAsset;
-            }) || {};
+        const currentDepositAsset = this.props.backedCoins.get("OPEN", []).find(c => {
+            return c.symbol === this.state.depositAsset;
+        }) || {};
+        const currentWithdrawAsset = this.props.backedCoins.get("OPEN", []).find(c => {
+            return c.symbol === this.state.withdrawAsset;
+        }) || {};
         // console.log("currentDepositAsset", currentDepositAsset, "openLedgerBackedCoins:", this.props.openLedgerBackedCoins);
-
 
         let sortedAssets = ((els)=>{
             let isPinnedArr = [];
@@ -431,6 +432,7 @@ class DashboardAssetList extends React.Component {
                     modalId="simple_deposit_modal"
                     balances={this.props.balances}
                     {...currentDepositAsset}
+                    isDown={false}
                 />
 
                 {/* Withdraw Modal */}
@@ -444,6 +446,7 @@ class DashboardAssetList extends React.Component {
                     modalId="simple_withdraw_modal"
                     balances={this.props.balances}
                     {...currentWithdrawAsset}
+                    isDown={false}
                 />
             </div>
         );

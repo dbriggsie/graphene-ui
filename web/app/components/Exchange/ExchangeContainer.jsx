@@ -17,82 +17,85 @@ class ExchangeContainer extends React.Component {
         let symbols = this.props.params.marketID.split("_");
 
         return (
-                <AltContainer
-                    stores={[MarketsStore, AccountStore, SettingsStore]}
-                    inject={{
-                        marketLimitOrders: () => {
-                            return MarketsStore.getState().marketLimitOrders;
-                        },
-                        marketCallOrders: () => {
-                            return MarketsStore.getState().marketCallOrders;
-                        },
-                        invertedCalls: () => {
-                            return MarketsStore.getState().invertedCalls;
-                        },
-                        marketSettleOrders: () => {
-                            return MarketsStore.getState().marketSettleOrders;
-                        },
-                        marketData: () => {
-                            return MarketsStore.getState().marketData;
-                        },
-                        totals: () => {
-                            return MarketsStore.getState().totals;
-                        },
-                        priceData: () => {
-                            return MarketsStore.getState().priceData;
-                        },
-                        volumeData: () => {
-                            return MarketsStore.getState().volumeData;
-                        },
-                        activeMarketHistory: () => {
-                            return MarketsStore.getState().activeMarketHistory;
-                        },
-                        bucketSize: () => {
-                            return MarketsStore.getState().bucketSize;
-                        },
-                        buckets: () => {
-                            return MarketsStore.getState().buckets;
-                        },
-                        lowestCallPrice: () => {
-                            return MarketsStore.getState().lowestCallPrice;
-                        },
-                        feedPrice: () => {
-                            return MarketsStore.getState().feedPrice;
-                        },
-                        currentAccount: () => {
-                            return AccountStore.getState().currentAccount;
-                        },
-                        linkedAccounts: () => {
-                            return AccountStore.getState().linkedAccounts;
-                        },
-                        viewSettings: () => {
-                            return SettingsStore.getState().viewSettings;
-                        },
-                        settings: () => {
-                            return SettingsStore.getState().settings;
-                        },
-                        starredMarkets: () => {
-                            return SettingsStore.getState().starredMarkets;
-                        },
-                        marketStats: () => {
-                            return MarketsStore.getState().marketStats;
-                        },
-                        marketReady: () => {
-                            return MarketsStore.getState().marketReady;
-                        },
-                        backedCoins: () => {
-                            return GatewayStore.getState().backedCoins.get("OPEN", []);
-                        },
-                        bridgeCoins: () => {
-                            return GatewayStore.getState().bridgeCoins;
-                        },
-                        miniDepthChart: () => {
-                            return SettingsStore.getState().viewSettings.get("miniDepthChart", true);
-                        }
-                    }}
-                  >
-                    <ExchangeSubscriber router={this.props.router} quoteAsset={symbols[0]} baseAsset={symbols[1]} />
-                </AltContainer>
+            <AltContainer
+                stores={[MarketsStore, AccountStore, SettingsStore]}
+                inject={{
+                    marketLimitOrders: () => {
+                        return MarketsStore.getState().marketLimitOrders;
+                    },
+                    marketCallOrders: () => {
+                        return MarketsStore.getState().marketCallOrders;
+                    },
+                    invertedCalls: () => {
+                        return MarketsStore.getState().invertedCalls;
+                    },
+                    marketSettleOrders: () => {
+                        return MarketsStore.getState().marketSettleOrders;
+                    },
+                    marketData: () => {
+                        return MarketsStore.getState().marketData;
+                    },
+                    totals: () => {
+                        return MarketsStore.getState().totals;
+                    },
+                    priceData: () => {
+                        return MarketsStore.getState().priceData;
+                    },
+                    volumeData: () => {
+                        return MarketsStore.getState().volumeData;
+                    },
+                    activeMarketHistory: () => {
+                        return MarketsStore.getState().activeMarketHistory;
+                    },
+                    bucketSize: () => {
+                        return MarketsStore.getState().bucketSize;
+                    },
+                    buckets: () => {
+                        return MarketsStore.getState().buckets;
+                    },
+                    lowestCallPrice: () => {
+                        return MarketsStore.getState().lowestCallPrice;
+                    },
+                    feedPrice: () => {
+                        return MarketsStore.getState().feedPrice;
+                    },
+                    currentAccount: () => {
+                        return AccountStore.getState().currentAccount;
+                    },
+                    linkedAccounts: () => {
+                        return AccountStore.getState().linkedAccounts;
+                    },
+                    viewSettings: () => {
+                        return SettingsStore.getState().viewSettings;
+                    },
+                    settings: () => {
+                        return SettingsStore.getState().settings;
+                    },
+                    starredMarkets: () => {
+                        return SettingsStore.getState().starredMarkets;
+                    },
+                    marketDirections: () => {
+                        return SettingsStore.getState().marketDirections;
+                    },
+                    marketStats: () => {
+                        return MarketsStore.getState().marketStats;
+                    },
+                    marketReady: () => {
+                        return MarketsStore.getState().marketReady;
+                    },
+                    backedCoins: () => {
+                        return GatewayStore.getState().backedCoins.get("OPEN", []);
+                    },
+                    bridgeCoins: () => {
+                        return GatewayStore.getState().bridgeCoins;
+                    },
+                    miniDepthChart: () => {
+                        return SettingsStore.getState().viewSettings.get("miniDepthChart", true);
+                    }
+                }}
+            >
+                <ExchangeSubscriber router={this.props.router} quoteAsset={symbols[0]} baseAsset={symbols[1]} />
+            </AltContainer>
         );
     }
 }
@@ -193,5 +196,3 @@ class ExchangeSubscriber extends React.Component {
 ExchangeSubscriber = BindToChainState(ExchangeSubscriber, {keep_updating: true, show_loader: true});
 
 export default ExchangeContainer;
-
-

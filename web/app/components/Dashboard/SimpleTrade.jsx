@@ -552,8 +552,8 @@ class SimpleTradeContent extends React.Component {
 
         let obj_for_duplicate = {};
 
-        const {replacedName:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true);
-        const {replacedName:assetName} = utils.replaceName(asset, true);
+        const {name:activeAssetName} = utils.replaceName(activeAsset.get("symbol"), true);
+        const {name:assetName} = utils.replaceName(asset, true);
 
         const marketID = isBuy ?
             this.props.currentAsset.get("id") + "_" + activeAsset.get("id") :
@@ -622,7 +622,7 @@ class SimpleTradeContent extends React.Component {
             <div className="SimpleTrade__modal">
                 <div className="Modal__header">
                     {isBuy ?
-                        <h3><Translate content="simple_trade.buy_with" buy={assetName}  />{activeAssetName}</h3> :
+                        <h3><Translate content="simple_trade.buy_with" buy={assetName} />{activeAssetName}</h3> :
                         <h3><Translate content="simple_trade.sell_for" sell={assetName} for={activeAssetName} /></h3>
                     }
 

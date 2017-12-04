@@ -32,18 +32,18 @@ class AccountPage extends React.Component {
     render() {
         let {myAccounts, linkedAccounts, account_name, searchAccounts, settings, wallet_locked, account, hiddenAssets} = this.props;
 
-        //let isMyAccount = AccountStore.isMyAccount(account);@#> ???
-        let isMyAccount = AccountStore.getState().currentAccount==account.get("name");
+        let isMyAccount = AccountStore.isMyAccount(account);
 
         return (
             <div className="grid-block page-layout">
-                <div className="show-for-medium grid-block shrink left-column no-padding" style={{minWidth: 250}}>
+                <div className="show-for-medium grid-block shrink left-column no-padding" style={{minWidth: 200}}>
                     <AccountLeftPanel
                         account={account}
                         isMyAccount={isMyAccount}
                         linkedAccounts={linkedAccounts}
                         myAccounts={myAccounts}
                         viewSettings={this.props.viewSettings}
+                        passwordLogin={settings.get("passwordLogin")}
                     />
                 </div>
                 <div className="grid-block main-content">
@@ -63,7 +63,10 @@ class AccountPage extends React.Component {
                             balances: account.get("balances", null),
                             orders: account.get("orders", null),
                             backedCoins: this.props.backedCoins,
-                            bridgeCoins: this.props.bridgeCoins
+                            bridgeCoins: this.props.bridgeCoins,
+                            gatewayDown: this.props.gatewayDown,
+                            viewSettings: this.props.viewSettings,
+                            proxy: account.getIn(["options", "voting_account"])
                         }
                     )}
                     </div>
@@ -75,6 +78,7 @@ class AccountPage extends React.Component {
 AccountPage = BindToChainState(AccountPage, {keep_updating: true, show_loader: true});
 
 class AccountPageStoreWrapper extends React.Component {
+
     render () {
         let account_name = this.props.routeParams.account_name;
 
@@ -96,7 +100,8 @@ export default connect(AccountPageStoreWrapper, {
             myAccounts:  AccountStore.getState().myAccounts,
             viewSettings: SettingsStore.getState().viewSettings,
             backedCoins: GatewayStore.getState().backedCoins,
-            bridgeCoins: GatewayStore.getState().bridgeCoins
+            bridgeCoins: GatewayStore.getState().bridgeCoins,
+            gatewayDown: GatewayStore.getState().down
         };
     }
 });

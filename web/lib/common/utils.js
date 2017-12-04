@@ -87,26 +87,6 @@ var Utils = {
     },
 
     format_number: (number, decimals, trailing_zeros = true) => {
-        //@#>
-        if(!number|| !isFinite(number)){
-            return "";
-        }
-
-        let dozen = Math.pow(10,decimals);
-
-        if(trailing_zeros){
-            return parseFloat(number).toFixed(decimals);
-        }else if(parseFloat(number)==0){
-        	return number.slice(0,decimals);
-        }else{
-            number = Math.floor(parseFloat(number)*dozen);
-            return number/dozen+"";
-        }
-
-        
-
-        /*let aaa = parseFloat(number).toFixed(decimals);
-        /* 
         if(isNaN(number) || !isFinite(number) || number === undefined || number === null) return "";
         let zeros = ".";
         for (var i = 0; i < decimals; i++) {
@@ -114,31 +94,15 @@ var Utils = {
         }
         let num = numeral(number).format("0,0" + zeros);
         if( num.indexOf('.') > 0 && !trailing_zeros)
-           return num.replace(/0+$/,"").replace(/\.$/,"")
-        return num*/
-    },
-
-    rm_expotencial:(number) => {
-        let num_txt = number+"";
-
-        if(!parseFloat(number)){
-            return number;
-        }
-
-        if(number<0.000001&&num_txt&&num_txt.indexOf("-")){
-            return number.toFixed(num_txt.split("-")[1]);
-        }else if(number>100000000000000000000&&num_txt&&num_txt.indexOf("+")){            
-            return number.toFixed(num_txt.split("+")[1]);
-        }
-
-        return number;
+            return num.replace(/0+$/,"").replace(/\.$/,"")
+        return num
     },
 
     format_asset: function(amount, asset, noSymbol, trailing_zeros=true) {
         let symbol;
         let digits = 0
         if( asset === undefined )
-           return undefined
+            return undefined
         if( 'symbol' in asset )
         {
             // console.log( "asset: ", asset )
@@ -147,9 +111,9 @@ var Utils = {
         }
         else
         {
-           // console.log( "asset: ", asset.toJS() )
-           symbol = asset.get('symbol')
-           digits = asset.get('precision')
+            // console.log( "asset: ", asset.toJS() )
+            symbol = asset.get('symbol')
+            digits = asset.get('precision')
         }
         let precision = this.get_asset_precision(digits);
         // console.log( "precision: ", precision )
@@ -180,19 +144,16 @@ var Utils = {
     },
 
     price_text: function(price, base, quote) {
-        const maxDecimals = 8;
-        const minDecimals = 2;
+        let maxDecimals = 8;
         let priceText;
         let quoteID = quote.toJS ? quote.get("id") : quote.id;
-        let quotePrecision  = Math.max(minDecimals, quote.toJS ? quote.get("precision") : quote.precision);
+        let quotePrecision  = quote.toJS ? quote.get("precision") : quote.precision;
         let baseID = base.toJS ? base.get("id") : base.id;
-
         let basePrecision  = base.toJS ? base.get("precision") : base.precision;
         let fixedPrecisionAssets = {
             "1.3.113": 5, // bitCNY
             "1.3.121": 5 // bitUSD
         };
-
         if (quoteID === "1.3.0") {
             priceText = this.format_number(price, quotePrecision);
         } else if (baseID === "1.3.0") {
@@ -283,7 +244,7 @@ var Utils = {
         value = value.trim()
         value = value.replace( /,/g, "" )
         if( value == "." || value == "" ) {
-           return value;
+            return value;
         }
         else if( value.length ) {
             // console.log( "before: ",value )
@@ -297,7 +258,7 @@ var Utils = {
                 n += "." + parts[1]
             // console.log( "after: ",transfer.amount )
             return n;
-       }
+        }
     },
 
     parse_float_with_comma: function(value) {
@@ -305,9 +266,9 @@ var Utils = {
         value = value.replace( /,/g, "" )
         let fvalue = parseFloat(value)
         if( value.length && isNaN(fvalue) && value != "." )
-           throw "parse_float_with_comma: must be a number"
-         else if( fvalue < 0 )
-           return 0;
+            throw "parse_float_with_comma: must be a number"
+        else if( fvalue < 0 )
+            return 0;
 
         return fvalue;
     },
@@ -335,11 +296,17 @@ var Utils = {
     },
 
     format_date: function(date_str) {
+        if (!/Z$/.test(date_str)) {
+            date_str += "Z";
+        }
         let date = new Date(date_str);
         return date.toLocaleDateString();
     },
 
     format_time: function(time_str) {
+        if (!/Z$/.test(time_str)) {
+            time_str += "Z";
+        }
         let date = new Date(time_str);
         return date.toLocaleString();
     },
@@ -458,7 +425,7 @@ var Utils = {
         let quotePrecision = this.get_asset_precision(fromAsset.get("precision"));
         let basePrecision = this.get_asset_precision(toAsset.get("precision"));
 
-        let assetPrice = this.get_asset_price(parseInt(priceObject.quote.amount), fromAsset, parseInt(priceObject.base.amount), toAsset);
+        let assetPrice = this.get_asset_price(priceObject.quote.amount, fromAsset, priceObject.base.amount, toAsset);
 
         let eqValue = fromAsset.get("id") !== toAsset.get("id") ?
             basePrecision * (amount / quotePrecision) / assetPrice :
@@ -505,7 +472,7 @@ var Utils = {
         if (!globalObject || !dynGlobalObject) return null;
         const block_interval = globalObject.get("parameters").get("block_interval");
         const head_block = dynGlobalObject.get("head_block_number");
-        const head_block_time = new Date(dynGlobalObject.get("time") + "+00:00");
+        const head_block_time = new Date(dynGlobalObject.get("time") + "Z");
         const seconds_below = (head_block - block_number) * block_interval;
         return new Date(head_block_time - seconds_below * 1000);
     },
@@ -515,33 +482,48 @@ var Utils = {
         let toReplace = {};
         let re = /{(.*?)}/g;
         let interpolators = str.split(re);
+        // console.log("split:", str.split(re));
         return str.split(re);
+        // var str = '{{azazdaz}} {{azdazd}}';
+        // var m;
+
+        // while ((m = re.exec(str)) !== null) {
+        //     if (m.index === re.lastIndex) {
+        //         re.lastIndex++;
+        //     }
+        //     console.log("m:", m);
+        //     // View your result using the m-variable.
+        //     // eg m[0] etc.
+        //     //
+        //     toReplace[m[1]] = m[0]
+        //     result.push(m[1])
+        // }
+
+        // return result;
     },
 
     get_percentage(a, b) {
         return Math.round((a/b) * 100) + "%";
     },
 
-    replaceName(name, returnFull = false) {
+    replaceName(nameCoin, returnFull = false) {
 
-        let replacedName ='';
+        let name ='';
         let prefix ='';
-        let partNames = name.split('.');
+        let partNames = nameCoin.split('.');
 
         //if(~name.indexOf("TRADE.")||~name.indexOf("OPEN.")||~name.indexOf("METAEX.")){
-        if(~name.indexOf("OPEN.")){
-            replacedName = partNames[1]
+        if(~nameCoin.indexOf("OPEN.")){
+            name = partNames[1]
             prefix = (partNames[0]+'.').toLowerCase();
             //prefix = ''; //hard remove prefix
         }else{
-            replacedName = name;
+            name = nameCoin;
             prefix = '';
         }
 
-
-
         return {
-            replacedName,
+            name,
             prefix
         };
     },
@@ -552,8 +534,8 @@ var Utils = {
         let finalPrice = stats && stats.latestPrice ?
             stats.latestPrice :
             stats && stats.close && (stats.close.quote.amount && stats.close.base.amount) ?
-            this.get_asset_price(stats.close.quote.amount, quote, stats.close.base.amount, base, true) :
-            this.get_asset_price(price.base.amount, base, price.quote.amount, quote);
+                this.get_asset_price(stats.close.quote.amount, quote, stats.close.base.amount, base, true) :
+                this.get_asset_price(price.base.amount, base, price.quote.amount, quote);
 
         let highPrecisionAssets = ["BTC", "OPEN.BTC", "TRADE.BTC", "GOLD", "SILVER"];
         let precision = 6;

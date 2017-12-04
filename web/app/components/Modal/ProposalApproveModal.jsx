@@ -1,7 +1,6 @@
 import React from "react";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import BaseModal from "./BaseModal";
-import Trigger from "react-foundation-apps/src/trigger";
 import Translate from "react-translate-component";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
@@ -13,15 +12,13 @@ import NestedApprovalState from "../Account/NestedApprovalState";
 import pu from "common/permission_utils";
 import {ChainStore} from "bitsharesjs/es";
 
-let wallet_api = new WalletApi();
-
 class ProposalApproveModal extends React.Component {
 
-   static propTypes = {
-       accounts: ChainTypes.ChainAccountsList
-   };
+    static propTypes = {
+        accounts: ChainTypes.ChainAccountsList
+    };
 
-   constructor(props) {
+    constructor(props) {
         super();
         this.state = {
             active: null,
@@ -29,9 +26,9 @@ class ProposalApproveModal extends React.Component {
             owner: null,
             payee: null
         }
-   }
+    }
 
-   onActiveAccount(accountMap, keyMap, type, account) {
+    onActiveAccount(accountMap, keyMap, type, account) {
         let newState = {};
 
         if (keyMap[account]) {
@@ -46,7 +43,7 @@ class ProposalApproveModal extends React.Component {
         }
         this.setState(newState);
 
-   }
+    }
 
     _onProposalAction(oldProposal) {
         let proposalObject = oldProposal.toJS();
@@ -84,7 +81,7 @@ class ProposalApproveModal extends React.Component {
             }
         });
 
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
         tr.add_type_operation("proposal_update", proposal);
         WalletDb.process_transaction(tr, null, true, neededKeys);
 
@@ -115,7 +112,7 @@ class ProposalApproveModal extends React.Component {
         if (this.props.accounts.length) {
             this.props.accounts.forEach(account => {
                 let accountCheck = isAdd ? account && !proposal.get(`available_${type}_approvals`).includes(account.get("id")) :
-                        account && proposal.get(`available_${type}_approvals`).includes(account.get("id"));
+                    account && proposal.get(`available_${type}_approvals`).includes(account.get("id"));
                 if (accountCheck) {
                     accountMap[account.get("name")] = account.get("id");
                     accountNames.push(account.get("name"));
@@ -154,8 +151,8 @@ class ProposalApproveModal extends React.Component {
                     </div>
 
                     <div className="content-block full-width-content">
-                       <div className="full-width-content form-group">
-                           <Translate content="modal.proposals.pay_with" component="label" />
+                        <div className="full-width-content form-group">
+                            <Translate content="modal.proposals.pay_with" component="label" />
                             <AccountSelect
                                 account_names={myAccounts}
                                 onChange={this.onChangePayee.bind(this)}
@@ -163,22 +160,22 @@ class ProposalApproveModal extends React.Component {
                         </div>
 
                         {accountNames.length || keyNames.length ? (
-                        <div className="full-width-content form-group">
-                            <Translate content={`modal.proposals.approval_${isAdd ? "add" : "remove"}`} component="label" />
-                            <AccountSelect
-                                account_names={accountNames.concat(keyNames)}
-                                onChange={this.onActiveAccount.bind(this, accountMap, keyMap, type)}
-                            />
-                        </div>) : null}
+                            <div className="full-width-content form-group">
+                                <Translate content={`modal.proposals.approval_${isAdd ? "add" : "remove"}`} component="label" />
+                                <AccountSelect
+                                    account_names={accountNames.concat(keyNames)}
+                                    onChange={this.onActiveAccount.bind(this, accountMap, keyMap, type)}
+                                />
+                            </div>) : null}
 
                         {false && keyNames.length ? (
-                        <div className="full-width-content form-group">
-                            <Translate content={`modal.proposals.key_approval_${isAdd ? "add" : "remove"}`} component="label" />
-                            <AccountSelect
-                                account_names={keyNames}
-                                onChange={this.onActiveAccount.bind(this, keyMap, "key")}
-                            />
-                        </div>) : null}
+                            <div className="full-width-content form-group">
+                                <Translate content={`modal.proposals.key_approval_${isAdd ? "add" : "remove"}`} component="label" />
+                                <AccountSelect
+                                    account_names={keyNames}
+                                    onChange={this.onActiveAccount.bind(this, keyMap, "key")}
+                                />
+                            </div>) : null}
                     </div>
 
                     <div className="content-block">
@@ -202,8 +199,8 @@ ProposalApproveModal = BindToChainState(ProposalApproveModal);
 class FirstLevel extends React.Component {
 
     static propTypes = {
-       account: ChainTypes.ChainAccount.isRequired,
-       proposal: ChainTypes.ChainObject.isRequired
+        account: ChainTypes.ChainAccount.isRequired,
+        proposal: ChainTypes.ChainObject.isRequired
     };
 
     constructor() {
@@ -293,11 +290,11 @@ export default class ModalWrapper extends React.Component {
         return (
             <BaseModal id={modalId} overlay={true} ref={modalId}>
                 {this.state.open ? (
-                <div className="grid-block vertical">
-                    <FirstLevel
-                        {...this.props}
-                    />
-                </div>) : null}
+                    <div className="grid-block vertical">
+                        <FirstLevel
+                            {...this.props}
+                        />
+                    </div>) : null}
             </BaseModal>
         );
     }

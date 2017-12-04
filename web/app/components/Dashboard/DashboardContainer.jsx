@@ -3,6 +3,7 @@ import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import MarketsStore from "stores/MarketsStore";
 import accountUtils from "common/account_utils";
+import GatewayStore from "stores/GatewayStore";
 import AltContainer from "alt-container";
 import Dashboard from "./Dashboard";
 
@@ -68,7 +69,7 @@ class DashboardContainer extends React.Component {
                     },
                     lowVolumeMarkets: () => {
                         return MarketsStore.getState().lowVolumeMarkets;
-                    },
+                    }
                     // marketStats: () => {
                     //     return MarketsStore.getState().allMarketStats;
                     // }

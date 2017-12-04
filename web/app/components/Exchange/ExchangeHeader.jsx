@@ -7,7 +7,6 @@ import SettingsActions from "actions/SettingsActions";
 import PriceStat from "./PriceStat";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
-import cnames from "classnames";
 
 export default class ExchangeHeader extends React.Component {
     shouldComponentUpdate(nextProps) {
@@ -26,9 +25,8 @@ export default class ExchangeHeader extends React.Component {
 
     render() {
         const {quoteAsset, baseAsset, starredMarkets, hasPrediction, feedPrice,
-            showCallLimit, lowestCallPrice, marketReady, latestPrice, currentPeriod,
-            marketStats, showDepthChart, buckets, bucketSize, showIndicators,
-            onBorrowBase, onBorrowQuote, indicators, indicatorSettings} = this.props;
+            showCallLimit, lowestCallPrice, marketReady, latestPrice,
+            marketStats, showDepthChart} = this.props;
 
         const baseSymbol = baseAsset.get("symbol");
         const quoteSymbol = quoteAsset.get("symbol");
@@ -50,17 +48,23 @@ export default class ExchangeHeader extends React.Component {
                 <div className="grid-block overflow-visible">
                     <div className="grid-block shrink show-for-large" style={{borderRight: "1px solid grey"}}>
                         <div className="v-align">
-                        <span style={{paddingRight: 0}} onClick={this._addMarket.bind(this, quoteSymbol, baseSymbol)} className="market-symbol">
-                            <Icon className={starClass} name="fi-star"/>
-                        </span>
-                        {!hasPrediction ? (
-                        <Link onClick={() => {MarketsActions.switchMarket();}} className="market-symbol" to={`/market/${baseSymbol}_${quoteSymbol}`}>
-                            <span><AssetName name={quoteSymbol} replace={true} /> &#8660; <AssetName name={baseSymbol} replace={true} /></span>
-                        </Link>) : (
-                        <a className="market-symbol">
-                            <span>{`${quoteSymbol} : ${baseSymbol}`}</span>
-                        </a>
-                        )}
+                            <span style={{paddingRight: 0}} onClick={this._addMarket.bind(this, quoteSymbol, baseSymbol)} className="market-symbol">
+                                <Icon className={starClass} name="fi-star"/>
+                            </span>
+                            {!hasPrediction ? (
+
+                                <span style={{padding: "0 5px"}}>
+                                    <Link to={`/asset/${quoteSymbol}`}><AssetName name={quoteSymbol} replace={true} /></Link>
+                                    <Link onClick={() => {MarketsActions.switchMarket();}} className="market-symbol" to={`/market/${baseSymbol}_${quoteSymbol}`}>
+                                        <Icon className="shuffle" name="shuffle"/>
+                                    </Link>
+                                    <Link to={`/asset/${baseSymbol}`}><AssetName name={baseSymbol} replace={true} /></Link>
+                                </span>
+                            ) : (
+                                <a className="market-symbol">
+                                    <span>{`${quoteSymbol} : ${baseSymbol}`}</span>
+                                </a>
+                            )}
                         </div>
                     </div>
 
@@ -72,10 +76,10 @@ export default class ExchangeHeader extends React.Component {
 
                                 <li className="stat">
                                     <span>
-                                        <Translate component="span" content="account.hour_24" />
-                                        <br />
-                                        <b className={"value " + dayChangeClass}>{marketReady ? dayChange : 0}<span className={dayChangeArrow}>&nbsp;{dayChangeArrow === "" ? null : dayChangeArrow === "change-up" ? <span>&#8593;</span> : <span>&#8595;</span>}</span></b>
-                                        <span>%</span>
+                                    <Translate component="span" content="account.hour_24" />
+                                    <br />
+                                    <b className={"value " + dayChangeClass}>{marketReady ? dayChange : 0}<span className={dayChangeArrow}>&nbsp;{dayChangeArrow === "" ? null : dayChangeArrow === "change-up" ? <span>&#8593;</span> : <span>&#8595;</span>}</span></b>
+                                    <span>%</span>
                                     </span>
                                 </li>
 
@@ -93,7 +97,7 @@ export default class ExchangeHeader extends React.Component {
                             <ul className="market-stats stats top-stats">
                                 <li className="stat input clickable v-align" style={{borderLeft: "1px solid grey", borderRight: "none", padding: "3px 15px 0 15px"}} onClick={this.props.onToggleCharts}>
                                     <div className="v-align indicators">
-                                       {!showDepthChart ? <Translate content="exchange.order_depth" /> : <Translate content="exchange.price_history" />}
+                                        {!showDepthChart ? <Translate content="exchange.order_depth" /> : <Translate content="exchange.price_history" />}
                                     </div>
                                 </li>
                             </ul>

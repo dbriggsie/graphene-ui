@@ -70,7 +70,7 @@ export default class LoginSelector extends React.Component {
                         <div className="create_account_index text-center">
                             <img src="/app/assets/logo.png" alt="" />
                             <Translate content="account.welcome" component="h3" />
-                               
+
                         </div>
 
                         {(() => {
@@ -82,7 +82,7 @@ export default class LoginSelector extends React.Component {
                                     </div>
                                     <div className="box-content">
                                         {
-                                            //<Translate content="wallet.wallet_model_1" component="p" /> 
+                                            //<Translate content="wallet.wallet_model_1" component="p" />
                                         }
                                         <Translate content="wallet.wallet_model_2" component="p" />
 
@@ -111,7 +111,7 @@ export default class LoginSelector extends React.Component {
                                         <Translate className="button" onClick={this.onSelect.bind(this, "password")} content="wallet.use_password" />
                                     </div>
                                     {
-                                        //<div className="button"><Link to="/create-account/password"><Translate content="wallet.use_password" /></Link></div>  
+                                        //<div className="button"><Link to="/create-account/password"><Translate content="wallet.use_password" /></Link></div>
                                     }
                                 </div>
                             </div>);

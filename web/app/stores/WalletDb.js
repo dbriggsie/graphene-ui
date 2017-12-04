@@ -293,6 +293,7 @@ class WalletDb extends BaseStore {
 
     /** This also serves as 'unlock' */
     validatePassword( password, unlock = false, account = null, roles = ["active", "owner", "memo"] ) {
+
         if (account) {
             let id = 0;
             function setKey(role, priv, pub) {

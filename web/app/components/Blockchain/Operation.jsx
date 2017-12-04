@@ -4,11 +4,10 @@ import {Link} from "react-router/es";
 import classNames from "classnames";
 import Translate from "react-translate-component";
 import counterpart from "counterpart";
-import market_utils from "common/market_utils";
 import utils from "common/utils";
 import BlockTime from "./BlockTime";
-import LinkToAccountById from "../Blockchain/LinkToAccountById";
-import LinkToAssetById from "../Blockchain/LinkToAssetById";
+import LinkToAccountById from "../Utility/LinkToAccountById";
+import LinkToAssetById from "../Utility/LinkToAssetById";
 import BindToChainState from "../Utility/BindToChainState";
 import ChainTypes from "../Utility/ChainTypes";
 import TranslateWithLinks from "../Utility/TranslateWithLinks";
@@ -16,8 +15,12 @@ import {ChainStore, ChainTypes as grapheneChainTypes} from "bitsharesjs/es";
 import account_constants from "chain/account_constants";
 import MemoText from "./MemoText";
 import ProposedOperation from "./ProposedOperation";
+import marketUtils from "common/market_utils";
+import {connect} from "alt-react";
+import SettingsStore from "stores/SettingsStore";
 
 const {operations} = grapheneChainTypes;
+/*require("./operations.scss");*/
 
 let ops = Object.keys(operations);
 let listings = account_constants.account_listing;
@@ -74,7 +77,7 @@ class Row extends React.Component {
     }
 
     render() {
-        let {block, fee, color, type, hideOpLabel, operation_id} = this.props;
+        let {block, fee, color, type, hideOpLabel} = this.props;
 
         let last_irreversible_block_num = this.props.dynGlobalObject.get("last_irreversible_block_num" );
         let pending = null;
@@ -85,27 +88,24 @@ class Row extends React.Component {
         fee.amount = parseInt(fee.amount, 10);
 
         return (
-                <tr>
-                    {hideOpLabel ? null : (
-                        <td style={{width: "20%"}} className="left-td column-hide-tiny">
-                            <Link className="inline-block" data-place="bottom" data-tip={counterpart.translate("tooltip.show_block", {block: utils.format_number(this.props.block, 0)})} to={`/block/${this.props.block}`}>
-                                <TransactionLabel color={color} type={type} />
-                            </Link>
-                        </td>)}
-                    {hideOpLabel ? null : (<td style={{width: "15%",padding: "0 10px 0 0"}}>id {operation_id}</td>)}
-                    <td style={{padding: "8px 0px"}} >
-                        <div>
-                            <span>{this.props.info}</span>
-                        </div>
-                        <div style={{fontSize: 14, paddingTop: 5}}>
-                            {/*<span>{counterpart.translate("explorer.block.title").toLowerCase()} <Link to={`/block/${block}`}>{utils.format_number(block, 0)}</Link></span>*/}
-                            {!this.props.hideFee ? <span className="facolor-fee"> - <FormattedAsset amount={fee.amount} asset={fee.asset_id} /></span> : null}
-                            {pending ? <span> - {pending}</span> : null}
-                        </div>
-                    </td>
-                    <td>{!this.props.hideDate ? <BlockTime  block_number={block}/> : null}</td>
-                </tr>
-            );
+            <tr>
+                {hideOpLabel ? null : (
+                    <td style={{textAlign: "left"}} className="left-td column-hide-tiny">
+                        <Link className="inline-block" data-place="bottom" data-tip={counterpart.translate("tooltip.show_block", {block: utils.format_number(this.props.block, 0)})} to={`/block/${this.props.block}`}><TransactionLabel color={color} type={type} /></Link>
+                    </td>)}
+                <td style={{padding: "8px 5px", textAlign: "left"}}>
+                    <div>
+                        <span>{this.props.info}</span>
+                    </div>
+                    <div style={{fontSize: 14, paddingTop: 5}}>
+                        {/*<span>{counterpart.translate("explorer.block.title").toLowerCase()} <Link to={`/block/${block}`}>{utils.format_number(block, 0)}</Link></span>*/}
+                        {!this.props.hideFee ? <span className="facolor-fee"> - <FormattedAsset amount={fee.amount} asset={fee.asset_id} /></span> : null}
+                        {pending ? <span> - {pending}</span> : null}
+                    </div>
+                </td>
+                <td>{!this.props.hideDate ? <BlockTime  block_number={block}/> : null}</td>
+            </tr>
+        );
     }
 }
 Row = BindToChainState(Row, {keep_updating:true});
@@ -115,7 +115,6 @@ class Operation extends React.Component {
     static defaultProps = {
         op: [],
         current: "",
-        operation_id: "",
         block: null,
         hideOpLabel: false,
         csvExportMode: false
@@ -123,11 +122,16 @@ class Operation extends React.Component {
 
     static propTypes = {
         op: React.PropTypes.array.isRequired,
-        operation_id: React.PropTypes.string,
         current: React.PropTypes.string,
         block: React.PropTypes.number,
         csvExportMode: React.PropTypes.bool
     };
+
+    componentWillReceiveProps(np) {
+        if (np.marketDirections !== this.props.marketDirections) {
+            this.forceUpdate();
+        }
+    }
 
     linkToAccount(name_or_id) {
         if(!name_or_id) return <span>-</span>;
@@ -147,11 +151,12 @@ class Operation extends React.Component {
         if (!this.props.op || !nextProps.op) {
             return false;
         }
-        return !utils.are_equal_shallow(nextProps.op[1], this.props.op[1]);
+        return !utils.are_equal_shallow(nextProps.op[1], this.props.op[1]) ||
+            nextProps.marketDirections !== this.props.marketDirections;
     }
 
     render() {
-        let {op, current, block, operation_id} = this.props;
+        let {op, current, block} = this.props;
         let line = null, column = null, color = "info";
         let memoComponent = null;
 
@@ -185,18 +190,45 @@ class Operation extends React.Component {
             case "limit_order_create":
                 color = "warning";
                 let o = op[1];
-                let isAsk = market_utils.isAskOp(op[1]);
-
+                /*
+                marketID = OPEN.ETH_USD
+                if (!inverted) (default)
+                    price = USD / OPEN.ETH
+                    buy / sell OPEN.ETH
+                    isBid = amount_to_sell.asset_symbol = USD
+                    amount = to_receive
+                if (inverted)
+                    price =  OPEN.ETH / USD
+                    buy / sell USD
+                    isBid = amount_to_sell.asset_symbol = OPEN.ETH
+                    amount =
+                */
                 column = (
-                        <span>
-                            <TranslateWithLinks
-                                string={isAsk ? "operation.limit_order_sell" : "operation.limit_order_buy"}
-                                keys={[
-                                    {type: "account", value: op[1].seller, arg: "account"},
-                                    {type: "amount", value: isAsk ? op[1].amount_to_sell : op[1].min_to_receive, arg: "amount"},
-                                    {type: "price", value: {base: isAsk ? op[1].min_to_receive : op[1].amount_to_sell, quote: isAsk ? op[1].amount_to_sell : op[1].min_to_receive}, arg: "price"}
-                                ]}
-                            />
+                    <span>
+                            <BindToChainState.Wrapper base={o.min_to_receive.asset_id} quote={o.amount_to_sell.asset_id}>
+                                { ({base, quote}) => {
+                                    const {marketID, first, second} = marketUtils.getMarketID(base, quote);
+                                    const inverted = this.props.marketDirections.get(marketID);
+                                    // const paySymbol = base.get("symbol");
+                                    // const receiveSymbol = quote.get("symbol");
+
+                                    const isBid = o.amount_to_sell.asset_id === (inverted ? first.get("id") : second.get("id"));
+
+                                    let priceBase = (isBid) ? o.amount_to_sell : o.min_to_receive;
+                                    let priceQuote = (isBid) ? o.min_to_receive : o.amount_to_sell;
+                                    const amount = isBid ? op[1].min_to_receive : op[1].amount_to_sell;
+
+                                    return <TranslateWithLinks
+                                        string={isBid ? "operation.limit_order_buy" : "operation.limit_order_sell"}
+                                        keys={[
+                                            {type: "account", value: op[1].seller, arg: "account"},
+                                            {type: "amount", value: amount, arg: "amount"},
+                                            {type: "price", value: {base: priceBase, quote: priceQuote}, arg: "price"}
+                                        ]}
+                                    />;
+                                }}
+                            </BindToChainState.Wrapper>
+
                         </span>
                 );
                 break;
@@ -239,7 +271,7 @@ class Operation extends React.Component {
 
             case "key_create":
                 column = (
-                        <span>
+                    <span>
                             <Translate component="span" content="transaction.create_key" />
                         </span>
                 );
@@ -248,11 +280,11 @@ class Operation extends React.Component {
             case "account_create":
                 column =
                     <TranslateWithLinks
-                            string="operation.reg_account"
-                            keys={[
-                                {type: "account", value: op[1].registrar, arg: "registrar"},
-                                {type: "account", value: op[1].name, arg: "new_account"}
-                            ]}
+                        string="operation.reg_account"
+                        keys={[
+                            {type: "account", value: op[1].registrar, arg: "registrar"},
+                            {type: "account", value: op[1].name, arg: "new_account"}
+                        ]}
                     />
                 break;
 
@@ -273,8 +305,8 @@ class Operation extends React.Component {
             case "account_whitelist":
 
                 let label = op[1].new_listing === listings.no_listing ? "unlisted_by" :
-                              op[1].new_listing === listings.white_listed ? "whitelisted_by" :
-                              "blacklisted_by";
+                    op[1].new_listing === listings.white_listed ? "whitelisted_by" :
+                        "blacklisted_by";
                 column = (
                     <span>
                         <TranslateWithLinks
@@ -289,8 +321,8 @@ class Operation extends React.Component {
                 break;
 
             case "account_upgrade":
-                   column = (
-                       <span>
+                column = (
+                    <span>
                             <TranslateWithLinks
                                 string={op[1].upgrade_to_lifetime_member ? "operation.lifetime_upgrade_account" : "operation.annual_upgrade_account"}
                                 keys={[
@@ -298,7 +330,7 @@ class Operation extends React.Component {
                                 ]}
                             />
                         </span>
-                    );
+                );
                 break;
 
             case "account_transfer":
@@ -510,21 +542,21 @@ class Operation extends React.Component {
                             ]}
                         />:
                     </span>
-                    <div>
-                        {op[1].proposed_ops.map((o, index) => {
-                            return (
-                                <ProposedOperation
-                                    op={o.op}
-                                    key={index}
-                                    index={index}
-                                    inverted={false}
-                                    hideFee={true}
-                                    hideOpLabel={true}
-                                    hideDate={true}
-                                    proposal={true}
-                                />
-                            );
-                        })}
+                        <div>
+                            {op[1].proposed_ops.map((o, index) => {
+                                return (
+                                    <ProposedOperation
+                                        op={o.op}
+                                        key={index}
+                                        index={index}
+                                        inverted={false}
+                                        hideFee={true}
+                                        hideOpLabel={true}
+                                        hideDate={true}
+                                        proposal={true}
+                                    />
+                                );
+                            })}
 
                         </div>
                     </div>
@@ -600,17 +632,58 @@ class Operation extends React.Component {
                 color = "success";
                 o = op[1];
 
-                let receivedAmount = o.fee.asset_id === o.receives.asset_id ? o.receives.amount - o.fee.amount : o.receives.amount;
+                /*
+                marketID = OPEN.ETH_USD
+                if (!inverted) (default)
+                    price = USD / OPEN.ETH
+                    buy / sell OPEN.ETH
+                    isBid = amount_to_sell.asset_symbol = USD
+                    amount = to_receive
+                if (inverted)
+                    price =  OPEN.ETH / USD
+                    buy / sell USD
+                    isBid = amount_to_sell.asset_symbol = OPEN.ETH
+                    amount =
+
+                    const {marketID, first, second} = marketUtils.getMarketID(base, quote);
+                    const inverted = this.props.marketDirections.get(marketID);
+                    // const paySymbol = base.get("symbol");
+                    // const receiveSymbol = quote.get("symbol");
+
+                    const isBid = o.amount_to_sell.asset_id === (inverted ? first.get("id") : second.get("id"));
+
+                    let priceBase = (isBid) ? o.amount_to_sell : o.min_to_receive;
+                    let priceQuote = (isBid) ? o.min_to_receive : o.amount_to_sell;
+                    const amount = isBid ? op[1].min_to_receive : op[1].amount_to_sell;
+                */
+
                 column = (
-                        <span>
-                            <TranslateWithLinks
-                                string="operation.fill_order"
-                                keys={[
-                                    {type: "account", value: op[1].account_id, arg: "account"},
-                                    {type: "amount", value: {amount: receivedAmount, asset_id: op[1].receives.asset_id}, arg: "received", decimalOffset: op[1].receives.asset_id === "1.3.0" ? 3 : null},
-                                    {type: "price", value: {base: o.pays, quote: o.receives}, arg: "price"}
-                                ]}
-                            />
+                    <span>
+                            <BindToChainState.Wrapper base={o.receives.asset_id} quote={o.pays.asset_id}>
+                                { ({base, quote}) => {
+
+                                    const {marketID, first, second} = marketUtils.getMarketID(base, quote);
+                                    const inverted = this.props.marketDirections.get(marketID);
+                                    const isBid = o.pays.asset_id === (inverted ? first.get("id") : second.get("id"));
+
+
+                                    // const paySymbol = base.get("symbol");
+                                    // const receiveSymbol = quote.get("symbol");
+                                    let priceBase = (isBid) ? o.receives : o.pays;
+                                    let priceQuote = (isBid) ? o.pays : o.receives;
+                                    let amount = isBid ? o.receives : o.pays;
+                                    let receivedAmount = o.fee.asset_id === amount.asset_id ? amount.amount - o.fee.amount : amount.amount;
+
+                                    return <TranslateWithLinks
+                                        string={`operation.fill_order_${isBid ? "buy" : "sell"}`}
+                                        keys={[
+                                            {type: "account", value: op[1].account_id, arg: "account"},
+                                            {type: "amount", value: {amount: receivedAmount, asset_id: amount.asset_id}, arg: "amount", decimalOffset: op[1].receives.asset_id === "1.3.0" ? 3 : null},
+                                            {type: "price", value: {base: priceBase, quote: priceQuote}, arg: "price"}
+                                        ]}
+                                    />;
+                                }}
+                        </BindToChainState.Wrapper>
                         </span>
                 );
                 break;
@@ -719,12 +792,12 @@ class Operation extends React.Component {
                         {this.linkToAccount(op[1].issuer)}&nbsp;
                         <BindToChainState.Wrapper asset={op[1].amount_to_claim.asset_id}>
                            { ({asset}) =>
-                                   <Translate
-                                       component="span"
-                                       content="transaction.asset_claim_fees"
-                                       balance_amount={utils.format_asset(op[1].amount_to_claim.amount, asset)}
-                                       asset={asset.get("symbol")}
-                                   />
+                               <Translate
+                                   component="span"
+                                   content="transaction.asset_claim_fees"
+                                   balance_amount={utils.format_asset(op[1].amount_to_claim.amount, asset)}
+                                   asset={asset.get("symbol")}
+                               />
                            }
                        </BindToChainState.Wrapper>
                     </span>
@@ -809,7 +882,6 @@ class Operation extends React.Component {
             <Row
                 block={block}
                 type={op[0]}
-                operation_id={operation_id}
                 color={color}
                 fee={op[1].fee}
                 hideOpLabel={this.props.hideOpLabel}
@@ -827,5 +899,17 @@ class Operation extends React.Component {
         );
     }
 }
+
+
+Operation = connect(Operation, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps() {
+        return {
+            marketDirections: SettingsStore.getState().marketDirections
+        };
+    }
+});
 
 export default Operation;

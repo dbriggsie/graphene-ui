@@ -10,6 +10,10 @@ import DashboardAssetList from "./DashboardAssetList";
 import WalletDb from "stores/WalletDb";
 import AccountStore from "stores/AccountStore";
 
+import GatewayStore from "stores/GatewayStore";
+import { connect } from "alt-react";
+import BindToChainState from "../Utility/BindToChainState";
+
 class SimpleDashboard extends React.Component {
 
     render() {
@@ -24,6 +28,7 @@ class SimpleDashboard extends React.Component {
             <div ref="wrapper" className={"grid-block page-layout vertical "+this.props.className} >
                 <div ref="container" className="grid-container" style={{padding: "25px 10px 0 10px"}}>
                     <DashboardAssetList
+                        backedCoins={this.props.backedCoins}
                         defaultAssets={this.props.defaultAssets}
                         preferredUnit={this.props.preferredUnit}
                         isMyAccount={isMyAccount}
@@ -46,4 +51,30 @@ class SimpleDashboard extends React.Component {
     }
 }
 
-export default SimpleDashboard;
+SimpleDashboard = BindToChainState(SimpleDashboard, {keep_updating: true, show_loader: true});
+
+class SimpleDashboardWrapper extends React.Component {
+    render () {
+        return <SimpleDashboard {...this.props} />;
+    }
+}
+
+export default connect(SimpleDashboardWrapper, {
+    listenTo() {
+        return [ GatewayStore];
+    },
+    getProps() {
+        return {
+            //linkedAccounts: AccountStore.getState().linkedAccounts,
+            //searchAccounts: AccountStore.getState().searchAccounts,
+           // settings: SettingsStore.getState().settings,
+           // hiddenAssets: SettingsStore.getState().hiddenAssets,
+           // wallet_locked: WalletUnlockStore.getState().locked,
+            //myAccounts:  AccountStore.getState().myAccounts,
+            //viewSettings: SettingsStore.getState().viewSettings,
+            backedCoins: GatewayStore.getState().backedCoins,
+           // bridgeCoins: GatewayStore.getState().bridgeCoins,
+            //gatewayDown: GatewayStore.getState().down
+        };
+    }
+});

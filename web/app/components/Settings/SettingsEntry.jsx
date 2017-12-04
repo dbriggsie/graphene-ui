@@ -33,6 +33,7 @@ export default class SettingsEntry extends React.Component {
         let options, optional, confirmButton, value, input, selected = settings.get(setting);
         let noHeader = false;
 
+
         switch (setting) {
             case "locale":
                 value = selected;
@@ -72,7 +73,7 @@ export default class SettingsEntry extends React.Component {
                 input = <div data-tip={counterpart.translate("header.trader_mode_tip")} style={{height: 60, width: "100%", paddingTop: 20}} className="button outline" onClick={this.props.onChange.bind(this, setting, !selected)}>{counterpart.translate("settings.trader_mode_" + selected)}</div>;
                 noHeader = true;
                 break;
-                
+
             case "faucet_address":
                 if (!selected) {
                     value = "https://";

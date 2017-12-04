@@ -475,6 +475,7 @@ class MyMarkets extends React.Component {
     render() {
         let {starredMarkets, defaultMarkets, marketStats, columns, searchAssets, assetsLoading,
             preferredBases, core, current, viewSettings, listHeight, onlyStars, userMarkets} = this.props;
+
         let {activeMarketTab, activeTab, lookupQuote, lookupBase} = this.state;
         let otherMarkets = <tr></tr>;
         const myMarketTab = activeTab === "my-market";

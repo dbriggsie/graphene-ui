@@ -254,6 +254,7 @@ class Popups extends Component {
                             <textarea ref="details" cols="1" defaultValue={counterpart.translate("popups.detailed")} rows="2"></textarea>
                             <div style={{marginBottom: 10}}><img src="https://openledger.info/create_asset/captcha.php" alt="OL"/></div>
                             <input type="text" ref="captcha" name="captcha" placeholder='Captcha'  />
+
                             <input type="button" value={counterpart.translate("popups.add_coin")} className="button" onClick={(e)=>{this.add_coin(e)}} />
                             {this.state.answer}                         
                         </form>

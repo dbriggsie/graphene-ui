@@ -385,7 +385,7 @@ class Header extends React.Component {
                 <div className="grid-block show-for-medium">
                     <ul className="menu-bar">
                         <li>{dashboard}</li>
-                        {(!traderMode && hasOrders) ? <li><Link to="/my-orders" activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}
+                       {/* {(!traderMode && hasOrders) ? <li><Link to="/my-orders" activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}*/}
                         {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} className={cnames({active: active.indexOf("account/") !== -1})}><Translate content="header.account" /></Link></li>}
                         {!traderMode ? null : <li><Link to="/transfer" className={cnames({active: active.indexOf("transfer") !== -1})} ><Translate component="span" content="header.payments" /></Link></li>}
                         {!traderMode ? null : <li>{tradeLink}</li>}

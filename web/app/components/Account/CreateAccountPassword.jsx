@@ -206,7 +206,7 @@ class CreateAccountPassword extends React.Component {
 
                     <section>
                         <label className="left-label"><Translate content="wallet.confirm_password" /></label>
-                        <input type="password" value={this.state.confirm_password} onChange={this._onInput.bind(this, "confirm_password")} />
+                        <input type="password" autocomplete="off" value={this.state.confirm_password} onChange={this._onInput.bind(this, "confirm_password")} />
                         {this.state.confirm_password && this.state.confirm_password !== this.state.generatedPassword ?
                             <div className="has-error"><Translate content="wallet.confirm_error" /></div> : null}
                     </section>
@@ -323,32 +323,32 @@ class CreateAccountPassword extends React.Component {
                 <table className="table">
                     <tbody>
 
-                        <tr>
-                            <td><Translate content="wallet.tips_dashboard" />:</td>
-                            <td><Link to="/dashboard"><Translate content="header.dashboard" /></Link></td>
-                        </tr>
+                    <tr>
+                        <td><Translate content="wallet.tips_dashboard" />:</td>
+                        <td><Link to="/dashboard"><Translate content="header.dashboard" /></Link></td>
+                    </tr>
 
-                        <tr>
-                            <td><Translate content="wallet.tips_account" />:</td>
-                            <td><Link to={`/account/${this.state.accountName}/overview`} ><Translate content="wallet.link_account" /></Link></td>
-                        </tr>
+                    <tr>
+                        <td><Translate content="wallet.tips_account" />:</td>
+                        <td><Link to={`/account/${this.state.accountName}/overview`} ><Translate content="wallet.link_account" /></Link></td>
+                    </tr>
 
-                        <tr>
-                            <td><Translate content="wallet.tips_deposit" />:</td>
-                            <td><Link to="/deposit-withdraw"><Translate content="wallet.link_deposit" /></Link></td>
-                        </tr>
+                    <tr>
+                        <td><Translate content="wallet.tips_deposit" />:</td>
+                        <td><Link to="/deposit-withdraw"><Translate content="wallet.link_deposit" /></Link></td>
+                    </tr>
 
 
 
-                        <tr>
-                            <td><Translate content="wallet.tips_transfer" />:</td>
-                            <td><Link to="/transfer"><Translate content="wallet.link_transfer" /></Link></td>
-                        </tr>
+                    <tr>
+                        <td><Translate content="wallet.tips_transfer" />:</td>
+                        <td><Link to="/transfer"><Translate content="wallet.link_transfer" /></Link></td>
+                    </tr>
 
-                        <tr>
-                            <td><Translate content="wallet.tips_settings" />:</td>
-                            <td><Link to="/settings"><Translate content="header.settings" /></Link></td>
-                        </tr>
+                    <tr>
+                        <td><Translate content="wallet.tips_settings" />:</td>
+                        <td><Link to="/settings"><Translate content="header.settings" /></Link></td>
+                    </tr>
                     </tbody>
 
                 </table>
@@ -392,7 +392,7 @@ class CreateAccountPassword extends React.Component {
 
                             {step === 1 ? (<div>{this._renderAccountCreateText()}
                                 <br />{this._renderAccountCreateForm()}</div>) : step === 2 ? this._renderBackup() :
-                                    this._renderGetStarted()
+                                this._renderGetStarted()
                             }
                         </div>
 

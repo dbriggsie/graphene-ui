@@ -1,5 +1,5 @@
 import React, {PropTypes, Component} from "react";
-import {Link} from "react-router";
+import {Link} from "react-router/es";
 import {FormattedDate} from "react-intl";
 import { connect } from "alt-react";
 import WalletActions from "actions/WalletActions";
@@ -13,13 +13,7 @@ import cname from "classnames";
 import Translate from "react-translate-component";
 import {ChainConfig} from "bitsharesjs-ws";
 import {PrivateKey} from "bitsharesjs/es";
-import Icon from "../Icon/Icon";
-
-import {makeABCUIContext} from 'airbitz-core-js-ui/lib/abcui.es6';
-import { airbitzAPIs } from "api/apiConfig";
-//import abcui from "airbitz-core-js-ui";
-let _abcUi = makeABCUIContext(airbitzAPIs);
-
+import SettingsActions from "actions/SettingsActions";
 
 const connectObject = {
     listenTo() {
@@ -34,52 +28,20 @@ const connectObject = {
 
 //The default component is WalletManager.jsx
 class BackupCreate extends Component {
-
-    render() {
-
-        return (
-            <div style={{maxWidth: "40rem"}}>
-            <Create 
-                noText={this.props.noText} 
-                newAccount={this.props.location ? this.props.location.query.newAccount : null}
-                airbitz_backup_option={this.props.airbitz_backup_option}
-                user_password={this.props.user_password}
-            >
-                {!this.props.airbitz_backup_option?<NameSizeModified/>:null}
-                {this.props.noText ? null : <Sha1/>}
-                <Download 
-                    downloadCb={this.props.downloadCb} 
-                    airbitz_backup_option={this.props.airbitz_backup_option}
-                    user_password={this.props.user_password}
-
-                />
-            </Create>
-        </div>
-    );
-    }
-}
-BackupCreate = connect(BackupCreate, connectObject);
-
-class BackupVerify extends Component {
     render() {
         return (
             <div style={{maxWidth: "40rem"}}>
-
-                <h3><Translate content="wallet.verify_prior_backup" /></h3>
-
-                <Upload>
+                <Create noText={this.props.noText} newAccount={this.props.location ? this.props.location.query.newAccount : null}>
                     <NameSizeModified/>
-                    <DecryptBackup saveWalletObject={true}>
-                        <h4><Translate content="wallet.verified" /></h4>
-                    </DecryptBackup>
-                    <Reset/>
-                </Upload>
+                    {this.props.noText ? null : <Sha1/>}
+                    <Download downloadCb={this.props.downloadCb}/>
+                </Create>
 
             </div>
         );
     }
 }
-BackupVerify = connect(BackupVerify, connectObject);
+BackupCreate = connect(BackupCreate, connectObject);
 
 // layout is a small project
 // class WalletObjectInspector extends Component {
@@ -113,23 +75,16 @@ class BackupRestore extends Component {
 
         return (
             <div>
-                <Translate component="h3" content="header.unlock_wallet" />
                 <Translate style={{textAlign: "left", maxWidth: "30rem"}} component="p" content="wallet.import_backup_choose" />
                 {(new FileReader).readAsBinaryString ? null : <p className="error">Warning! You browser doesn't support some some file operations required to restore backup, we recommend you to use Chrome or Firefox browsers to restore your backup.</p>}
-                    <Upload >
-                        <NameSizeModified/>
-                        <DecryptBackup saveWalletObject={true}>
-                            <NewWalletName>
-                                <Restore/>
-                            </NewWalletName>
-                        </DecryptBackup>
-                    </Upload>
-
-                    <Link to="/create-wallet-brainkey">
-                        <div className="button " style={{marginTop: 15}}>
-                            <Translate content="settings.backup_brainkey_btn" />
-                        </div>
-                    </Link>
+                <Upload>
+                    <NameSizeModified/>
+                    <DecryptBackup saveWalletObject={true}>
+                        <NewWalletName>
+                            <Restore/>
+                        </NewWalletName>
+                    </DecryptBackup>
+                </Upload>
             </div>
         );
     }
@@ -145,9 +100,9 @@ class Restore extends Component {
     }
 
     isRestored() {
-        let new_wallet = this.props.wallet.new_wallet
-        let has_new_wallet = this.props.wallet.wallet_names.has(new_wallet)
-        return has_new_wallet
+        let new_wallet = this.props.wallet.new_wallet;
+        let has_new_wallet = this.props.wallet.wallet_names.has(new_wallet);
+        return has_new_wallet;
     }
 
     render() {
@@ -157,7 +112,7 @@ class Restore extends Component {
         if(has_new_wallet)
             return <span>
                 <h5><Translate content="wallet.restore_success" name={new_wallet.toUpperCase()} /></h5>
-                <Link to="dashboard">
+                <Link to="/dashboard">
                     <div className="button outline">
                         <Translate component="span" content="header.dashboard" />
                     </div>
@@ -168,7 +123,7 @@ class Restore extends Component {
         return <span>
             <h3><Translate content="wallet.ready_to_restore" /></h3>
             <div className="button outline"
-                onClick={this.onRestore.bind(this)}><Translate content="wallet.restore_wallet_of" name={new_wallet} /></div>
+                 onClick={this.onRestore.bind(this)}><Translate content="wallet.restore_wallet_of" name={new_wallet} /></div>
         </span>
     }
 
@@ -176,7 +131,11 @@ class Restore extends Component {
         WalletActions.restore(
             this.props.wallet.new_wallet,
             this.props.backup.wallet_object
-        )
+        );
+        SettingsActions.changeSetting({
+            setting: "passwordLogin",
+            value: false
+        });
     }
 
 }
@@ -195,7 +154,11 @@ class NewWalletName extends Component {
     componentWillMount() {
         let has_current_wallet = !!this.props.wallet.current_wallet
         if( ! has_current_wallet) {
-            WalletManagerStore.setNewWallet("default")
+            let walletName = "default";
+            if (this.props.backup.name) {
+                walletName = this.props.backup.name.match(/[a-z0-9_-]*/)[0]
+            }
+            WalletManagerStore.setNewWallet(walletName)
             this.setState({accept: true})
         }
         if( has_current_wallet && this.props.backup.name && ! this.state.new_wallet) {
@@ -216,19 +179,19 @@ class NewWalletName extends Component {
         let name_ready = ! has_wallet_name_conflict && has_wallet_name
 
         return (
-        <form onSubmit={this.onAccept.bind(this)}>
-            <h5><Translate content="wallet.new_wallet_name" /></h5>
-            <input
-                type="text"
-                id="new_wallet"
-                onChange={this.formChange.bind(this)}
-                value={this.state.new_wallet}
-            />
-            <p>{ has_wallet_name_conflict ? <Translate content="wallet.wallet_exist" /> : null}</p>
-            <div onClick={ this.onAccept.bind(this) } type="submit" className={cname("button outline", {disabled: ! name_ready})}>
-                <Translate content="wallet.accept" />
-            </div>
-        </form>);
+            <form onSubmit={this.onAccept.bind(this)}>
+                <h5><Translate content="wallet.new_wallet_name" /></h5>
+                <input
+                    type="text"
+                    id="new_wallet"
+                    onChange={this.formChange.bind(this)}
+                    value={this.state.new_wallet}
+                />
+                <p>{ has_wallet_name_conflict ? <Translate content="wallet.wallet_exist" /> : null}</p>
+                <div onClick={ this.onAccept.bind(this) } type="submit" className={cname("button outline", {disabled: ! name_ready})}>
+                    <Translate content="wallet.accept" />
+                </div>
+            </form>);
     }
 
     onAccept(e) {
@@ -253,9 +216,6 @@ class NewWalletName extends Component {
 }
 NewWalletName = connect(NewWalletName, connectObject);
 
-
-
-
 class Download extends Component {
 
     componentWillMount() {
@@ -263,122 +223,32 @@ class Download extends Component {
     }
 
     componentDidMount() {
-        var was_locked = WalletDb.isLocked();
-        if( ! this.isFileSaverSupported ){
-
+        if( ! this.isFileSaverSupported )
             notify.error("File saving is not supported")
-        }else{
-                    let _self = this;
-
-            setTimeout(() => {
-                if(window.location.pathname=="/create-account/wallet"){
-                    let blob = new Blob([_self.props.backup.contents], {
-                        type: "application/octet-stream; charset=us-ascii"
-                    });
-
-                    if (blob.size !== _self.props.backup.size)
-                        throw new Error("Invalid backup to download conversion")
-                    saveAs(blob, _self.props.backup.name);
-                    WalletActions.setBackupDate();
-
-                    if (was_locked) {
-                        WalletDb.onLock();
-                    }
-                }
-
-
-            }, 300);
-        }
     }
 
     render() {
-
-
-
-
-
-        return (
-            <div 
-                className="button"
-                onClick={this.onDownload.bind(this)}
-            >
-                <Translate content={this.props.airbitz_backup_option?"wallet.download_airbitz":"wallet.download"} />
-            </div>
-            );
+        return <div className="button"
+                    onClick={this.onDownload.bind(this)}><Translate content="wallet.download" /></div>
     }
 
     onDownload() {
+        let blob = new Blob([ this.props.backup.contents ], {
+            type: "application/octet-stream; charset=us-ascii"})
 
-        var was_locked = WalletDb.isLocked();
-        let _self = this;
+        if(blob.size !== this.props.backup.size)
+            throw new Error("Invalid backup to download conversion")
+        saveAs(blob, this.props.backup.name);
+        WalletActions.setBackupDate();
 
-        //console.log('@>onDownload this.props.airbitz_backup_option', this.props.airbitz_backup_option)
-
-        if (this.props.airbitz_backup_option && WalletDb.validatePassword(this.props.user_password, true)) {
-
-            console.log('@>this.props.user_password', this.props.user_password)
-            let brainkey = WalletDb.getBrainKey()
-
-            _abcUi.openLoginWindow(function(error, account) {
-                if (error) {
-                    console.log(error)
-                }
-
-                account.createWallet(airbitzAPIs.walletType, { key: brainkey, model: "wallet" }, function(err, id) {
-                    if (error) {
-                        console.log(error)
-                    } else if (id) {
-                        console.log('@>', account.getWallet(id));
-                        if (_self.props.downloadCb) {
-                            _self.props.downloadCb();
-                        }
-
-                        let blob = new Blob([_self.props.backup.contents], {
-                            type: "application/octet-stream; charset=us-ascii"
-                        });
-
-                    } else {
-                        notify.addNotification({
-                            message: `Some problem with airbitz server`,
-                            level: "error",
-                            autoDismiss: 10
-                        });
-                    }
-                });
-            });
-
-        } else {
-
-            let blob = new Blob([_self.props.backup.contents], {
-                type: "application/octet-stream; charset=us-ascii"
-            });
-
-            if (blob.size !== _self.props.backup.size)
-                throw new Error("Invalid backup to download conversion")
-            saveAs(blob, _self.props.backup.name);
-            WalletActions.setBackupDate();
-
-            if (was_locked) {
-                WalletDb.onLock();
-            }
+        if (this.props.downloadCb) {
+            this.props.downloadCb();
         }
     }
 }
 Download = connect(Download, connectObject);
 
 class Create extends Component {
-
-    componentWillMount(){
-        if(this.props.airbitz_backup_option){
-            this.onCreateBackup();
-        }
-    }
-
-    componentDidMount(){
-        setTimeout(()=>{
-            this.refs.create_content.style.display = "block";
-        },500)
-    }
 
     getBackupName() {
         let name = this.props.wallet.current_wallet
@@ -401,15 +271,15 @@ class Create extends Component {
         let has_backup = !!this.props.backup.contents
         if( has_backup ) return <div>{this.props.children}</div>
 
-        let ready = WalletDb.getWallet() != null;     
+        let ready = WalletDb.getWallet() != null
 
         return (
-            <div ref="create_content" style={{"display":"none"}} >
+            <div>
                 {this.props.noText ? null :
-                <div style={{textAlign: "left"}}>
-                    {this.props.newAccount ? <Translate component="p" content="wallet.backup_new_account"/> : null}
-                    <Translate component="p" content="wallet.backup_explain"/>
-                </div>}
+                    <div style={{textAlign: "left"}}>
+                        {this.props.newAccount ? <Translate component="p" content="wallet.backup_new_account"/> : null}
+                        <Translate component="p" content="wallet.backup_explain"/>
+                    </div>}
                 <div
                     onClick={this.onCreateBackup.bind(this)}
                     className={cname("button", {disabled: !ready})}
@@ -437,8 +307,8 @@ class LastBackupDate extends Component {
         if (!WalletDb.getWallet()) {
             return null;
         }
-        let backup_date = WalletDb.getWallet().backup_date;
-        let last_modified = WalletDb.getWallet().last_modified;
+        let backup_date = WalletDb.getWallet().backup_date
+        let last_modified = WalletDb.getWallet().last_modified
         let backup_time = backup_date ?
             <h4><Translate content="wallet.last_backup" /> <FormattedDate value={backup_date}/></h4>:
             <Translate style={{paddingTop: 20}} className="facolor-error" component="p" content="wallet.never_backed_up" />
@@ -468,7 +338,7 @@ class Upload extends Component {
             <div style={{paddingTop: 20}}>
                 <div
                     onClick={this.reset.bind(this)}
-                    className={cname("button ", {disabled: !this.props.backup.contents})}
+                    className={cname("button outline", {disabled: !this.props.backup.contents})}
                 >
                     <Translate content="wallet.reset" />
                 </div>
@@ -488,7 +358,7 @@ class Upload extends Component {
         return (
             <div>
                 <input ref="file_input" accept=".bin" type="file" id="backup_input_file" style={{ border: "solid" }}
-                    onChange={this.onFileUpload.bind(this)} />
+                       onChange={this.onFileUpload.bind(this)} />
                 { is_invalid ? <h5><Translate content="wallet.invalid_format" /></h5> : null }
                 {resetButton}
             </div>
@@ -536,20 +406,20 @@ class DecryptBackup extends Component {
     render() {
         if(this.state.verified) return <span>{this.props.children}</span>
         return (
-        <form onSubmit={this.onPassword.bind(this)}>
-            <label><Translate content="wallet.enter_password" /></label>
-            <input type="password" id="backup_password"
-                onChange={this.formChange.bind(this)}
-                value={this.state.backup_password}/>
-            <Sha1/>
-            <div
-                type="submit"
-                className="button outline"
-                onClick={this.onPassword.bind(this)}
-            >
-                <Translate content="wallet.submit" />
-            </div>
-        </form>);
+            <form onSubmit={this.onPassword.bind(this)}>
+                <label><Translate content="wallet.enter_password" /></label>
+                <input type="password" id="backup_password"
+                       onChange={this.formChange.bind(this)}
+                       value={this.state.backup_password}/>
+                <Sha1/>
+                <div
+                    type="submit"
+                    className="button outline"
+                    onClick={this.onPassword.bind(this)}
+                >
+                    <Translate content="wallet.submit" />
+                </div>
+            </form>);
     }
 
     onPassword(e) {
@@ -590,22 +460,5 @@ class Sha1 extends Component {
 }
 Sha1 = connect(Sha1, connectObject);
 
-class Reset extends Component {
-
-    // static contextTypes = {router: React.PropTypes.func.isRequired}
-
-    render() {
-        let label = this.props.label || <Translate content="wallet.reset" />
-        return  <span className="button cancel"
-            onClick={this.onReset.bind(this)}>{label}</span>
-    }
-
-    onReset() {
-        BackupActions.reset()
-        window.history.back()
-    }
-}
-// Reset = connect(Reset, connectObject);
-
-export {BackupCreate, BackupVerify, BackupRestore, Restore, NewWalletName,
+export {BackupCreate, BackupRestore, Restore, NewWalletName,
     Download, Create, Upload, NameSizeModified, DecryptBackup, Sha1};

@@ -1,7 +1,7 @@
 import assetConstants from "../chain/asset_constants";
 
 export default class AssetUtils {
-    
+
     static getFlagBooleans(mask, isBitAsset = false) {
         let booleans = {
             charge_market_fee    : false,
@@ -33,7 +33,7 @@ export default class AssetUtils {
                 if (mask & assetConstants.permission_flags[flag]) {
                     booleans[flag] = true;
                 }
-            } 
+            }
         }
 
         return booleans;
@@ -74,7 +74,7 @@ export default class AssetUtils {
         try {
             parsed = JSON.parse(description)
         } catch (error) {
-            
+
         }
 
         return parsed ? parsed : {main: description};

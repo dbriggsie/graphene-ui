@@ -1,8 +1,8 @@
 import WalletUnlockActions from "actions/WalletUnlockActions";
 import WalletDb from "stores/WalletDb";
-import {Aes, ChainValidation, TransactionBuilder, TransactionHelper, ops, FetchChain, ChainStore} from "bitsharesjs/es";
+import {Aes, ChainValidation, TransactionBuilder, TransactionHelper, FetchChain, ChainStore} from "bitsharesjs/es";
 
-class ApplicationApi {
+const ApplicationApi = {
 
     create_account(
         owner_pubkey,
@@ -13,11 +13,7 @@ class ApplicationApi {
         referrer_percent,
         broadcast = false
     ) {
-        
 
-        if(typeof referrer == "object" && !referrer.id){
-             referrer=registrar;
-        }
         ChainValidation.required(registrar, "registrar_id");
         ChainValidation.required(referrer, "referrer_id");
 
@@ -69,27 +65,25 @@ class ApplicationApi {
                     console.log("process_transaction catch", err);
                     reject(err);
                 });
-            }).catch(err=>{
-                console.log('err reg',err)
             });
         });
-    }
+    },
 
     /**
-        @param propose_account (or null) pays the fee to create the proposal, also used as memo from
-    */
+     @param propose_account (or null) pays the fee to create the proposal, also used as memo from
+     */
     transfer({ // OBJECT: { ... }
-        from_account,
-        to_account,
-        amount,
-        asset,
-        memo,
-        broadcast = true,
-        encrypt_memo = true,
-        optional_nonce = null,
-        propose_account = null,
-        fee_asset_id = "1.3.0"
-    }) {
+                 from_account,
+                 to_account,
+                 amount,
+                 asset,
+                 memo,
+                 broadcast = true,
+                 encrypt_memo = true,
+                 optional_nonce = null,
+                 propose_account = null,
+                 fee_asset_id = "1.3.0"
+             }) {
         let memo_sender = propose_account || from_account;
 
         let unlock_promise = WalletUnlockActions.unlock();
@@ -139,8 +133,8 @@ class ApplicationApi {
             let memo_object;
             if(memo && memo_to_public && memo_from_public) {
                 let nonce = optional_nonce == null ?
-                            TransactionHelper.unique_nonce_uint64() :
-                            optional_nonce;
+                    TransactionHelper.unique_nonce_uint64() :
+                    optional_nonce;
 
                 memo_object = {
                     from: memo_from_public,
@@ -194,7 +188,7 @@ class ApplicationApi {
                 );
             });
         });
-    }
+    },
 
     issue_asset(
         to_account,
@@ -204,7 +198,7 @@ class ApplicationApi {
         memo,
         encrypt_memo = true,
         optional_nonce = null
-        ) {
+    ) {
 
         let unlock_promise = WalletUnlockActions.unlock();
 
@@ -276,23 +270,20 @@ class ApplicationApi {
                 memo: memo_object
             });
 
-            return WalletDb.process_transaction(tr, null, true)
-        })
-    }
+            return WalletDb.process_transaction(tr, null, true);
+        });
+    },
 
     createWorker(options, account) {
-
-        console.log("template:", TransactionHelper.template("worker_create"));
         return new Promise((resolve, reject) => {
             let tr = new TransactionBuilder();
-            console.log("ops:", ops["worker_initializer"], ops["vesting_balance_worker_initializer"].toObject(undefined));
             const core = ChainStore.getAsset("1.3.0");
             if (!core) reject(new Error("Can't find core asset, please try again"));
             let precision = Math.pow(10, core.get("precision"));
 
             const owner = ChainStore.getAccount(account).get("id");
             if (!owner) reject(new Error("Can't find the owner account, please try again"));
-            
+
             try {
                 tr.add_type_operation("worker_create", {
                     fee: {
@@ -312,7 +303,13 @@ class ApplicationApi {
             }
             WalletDb.process_transaction(tr, null, true).then(resolve).catch(reject);
         });
+    },
+
+    updateAccount(updateObject) {
+        let tr = new TransactionBuilder();
+        tr.add_type_operation("account_update", updateObject);
+        return WalletDb.process_transaction(tr, null, true);
     }
-}
+};
 
 export default ApplicationApi;

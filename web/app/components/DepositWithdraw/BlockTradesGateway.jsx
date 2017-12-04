@@ -83,6 +83,7 @@ class BlockTradesGateway extends React.Component {
     render() {
         let {coins, account, provider} = this.props;
         let {activeCoin, action} = this.state;
+
         if (!coins.length) {
             return <LoadingIndicator />;
         }
@@ -95,13 +96,17 @@ class BlockTradesGateway extends React.Component {
             }
         });
 
+       /* let sky = coins.filter(item => {
+            return item.name == 'SKY'
+        })
+        
+        console.log(sky)*/
+
         filteredCoins = filteredCoins.sort((e1,e2)=>{
             if(!e1.coinPriora&&!e1.coinPriora){
                 return 0;
             }
-            
             return e1.coinPriora-e2.coinPriora;
-            
         })
 
         let coinOptions = filteredCoins.map(coin => {
@@ -177,8 +182,8 @@ class BlockTradesGateway extends React.Component {
                             supports_output_memos={coin.supportsMemos}
                             action={this.state.action}
                         />
-                        <label className="left-label">Support</label>
-                        <div><Translate content="gateway.support_block" /><br /><br /><a href={"mailto:" + issuer.support}>{issuer.support}</a></div>
+                        {/*<label className="left-label">Support</label>
+                        <div><Translate content="gateway.support_block" /><br /><br /><a href={"mailto:" + issuer.support}>{issuer.support}</a></div>*/}
                     </div>
 
                     {coin && coin.symbol ?

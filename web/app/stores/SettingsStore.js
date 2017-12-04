@@ -12,7 +12,7 @@ const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when 
 const STORAGE_KEY = "__graphene__";
 let ss = new ls(STORAGE_KEY);
 
-let marketsList = [  
+let marketsList = [
    "APPX.WARRANT",
    "BLOCKPAY",
    "BROWNIE.PTS",
@@ -70,7 +70,8 @@ let marketsList = [
     "OPEN.SONM",
     "OPEN.XPO",
     "OPEN.KRM",
-    "OPEN.ATM"
+    "OPEN.ATM",
+    "OPEN.SKY"
 ];
 
 let topMarkets = {
@@ -86,18 +87,14 @@ let dashboard_assets = {
         ["OPEN.BTC", "OPEN.ETH"],
         ["OPEN.BTC", "OPEN.STEEM"],
         ["USD", "EDEV"],
-        ["OPEN.BTC", "OPEN.ZRX"],
         ["OPEN.BTC", "ICOO"],
-        ["BTS", "OBITS"],
+        ["USD", "OBITS"],
         ["BTS", "BTSR"],
-        ["USD", "APPX.WARRANT"],
-        ["OPEN.BTC", "OPEN.SONM"],
-        ["OPEN.BTC", "OPEN.MUSEOL"],
+        ["BTS", "OPEN.MUSEOL"],
         ["OPEN.BTC" , "OPEN.EOS"],
         ["BTS", "USD"],
         ["BTS", "EUR"],
         ["BTS", "CNY"],
-        ["USD", "OBITS.WARRANT"],
         ["BTS", "FUNC"],
         ["OPEN.BTC", "OPEN.WAVES"],
         ["BTS", "OPEN.INCNT"],
@@ -128,7 +125,12 @@ if (SET == "EU1") {
 
 class SettingsStore {
     constructor() {
-        this.exportPublicMethods({init: this.init.bind(this), getSetting: this.getSetting.bind(this)});
+        this.exportPublicMethods({
+            init: this.init.bind(this),
+            getSetting: this.getSetting.bind(this),
+            getLastBudgetObject: this.getLastBudgetObject.bind(this),
+            setLastBudgetObject: this.setLastBudgetObject.bind(this)
+        });
 
         this.bindListeners({
             onChangeSetting: SettingsActions.changeSetting,
@@ -158,7 +160,8 @@ class SettingsStore {
             walletLockTimeout: 60 * 10,
             themes: "olDarkTheme",
             disableChat: false,
-            traderMode: false
+            traderMode: false,
+            passwordLogin: true
         });
 
         // If you want a default value to be translated, add the translation to settings in locale-xx.js
@@ -255,6 +258,9 @@ class SettingsStore {
         this.hiddenAssets = Immutable.List(ss.get("hiddenAssets", []));
 
         this.apiLatencies = ss.get("apiLatencies", {});
+
+        this.mainnet_faucet = ss.get("mainnet_faucet", settingsAPIs.DEFAULT_FAUCET);
+        /*this.testnet_faucet = ss.get("testnet_faucet", settingsAPIs.TESTNET_FAUCET);*/
     }
 
     init() {
@@ -266,7 +272,7 @@ class SettingsStore {
 
             let bases = {
                 markets_4018d784: [ // BTS MAIN NET
-                    "OPEN.BTC", "USD", CORE_ASSET, "OBITS"
+                    "OPEN.BTC", "CNY", "USD", CORE_ASSET, "OBITS"
                 ],
                 markets_39f5e2ed: [ // TESTNET
                     "TEST"
@@ -315,10 +321,35 @@ class SettingsStore {
             payload.value
         );
 
-        ss.set("settings_v3", this.settings.toJS());
-        if (payload.setting === "walletLockTimeout") {
-            ss.set("lockTimeout", payload.value);
+        switch(payload.setting) {
+            case "faucet_address":
+                if (payload.value.indexOf("testnet") === -1) {
+                    this.mainnet_faucet = payload.value;
+                    ss.set("mainnet_faucet", payload.value);
+                } else {
+                    this.testnet_faucet = payload.value;
+                    ss.set("testnet_faucet", payload.value);
+                }
+                break;
+
+            case "apiServer":
+                let faucetUrl = payload.value.indexOf("testnet") !== -1 ?
+                    this.testnet_faucet : this.mainnet_faucet;
+                this.settings = this.settings.set(
+                    "faucet_address",
+                    faucetUrl
+                );
+                break;
+
+            case "walletLockTimeout":
+                ss.set("lockTimeout", payload.value);
+                break;
+
+            default:
+                break;
         }
+
+        ss.set("settings_v3", this.settings.toJS());
     }
 
     onChangeViewSetting(payload) {
@@ -432,6 +463,14 @@ class SettingsStore {
 
     onUpdateLatencies(latencies) {
         this.apiLatencies = latencies;
+    }
+
+    getLastBudgetObject() {
+        return ss.get(this._getChainKey("lastBudgetObject"), "2.13.1");
+    }
+
+    setLastBudgetObject(value) {
+        ss.set(this._getChainKey("lastBudgetObject"), value);
     }
 }
 

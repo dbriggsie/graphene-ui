@@ -33,11 +33,12 @@ export default Icon;
 
 import React from "react";
 
-let icons = ["user", "trash", "chevron-down", "menu", "database", "search",
+let icons = ["user", "trash", "chevron-down", "menu", "database", "search", "trade", "transfer",
     "plus-circle", "question-circle", "cross-circle", "cog", "layers", "users", "wand", "b-logo",
     "accounts", "witnesses", "assets", "proposals", "blocks", "committee_members", "workers", "key",
     "checkmark-circle", "checkmark", "piggy", "locked", "unlocked", "markets", "fi-star", "fees",
-    "thumb-tack", "clock", "clippy", "lnr-cross"
+    "thumb-tack", "clock", "clippy", "lnr-cross", "dollar", "settle", "deposit", "withdraw", "adjust", "excel","csv",
+    "shuffle", "share", "minus-circle", "locked", "checkmark-circle"
 ];
 
 let icons_map = {};

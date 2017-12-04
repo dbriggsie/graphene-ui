@@ -19,6 +19,7 @@ import AccountOverview from "./components/Account/AccountOverview";
 import AccountAssets from "./components/Account/AccountAssets";
 import {AccountAssetCreate} from "./components/Account/AccountAssetCreate";
 import AccountAssetUpdate from "./components/Account/AccountAssetUpdate";
+import AccountSignedMessages from "./components/Account/AccountSignedMessages";
 import AccountMembership from "./components/Account/AccountMembership";
 import AccountVesting from "./components/Account/AccountVesting";
 import AccountDepositWithdraw from "./components/Account/AccountDepositWithdraw";
@@ -133,6 +134,7 @@ const routes = (
             <Route path="deposit-withdraw" component={AccountDepositWithdraw} />
             <Route path="orders" component={AccountOrders} />
             <Route path="whitelist" component={AccountWhitelist} />
+            <Route path="signedmessages" component={AccountSignedMessages} />
         </Route>
 
         <Route path="deposit-withdraw" component={AccountDepositWithdraw} />

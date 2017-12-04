@@ -156,12 +156,14 @@ function estimateFee(op_type, options, globalObject, data = {}) {
     return fee * globalObject.getIn(["parameters", "current_fees", "scale"]) / 10000;
 }
 
-function checkBalance(amount, sendAsset, feeAmount, balance) {
+function checkBalance(amount, sendAsset, feeAmount, balance, gateFee) {
 
     if (!amount) return null;
     if (typeof amount === "string") amount = parseFloat(String.prototype.replace.call(amount, /,/g, ""));
 
     if (!balance || balance.get("balance") === 0) return false;
+
+    if(amount < gateFee * 2) return false;
 
     let sendAmount = new Asset({
         asset_id: sendAsset.get("id"),

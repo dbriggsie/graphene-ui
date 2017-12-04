@@ -35,6 +35,47 @@
   $account-background
   ) {
 
+  .icon.rotate90>svg {
+    transform: rotate(90deg);
+  }
+
+  .icon svg{
+    fill: #fff;
+  }
+
+  .account-creation{
+    max-width: 700px;
+  }
+
+  .gate_fee {
+    width: 50% !important;
+    display: inline-block;
+    vertical-align: top;
+    .amount-selector:first-child{
+      padding-right: 10px;
+    }
+  }
+
+  .panel.login{
+    background-color: $account-background;
+    .grid-content{
+      background-color: $account-cells;
+      border-left: 1px solid rgba(128, 128, 128, 0.45);
+      border-right: 1px solid rgba(128, 128, 128, 0.45);
+      border-bottom: 1px solid rgba(128, 128, 128, 0.45);
+    }
+    .service-selector .login-tabs li:last-child a{
+      border-right: none;
+    }
+    .login-tabs{
+      a{
+        background-color: $panel-bg-color;
+      }
+    }
+  }
+
+
+
   .font-secondary {
       color: $secondary-text-color;
   }
@@ -272,20 +313,20 @@
   }
 
   .header .button,  .header .button:active {
-    background-color: transparent !important;
+    background-color: $panel-bg-color !important;
   }
 
   .header a.button.create-account {
     transition: color 0s !important;
-    //color: $button-bg-color !important;
+    color: $button-bg-color !important;
     > span > svg > path {
-        fill: $button-bg-color;
+      fill: $button-bg-color;
     }
     &:hover {
-       // color: lighten($button-bg-color, 10%) !important;
-        > span > svg > path {
-            fill: lighten($button-bg-color, 10%);
-        }
+      color: lighten($button-bg-color, 10%) !important;
+      > span > svg > path {
+        fill: lighten($button-bg-color, 10%);
+      }
     }
   }
 
@@ -401,70 +442,70 @@
   // forms
 
   .right-label, .left-label {
-      color: $secondary-text-color;
+    color: $secondary-text-color;
 
-      > span {
-          color: inherit;
-      }
+    > span {
+      color: inherit;
+    }
   }
 
   div.input-wrapper {
-      > div.input-right-symbol {
-          color: $secondary-text-color;
-      }
+    > div.input-right-symbol {
+      color: $secondary-text-color;
+    }
   }
 
   .dropdown-wrapper {
-      > div:first-of-type {
-          color: $secondary-text-color;
-      }
+    > div:first-of-type {
+      color: $secondary-text-color;
+    }
 
-      ul.dropdown {
-          @include color($light-text-color, $super-light-panel-bg-color);
-          &::after {
-            border-bottom-color: $super-light-panel-bg-color;
-          }
-          > li > span {
-            color: $light-text-color;
-          }
-          /* Hover state */
-
-          li:hover span {
-              @include color($light-text-color, lighten($super-light-panel-bg-color, 4%));
-              color: $link-text-color;
-          }
+    ul.dropdown {
+      @include color($light-text-color, $super-light-panel-bg-color);
+      &::after {
+        border-bottom-color: $super-light-panel-bg-color;
       }
-
-      &.active:after {
-          border-color: $link-text-color transparent;
+      > li > span {
+        color: $light-text-color;
       }
+      /* Hover state */
 
-      &:after { /* Little arrow */
-          border-color: $secondary-text-color transparent;
+      li:hover span {
+        @include color($light-text-color, lighten($super-light-panel-bg-color, 4%));
+        color: $link-text-color;
       }
+    }
+
+    &.active:after {
+      border-color: $link-text-color transparent;
+    }
+
+    &:after { /* Little arrow */
+      border-color: $secondary-text-color transparent;
+    }
   }
 
   .account-image {
-      .icon:hover {
-          svg path {
-              fill: darken($secondary-text-color, 5%);
-          }
+    .icon:hover {
+      svg path {
+        fill: darken($secondary-text-color, 5%);
       }
+    }
   }
   .account-selector, .pubkey-input {
     .account-image {
-        > canvas {
-            color: black;
-        }
-        .icon > svg path {
-            fill: $primary-text-color;
-        }
-        .icon:hover {
-            svg path {
-                fill: darken($secondary-text-color, 5%);
-            }
+      > canvas {
+        color: black;
+      }
+      .icon > svg path {
+        fill: $primary-text-color;
+      }
+      .icon:hover {
+        svg path {
+          fill: darken($secondary-text-color, 5%);
         }
       }
+    }
   }
   .has-error, div.has-error > label, div.has-error > label > span {
     color: $error-text-color;
@@ -507,7 +548,7 @@
 
 
   ul.button-group.segmented {
-      > li.is-active > a {
+   /*   > li.is-active > a {
         background: darken($input-background, 10%);
         color: $primary-text-color;
       //  border-bottom: 1px solid $button-bg-color;
@@ -516,7 +557,7 @@
       background: $input-background;
       color: $primary-text-color;
     //  border-bottom: 1px solid $button-bg-color;
-    }
+    }*/
     > li > a{
       color: $secondary-text-color;
     }
@@ -565,6 +606,16 @@
 
   .stats .stat .positive {
     color: $positive-color !important;
+  }
+
+  .value.negative {
+    color: $ask-color !important;
+    font-weight: bold;
+  }
+
+  .value.positive {
+    color: $bid-color !important;
+    font-weight: bold;
   }
 
   .active-bucket {
@@ -627,16 +678,24 @@
   }
 
   .account-info {
-      color: $primary-text-color;
-      > div.secondary {
-          > span:first-of-type {
-              color: $primary-text-color;
-          }
-
-          > span:last-of-type {
-              color: $secondary-text-color;
-          }
+    color: $primary-text-color;
+    > p:first-of-type {
+      color: $light-text-color;
+    }
+    .account-title {
+      &.flash {
+        color: white;
       }
+    }
+    > div.secondary {
+      > span:first-of-type {
+        color: $primary-text-color;
+      }
+
+      > span:last-of-type {
+        color: $secondary-text-color;
+      }
+    }
   }
 
   .my-account h5, .my-account h4, td.my-account {
@@ -927,6 +986,17 @@
     }
   }
 
+  table.order-table > tbody, tbody.orderbook {
+    > tr.my-order > td {
+      font-weight: bold;
+      color: $info-color;
+      > span.price-integer, > span > span.price-integer, > span >span.price-decimal {
+        color: $info-color;
+        opacity: 1;
+      }
+    }
+  }
+
   .bid {
     background-color: $bid-color !important;
   }
@@ -936,22 +1006,22 @@
   }
 
   .orderbook-latest-price {
-      > div {
-        background-color: $panel-bg-color !important;
-        border-bottom: 1px solid grey !important;
-        border-top: 1px solid grey !important;
-        padding: 10px 0 !important;
-        font-weight: bold;
-        font-size: 13px;
-      }
+    > div {
+      background-color: $panel-bg-color !important;
+      border-bottom: 1px solid grey !important;
+      border-top: 1px solid grey !important;
+      padding: 10px 0 !important;
+      font-weight: bold;
+      font-size: 13px;
+    }
   }
 
 
   .order-table {
 
-      > tbody > tr:nth-of-type(even) {
-        background-color: $row-accent-color;
-      }
+    > tbody > tr:nth-of-type(even) {
+      background-color: $row-accent-color;
+    }
   }
 
   .mymarkets-header {
@@ -981,10 +1051,10 @@
       }
     }
     &.is-call {
-        >span > b {
-            color: $call-color;
-        }
-}
+      >span > b {
+        color: $call-color;
+      }
+    }
   }
 
   .buy-sell-box {
@@ -1100,12 +1170,12 @@
     }
 
     .chatbox{
-        background-color: $header-color;   
-        color: $light-text-color;   
+        background-color: $header-color;
+        color: $light-text-color;
     }
 
     .chatbox-content {
-        
+
     }
 
     .chatbox-title {
@@ -1122,54 +1192,54 @@
     }
   }
 
-  // Settings
-  .settings-menu {
-      margin-left: 0;
-      > li {
-          padding: .2rem 1rem;
-          &:hover {
+    // Settings
+    .settings-menu {
+        margin-left: 0;
+        > li {
+            padding: .2rem 1rem;
+            &:hover {
                 background-color: darken($light-panel-bg-color, 5%);
-          }
+            }
 
-          &.active {
+            &.active {
                 color: $link-text-color;
-          }
-      }
-  }
-
-  a {
-      &.order-cancel > .icon > svg {
-        > path {
-          fill : $negative-color;
+            }
         }
-      }
+    }
 
-      &.action-plus > .icon > svg {
-        > path {
-          fill : $positive-color;
+    a {
+        &.order-cancel > .icon > svg {
+            > path {
+                fill : $negative-color;
+            }
         }
-      }
-  }
+
+        &.action-plus > .icon > svg {
+            > path {
+                fill : $positive-color;
+            }
+        }
+    }
 
     tr.margin-row {
-      > td.danger {
-          background-color: darken($alert-color, 15%) !important;
-          color: $dark-text-color;
-          font-weight: bold;
-      }
+        > td.danger {
+            background-color: darken($alert-color, 15%) !important;
+            color: $dark-text-color;
+            font-weight: bold;
+        }
 
-      > td.warning {
-          background-color: darken($warning-color, 15%) !important;
-          color: $dark-text-color;
-          font-weight: bold;
-      }
+        > td.warning {
+            background-color: darken($warning-color, 15%) !important;
+            color: $dark-text-color;
+            font-weight: bold;
+        }
     }
 
     .react-stockcharts-tooltip {
-      fill: $primary-text-color;
+        fill: $primary-text-color;
     }
     .react-stockcharts-tooltip-label {
-      fill: $link-text-color;
+        fill: $link-text-color;
     }
 
     div.custom-dropdown-content {
@@ -1186,21 +1256,21 @@
     }
 
     .blocktrades-bridge input, .blocktrades-bridge select{
-      color: $secondary-text-color;
+        color: $secondary-text-color;
 
-      border: 1px solid $secondary-text-color;
-      background-color: $panel-bg-color !important;
-      &.native-coin-types, &.external-coin-types {
-          background-color: transparent !important;
-      }
-      > option {
-          color: $primary-text-color;
-          background-color: $panel-bg-color !important;
-      }
+        border: 1px solid $secondary-text-color;
+        background-color: $panel-bg-color !important;
+        &.native-coin-types, &.external-coin-types {
+            background-color: transparent !important;
+        }
+        > option {
+            color: $primary-text-color;
+            background-color: $panel-bg-color !important;
+        }
         &:hover, &:focus {
-          color: $primary-text-color;
+            color: $primary-text-color;
             //box-shadow: 1px 2px 3px #000;
-          border: 2px solid $primary-text-color;
+            border: 2px solid $primary-text-color;
         }
     }
 
@@ -1286,18 +1356,18 @@
         }
     }
 
-    .action-sheet ul {
-        max-height: 479px;
-        overflow: auto;
-    }
-
-    .main-content{
-      .help_padding{
-        padding:30px;
-      }
+    .switch input:checked + label{
+        background-color: darken($positive-color, 10%);
+        &::after {
+            border: none;
+            background-color: lighten($positive-color, 5%);
+        }
     }
 
     div.Account_create {
+        button.submit-button, div.backup-submit .button {
+            background-color: $warning-color;
+        }
 
         label > a {
             color: $secondary-text-color;
@@ -1332,15 +1402,19 @@
     }
 
     @media screen and (max-height: 678px) {
-      #addcoin{      
+      #addcoin{
         height: 100%;
         overflow: auto !important;
       }
     }
 
- 
+
     .login-selector {
         > div.box {
+           // background-color: $panel-bg-color;
+           /* &:hover {
+                background-color: darken($panel-bg-color, 2%);
+            }*/
             a {
                 color: $primary-text-color;
             }
@@ -1368,89 +1442,99 @@
         color: $info-color;
     }
 
-    .gate_fee{
-      .amount-selector{
-        width: 74%;
-        display: inline-block;
-      }
-
-      .right-selector{
-        .right-selector-input{          
-          text-align: right;
-          width: 100%;
+    /* Table view account */
+    div.overview-tabs {
+        background-color: $account-background;
+        > div.service-selector {
+            background-color: $account-header;
         }
-        text-align: right;
-        width: 26%;
-        display: inline-block;
-        //text-align: right;
-        color: #adadad;
-        text-transform: uppercase;
-      }
+    }
+    ul.account-overview {
 
-    }  
-
-    .error_grey{
-      span{
-        color:#adadad;
-        font-size: 0.8rem;
-      }
-    } 
-
-    .white_color_a{
-      &:hover{
-        color:#fff;
-      }
-      color:#fff;
+        li {
+            > a {
+                color: $account-dimmed;
+                background-color: $account-header;
+                border: none;
+                transition: .3s;
+                &:hover {
+                    background-color: $account-header;
+                    color: $account-primarytext;
+                }
+                > div.tab-subtext {
+                    margin-top: 3px;
+                    color: $account-green;
+                }
+            }
+            &.is-active {
+                background-color: lighten($account-header, 4%);
+                > a {
+                    color: $account-primarytext;
+                    background-color: lighten($account-header, 4%) !important;
+                }
+            }
+            &.total-value {
+                > a {
+                    background-color: $account-cells;
+                    &:hover > span.tab-title {
+                        color: $account-dimmed;
+                    }
+                }
+                .icon.locked > svg > path {
+                    fill: $button-bg-color;
+                }
+            }
+        }
     }
 
+    table.table.dashboard-table {
+        > thead > tr > th {
+            background-color: $account-header;
+            color: $account-primarytext;
+            border-color: $account-border;
+            &:first-of-type {
+                border-left: 1px solid $account-border;
+            }
+            &:last-of-type {
+                border-right: 1px solid $account-border;
+            }
+        }
+        > tbody > tr {
+            > td {
+                background-color: $account-cells;
+                color: $account-primarytext;
+                border-color: $account-border;
+                .icon > svg > path {
+                    //fill: $account-primarytext;
+                }
 
-    .modal .airbitz_button{
-      margin: 0 0 0 1rem;
-    }
+                .icon.locked > svg > path {
+                    fill: $button-bg-color;
+                }
+            }
+            &.total-value {
+                td {
+                    background-color: $account-header;
+                }
+                td:nth-child(n+2) {
+                    color: $account-green;
+                    text-align: right;
+                }
+            }
 
-    .checkbox_airbitz{
-      cursor: pointer;
-      margin: 0 0.4rem 0 0;
-      color: $button-bg-color;
-      &>span{
-        font-size: 1.3rem;
-        color: $button-bg-color;
-      }
-    }
+            &.unsupported {
+                > td {
+                    color: grey;
+                    > a {
+                        color: grey;
+                    }
 
-    .text_airbitz{
-      color: $button-bg-color;
-      .icon > svg > path {
-          fill: $button-bg-color;
-      }
-    }
-
-    .create_acc_button{
-      margin: 20px 0 21px 0;
-      display: block;
-      a{
-        color:#fff;       
-      }
-    }
-
-    .create_acc_button_p{
-      font-size: 1.4rem;
-      margin: 0;
-      span{
-        display: block;
-        width: 100%;
-        text-align: center;
-        font-size: 0.8rem;
-      } 
-    }
-
-    .create_acc_airbitz_description{
-      text-align: center;
-      margin: 20px 0 0 0;
-    }
-
-    .create_acc_login{
-      margin: 27px 0 90px 0;
+                    svg > path {
+                        fill: grey;
+                    }
+                }
+            }
+        }
     }
 
     div.account-creation {
@@ -1460,31 +1544,36 @@
             color: $primary-text-color;
         }
     }
-
-    .panel.login {
-        background: none;
+    span.danger {
+        color: darken($alert-color, 15%);
+    }
+    span.warning {
+        color: darken($warning-color, 15%);
     }
 
-    .panel.login .grid-content {
-        background-color: $account-cells;
-    }
-
-    .welcome h4 {
-        border: none;
+    .footer {
+        div.footer-status {
+            > span.success {
+                color: $success-color;
+            }
+            > span.warning {
+                color: $alert-color;
+            }
+        }
     }
 }
 
 .olDarkTheme .gate_fee .amount-selector {
-  width: 50%;
+  width: 100%;
   display: inline-block;
 }
 
 .olDarkTheme .gate_fee .right-selector {
-  text-align: right;
-  width: 50%;
-  display: inline-block;
-  color: #adadad;
-  text-transform: uppercase;
+    text-align: right;
+    width: 26%;
+    display: inline-block;
+    color: #adadad;
+    text-transform: uppercase;
 }
 
 .olDarkTheme .gate_fee .right-selector .right-selector-input {
@@ -1520,3 +1609,5 @@
 #residents_confirm{
   text-transform: none;
 }
+
+

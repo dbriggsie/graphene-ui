@@ -17,3 +17,4 @@ export default {
         if (appTables) this.refs.appTables.style.height = "auto";
     }
 };
+
