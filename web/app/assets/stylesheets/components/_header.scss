@@ -1,0 +1,127 @@
+.header.menu-group {
+  justify-content: flex-start;
+}
+
+.icon.shuffle > svg {
+  > path {
+    fill : #fff;
+  }
+}
+
+.float-left > span.icon.user {
+    top: 0;
+}
+
+.header {
+    .electron-navigation > ul > li {
+        border: none;
+    }
+    &.primary {
+        border-bottom: 1px solid $border-color;
+        //max-height: 47px;
+            min-height: 39px;
+    }
+  padding-left: 0 !important;
+  text-transform: uppercase;
+  .menu-bar > li {
+    padding: 0;
+    border-right: 1px solid $border-color;
+    > a {
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-align: center;     
+      padding: 0.8rem 2rem 0 2rem;
+      @include breakpoint(large) {
+        padding-left: 1.75rem;
+        padding-right: 1.75rem;
+      }
+      @media (max-width: 1300px) {
+        font-size: calc(9px + 0.2vmax);
+      }
+    }
+  }
+
+  .grp-menu-item {
+      &.switch_button {
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 0.71rem 1rem 0.71rem 1rem;
+     // color: $primary-text-color;
+      border-left: 1px solid $border-color;
+            color: inherit;
+        @media (max-width: 1300px) {
+          font-size: calc(9px + 0.2vmax);
+        }
+      .assets{
+        margin: 0 0.5rem 0 0;
+      }
+    }
+  }
+
+}
+
+div.header-balance {
+    a {
+        font-weight: bold;
+        &:hover {
+            background-color: transparent !important;
+        };
+    }
+}
+
+div.account-drop-down {    
+    .dropdown-divider {
+        padding-bottom: 10px;
+    }
+  a.button {
+      text-transform: uppercase;
+      font-weight: bold;
+      background-color: transparent;
+  }
+  a:active.button, a:hover.button {
+    background-color: transparent !important;
+  }
+}
+
+div.header-right-menu {
+    > .grp-menu-item {
+        border-left: 1px solid $border-color;
+        > a {
+            @include breakpoint(large) {
+              padding-left: 1.25rem;
+              padding-right: 1.25rem;
+            }
+        }
+    }
+}
+
+.grp-menu-items-group {
+  flex-flow: row nowrap;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.grp-menu-item {  
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;  
+  > a, .button {
+    font-family: 'Roboto-Light', arial, sans-serif;
+    font-weight: bold;
+    padding: 0.5rem;
+    @include breakpoint(large) {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    font-size: 0.9rem;
+    @media (max-width: 1300px) {
+      font-size: calc(9px + 0.2vmax);
+    }
+  }
+}
+
+.user-icon > a {
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}

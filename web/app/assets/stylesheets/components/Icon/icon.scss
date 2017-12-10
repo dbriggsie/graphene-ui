@@ -1,0 +1,112 @@
+.icon {
+    position: relative;
+    top: 1px;
+    width: 1.12rem;
+    height: 1.12rem;
+    display: inline-block;
+}
+
+.icon-32px {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-14px {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-2x {
+    width: 2.30rem;
+    height: 2.30rem;
+}
+
+.icon-3x {
+    width: 3.45rem;
+    height: 3.45rem;
+}
+
+.icon-4x {
+    width: 4.60rem;
+    height: 4.60rem;
+}
+
+.icon-5x {
+    width: 5.75rem;
+    height: 5.75rem;
+    margin: 24px 0 24px 0;
+}
+
+.icon-10x {
+    width: 10rem;
+    height: 10rem;
+    margin: 24px 0 24px 0;
+}
+
+.icon .fill-black {
+    background-color: black;
+}
+
+.icon .fill-red {
+    background-color: red;
+}
+
+// $icons: "user",
+// "trash",
+// "chevron-down",
+// "menu",
+// "database",
+// "search",
+// "plus-circle",
+// "lnr-cross",
+// "question-circle",
+// "cross-circle",
+// "cog",
+// "layers",
+// "users",
+// "wand",
+// "b-logo",
+// "accounts",
+// "witnesses",
+// "assets",
+// "proposals",
+// "blocks",
+// "committee_members",
+// "workers",
+// "key",
+// "checkmark-circle",
+// "checkmark",
+// "piggy",
+// "locked",
+// "unlocked",
+// "markets",
+// "fi-star",
+// "fees",
+// "thumb-tack",
+// "clock",
+// "clippy";
+// @each $image in $icons {
+//     .#{$image} {
+//         -webkit-mask:url('./components/Icon/#{$image}.svg') no-repeat center;
+//         mask: url('./components/Icon/#{$image}.svg') no-repeat center;
+//         -webkit-mask-size: cover;
+//         mask-size: cover;
+//     }
+// }
+
+// @-moz-document url-prefix() {
+//     @each $image in $icons {
+//         .#{$image} {
+//             background: url('./components/Icon/#{$image}.svg') no-repeat center/cover;
+//         }
+//     }
+// }
+
+
+.worker-name{
+    .share{
+        width:auto;
+        height:auto;
+    }
+}
+

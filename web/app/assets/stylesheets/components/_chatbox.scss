@@ -1,0 +1,168 @@
+#chatbox {
+    color: #818479;
+    z-index: 30;
+    text-align: center;
+
+    &.chat-floating {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+    &.chat-docked {
+    }
+
+    select, input {
+        height: 2rem;
+        font-size: 12px;
+        color: #000;
+    }
+
+    .toggle-controlbox {
+        background-color: #2196F3;
+        color: white;
+        float: right;
+        height: 100%;
+        margin: 0 .5em;
+        padding: 0 1rem 1rem 1rem;
+        font-weight: bold;
+    }
+
+    .chatbox {
+        width: 350px;
+        float: right;
+    }
+
+    .flyout {
+        height: 350px;
+        background-color: #fff;
+        box-shadow: 1px 3px 5px 3px rgba(0,0,0,.4);
+        min-height: 225px;
+        min-width: 200px;
+        width: 350px;
+        z-index: 1;
+        border-radius: 4px;
+        bottom: 6px;
+        right: 5px;
+        position: absolute;
+    }
+
+    .docked {
+        background-color: #fff;
+        box-shadow: 1px 3px 5px 3px rgba(0,0,0,.4);
+        min-width: 200px;
+        z-index: 1;
+    }
+
+    .chatbox-title {
+        padding: 10px;
+        font-size: 19px;
+        font-weight: normal;
+        color: white;
+        text-transform: uppercase;
+        font-family: RobotoCondensed-Regular, arial, sans-serif;
+        display: inline-block;
+    }
+
+    .chatbox-close {
+        position: absolute;
+        color: white;
+        top: 11px;
+        right: 10px;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        display: block;
+        background: rgba(0,0,0,.6);
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+    }
+
+    .chatbox-content {
+        > .grid-content {
+            padding: 3px 13px 3px 10px;
+        }
+    }
+
+    .chatbox-settings {
+        cursor: pointer;
+        position: absolute;
+        right: 35px;
+        top: 4px;
+    }
+
+    .chatbox-pin {
+        cursor: pointer;
+        position: absolute;
+        right: 60px;
+        top: 4px;
+
+        >span.rotate > svg {
+            transform: rotate3d(0, 0, 1, 90deg);
+        }
+    }
+
+    .settings-title {
+        padding-bottom: 8px;
+    }
+
+    .chat-text {
+        overflow-wrap: break-word;
+    }
+}
+
+.telegramm_messsage{
+    margin: 70px 0 0 0;
+    padding: 10px 0 0 0;
+    display: inline-block;
+    p{
+        margin: 0;        
+    }
+    a{
+        font-size: 23px;
+        margin: 10px 0 0 0px;
+        display: inline-block;
+    }
+}
+
+.news_list{
+    margin-left: 0;
+}
+
+.news_li{
+    list-style: inside none;
+    text-align: left;
+    margin-left: 1.1rem;
+    margin-right: 1.1rem;
+    border-bottom: 1px solid #2d2c31;
+    padding: 0 0 1rem 0;
+}
+
+.news_li .news_ancor{
+    color: #fff;
+}
+
+.news_li .news_visited {
+    color:#a2a2a2;
+}
+
+.news_title{
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+.news_date{
+    font-size: 0.8rem;
+}
+.news_content{
+    margin-bottom: 0;
+    text-transform: none;
+    font-variant-caps: normal;
+}
+
+@media (max-width: 640px) {
+  #chatbox.chat-floating {
+    bottom: 0 !important;
+  }
+}
