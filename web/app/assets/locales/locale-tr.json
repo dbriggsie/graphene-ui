@@ -1219,7 +1219,6 @@
     "limit": "Sınır: %(amount)s %(symbol)s",
     "bridge_text": " Köprüler bir dijital varlıktan bir diğerine geçiş yapmanızı sağlar, örn. BTC'yi BTS'ye.",
     "gateway_text": "Geçitler BitShares'de tanımlı dijital varlıklardan gerçek enstrümanlara geçmenizi sağlar (ve tam tersi), örn. OPEN.BTC'den  BTC'ye.",
-    "fiat_text": "Buradaki kripto para yatırma işlemleri CCEDK tarafından sağlanan bir hizmettir. Bu hizmetten faydalanmanız için öncelikle CCEDK kaydınız olmalıdır. Kayıt işleminden sonra aşağıdaki dönüşümleri yapabilirsiniz:",
     "transwiser": {
       "gateway": "Transwiser",
       "visit_weidian": "Yatırmak için ziyaret edin",
