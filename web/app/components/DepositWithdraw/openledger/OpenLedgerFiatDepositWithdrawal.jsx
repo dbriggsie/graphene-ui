@@ -100,7 +100,7 @@ class OpenLedgerFiatDepositWithdrawCurrency extends React.Component {
         {
             withdraw_fragment =
                             <td>
-                                <button className={"button outline"} onClick={this.onWithdraw.bind(this)}> <Translate content="gateway.withdraw" /> </button>
+                                <button className={"button outline disabled"} onClick={this.onWithdraw.bind(this)}> <Translate content="gateway.withdraw" /> </button>
                                 <BaseModal id={withdraw_modal_id} overlay={true}>
                                     <Trigger close={withdraw_modal_id}>
                                         <a href="#" className="close-button">&times;</a>
@@ -182,34 +182,34 @@ class OpenLedgerFiatDepositWithdrawal extends React.Component {
         if (!this.props.account || !this.props.issuer_account)
             return  <div></div>;
 
-        return      <table className="table">
-                        <thead>
-                        <tr>
-                            <th><Translate content="gateway.symbol" /></th>
-                            <th><Translate content="gateway.deposit_to" /></th>
-                            <th><Translate content="gateway.balance" /></th>
-                            <th><Translate content="gateway.withdraw" /></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <OpenLedgerFiatDepositWithdrawCurrency
-                                rpc_url={this.props.rpc_url}
-                                account={this.props.account}
-                                issuer_account={this.props.issuer_account}
-                                deposit_asset="USD"
-                                receive_asset="OPEN.USD"
-                                deposit_allowed={this.state.allowedFiatCurrencies.deposit.indexOf("USD") > -1}
-                                withdraw_allowed={this.state.allowedFiatCurrencies.withdraw.indexOf("USD") > -1}/>
-                            <OpenLedgerFiatDepositWithdrawCurrency
-                                rpc_url={this.props.rpc_url}
-                                account={this.props.account}
-                                issuer_account={this.props.issuer_account}
-                                deposit_asset="EUR"
-                                receive_asset="OPEN.EUR"
-                                deposit_allowed={this.state.allowedFiatCurrencies.deposit.indexOf("EUR") > -1}
-                                withdraw_allowed={this.state.allowedFiatCurrencies.withdraw.indexOf("EUR") > -1}/>
-                        </tbody>
-                    </table>;
+           return  <div></div>  /* <table className="table">
+                          <thead>
+                          <tr>
+                              <th><Translate content="gateway.symbol" /></th>
+                              <th><Translate content="gateway.deposit_to" /></th>
+                              <th><Translate content="gateway.balance" /></th>
+                              <th><Translate content="gateway.withdraw" /></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                              <OpenLedgerFiatDepositWithdrawCurrency
+                                  rpc_url={this.props.rpc_url}
+                                  account={this.props.account}
+                                  issuer_account={this.props.issuer_account}
+                                  deposit_asset="USD"
+                                  receive_asset="OPEN.USD"
+                                  deposit_allowed={this.state.allowedFiatCurrencies.deposit.indexOf("USD") > -1}
+                                  withdraw_allowed={this.state.allowedFiatCurrencies.withdraw.indexOf("USD") > -1}/>
+                              <OpenLedgerFiatDepositWithdrawCurrency
+                                  rpc_url={this.props.rpc_url}
+                                  account={this.props.account}
+                                  issuer_account={this.props.issuer_account}
+                                  deposit_asset="EUR"
+                                  receive_asset="OPEN.EUR"
+                                  deposit_allowed={this.state.allowedFiatCurrencies.deposit.indexOf("EUR") > -1}
+                                  withdraw_allowed={this.state.allowedFiatCurrencies.withdraw.indexOf("EUR") > -1}/>
+                          </tbody>
+                      </table>;*/
     }
 }; // OpenLedgerFiatDepositWithdrawal
 OpenLedgerFiatDepositWithdrawal = BindToChainState(OpenLedgerFiatDepositWithdrawal, {keep_updating:true});
