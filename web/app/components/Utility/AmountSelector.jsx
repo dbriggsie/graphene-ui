@@ -64,17 +64,23 @@ class AmountSelector extends React.Component {
         this.props.onChange({amount: amount, asset: this.props.asset});
     }
 
+    _onBlur(event){
+        let amount = event.target.value;
+        this.props.hasOwnProperty('onBlur') ? this.props.onBlur({amount: amount}) : null;
+    }
+
     onAssetChange(selected_asset) {
         this.props.onChange({amount: this.props.amount, asset: selected_asset});
     }
-
     render() {
+        let {label, startListCurrency} = this.props;
+
         let value = this.props.error ? counterpart.translate(this.props.error) : this.formatAmount(this.props.amount);
 
         return (
             <div className="amount-selector" style={this.props.style}>
-                <label className="right-label">{this.props.display_balance}</label>
-                <Translate className="left-label" component="label" content={this.props.label}/>
+                {label ? <label className="right-label">{this.props.display_balance}</label> : null}
+                {label ?<Translate className="left-label" component="label" content={this.props.label}/> : null}
                 <div className="inline-label input-wrapper">
                     <input
                         disabled={this.props.disabled}
@@ -83,6 +89,7 @@ class AmountSelector extends React.Component {
                         placeholder={this.props.placeholder}
                         onChange={this._onChange.bind(this) }
                         tabIndex={this.props.tabIndex}
+                        onBlur={this._onBlur.bind(this)}
                     />
                     <div className="form-label select floating-dropdown">
                         <AssetSelector

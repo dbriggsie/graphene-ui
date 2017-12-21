@@ -508,6 +508,7 @@ class DepositWithdrawContent extends DecimalChecker {
                 <div className="SimpleTrade__withdraw-row">
                     <p style={{marginBottom: 10}} data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", {asset: assetName})}>
                         <Translate className="help-tooltip" content="gateway.deposit_to" asset={assetName} />:
+                        <label className="fz_12 left-label"><Translate content="gateway.deposit_notice_delay" /></label>
                     </p>
                     {!addressValue ? <LoadingIndicator type="three-bounce"/> :<label>
                         <span className="inline-label">
@@ -594,6 +595,7 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     render() {
+
         let {asset, action} = this.props;
         let isDeposit = action === "deposit";
 

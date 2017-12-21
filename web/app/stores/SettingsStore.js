@@ -71,7 +71,9 @@ let marketsList = [
     "OPEN.XPO",
     "OPEN.KRM",
     "OPEN.ATM",
-    "OPEN.SKY"
+    "OPEN.SKY",
+    "OPEN.XDRAC",
+    "OPEN.ESC"
 ];
 
 let topMarkets = {

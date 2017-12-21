@@ -99,8 +99,11 @@ class Dropdown extends React.Component {
     }
 
     render() {
-        const {entries, value} = this.props;
+
+        let {entries, value} = this.props;
         let {active} = this.state;
+
+
         if(entries.length === 0) return null;
         if(entries.length == 1 && this.props.label !== "transfer.to") {
             return (
@@ -111,9 +114,11 @@ class Dropdown extends React.Component {
                 </div>
             );
         } else {
+
             let options = entries.map(value => {
                 return <li className={this.props.upperCase ? "upper-case" : ""} key={value} onClick={this.onChange.bind(this, this.props.values[value])}><span>{value}</span></li>;
             });
+
             let optionsWithDel = entries.map(value => {
                 return <li style={{position: 'relative'}} className={this.props.upperCase ? "upper-case" : ""} key={value} >
                     <span onClick={this.onChangeWithDel.bind(this, this.props.values[value])} style={{paddingRight: '35px'}}>{value}</span>

@@ -35,6 +35,86 @@
   $account-background
   ) {
 
+  .color_white{
+      color: #fff;
+  }
+
+  .fz_12{
+    font-size: 12px;
+  }
+
+  .fz_14{
+    font-size: 14px;
+  }
+
+  .form-deposit-withdraw-rmbpay{
+    font-family: 'RobotoCondensed-Regular', arial, sans-serif;
+    color: #adadad;
+    input{
+      color: #adadad !important;
+    }
+      .left-label, .right-label{
+        margin-bottom: 0;
+      }
+    .dropdown-wrapper > div{
+      font-weight: normal;
+    }
+    .set-cursor{
+        cursor: pointer;
+    }
+  }
+
+  .disabled-form {
+    pointer-events:none;
+    opacity: 0.4;
+  }
+
+  .tabs-withdraw{
+    width: 100%;
+    margin-bottom: 20px;
+    .is-active a{
+      color: #fff !important;
+    }
+  }
+  .color-danger{
+    color: #E3745B;
+  }
+
+  .color-gray{
+    color: darken($primary-text-color,20%);
+  }
+
+  #deposit_asset_openledger-dex_CNY,
+  #depositRmbpayModal,
+  #withdraw_asset_openledger-dex_CNY
+  {
+    max-width:500px;
+  }
+
+  .mt_2{
+    margin-top: .2rem;
+  }
+
+  .mb_5{
+    margin-bottom: .5rem;
+  }
+
+  .mt_5{
+    margin-top: .5rem;
+  }
+
+  .button-group.btn-row{
+    flex-direction: column;
+    text-transform: uppercase;
+    &.segmented > li > a{
+      text-align: left;
+    }
+  }
+
+  .modal .close-button, .modal [fa-close] {
+    z-index: 1000 ;
+  }
+
   .icon.rotate90>svg {
     transform: rotate(90deg);
   }

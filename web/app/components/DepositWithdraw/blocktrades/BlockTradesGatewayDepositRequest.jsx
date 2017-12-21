@@ -122,6 +122,8 @@ class BlockTradesGatewayDepositRequest extends React.Component {
 
     render() {
 
+
+
         let emptyRow = <LoadingIndicator />;
         if( !this.props.account || !this.props.issuer_account || !this.props.receive_asset )
             return emptyRow;
@@ -171,6 +173,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
         }
 
         let withdraw_modal_id = this.getWithdrawModalId();
+
         let deposit_address_fragment = null;
         let deposit_memo = null;
         // if (this.props.deprecated_in_favor_of)
@@ -207,6 +210,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
             }
             var withdraw_memo_prefix = "";
         }
+
 
         if (this.props.action === "deposit") {
             return (
@@ -249,6 +253,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                     <div className="small-12 medium-7">
                         <Translate component="h4" content="gateway.deposit_inst" />
                         <label className="left-label"><Translate content="gateway.deposit_to" asset={this.props.deposit_asset} />:</label>
+                        <label className="fz_12 left-label"><Translate content="gateway.deposit_notice_delay" /></label>
                         <div style={{padding: "10px 0", fontSize: "1.1rem", fontWeight: "bold"}}>
                             <table className="table">
                                 <tbody>

@@ -23,12 +23,20 @@ class BaseModal extends React.Component {
         document.removeEventListener("keydown", this.modalEscapeListener);
     }
 
+    clearInputModal(){
+        ZfApi.publish(this.props.id, "close");
+        console.log('clear')
+        // console.log(id)
+    }
+
     render() {
         const { props } = this;
+        let {maxWidth, clearInput} = this.props;
+
         return (
-            <Modal id={this.props.id} overlay={props.overlay} onClose={props.onClose} className={props.className} overlayClose={props.overlayClose}>
+            <Modal id={this.props.id} overlay={props.overlay} onClose={props.onClose} className={props.className} overlayClose={false}>
                 {!props.noCloseBtn && <Trigger close={props.id}>
-                    <a href="#" className="close-button">&times;</a>
+                    <a href="#" onClick={this.clearInputModal.bind(this)} className="close-button">&times;</a>
                 </Trigger>}
                 {props.children}
             </Modal>

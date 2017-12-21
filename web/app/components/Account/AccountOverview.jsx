@@ -575,6 +575,7 @@ class AccountOverview extends React.Component {
         const currentDepositAsset = this.props.backedCoins.get("OPEN", []).find(c => {
             return c.symbol === this.state.depositAsset;
         }) || {};
+
         const currentWithdrawAsset = this.props.backedCoins.get("OPEN", []).find(c => {
             return c.symbol === this.state.withdrawAsset;
         }) || {};
@@ -587,7 +588,7 @@ class AccountOverview extends React.Component {
             assetName = (prefix || "") + name;
         }
         const hiddenSubText = <span style={{visibility: "hidden"}}>H</span>;
-
+console.log(this.props.balances)
         return (
             <div className="grid-content app-tables" >
                 <div className="content-block small-12">

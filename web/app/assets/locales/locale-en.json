@@ -109,7 +109,9 @@
     "disconnected": "You are not connected to an API node, try reloading or setting a new access point in the Settings",
     "market_fee": "The owner of %(asset)s charges a market fee of %(percent)s%% for buy orders. This fee will be subtracted from the amount you receive when your order fills, it is not paid when placing an order.",
     "bridge_TRADE": "BlockTrades is a bridge which supports instant trade of assets. Details and terms can be found on https://blocktrades.us",
-    "over_limit": "The bridge does not have enough of the desired asset for this buy order"
+    "over_limit": "The bridge does not have enough of the desired asset for this buy order",
+    "withdraw_blockchain_fee": "Blockchain Fee is a fee, that has to be payed for the transactions in the BitShares Blockchain. Fee can be payed in any tokens, user has enough on user's balance.  Fee amount is deducted from the selected tokens balance or, if the amount on the balance is not enough after the 'Amount to Withdraw' exclusion, fee can be also deducted from the 'Amount to Withdraw' value.",
+    "withdraw_fee": "Withdrawal Fee is a fee, that has to be payed for the withdrawal operation execution. Fee amount is deducted from the 'Amount to Withdraw' value."
   },
   "propose": "Propose",
   "cancel": "Cancel",
@@ -765,7 +767,8 @@
       "call_limit": "Call limit",
       "short_limit": "Short limit",
       "settlement_price": "Settlement price",
-      "go_to": "Go to block"
+      "go_to": "Go to block",
+      "operation_id": "Operation ID"
     },
     "assets": {
       "title": "Assets",
@@ -1311,7 +1314,8 @@
     },
     "deposit": {
       "amount": "Amount to Deposit",
-      "submit": "Deposit"
+      "submit": "Deposit",
+      "withdraw": "Amount to Withdraw"
     },
     "convert": {
       "amount": "Amount to Convert",
@@ -1371,6 +1375,9 @@
     "id": "Proposal object id"
   },
   "gateway": {
+    "service_unavailable": "Service is temporarily unavailable. Please try again later.",
+    "pay_service": "Payment Service ID",
+    "pay_service_withdraw": "Payment Service ID (Alipay)",
     "fee": "Gateway fee",
     "title": "Deposit & Withdraw",
     "history_title": "Transaction History",
@@ -1385,7 +1392,7 @@
       "bit": "<br/>bit%(asset)s is a derivative that tracks the real value of %(backed)s. It is 100%% decentralized, trustless and backed by collateral held by the blockchain in a smart contract.",
       "bitcny": "<br/><br/>bitCNY can be deposited or withdrawn 1:1 to real Yuan using the gateway service provided by Transwiser. For more info, see https://www.transwiser.com/"
     },
-    "your_account": "Your account",
+    "your_account": "Your account:",
     "bitkapital_text": "Choose an asset to deposit or withdraw:",
     "bitkapital_withdraw": "You are withdrawing",
     "bitkapital_receive": "You will receive",
@@ -1397,11 +1404,12 @@
     "symbol": "Symbol",
     "website": "Visit the website",
     "deposit_to": "Please send your %(asset)s to the address below",
+    "deposit_notice_delay": "(new address can be generated once per 5 minutes)",
     "add_funds": "Quickly and easily add funds to your BitShares account <strong>%(account)s</strong>. This service is provided by Openledger.",
     "withdraw_funds": "You are going to withdraw funds from your BitShares account to your external %(asset)s account.",
     "balance_asset": "Current %(asset)s balance",
     "withdraw_placeholder": "Please enter your %(asset)s address",
-    "balance": "Current balance",
+    "balance": "Current balance ",
     "generate": "Generate",
     "generate_new": "Get new address",
     "copy_address": "Copy address",
@@ -1426,11 +1434,12 @@
     "withdraw_summary": "Withdrawal summary",
     "withdraw_inst": "Withdrawal instructions",
     "withdraw_to": "Click the button below to open %(asset)s withdrawal",
-    "intermediate": "Intermediate account",
+    "intermediate": "Intermediate account:",
     "asset_to_withdraw": "Asset to withdraw:",
     "support_block": "For support, please contact OpenLedger at:",
     "valid_address": "Please enter a valid %(coin_type)s address",
     "withdraw_coin": "Withdraw %(coin)s (%(symbol)s)",
+    "deposit_coin": "Deposit %(coin)s",
     "convert_coin": "Convert to %(coin)s (%(symbol)s)",
     "limit": "Limit: %(amount)s %(symbol)s",
     "bridge_text": "A bridge lets you exchange an asset into another one, for example BTC to BTS.",
@@ -1445,6 +1454,7 @@
         }
       },
       "fee": "Fee",
+      "fee_deposit": "Deposit Fee",
       "fee_min": "Minimum",
       "gateway": "Transwiser",
       "visit_weidian": "Visit to deposit",
@@ -1476,7 +1486,28 @@
     "unavailable_OPEN": "The OpenLedger Gateway is down or not responding",
     "unavailable_TRADE": "The Blocktrades Bridge is down or not responding",
     "contact_TRADE": "Contact Blocktrades",
-    "over_limit": "Limit Reached"
+    "over_limit": "Limit Reached",
+    "rmbpay": {
+      "info": "RMBpay Transfer Service provides an opportunity to carry out deposit and withdrawal operations with CNY currency using the Alipay payment service.",
+      "deposit_info": "After deposit of CNY you will receive the corresponding amount of CN.RMB tokens on your OpenLedger account.",
+      "withdrawal_info": "After withdrawal of CN.RMB you will receive the corresponding amount of CNY currency on your Alipay account.",
+      "ok": "ok",
+      "withdraw": "Withdraw %(coin)s",
+      "withdraw_receive": "Amount to Receive",
+      "tokens_receive":"Tokens to Receive",
+      "deposit_min_amount": "Amount to deposit must be more than %(fee)s CNY",
+      "btn_request_deposit": "Request Deposit",
+      "error_emty": "Field is required",
+      "error_min_value":"Amount to deposit must be more than %(fee)s CNY",
+      "not_enaught_balance": "Operation can not be performed. You don`t enough tokens to pay the Withdrawal Fee",
+      "withdrawalModal": {
+        "fee_blockchain": "Blockchain Fee",
+        "fee_withdraw": "Withdrawal Fee",
+        "amount_receive":"Amount to Receive",
+        "amount_withdraw":"Amount to Withdraw"
+      }
+
+    }
   },
   "chat": {
     "title": "News",
@@ -1541,7 +1572,7 @@
     "residents": "Are you a resident in or are you holding a passport issued by any of the following countries?",
     "residents_yes": "Yes",
     "residents_no": "No",
-    "add_coin": "Add coin",
+    "add_coin": "List your coin",
     "contact_person": "contact person",
     "contact_email": "contact email",
     "full_name": "the full name of the coin",

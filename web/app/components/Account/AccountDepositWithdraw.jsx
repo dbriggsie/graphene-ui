@@ -20,6 +20,11 @@ import BitKapital from "../DepositWithdraw/BitKapital";
 import GatewayStore from "stores/GatewayStore";
 import GatewayActions from "actions/GatewayActions";
 import AccountImage from "../Account/AccountImage";
+import SimpleDepositWithdraw from "../Dashboard/SimpleDepositWithdraw";
+import BaseModal from "../Modal/BaseModal";
+import DepositModalRmbpay from "../DepositWithdraw/openledger/DepositModalRmbpay";
+import WithdrawModalRmbpay from "../DepositWithdraw/openledger/WithdrawModalRmbpay";
+import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 
 class AccountDepositWithdraw extends React.Component {
 
@@ -38,7 +43,17 @@ class AccountDepositWithdraw extends React.Component {
             olService: props.viewSettings.get("olService", "gateway"),
             btService: props.viewSettings.get("btService", "bridge"),
             metaService: props.viewSettings.get("metaService", "bridge"),
-            activeService: props.viewSettings.get("activeService", 0)
+            activeService: props.viewSettings.get("activeService", 0),
+            rmbPay: {
+                list_service: [{
+                    name: "Alipay",
+                    link_qr_code: ""
+                }],
+                fees: {
+                    fee_share_dep: 0.0,
+                    fee_min_val_dep: 0
+                }
+            }
         };
     }
 
@@ -99,6 +114,16 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
+    _showDepositWithdraw(action, asset, fiatModal, e) {
+        e.preventDefault();
+        this.setState({
+            [action === "bridge_modal" ? "bridgeAsset" : action === "deposit_modal" ? "depositAsset" : "withdrawAsset"]: asset,
+            fiatModal
+        }, () => {
+            this.refs[action].show();
+        });
+    }
+
     renderServices(blockTradesGatewayCoins, openLedgerGatewayCoins) {
         //let services = ["Openledger (OPEN.X)", "BlockTrades (TRADE.X)", "Transwiser", "BitKapital"];
         let serList = [];
@@ -128,7 +153,7 @@ class AccountDepositWithdraw extends React.Component {
 
                     {olService === "fiat" ?
                         <div>
-                            <div style={{paddingBottom: 15}}><Translate component="h5" content="gateway.fiat_text" unsafe /></div>
+                            <div style={{ paddingBottom: 15 }}><Translate component="h5" content="gateway.fiat_text" unsafe /></div>
 
                             <OpenLedgerFiatDepositWithdrawal
                                 rpc_url={settingsAPIs.RPC_URL}
@@ -187,6 +212,42 @@ class AccountDepositWithdraw extends React.Component {
                 </div>)
         });
 
+      /*  serList.push({
+            name: "RMBpay",
+            template: (
+                <div>
+                    <div className="grid-block vertical medium-horizontal no-margin no-padding">
+                        <div>
+                            <p>
+                                <Translate content="gateway.rmbpay.info" />
+                            </p>
+                            <p>
+                                <Translate content="gateway.balance" /> : 100 CN.RMB
+                            </p>
+                        </div>
+
+                        <div className="medium-5">
+                            <p>
+                                <Translate content="gateway.rmbpay.deposit_info" />
+                            </p>
+                            <button className="button success" style={{ fontSize: "1.3rem" }} onClick={this.onDeposit.bind(this)}>
+                                <Translate content="gateway.deposit" />
+                            </button>
+                        </div>
+                        <div className="medium-5 medium-offset-2">
+                            <p>
+                                <Translate content="gateway.rmbpay.withdrawal_info" />
+                            </p>
+                            <button className="button success" style={{ fontSize: "1.3rem" }} onClick={this.onWithdraw.bind(this)}><Translate content="gateway.withdraw" /></button>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            )
+        });*/
+
         /*   serList.push({
                name: "Transwiser",
                template: (
@@ -230,9 +291,29 @@ class AccountDepositWithdraw extends React.Component {
         return serList;
     }
 
+    getWithdrawModalId() {
+        return "withdraw_asset_openledger-dex_CNY";
+    }
+
+    getDepositModalId() {
+        return "deposit_asset_openledger-dex_CNY";
+    }
+
+    onDeposit() {
+        this.depositModalRmbpay.refs.bound_component.fetchDepositData();
+        ZfApi.publish(this.getDepositModalId(), "open");
+    }
+
+    onWithdraw() {
+        ZfApi.publish(this.getWithdrawModalId(), "open");
+    }
+
     render() {
         let { account } = this.props;
         let { activeService } = this.state;
+
+        let withdraw_modal_id = this.getWithdrawModalId();
+        let deposit_modal_id = this.getDepositModalId();
 
         let blockTradesGatewayCoins = this.props.blockTradesBackedCoins.filter(coin => {
             if (coin.backingCoinType.toLowerCase() === "muse") {
@@ -267,18 +348,18 @@ class AccountDepositWithdraw extends React.Component {
         let options = services.map((services_obj, index) => {
             return <option key={index} value={index}>{services_obj.name}</option>;
         });
-
+        let currentDepositAsset = {};
         return (
             <div className={this.props.contained ? "grid-content" : "grid-container"}>
-                <div className={this.props.contained ? "" : "grid-content"} style={{paddingTop: "2rem"}}>
+                <div className={this.props.contained ? "" : "grid-content"} style={{ paddingTop: "2rem" }}>
 
                     <Translate content="gateway.title" component="h2" />
                     <div className="grid-block vertical medium-horizontal no-margin no-padding">
                         <div className="medium-6 show-for-medium">
-                            <HelpContent path="components/DepositWithdraw" section="deposit-short"/>
+                            <HelpContent path="components/DepositWithdraw" section="deposit-short" />
                         </div>
                         <div className="medium-5 medium-offset-1">
-                            <HelpContent account={account.get("name")} path="components/DepositWithdraw" section="receive"/>
+                            <HelpContent account={account.get("name")} path="components/DepositWithdraw" section="receive" />
                         </div>
                     </div>
                     <div>
@@ -289,19 +370,19 @@ class AccountDepositWithdraw extends React.Component {
                                     {options}
                                 </select>
                             </div>
-                            <div className="medium-5 medium-offset-1 small-order-1 medium-order-2" style={{paddingBottom: 20}}>
+                            <div className="medium-5 medium-offset-1 small-order-1 medium-order-2" style={{ paddingBottom: 20 }}>
                                 <Translate component="label" className="left-label" content="gateway.your_account" />
                                 <div className="inline-label">
                                     <AccountImage
-                                        size={{height: 40, width: 40}}
+                                        size={{ height: 40, width: 40 }}
                                         account={account.get("name")} custom_image={null}
                                     />
                                     <input type="text"
                                            value={account.get("name")}
                                            placeholder={null}
                                            disabled
-                                           onChange={() => {}}
-                                           onKeyDown={() => {}}
+                                           onChange={() => { }}
+                                           onKeyDown={() => { }}
                                            tabIndex={1}
                                     />
                                 </div>
@@ -309,11 +390,51 @@ class AccountDepositWithdraw extends React.Component {
                         </div>
                     </div>
 
-                    <div className="grid-content no-padding" style={{paddingTop: 15}}>
+                    <div className="grid-content no-padding" style={{ paddingTop: 15 }}>
                         {activeService && services[activeService] ? services[activeService].template : services[0].template}
                     </div>
                 </div>
+
+                <BaseModal id={deposit_modal_id} overlay={true} maxWidth="500px">
+                    <div className="grid-block vertical">
+
+                        <DepositModalRmbpay
+                            account={this.props.account.get("name")}
+                            issuer="openledger-dex"
+                            asset="CNY"
+                            output_coin_name="CNY"
+                            output_coin_symbol="CNY"
+                            output_coin_type="cny"
+                            modal_id={deposit_modal_id}
+                            ref={ modal => { this.depositModalRmbpay = modal; }}
+                            /* balance={{'id': 100}}*/
+                        />
+
+                    </div>
+                </BaseModal>
+
+                <BaseModal id={withdraw_modal_id} overlay={true} maxWidth="500px">
+                    <br />
+                    <div className="grid-block vertical">
+                        <WithdrawModalRmbpay
+                            account={this.props.account.get("name")}
+                            issuer="openledger-dex"
+                            asset="RMBPAY"
+                            output_coin_name="RMBPAY"
+                            gateFee="0.002"
+                            output_coin_symbol="RMBPAY"
+                            output_coin_type="RMBPAY"
+                            modal_id={withdraw_modal_id}
+                            balance={this.props.account.get("balances").toJS()["1.3.2562"]}
+                        />
+                    </div>
+                </BaseModal>
+
+
             </div>
+
+
+
         );
     }
 };
@@ -323,13 +444,13 @@ class DepositStoreWrapper extends React.Component {
 
     componentWillMount() {
         if (Apis.instance().chain_id.substr(0, 8) === "4018d784") { // Only fetch this when on BTS main net
-            GatewayActions.fetchCoins.defer({backer: "OPEN", url:blockTradesAPIs.BASE_OL+blockTradesAPIs.COINS_LIST}); // Openledger
-            GatewayActions.fetchCoins.defer({backer: "TRADE", url:blockTradesAPIs.BASE+blockTradesAPIs.COINS_LIST}); // Blocktrades
+            GatewayActions.fetchCoins.defer({ backer: "OPEN", url: blockTradesAPIs.BASE_OL + blockTradesAPIs.COINS_LIST }); // Openledger
+            GatewayActions.fetchCoins.defer({ backer: "TRADE", url: blockTradesAPIs.BASE + blockTradesAPIs.COINS_LIST }); // Blocktrades
         }
     }
 
     render() {
-        return <AccountDepositWithdraw {...this.props}/>;
+        return <AccountDepositWithdraw {...this.props} />;
     }
 }
 

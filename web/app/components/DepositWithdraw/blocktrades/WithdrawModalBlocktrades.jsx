@@ -146,9 +146,7 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     onWithdrawAmountChange( {amount} ) {
-        if(this.props.output_coin_name == 'SKY'){
-            amount = parseInt(amount, 10)
-        }
+
         this.setState({
             withdraw_amount: amount,
             empty_withdraw_value: amount !== undefined && !parseFloat(amount)
@@ -170,15 +168,7 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     onWithdrawAddressChanged( e ) {
-        let new_withdraw_address = e.target.value.trim();
 
-        this.setState({
-            withdraw_address: new_withdraw_address,
-            withdraw_address_check_in_progress: true,
-            withdraw_address_selected: new_withdraw_address,
-            withdraw_address_is_valid: null
-        }, this._updateFee);
-        this._validateAddress(new_withdraw_address);
     }
 
     _validateAddress(new_withdraw_address, props = this.props) {
@@ -395,7 +385,6 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     render() {
-
         let {withdraw_address_selected, memo} = this.state;
         let {gateFee} = this.props;
 
@@ -449,15 +438,6 @@ class WithdrawModalBlocktrades extends React.Component {
         }
 
         let tabIndex = 1;
-        let withdraw_memo = null;
-
-        if (this.props.output_supports_memos) {
-            withdraw_memo =
-                <div className="content-block">
-                    <label><Translate component="span" content="transfer.memo"/></label>
-                    <textarea rows="1" value={memo} tabIndex={tabIndex++} onChange={this.onMemoChanged.bind(this)} />
-                </div>;
-        }
 
         // Estimate fee VARIABLES
         let { fee_asset_types } = this._getAvailableAssets();
@@ -497,7 +477,7 @@ class WithdrawModalBlocktrades extends React.Component {
                                         amount={this.state.withdraw_amount}
                                         asset={this.props.asset.get("id")}
                                         assets={[this.props.asset.get("id")]}
-                                        placeholder="0.0"
+                                        placeholder=""
                                         onChange={this.onWithdrawAmountChange.bind(this)}
                                         display_balance={balance}
                         />
@@ -553,8 +533,6 @@ class WithdrawModalBlocktrades extends React.Component {
                         {invalid_address_message}
                     </div>
 
-                    {/* Memo input */}
-                    {withdraw_memo}
 
                     {/* Withdraw/Cancel buttons */}
                     <div className="button-group">
