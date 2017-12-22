@@ -1444,7 +1444,7 @@
     "limit": "Limit: %(amount)s %(symbol)s",
     "bridge_text": "A bridge lets you exchange an asset into another one, for example BTC to BTS.",
     "gateway_text": "Choose whether you want to make a deposit or withdrawal here",
-    "fiat_text": "Note: Fiat gateways are closed till further notice. Sorry for the incinvenience! Please follow our latest news and updates here blog.openledger.info",
+    "fiat_text": "Note: Fiat gateways are closed till further notice. Sorry for the inconvenience! Please follow our latest news and updates here <a target='_blank' href='https://blog.openledger.info/'>blog.openledger.info</a>",
     "transwiser": {
       "channel": {
         "withdraw": {

@@ -35,6 +35,17 @@
   $account-background
   ) {
 
+
+  .spinner-button-circle .circle-wrapper{
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 7px;
+    margin-top: -2px;
+    .circle:before{
+      background-color: #fff;
+    }
+  }
+
   .color_white{
       color: #fff;
   }

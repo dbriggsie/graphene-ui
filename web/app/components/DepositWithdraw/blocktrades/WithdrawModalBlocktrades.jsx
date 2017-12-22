@@ -168,7 +168,15 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     onWithdrawAddressChanged( e ) {
+        let new_withdraw_address = e.target.value.trim();
 
+        this.setState({
+            withdraw_address: new_withdraw_address,
+            withdraw_address_check_in_progress: true,
+            withdraw_address_selected: new_withdraw_address,
+            withdraw_address_is_valid: null
+        }, this._updateFee);
+        this._validateAddress(new_withdraw_address);
     }
 
     _validateAddress(new_withdraw_address, props = this.props) {

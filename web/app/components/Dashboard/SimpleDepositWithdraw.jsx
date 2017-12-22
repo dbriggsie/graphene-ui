@@ -51,7 +51,8 @@ class DepositWithdrawContent extends DecimalChecker {
                 precision: props.asset.get("precision")
             }),
             fee_asset_id: "1.3.0",
-            feeStatus: {}
+            feeStatus: {},
+            loading: false
         };
 
         this._validateAddress(this.state.toAddress, props);
@@ -117,6 +118,13 @@ class DepositWithdrawContent extends DecimalChecker {
         };
     }
 
+    requestDepositAddressLoad(){
+        this.setState({
+            loading: true
+        })
+        requestDepositAddress(this._getDepositObject())
+    }
+
     addDepositAddress( receive_address ) {
         let account_name = this.props.sender.get("name");
         this.deposit_address_cache.cacheInputAddress(
@@ -128,7 +136,8 @@ class DepositWithdrawContent extends DecimalChecker {
             receive_address.memo
         );
         this.setState({
-            receive_address
+            receive_address,
+            loading: false
         });
     }
 
@@ -480,7 +489,7 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     _renderDeposit() {
-        const {receive_address} = this.state;
+        const {receive_address, loading} = this.state;
         const {name: assetName} = utils.replaceName(this.props.asset.get("symbol"), !!this.props.asset.get("bitasset"));
         const hasMemo = receive_address && "memo" in receive_address && receive_address.memo;
         const addressValue = receive_address && receive_address.address || "";
@@ -537,8 +546,8 @@ class DepositWithdrawContent extends DecimalChecker {
                 </div>
 
                 <div className="button-group SimpleTrade__withdraw-row">
-                    <button tabIndex={tabIndex++} className="button" onClick={requestDepositAddress.bind(null, this._getDepositObject())} type="submit" >
-                        <Translate content="gateway.generate_new" />
+                    <button tabIndex={tabIndex++} className="button spinner-button-circle" onClick={this.requestDepositAddressLoad.bind(this)} type="submit" >
+                        {loading ? <LoadingIndicator type="circle" /> : null}<Translate content="gateway.generate_new" />
                     </button>
                 </div>
             </div>

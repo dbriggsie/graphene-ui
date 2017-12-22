@@ -108,7 +108,7 @@ class WithdrawModalRmbpay extends React.Component {
                     hasPoolBalance,
                     error: (!hasBalance || !hasPoolBalance)
                 }, this._checkBalance)
-                this._checkSolvency()
+               // this._checkSolvency()
             })
     }
 
@@ -345,10 +345,10 @@ class WithdrawModalRmbpay extends React.Component {
     }
 
 
-    _checkSolvency(){
+/*    _checkSolvency(){
         let currentBalance = this.props.balance.get('balance') / 10000
         currentBalance < (this.state.feeAmount.getAmount({real: true}) + parseFloat(this.props.gateFee) + 1) ? this.setState({notEnaughtBalance : true}) : null
-    }
+    }*/
 
 
     render() {
