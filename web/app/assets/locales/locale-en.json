@@ -110,7 +110,9 @@
     "market_fee": "The owner of %(asset)s charges a market fee of %(percent)s%% for buy orders. This fee will be subtracted from the amount you receive when your order fills, it is not paid when placing an order.",
     "bridge_TRADE": "BlockTrades is a bridge which supports instant trade of assets. Details and terms can be found on https://blocktrades.us",
     "over_limit": "The bridge does not have enough of the desired asset for this buy order",
-    "withdraw_blockchain_fee": "Blockchain Fee is a fee, that has to be payed for the transactions in the BitShares Blockchain. Fee can be payed in any tokens, user has enough on user's balance.  Fee amount is deducted from the selected tokens balance or, if the amount on the balance is not enough after the 'Amount to Withdraw' exclusion, fee can be also deducted from the 'Amount to Withdraw' value.",
+    "withdraw_blockchain_fee": "Blockchain Fee is a fee, that has to be payed for the transactions in the BitShares Blockchain. <br/>Fee can be payed in any tokens, user has enough on user's balance.  Fee amount is deducted from the selected tokens balance or, if the amount on the balance is not enough after the 'Amount to Withdraw' exclusion, fee can be also deducted from the 'Amount to Withdraw' value.",
+    "withdraw_take_from_amount": "<span style='color:orange'><b>Blockchain Fee will be deducted (or partly deducted) from the entered 'Amount to Withdraw' value.</b></span> <br/><br/>",
+    "receive_blockchain_fee": "Blockchain Fee is a fee, that has to be payed for the transactions in the BitShares Blockchain. <br/>Fee can be payed in any tokens, user has enough on user's balance.<br/>Fee amount is deducted from the balance of the tokens user selected to pay the fee with.",
     "withdraw_fee": "Withdrawal Fee is a fee, that has to be payed for the withdrawal operation execution. Fee amount is deducted from the 'Amount to Withdraw' value."
   },
   "propose": "Propose",
@@ -1375,6 +1377,7 @@
     "id": "Proposal object id"
   },
   "gateway": {
+    "please_generate_address": "Please, get new address ",
     "service_unavailable": "Service is temporarily unavailable. Please try again later.",
     "pay_service": "Payment Service ID",
     "pay_service_withdraw": "Payment Service ID (Alipay)",
@@ -1489,24 +1492,27 @@
     "over_limit": "Limit Reached",
     "rmbpay": {
       "info": "RMBpay Transfer Service provides an opportunity to carry out deposit and withdrawal operations with CNY currency using the Alipay payment service.",
-      "deposit_info": "After deposit of CNY you will receive the corresponding amount of CN.RMB tokens on your OpenLedger account.",
-      "withdrawal_info": "After withdrawal of CN.RMB you will receive the corresponding amount of CNY currency on your Alipay account.",
+      "deposit_info": "After deposit of CNY you will receive the corresponding amount of RMBPAY tokens on your OpenLedger account.",
+      "withdrawal_info": "After withdrawal of RMBPAY you will receive the corresponding amount of CNY currency on your Alipay account.",
       "ok": "ok",
+      "server_unavailable": "Service is temporary unavailable. Please try later.",
       "withdraw": "Withdraw %(coin)s",
       "withdraw_receive": "Amount to Receive",
       "tokens_receive":"Tokens to Receive",
       "deposit_min_amount": "Amount to deposit must be more than %(fee)s CNY",
       "btn_request_deposit": "Request Deposit",
       "error_emty": "Field is required",
-      "error_min_value":"Amount to deposit must be more than %(fee)s CNY",
-      "not_enaught_balance": "Operation can not be performed. You don`t enough tokens to pay the Withdrawal Fee",
+      "error_max_value":"Amount to withdraw must be more or equal than %(val)s RMBPAY",
+      "error_min_value":"Amount to withdraw must be less or equal than %(val)s RMBPAY",
+      "error_min_receive": "Amount to receive must be more or equal than 1 CNY",
+      "error_max_receive": "Amount to receive must be less or equal than %(val)s CNY",
+      "not_enaught_balance": "Operation can not be performed. You don`t have enough tokens to pay the Fee",
       "withdrawalModal": {
         "fee_blockchain": "Blockchain Fee",
         "fee_withdraw": "Withdrawal Fee",
         "amount_receive":"Amount to Receive",
         "amount_withdraw":"Amount to Withdraw"
       }
-
     }
   },
   "chat": {

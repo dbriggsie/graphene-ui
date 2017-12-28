@@ -100,9 +100,16 @@ class Dropdown extends React.Component {
 
     render() {
 
-        let {entries, value} = this.props;
+        let {entries, value, startListCurrency} = this.props;
         let {active} = this.state;
 
+        if(startListCurrency){
+            let startCurrencyId;
+            entries.map((item, ind)=>{
+                if(item == startListCurrency) startCurrencyId = ind;
+            })
+            entries.unshift(...entries.splice(startCurrencyId,1))
+        }
 
         if(entries.length === 0) return null;
         if(entries.length == 1 && this.props.label !== "transfer.to") {

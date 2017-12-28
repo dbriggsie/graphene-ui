@@ -11,7 +11,7 @@ import AccountBalance from "../../Account/AccountBalance";
 import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
 import AssetName from "components/Utility/AssetName";
 import LinkToAccountById from "components/Blockchain/LinkToAccountById";
-import {requestDepositAddress} from "common/blockTradesMethods";
+import {requestDepositAddress, getDepositAddress} from "common/blockTradesMethods";
 import { blockTradesAPIs } from "api/apiConfig";
 import counterpart from "counterpart";
 import LoadingIndicator from "components/LoadingIndicator";
@@ -44,9 +44,9 @@ class BlockTradesGatewayDepositRequest extends React.Component {
 
     constructor(props) {
         super(props);
-        this.deposit_address_cache = new BlockTradesDepositAddressCache();
+        //this.deposit_address_cache = new BlockTradesDepositAddressCache();
 
-        let urls = {
+        let urls = { 
             blocktrades: blockTradesAPIs.BASE,
             openledger: blockTradesAPIs.BASE_OL
         };
@@ -54,7 +54,8 @@ class BlockTradesGatewayDepositRequest extends React.Component {
         this.state = {
             receive_address: null,
             url: props.url || urls[props.gateway],
-            loading: false
+            loading: false,
+            emptyAddressDeposit: false
         };
 
         this.addDepositAddress = this.addDepositAddress.bind(this);
@@ -81,30 +82,40 @@ class BlockTradesGatewayDepositRequest extends React.Component {
         };
     }
 
-    requestDepositAddressLoad(){
-        this.setState({
-            loading: true
-        })
-        requestDepositAddress(this._getDepositObject())
-    }
+
 
     componentWillMount() {
         let account_name = this.props.account.get("name");
-        let receive_address = this.deposit_address_cache.getCachedInputAddress(this.props.gateway, account_name, this.props.deposit_coin_type, this.props.receive_coin_type);
-        if (!receive_address||~need_change_address.indexOf(this.props.deposit_coin_type)) {
+        getDepositAddress({coin: this.props.receive_coin_type,  account: this.props.account.get("name"),  stateCallback: this.addDepositAddress})
+        // let receive_address = this.deposit_address_cache.getCachedInputAddress(this.props.gateway, account_name, this.props.deposit_coin_type, this.props.receive_coin_type);
+
+     /*   if (~need_change_address.indexOf(this.props.deposit_coin_type)) {
             setTimeout(()=>{
                 requestDepositAddress(this._getDepositObject());
             },1000)
-        }
+        }*/
     }
 
     componentWillUnmount() {
         document.removeEventListener("copy", this._copy);
     }
 
+    requestDepositAddressLoad(){
+        this.setState({
+            loading: true,
+            emptyAddressDeposit: false
+        })
+        requestDepositAddress(this._getDepositObject())
+    }
+
     addDepositAddress( receive_address ) {
+        console.log('blocktadesgateway receive_address===',receive_address)
+        if(receive_address.error){
+            receive_address.error.message == 'no_address' ? this.setState({emptyAddressDeposit: true}) : this.setState({emptyAddressDeposit: false})
+        }
+
         let account_name = this.props.account.get("name");
-        this.deposit_address_cache.cacheInputAddress(this.props.gateway, account_name, this.props.deposit_coin_type, this.props.receive_coin_type, receive_address.address, receive_address.memo);
+     //   this.deposit_address_cache.cacheInputAddress(this.props.gateway, account_name, this.props.deposit_coin_type, this.props.receive_coin_type, receive_address.address, receive_address.memo);
         this.setState( {receive_address} );
         this.setState({
             loading: false
@@ -132,8 +143,6 @@ class BlockTradesGatewayDepositRequest extends React.Component {
     }
 
     render() {
-
-
 
         let emptyRow = <LoadingIndicator />;
         if( !this.props.account || !this.props.issuer_account || !this.props.receive_asset )
@@ -174,15 +183,17 @@ class BlockTradesGatewayDepositRequest extends React.Component {
 
         let receive_address = this.state.receive_address;
 
+        let {emptyAddressDeposit} = this.state;
+
         let indicatorButtonAddr = this.state.loading;
 
         if( !receive_address )  {
             let account_name = this.props.account.get("name");
-            receive_address = this.deposit_address_cache.getCachedInputAddress(this.props.gateway, account_name, this.props.deposit_coin_type, this.props.receive_coin_type);
+            //receive_address = this.deposit_address_cache.getCachedInputAddress(this.props.gateway, account_name, this.props.deposit_coin_type, this.props.receive_coin_type);
         }
 
         if( !receive_address ) {
-            requestDepositAddress(this._getDepositObject());
+          //  requestDepositAddress(this._getDepositObject());
             return emptyRow;
         }
 
@@ -272,7 +283,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                             <table className="table">
                                 <tbody>
                                     <tr>
-                                        <td>{deposit_address_fragment}</td>
+                                        <td>{emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> : deposit_address_fragment }</td>
                                     </tr>
                                     {deposit_memo ? (
                                     <tr>

@@ -212,7 +212,7 @@ class AccountDepositWithdraw extends React.Component {
                 </div>)
         });
 
-      /*  serList.push({
+      /* serList.push({
             name: "RMBpay",
             template: (
                 <div>
@@ -222,7 +222,7 @@ class AccountDepositWithdraw extends React.Component {
                                 <Translate content="gateway.rmbpay.info" />
                             </p>
                             <p>
-                                <Translate content="gateway.balance" /> : 100 CN.RMB
+                                <Translate content="gateway.balance" /> : 100 RMBPAY
                             </p>
                         </div>
 
@@ -305,6 +305,7 @@ class AccountDepositWithdraw extends React.Component {
     }
 
     onWithdraw() {
+        this.withdrawModalRmbpay.refs.bound_component.fetchWithdrawData();
         ZfApi.publish(this.getWithdrawModalId(), "open");
     }
 
@@ -400,7 +401,6 @@ class AccountDepositWithdraw extends React.Component {
 
                         <DepositModalRmbpay
                             account={this.props.account.get("name")}
-                            issuer="openledger-dex"
                             asset="CNY"
                             output_coin_name="CNY"
                             output_coin_symbol="CNY"
@@ -409,23 +409,21 @@ class AccountDepositWithdraw extends React.Component {
                             ref={ modal => { this.depositModalRmbpay = modal; }}
                             /* balance={{'id': 100}}*/
                         />
-
                     </div>
                 </BaseModal>
 
                 <BaseModal id={withdraw_modal_id} overlay={true} maxWidth="500px">
-                    <br />
                     <div className="grid-block vertical">
                         <WithdrawModalRmbpay
                             account={this.props.account.get("name")}
-                            issuer="openledger-dex"
+                            issuer_account="openledger-fiat"
                             asset="RMBPAY"
                             output_coin_name="RMBPAY"
-                            gateFee="0.002"
                             output_coin_symbol="RMBPAY"
                             output_coin_type="RMBPAY"
                             modal_id={withdraw_modal_id}
                             balance={this.props.account.get("balances").toJS()["1.3.2562"]}
+                            ref={ modal => { this.withdrawModalRmbpay = modal; }}
                         />
                     </div>
                 </BaseModal>

@@ -26,7 +26,6 @@ class DepositModalRmbpay extends React.Component {
 
     static propTypes = {
         account: ChainTypes.ChainAccount.isRequired,
-        issuer: ChainTypes.ChainAccount.isRequired,
         asset: ChainTypes.ChainAsset.isRequired,
         output_coin_name: React.PropTypes.string.isRequired,
         output_coin_symbol: React.PropTypes.string.isRequired,
@@ -96,7 +95,7 @@ class DepositModalRmbpay extends React.Component {
     }
 
     _validateFloat(value) {
-        return /^(\s*|[1-9][0-9]*\.?[0-9]*)$/.test(value);
+        return /^((\s*|[1-9][0-9]*\.?[0-9]{0,2})|(0|(0\.)[0-9]{0,2}))$/.test(value);
     }
 
     _validateInteger(value) {
@@ -112,21 +111,31 @@ class DepositModalRmbpay extends React.Component {
                 fee_share_dep: 0,
                 fee_min_val_dep: 0
             }
-            let fee = amount * fees.fee_share_dep / 100
+            let fee = amount * fees.fee_share_dep
             fee = fees.fee_min_val_dep > fee ? fees.fee_min_val_dep : fee
-            fee = parseFloat(fee)
+            fee = this._round(parseFloat(fee), 2)
             let amountWithFee = amount > fee ? parseFloat(amount) - fee : 0
 
             this.setState({
                 depositAmount: amount,
                 depositEmpty: false,
-                tokenAmount: amountWithFee,
-                fee: parseFloat(fee).toFixed(2)
+                tokenAmount: this._round(amountWithFee, 4),
+                fee: parseFloat(fee)
             }, () => {
                 this._validateDepositAmount()
                 this._validateDepositEmpty()
             })
         }
+    }
+
+    _round(value, fixed) {
+        const rounded = value.toFixed(4)
+        if (Math.abs(rounded - value) < 0.00001) {
+            value = rounded
+        }
+        fixed = fixed || 0
+        fixed = Math.pow(10, fixed)
+        return Math.floor(value * fixed) / fixed
     }
 
     onWithdrawAddressChanged(e) {
@@ -186,7 +195,7 @@ class DepositModalRmbpay extends React.Component {
 
     fetchDepositData() {
         fetch(serverUrl, { //TODO: change URL
-            method: 'POST',
+            method: "POST",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
@@ -195,7 +204,7 @@ class DepositModalRmbpay extends React.Component {
                 operation_name: "deposit",
                 action: "get_data",
                 data: {
-                    currency_name_id: "bitcoin",//TODO: change currency
+                    currency_name_id: "RMBPAY",//TODO: change currency
                     account_ol: this.props.account.get("name")
                 }
             })
@@ -246,7 +255,7 @@ class DepositModalRmbpay extends React.Component {
                     dep_fee: this.state.fee,
                     dep_receive_amount_from_user: this.state.tokenAmount,
                     account_ol: this.props.account.get("name"),
-                    currency_name_id: "bitcoin", //TODO: change
+                    currency_name_id: "RMBPAY",
                     services_id: service.id,
                     user_service_id: this.state.userServiceId,
                     fees: {
@@ -314,7 +323,10 @@ class DepositModalRmbpay extends React.Component {
         return (
             <div>
                 <div className="content-block">
-                    <div className="left-label">Amount to Deposit</div>
+                    <Translate component="div"
+                               className="left-label"
+                               content="modal.deposit.amount"
+                    />
                     <AmountSelector
                         amount={this.state.depositAmount}
                         asset={this.props.asset.get("id")}
@@ -326,43 +338,43 @@ class DepositModalRmbpay extends React.Component {
                         ref="amountDeposit"
                     />
                     {!this.state.depositEmpty ? <Translate component="div"
-                                                           className={!this.state.depositAmountError ? "mt_2 mb_5 color-gray fz_14" : "mt_2 mb_5 color-danger fz_14"}
+                                                           className={!this.state.depositAmountError ? "mt_2 mb_5 color-dark-gray fz_14" : "mt_2 mb_5 color-danger fz_14"}
                                                            content="gateway.rmbpay.deposit_min_amount"
                                                            fee={minFee}
                     /> : null}
-                    {this.state.depositEmpty ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="gateway.rmbpay.error_emty" />
-                    </p> : null}
+                    {this.state.depositEmpty && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="gateway.rmbpay.error_emty" />}
                 </div>
 
                 {/* Fee selection */}
+
                 <div className="content-block ">
-                    <div className="gate_fee left-label"><Translate component="span" content="gateway.transwiser.fee_deposit" /></div>
-                    <div className=" gate_fee text-right color_white">
-                        {this.state.fee}
-                    </div>
-                </div>
-
-
-                <div>
                     <label className="left-label">
-                        <Translate component="span" content="gateway.rmbpay.tokens_receive" />
+                        <Translate component="span" content="gateway.transwiser.fee_deposit" />
                     </label>
                     <div className="content-block input-wrapper">
-                        <input type="text" disabled value={this.state.tokenAmount.toFixed(2)} />
+                        <input type="text" disabled value={this.state.fee} />
                         <div className="form-label select floating-dropdown color_white">
                             <div className="dropdown-wrapper inactive">
-                                <div>RMBPAY</div>
+                                <div>CNY</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div>
+                    <div className="content-block gate_fee left-label">
+                        <Translate component="span" content="gateway.rmbpay.tokens_receive" />
+                    </div>
+                    <div className="content-block gate_fee text-right color_white">
+                        {this.state.tokenAmount} RMBPAY
+                    </div>
+                </div>
+
 
                 {/*Payment service ID*/}
-                <div className="content-block">
+                <div>
                     <label className="left-label">
-                        <Translate component="span" content="gateway.pay_service" />
-                        ({paymentService.name})
+                        <Translate component="span" content="gateway.pay_service" /> ({paymentService.name})
                     </label>
                     <div className="blocktrades-select-dropdown">
                         <div className="inline-label">
@@ -375,17 +387,17 @@ class DepositModalRmbpay extends React.Component {
                             />
                         </div>
                     </div>
-
-                    {this.state.invalidAddressMessage ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="gateway.rmbpay.error_emty" />
-                    </p> : null}
+                    {<Translate component="div" className={"mt_2 mb_5 color-danger fz_14 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
                 </div>
 
                 {/* Request Deposit/Cancel buttons */}
-                <div className="button-group float-right">
+                <div className="float-right">
                     <div onClick={this.onSubmit.bind(this)} className="button" >
                         <Translate content="gateway.rmbpay.btn_request_deposit" />
                     </div>
-                    <div className="button" onClick={this.onClose.bind(this)} ><Translate content="account.perm.cancel" /></div>
+                    <div className="button" onClick={this.onClose.bind(this)} >
+                        <Translate content="account.perm.cancel" />
+                    </div>
                 </div>
             </div>);
     }
@@ -421,7 +433,6 @@ class DepositModalRmbpay extends React.Component {
                         <div className={disable ? "disabled-form" : ""}>
                             {this.state.showQr ? this._renderQR() : this._renderDepositeForm()}
                         </div>
-
                     </div>
                 </form>
             </div>

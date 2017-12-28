@@ -36,6 +36,10 @@
   ) {
 
 
+  .hidden {
+    visibility: hidden;
+  }
+  
   .spinner-button-circle .circle-wrapper{
     display: inline-block;
     vertical-align: middle;
@@ -93,6 +97,10 @@
 
   .color-gray{
     color: darken($primary-text-color,20%);
+  }
+
+  .color-dark-gray{
+    color: darken($primary-text-color,50%);
   }
 
   #deposit_asset_openledger-dex_CNY,
@@ -543,6 +551,19 @@
   div.input-wrapper {
     > div.input-right-symbol {
       color: $secondary-text-color;
+    }
+  }
+
+  .rmbpay {
+    .dropdown-wrapper {
+      ul.dropdown {
+        min-width: 230px;
+
+        > li > span {
+          color: $secondary-text-color;
+          font-weight: normal;
+        }
+      }
     }
   }
 

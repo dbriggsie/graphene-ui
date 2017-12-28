@@ -9,7 +9,7 @@ import ChainTypes from "../Utility/ChainTypes";
 import AccountActions from "actions/AccountActions";
 import ReactTooltip from "react-tooltip";
 import counterpart from "counterpart";
-import {requestDepositAddress, validateAddress, WithdrawAddresses} from "common/blockTradesMethods";
+import {requestDepositAddress, validateAddress, WithdrawAddresses, getDepositAddress} from "common/blockTradesMethods";
 import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
 import CopyButton from "../Utility/CopyButton";
 import Icon from "../Icon/Icon";
@@ -40,7 +40,7 @@ class DepositWithdrawContent extends DecimalChecker {
 
     constructor(props) {
         super();
-        console.log("constructor");
+
         this.state = {
             toAddress: WithdrawAddresses.getLast(props.walletType),
             withdrawValue:"",
@@ -52,12 +52,13 @@ class DepositWithdrawContent extends DecimalChecker {
             }),
             fee_asset_id: "1.3.0",
             feeStatus: {},
-            loading: false
+            loading: false,
+            emptyAddressDeposit: false
         };
 
         this._validateAddress(this.state.toAddress, props);
 
-        this.deposit_address_cache = new BlockTradesDepositAddressCache();
+        //this.deposit_address_cache = new BlockTradesDepositAddressCache();
         this.addDepositAddress = this.addDepositAddress.bind(this);
         this._checkFeeStatus = this._checkFeeStatus.bind(this);
         this._checkBalance = this._checkBalance.bind(this);
@@ -94,12 +95,8 @@ class DepositWithdrawContent extends DecimalChecker {
     _getDepositAddress() {
         if (!this.props.backingCoinType) return;
         let account_name = this.props.sender.get("name");
-        let receive_address = this.deposit_address_cache.getCachedInputAddress(
-            "openledger",
-            account_name,
-            this.props.backingCoinType.toLowerCase(),
-            this.props.symbol.toLowerCase()
-        );
+
+        let receive_address =  getDepositAddress({coin: `open.${(this.props.backingCoinType).toLowerCase()}`,  account: this.props.account,  stateCallback: this.addDepositAddress})
         if (!receive_address) {
             requestDepositAddress(this._getDepositObject());
         } else {
@@ -120,21 +117,29 @@ class DepositWithdrawContent extends DecimalChecker {
 
     requestDepositAddressLoad(){
         this.setState({
-            loading: true
+            loading: true,
+            emptyAddressDeposit: false
         })
         requestDepositAddress(this._getDepositObject())
     }
 
     addDepositAddress( receive_address ) {
+        console.log('simpleDepWith receive_address===',receive_address)
         let account_name = this.props.sender.get("name");
-        this.deposit_address_cache.cacheInputAddress(
+
+        if(receive_address.error){
+            receive_address.error.message == 'no_address' ? this.setState({emptyAddressDeposit: true}) : this.setState({emptyAddressDeposit: false})
+        }
+
+     /*   this.deposit_address_cache.cacheInputAddress(
             "openledger",
             account_name,
             this.props.backingCoinType.toLowerCase(),
             this.props.symbol.toLowerCase(),
             receive_address.address,
             receive_address.memo
-        );
+        );*/
+
         this.setState({
             receive_address,
             loading: false
@@ -489,7 +494,7 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     _renderDeposit() {
-        const {receive_address, loading} = this.state;
+        const {receive_address, loading, emptyAddressDeposit} = this.state;
         const {name: assetName} = utils.replaceName(this.props.asset.get("symbol"), !!this.props.asset.get("bitasset"));
         const hasMemo = receive_address && "memo" in receive_address && receive_address.memo;
         const addressValue = receive_address && receive_address.address || "";
@@ -520,13 +525,9 @@ class DepositWithdrawContent extends DecimalChecker {
                         <label className="fz_12 left-label"><Translate content="gateway.deposit_notice_delay" /></label>
                     </p>
                     {!addressValue ? <LoadingIndicator type="three-bounce"/> :<label>
-                        <span className="inline-label">
-                            <input readOnly type="text" value={addressValue} />
 
-                            <CopyButton
-                                text={addressValue}
-                            />
-                        </span>
+                           {emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> : <span className="inline-label"><input readOnly type="text" value={addressValue} /><CopyButton text={addressValue} /> </span> }
+
                     </label>}
                     {hasMemo ?
                         <label>
@@ -539,10 +540,10 @@ class DepositWithdrawContent extends DecimalChecker {
                             </span>
                         </label> : null}
 
-                    {receive_address && receive_address.error ?
+                  {/*  {receive_address && receive_address.error ?
                         <div className="has-error" style={{paddingTop: 10}}>
                             {receive_address.error.message}
-                        </div> : null}
+                        </div> : null}*/}
                 </div>
 
                 <div className="button-group SimpleTrade__withdraw-row">

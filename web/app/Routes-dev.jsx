@@ -6,7 +6,6 @@ import App from "./App";
 
 // Components imported here for react hot loader (does not work with async route loading)
 import DashboardContainer from "./components/Dashboard/DashboardContainer";
-import Das_root from "./components/Dashboard/Das_root";
 import Witnesses from "./components/Explorer/Witnesses";
 import CommitteeMembers from "./components/Explorer/CommitteeMembers";
 import FeesContainer from "./components/Blockchain/FeesContainer";
@@ -67,7 +66,6 @@ const routes = (
         <IndexRoute component={DashboardContainer}/>
         <Route path="/auth/:data" component={Auth}/>
         <Route path="/dashboard" component={DashboardContainer}/>
-        <Route path="/root" component={Das_root}/>
         <Route path="/welcome" component={Welcome}/>
         <Route path="explorer" component={Explorer}/>
 
