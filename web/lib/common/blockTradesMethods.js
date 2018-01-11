@@ -71,7 +71,6 @@ export function getDepositAddress({coin, account, stateCallback}) {
         data => {
             data.json()
         .then( json => {
-            console.log('serv===', json)
             let address = {"address": json.address, "memo": json.memo || null, error: json.error || null, loading: false};
             if (stateCallback) stateCallback(address);
         }, error => {
