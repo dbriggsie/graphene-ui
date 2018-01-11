@@ -403,7 +403,7 @@
       "about": "About",
       "create_worker": "Create a new worker",
       "line": "Line",
-      "save_finish": "Click save to finish",
+      "save_finish": "Click publish changes to finish",
       "threshold": "Votes required to activate",
       "missing": "Needed"
     },
@@ -425,6 +425,14 @@
     "payees": "Payees",
     "permissions": "Permissions",
     "voting": "Voting",
+    "fast_voting": {
+      "invitation_intro": "It gives us great pleasure to offer you the opportunity to take part in the development of the OpenLedger DC.",
+      "invitation_explanation": "As you know, BitShares is a blockchain based on {DPOS consensus} (link), which means that your funds (stake) influence the quality and stability of the entire network. It is therefore important that you are voting actively and regularly, according to the rapidly changing developments within the blockchain (witness & committees structure and stats, working proposals, etc.). Everything related to voting can be found {here} link.",
+      "invitation_conclusion": "If you are not able to stay updated on the developments and an active voter, we suggest an alternative option - to delegate your votes to OpenLedger, by choosing the official OpenLedger account as a 'proxy'. This will be a great support for OpenLedger as a project, and it will allow you to automatically vote for the same proposals as OpenLedger. This will ensure that your votes (funds) are active on the network, and we promise that we will handle your votes with due diligence and responsibility, by supporting proposals that benefits the overall network and in partcular our users - the only way for OpenLedger to succeed is for its users to succeed!",
+      "invitation_click": "If you would like to support OpenLedger, simply click the 'Vote' button below:",
+      "vote": "Vote",
+      "title": "Vote for openledger"
+    },
     "orders": "Orders",
     "select_placeholder": "Select Account...",
     "errors": {
@@ -940,6 +948,7 @@
     "backup_key": "Import a private key",
     "backup_legacy": "Import a BTS 0.9.3c key export file (.json)",
     "backup_brainkey": "Restore using a local wallet brainkey",
+    "backup_brainkey_restore": "Restore with brainkey",
     "backup_favorites": "Restore favorites using a json file",
     "backup_favorites_error": "Could not parse JSON.",
     "backup_favorites_finish": "Import favorites",
@@ -1379,8 +1388,7 @@
   "gateway": {
     "please_generate_address": "Please, get new address ",
     "service_unavailable": "Service is temporarily unavailable. Please try again later.",
-    "pay_service": "Payment Service ID",
-    "pay_service_withdraw": "Payment Service ID (Alipay)",
+    "pay_service_alipay": "Payment Service ID (Alipay)",
     "fee": "Gateway fee",
     "title": "Deposit & Withdraw",
     "history_title": "Transaction History",
@@ -1491,27 +1499,35 @@
     "contact_TRADE": "Contact Blocktrades",
     "over_limit": "Limit Reached",
     "rmbpay": {
-      "info": "RMBpay Transfer Service provides an opportunity to carry out deposit and withdrawal operations with CNY currency using the Alipay payment service.",
+      "info": "RMBPAY Transfer Service provides an opportunity to carry out deposit and withdrawal operations with CNY currency using the Alipay payment service.",
       "deposit_info": "After deposit of CNY you will receive the corresponding amount of RMBPAY tokens on your OpenLedger account.",
       "withdrawal_info": "After withdrawal of RMBPAY you will receive the corresponding amount of CNY currency on your Alipay account.",
       "ok": "ok",
-      "server_unavailable": "Service is temporary unavailable. Please try later.",
       "withdraw": "Withdraw %(coin)s",
-      "withdraw_receive": "Amount to Receive",
       "tokens_receive":"Tokens to Receive",
       "deposit_min_amount": "Amount to deposit must be more than %(fee)s CNY",
       "btn_request_deposit": "Request Deposit",
       "error_emty": "Field is required",
+      "captcha_label": "Please enter the text you see in the box above",
+      "max_requests_error": "You have exceeded the allowed number of deposit requests.<br/>Next request will be available on %(date)s UTC.",
+      "wrong_captcha_error": "Captcha value is wrong. Please try again",
       "error_max_value":"Amount to withdraw must be more or equal than %(val)s RMBPAY",
       "error_min_value":"Amount to withdraw must be less or equal than %(val)s RMBPAY",
       "error_min_receive": "Amount to receive must be more or equal than 1 CNY",
       "error_max_receive": "Amount to receive must be less or equal than %(val)s CNY",
-      "not_enaught_balance": "Operation can not be performed. You don`t have enough tokens to pay the Fee",
-      "withdrawalModal": {
+      "not_enaught_balance": "Operation can not be performed.<br />You don`t have enough tokens to pay the Fee.",
+      "scan_qr": "To complete the deposit scan the QR-code and send money to that address",
+      "transfer_24_h": "Tokens will be transferred to your account in 24 hours",
+      "amount_to_transfer": "Amount to transfer:",
+      "balance": "Current balance:",
+      "amount_to_deposit": "Amount to Deposit",
+      "withdrawal_modal": {
         "fee_blockchain": "Blockchain Fee",
         "fee_withdraw": "Withdrawal Fee",
-        "amount_receive":"Amount to Receive",
-        "amount_withdraw":"Amount to Withdraw"
+        "amount_receive": "Amount to Receive",
+        "amount_withdraw": "Amount to Withdraw",
+        "withdraw_amount": "I want to Withdraw the amount of RMBPAY",
+        "receive_amount": "I want to Receive the amount of CNY"
       }
     }
   },

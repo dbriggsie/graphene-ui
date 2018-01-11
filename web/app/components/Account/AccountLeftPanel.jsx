@@ -109,7 +109,7 @@ class AccountLeftPanel extends React.Component {
                             />
                             <div className="grid-container no-margin" style={{paddingTop: 20, maxWidth: imageSize.width}}>
                                 <div onClick={this._depositClick.bind(this)} style={{paddingBottom: 15}}><Translate className="button block-button no-margin" content="account.deposit"/></div>
-                                <div style={{paddingBottom: 15}}><Link to={`/transfer/?to=${account_name}`}><Translate className="button block-button no-margin" content="account.pay"/></Link></div>
+                                {isMyAccount? null : <div style={{paddingBottom: 15}}><Link to={`/transfer/?to=${account_name}`}><Translate className="button block-button no-margin" content="account.pay"/></Link></div>}
                                 { linkBtn }
                             </div>
                         </div>

@@ -12,6 +12,7 @@ import OpenLedgerFiatTransactionHistory from "../DepositWithdraw/openledger/Open
 import BlockTradesBridgeDepositRequest from "../DepositWithdraw/blocktrades/BlockTradesBridgeDepositRequest";
 import HelpContent from "../Utility/HelpContent";
 import AccountStore from "stores/AccountStore";
+import { ChainStore } from "bitsharesjs/es"
 import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
 import { Apis } from "bitsharesjs-ws";
@@ -25,6 +26,8 @@ import BaseModal from "../Modal/BaseModal";
 import DepositModalRmbpay from "../DepositWithdraw/openledger/DepositModalRmbpay";
 import WithdrawModalRmbpay from "../DepositWithdraw/openledger/WithdrawModalRmbpay";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
+
+const RMBPAY_ASSET_ID = "1.3.2562"
 
 class AccountDepositWithdraw extends React.Component {
 
@@ -124,6 +127,14 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
+    _getRmbpayBalance() {
+        const rmbpayBalance = this.props.account.get("balances").toJS()[RMBPAY_ASSET_ID]
+        const balanceObject = rmbpayBalance ? ChainStore.getObject(rmbpayBalance) : 0
+        const rmbPayAsset = ChainStore.getAsset("RMBPAY")
+        const precision = rmbPayAsset ? utils.get_asset_precision(rmbPayAsset) : 1
+        return balanceObject ? balanceObject.get("balance") / precision : 0
+    }
+
     renderServices(blockTradesGatewayCoins, openLedgerGatewayCoins) {
         //let services = ["Openledger (OPEN.X)", "BlockTrades (TRADE.X)", "Transwiser", "BitKapital"];
         let serList = [];
@@ -212,19 +223,21 @@ class AccountDepositWithdraw extends React.Component {
                 </div>)
         });
 
-      /* serList.push({
+        const rmbpayBalance = this._getRmbpayBalance()
+        /* 
+        serList.push({
             name: "RMBpay",
             template: (
                 <div>
+                    <div>
+                        <p>
+                            <Translate content="gateway.rmbpay.info" />
+                        </p>
+                        <p>
+                            <Translate content="gateway.rmbpay.balance" /> {rmbpayBalance} RMBPAY
+                        </p>
+                    </div>
                     <div className="grid-block vertical medium-horizontal no-margin no-padding">
-                        <div>
-                            <p>
-                                <Translate content="gateway.rmbpay.info" />
-                            </p>
-                            <p>
-                                <Translate content="gateway.balance" /> : 100 RMBPAY
-                            </p>
-                        </div>
 
                         <div className="medium-5">
                             <p>
@@ -243,12 +256,10 @@ class AccountDepositWithdraw extends React.Component {
                     </div>
 
                 </div>
-
-
             )
-        });*/
+        });
 
-        /*   serList.push({
+          serList.push({
                name: "Transwiser",
                template: (
                    <div>
@@ -300,7 +311,7 @@ class AccountDepositWithdraw extends React.Component {
     }
 
     onDeposit() {
-        this.depositModalRmbpay.refs.bound_component.fetchDepositData();
+        this.depositModalRmbpay.refs.bound_component.onOpen();
         ZfApi.publish(this.getDepositModalId(), "open");
     }
 
@@ -379,12 +390,12 @@ class AccountDepositWithdraw extends React.Component {
                                         account={account.get("name")} custom_image={null}
                                     />
                                     <input type="text"
-                                           value={account.get("name")}
-                                           placeholder={null}
-                                           disabled
-                                           onChange={() => { }}
-                                           onKeyDown={() => { }}
-                                           tabIndex={1}
+                                        value={account.get("name")}
+                                        placeholder={null}
+                                        disabled
+                                        onChange={() => { }}
+                                        onKeyDown={() => { }}
+                                        tabIndex={1}
                                     />
                                 </div>
                             </div>
@@ -406,8 +417,8 @@ class AccountDepositWithdraw extends React.Component {
                             output_coin_symbol="CNY"
                             output_coin_type="cny"
                             modal_id={deposit_modal_id}
-                            ref={ modal => { this.depositModalRmbpay = modal; }}
-                            /* balance={{'id': 100}}*/
+                            ref={modal => { this.depositModalRmbpay = modal; }}
+                        /* balance={{'id': 100}}*/
                         />
                     </div>
                 </BaseModal>
@@ -422,8 +433,8 @@ class AccountDepositWithdraw extends React.Component {
                             output_coin_symbol="RMBPAY"
                             output_coin_type="RMBPAY"
                             modal_id={withdraw_modal_id}
-                            balance={this.props.account.get("balances").toJS()["1.3.2562"]}
-                            ref={ modal => { this.withdrawModalRmbpay = modal; }}
+                            balance={this.props.account.get("balances").toJS()[RMBPAY_ASSET_ID]}
+                            ref={modal => { this.withdrawModalRmbpay = modal; }}
                         />
                     </div>
                 </BaseModal>

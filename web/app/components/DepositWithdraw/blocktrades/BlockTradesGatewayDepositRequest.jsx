@@ -109,7 +109,6 @@ class BlockTradesGatewayDepositRequest extends React.Component {
     }
 
     addDepositAddress( receive_address ) {
-        console.log('blocktadesgateway receive_address===',receive_address)
         if(receive_address.error){
             receive_address.error.message == 'no_address' ? this.setState({emptyAddressDeposit: true}) : this.setState({emptyAddressDeposit: false})
         }

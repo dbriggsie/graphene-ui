@@ -56,8 +56,8 @@ class WithdrawModalRmbpay extends React.Component {
             withdrawTokenAmount: 0,
             fee_rmbpay_withdraw: 0.02,
             fees: {
-                fee_min_val_dep: 0,
-                fee_share_dep: 0
+                fee_min_val_withd: 0,
+                fee_share_withd: 0
             },
             gateFee: 0.00,
             loading: true,
@@ -108,7 +108,8 @@ class WithdrawModalRmbpay extends React.Component {
                 action: "get_data",
                 data: {
                     currency_name_id: "RMBPAY",
-                    account_ol: this.props.account.get("name")
+                    account_ol: this.props.account.get("name"),
+                    account_id: this.props.account.get("id")
                 }
             })
         }).then(
@@ -117,7 +118,7 @@ class WithdrawModalRmbpay extends React.Component {
                     throw "Request failed";
                 }
                 response.json().then((data) => {
-                    if (data.error === "true") {
+                    if (data.success !== "true") {
                         throw "Request failed";
                     }
                     this.setState({
@@ -127,9 +128,8 @@ class WithdrawModalRmbpay extends React.Component {
                     this._handleRmbPayResponse(false);
                 });
             }).catch(() => {
-
-            this._handleRmbPayResponse(true);
-        });
+                this._handleRmbPayResponse(true);
+            });
     }
 
     _sendWithdrawAudit() {
@@ -151,12 +151,13 @@ class WithdrawModalRmbpay extends React.Component {
                     withd_fee: this.state.gateFee,
                     withd_receive_amount_to_user: this.state.isWithdrawAction ? this.state.tokenAmount : this.state.receiveAmount,
                     account_ol: this.props.account.get("name"),
+                    account_id: this.props.account.get("id"),
                     currency_name_id: "RMBPAY",
                     services_id: this.state.service.id,
                     user_service_id: this.state.userServiceId,
                     fees: {
-                        fee_share_dep: this.state.fees.fee_share_dep,
-                        fee_min_val_dep: this.state.fees.fee_min_val_dep
+                        fee_share_withd: this.state.fees.fee_share_withd,
+                        fee_min_val_withd: this.state.fees.fee_min_val_withd
                     }
                 }
             })
@@ -166,15 +167,14 @@ class WithdrawModalRmbpay extends React.Component {
                     throw "Request failed";
                 }
                 response.json().then((data) => {
-                    if (data.error === "true") {
+                    if (data.success !== "true") {
                         throw "Request failed";
                     }
                     this._handleRmbPayResponse(false);
                 });
             }).catch(() => {
-
-            this._handleRmbPayResponse(true);
-        });
+                this._handleRmbPayResponse(true);
+            });
     }
 
     _handleRmbPayResponse(isError) {
@@ -198,7 +198,6 @@ class WithdrawModalRmbpay extends React.Component {
             options: ["price_per_kbyte"]
         })
             .then(({ fee, hasBalance, hasPoolBalance }) => {
-
                 if (this.unMounted) {
                     return
                 }
@@ -274,10 +273,10 @@ class WithdrawModalRmbpay extends React.Component {
                 value: balance
             }
         }
-        if (amount < +this.state.fees.fee_min_val_dep + 1) {
+        if (amount < +this.state.fees.fee_min_val_withd + 1) {
             return {
                 message: `gateway.rmbpay.error_max_value`,
-                value: +this.state.fees.fee_min_val_dep + 1
+                value: +this.state.fees.fee_min_val_withd + 1
             }
         }
         return false
@@ -296,7 +295,7 @@ class WithdrawModalRmbpay extends React.Component {
         }
         const balance = this._getBalance()
         const blockChainFee = this._getBlockchainFee()
-        const maxValue = this._round(balance - blockChainFee - this.state.fees.fee_min_val_dep, 2)
+        const maxValue = this._round(balance - blockChainFee - this.state.fees.fee_min_val_withd, 2)
         if (amount > maxValue) {
             return {
                 message: `gateway.rmbpay.error_max_receive`,
@@ -362,11 +361,11 @@ class WithdrawModalRmbpay extends React.Component {
 
     _calculateGateFee(amount) {
         const fees = this.state.fees || {
-            fee_share_dep: 0,
-            fee_min_val_dep: 0
+            fee_share_withd: 0,
+            fee_min_val_withd: 0
         }
-        const minFee = +fees.fee_min_val_dep
-        const procFee = +fees.fee_share_dep
+        const minFee = +fees.fee_min_val_withd
+        const procFee = +fees.fee_share_withd
         let gateFee = this.state.isWithdrawAction ? amount * procFee : procFee * amount / (1 - procFee)
         gateFee = gateFee > +minFee ? gateFee : minFee
 
@@ -400,7 +399,7 @@ class WithdrawModalRmbpay extends React.Component {
 
     _checkBalance() {
         //const blockChainFee = this.state.feeAmount ? +this.state.feeAmount.getAmount({ real: true }) : 0;
-        const minFee = this.state.fees.fee_min_val_dep
+        const minFee = this.state.fees.fee_min_val_withd
         const balance = this._getBalance()
         if (balance < minFee + 1) {
             this.setState({
@@ -410,7 +409,6 @@ class WithdrawModalRmbpay extends React.Component {
     }
 
     onSubmit() {
-
         Promise.all([
             this._validateServiceEmpty(),
             this._validateAmount()
@@ -422,14 +420,20 @@ class WithdrawModalRmbpay extends React.Component {
                     AccountActions.transfer(
                         this.props.account.get("id"),
                         this.props.issuer_account.get("id"),
-                        quantity * precision,
+                        this._fixFloatPrecision(quantity * precision),
                         this.props.asset.get("id"),
                         null,
                         null,
                         this.state.fee_asset_id
                     ).then(() => {
                         this._sendWithdrawAudit()
+                        ZfApi.publish(this.props.modal_id, "close")
+                        
                     }).catch(() => {
+                        ZfApi.publish(this.props.modal_id, "close")
+                    })
+                    this.setState({
+                        loading: true
                     })
                 }
 
@@ -438,7 +442,6 @@ class WithdrawModalRmbpay extends React.Component {
 
     onClose() {
         ZfApi.publish(this.props.modal_id, "close")
-        this._resetState()
     }
 
     _resetState() {
@@ -468,7 +471,7 @@ class WithdrawModalRmbpay extends React.Component {
         const { feeAmount } = this.state
         if (Object.keys(this.props.account.get("balances").toJS()).includes(this.props.asset.get("id"))) {
             let total = new Asset({
-                amount: this.props.balance.get("balance"),
+                amount: this.props.balance ? this.props.balance.get("balance") : 0,
                 asset_id: this.props.asset.get("id"),
                 precision: this.props.asset.get("precision")
             })
@@ -589,13 +592,18 @@ class WithdrawModalRmbpay extends React.Component {
     }
 
     _round(value, fixed) {
+        value = this._fixFloatPrecision(value)
+        fixed = fixed || 0
+        fixed = Math.pow(10, fixed)
+        return (Math.floor(this._fixFloatPrecision(value * fixed)) / fixed) || 0
+    }
+
+    _fixFloatPrecision(value) {
         const rounded = value.toFixed(4)
         if (Math.abs(rounded - value) < 0.00001) {
             value = rounded
         }
-        fixed = fixed || 0
-        fixed = Math.pow(10, fixed)
-        return Math.floor(value * fixed) / fixed
+        return +value
     }
 
     render() {
@@ -603,7 +611,7 @@ class WithdrawModalRmbpay extends React.Component {
         let { output_coin_symbol, output_coin_name } = this.props
         const gateFee = this.state.gateFee
 
-        const minFee = this._round(+this.state.fees.fee_min_val_dep + 1, 2)
+        const minFee = this._round(+this.state.fees.fee_min_val_withd + 1, 2)
 
         let isWithdrawAction = this.state.isWithdrawAction
 
@@ -656,7 +664,7 @@ class WithdrawModalRmbpay extends React.Component {
 
         const disableForm = this.state.loading || this.state.serverError || this.state.balanceError
 
-        const maxValue = this._round(this._getBalance() - this._getBlockchainFee() - this.state.fees.fee_min_val_dep, 2)
+        const maxValue = this._round(this._getBalance() - this._getBlockchainFee() - this.state.fees.fee_min_val_withd, 2)
 
         const assetId = this.state.isWithdrawAction ? this.props.asset.get("id") : CNY_ASSET_ID
 
@@ -667,16 +675,26 @@ class WithdrawModalRmbpay extends React.Component {
                         <div className="content-block">
                             <h3><Translate content="gateway.rmbpay.withdraw" coin={output_coin_name} symbol={output_coin_symbol} /></h3>
                         </div>
-                        {this.state.loading && <LoadingIndicator />}
-                        {this.state.balanceError && <Translate component="div" className="mt_5 mb_5 color-danger" content="gateway.rmbpay.not_enaught_balance" />}
-                        {this.state.serverError && <Translate component="div" unsafe className="mt_5 mb_5 color-danger" content="gateway.rmbpay.server_unavailable" />}
+                        <div className="center-content content-block">
+                            {this.state.balanceError && <Translate component="div" className="mt_5 mb_5 color-danger" unsafe content="gateway.rmbpay.not_enaught_balance" />}
+                            {this.state.serverError && <Translate component="div" unsafe className="mt_5 mb_5 color-danger" content="gateway.service_unavailable" />}
+                        </div>
                         {/* {this.state.loading} */}
                         <div className={disableForm ? "disabled-form" : null}>
+                            {this.state.loading && <LoadingIndicator />}
                             <div style={{ paddingBottom: 15 }}>
                                 <ul className="button-group btn-row segmented tabs-withdraw">
 
-                                    <li className={isWithdrawAction ? "is-active" : ""}><a onClick={this.changeActionTab.bind(this, true)}>I want to Withdraw the amount of RMBPAY</a></li>
-                                    <li className={!isWithdrawAction ? "is-active" : ""}><a onClick={this.changeActionTab.bind(this, false)}>I want to Receive the amount of CNY</a></li>
+                                    <li className={isWithdrawAction ? "is-active" : ""}>
+                                        <a onClick={this.changeActionTab.bind(this, true)}>
+                                            {counterpart.translate("gateway.rmbpay.withdrawal_modal.withdraw_amount")}
+                                        </a>
+                                    </li>
+                                    <li className={!isWithdrawAction ? "is-active" : ""}>
+                                        <a onClick={this.changeActionTab.bind(this, false)}>
+                                            {counterpart.translate("gateway.rmbpay.withdrawal_modal.receive_amount")}
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
 
@@ -685,26 +703,26 @@ class WithdrawModalRmbpay extends React.Component {
                             <div >
                                 <div className="content-block">
 
-                                    <AmountSelector label={isWithdrawAction ? "modal.deposit.withdraw" : "gateway.rmbpay.withdraw_receive"}
-                                                    amount={isWithdrawAction ? this.state.withdrawAmount : this.state.receiveAmount}
-                                                    asset={assetId}
-                                                    assets={[assetId]}
-                                                    placeholder=""
-                                                    onChange={isWithdrawAction ? this.onWithdrawAmountChange.bind(this) : this.onReceiveAmountChange.bind(this)}
-                                                    ref="amountWithdraw"
-                                                    display_balance={this.state.isWithdrawAction && balance}
+                                    <AmountSelector label={isWithdrawAction ? "gateway.rmbpay.withdrawal_modal.amount_withdraw" : "gateway.rmbpay.withdrawal_modal.amount_receive"}
+                                        amount={isWithdrawAction ? this.state.withdrawAmount : this.state.receiveAmount}
+                                        asset={assetId}
+                                        assets={[assetId]}
+                                        placeholder=""
+                                        onChange={isWithdrawAction ? this.onWithdrawAmountChange.bind(this) : this.onReceiveAmountChange.bind(this)}
+                                        ref="amountWithdraw"
+                                        display_balance={this.state.isWithdrawAction && balance}
                                     />
                                     {!this.state.amountError && (
-                                        this.state.isWithdrawAction ? <Translate component="div" className="mt_2 mb_5 color-dark-gray fz_14" content="gateway.rmbpay.error_max_value" val={minFee} />
-                                            : <Translate component="div" className="mt_2 mb_5 color-dark-gray fz_14" content="gateway.rmbpay.error_max_receive" val={maxValue} />
+                                        this.state.isWithdrawAction ? <Translate component="div" className="mt_2 mb_5 help-text fz_14" content="gateway.rmbpay.error_max_value" val={+minFee} />
+                                            : <Translate component="div" className="mt_2 mb_5 help-text fz_14" content="gateway.rmbpay.error_max_receive" val={+maxValue} />
                                     )}
-                                    {this.state.amountError && <Translate component="div" className="mt_2 mb_5 color-danger fz_14 " content={this.state.amountError.message} val={this.state.amountError.value} />}
+                                    {this.state.amountError && <Translate component="div" className="mt_2 mb_5 color-danger fz_14 " content={this.state.amountError.message} val={+this.state.amountError.value} />}
                                 </div>
 
                                 {/* Fee Blockchain selection */}
-                                {this.state.feeAmount ? <div className="content-block gate_fee rmbpay" style={{ paddingRight: 5 }}>
+                                {this.state.feeAmount ? <div className="content-block gate_fee" style={{ paddingRight: 5 }}>
                                     <label className="left-label">
-                                        <Translate content="gateway.rmbpay.withdrawalModal.fee_blockchain" />
+                                        <Translate content="gateway.rmbpay.withdrawal_modal.fee_blockchain" />
 
                                         <span data-html={true} data-tip={this.state.isWithdrawAction ? ((this.state.takenFromAmount
                                             ? counterpart.translate("tooltip.withdraw_take_from_amount")
@@ -723,7 +741,7 @@ class WithdrawModalRmbpay extends React.Component {
                                         tabIndex={tabIndex++}
                                         startListCurrency="RMBPAY"
                                     />
-                                    {!this.state.hasBalance ? <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noFeeBalance" /> : null}
+                                    {(!this.state.hasBalance && !this.state.balanceError) ? <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noFeeBalance" /> : null}
                                     {!this.state.hasPoolBalance ? <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noPoolBalance" /> : null}
                                 </div> : null}
 
@@ -731,7 +749,7 @@ class WithdrawModalRmbpay extends React.Component {
 
                                 <div className="content-block right-selector gate_fee" style={{ paddingLeft: 5 }}>
                                     <label className="left-label">
-                                        <Translate content="gateway.rmbpay.withdrawalModal.fee_withdraw" />
+                                        <Translate content="gateway.rmbpay.withdrawal_modal.fee_withdraw" />
                                         <span data-tip={counterpart.translate("tooltip.withdraw_fee")} className="inline-block tooltip" style={{ paddingLeft: '7px' }}>
                                             <Icon className="icon-14px" name="info" />
                                         </span>
@@ -749,25 +767,24 @@ class WithdrawModalRmbpay extends React.Component {
 
                                 <div>
                                     <div className="content-block gate_fee left-label" style={{ marginBottom: '2.6rem' }}>
-                                        <Translate content={isWithdrawAction ? "gateway.rmbpay.withdrawalModal.amount_receive" : "gateway.rmbpay.withdrawalModal.amount_withdraw"} />
+                                        <Translate content={isWithdrawAction ? "gateway.rmbpay.withdrawal_modal.amount_receive" : "gateway.rmbpay.withdrawal_modal.amount_withdraw"} />
                                     </div>
-                                    <div className="content-block gate_fee text-right color_white">
+                                    <div className="content-block gate_fee text-right light-text">
                                         {isWithdrawAction ? this.state.tokenAmount + " CNY" : this.state.quantity + " RMBPAY"}
                                     </div>
                                 </div>
                                 <div className="medium-12">
                                     <label className="left-label">
-                                        <Translate component="span" content="gateway.pay_service_withdraw" />
+                                        <Translate component="span" content="gateway.pay_service_alipay" />
                                     </label>
                                     <div className="blocktrades-select-dropdown">
                                         <div className="inline-label">
                                             <input type="text"
-
-                                                   value={userServiceId}
-                                                   tabIndex="4"
-                                                   onChange={this.onWithdrawAddressChanged.bind(this)}
-                                                   ref="paymentId"
-                                                   autoComplete="off" />
+                                                value={userServiceId}
+                                                tabIndex="4"
+                                                onChange={this.onWithdrawAddressChanged.bind(this)}
+                                                ref="paymentId"
+                                                autoComplete="off" />
                                         </div>
                                         {<Translate component="div" className={"mt_2 mb_5 color-danger fz_14 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
                                     </div>

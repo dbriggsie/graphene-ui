@@ -10,10 +10,10 @@ import AmountSelector from "components/Utility/AmountSelector";
 import AccountActions from "actions/AccountActions";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import { validateAddress, WithdrawAddresses } from "common/blockTradesMethods";
-import {ChainStore} from "bitsharesjs/es";
+import { ChainStore } from "bitsharesjs/es";
 import Modal from "react-foundation-apps/src/modal";
 import { checkFeeStatusAsync, checkBalance } from "common/trxHelper";
-import {Asset} from "common/MarketClasses";
+import { Asset } from "common/MarketClasses";
 import { debounce } from "lodash";
 
 class WithdrawModalBlocktrades extends React.Component {
@@ -73,15 +73,15 @@ class WithdrawModalBlocktrades extends React.Component {
                 from_account: np.account,
                 feeStatus: {},
                 fee_asset_id: "1.3.0",
-                feeAmount: new Asset({amount: 0})
-            }, () => {this._updateFee(); this._checkFeeStatus();});
+                feeAmount: new Asset({ amount: 0 })
+            }, () => { this._updateFee(); this._checkFeeStatus(); });
         }
     }
 
     _updateFee(state = this.state) {
         let { fee_asset_id, from_account } = state;
         const { fee_asset_types } = this._getAvailableAssets(state);
-        if ( fee_asset_types.length === 1 && fee_asset_types[0] !== fee_asset_id) {
+        if (fee_asset_types.length === 1 && fee_asset_types[0] !== fee_asset_id) {
             fee_asset_id = fee_asset_types[0];
         }
 
@@ -95,7 +95,7 @@ class WithdrawModalBlocktrades extends React.Component {
                 content: this.props.output_coin_type + ":" + state.withdraw_address + (state.memo ? ":" + state.memo : "")
             }
         })
-            .then(({fee, hasBalance, hasPoolBalance}) => {
+            .then(({ fee, hasBalance, hasPoolBalance }) => {
                 if (this.unMounted) return;
 
                 this.setState({
@@ -141,11 +141,13 @@ class WithdrawModalBlocktrades extends React.Component {
         });
     }
 
-    onMemoChanged( e ) {
-        this.setState( {memo: e.target.value}, this._updateFee);
+    onMemoChanged(e) {
+        this.setState({ 
+            memo: e.target.value
+        }, this._updateFee);
     }
 
-    onWithdrawAmountChange( {amount} ) {
+    onWithdrawAmountChange({ amount }) {
 
         this.setState({
             withdraw_amount: amount,
@@ -155,7 +157,7 @@ class WithdrawModalBlocktrades extends React.Component {
 
     onSelectChanged(index) {
         let new_withdraw_address = WithdrawAddresses.get(this.props.output_wallet_type)[index];
-        WithdrawAddresses.setLast({wallet: this.props.output_wallet_type, address: new_withdraw_address});
+        WithdrawAddresses.setLast({ wallet: this.props.output_wallet_type, address: new_withdraw_address });
 
         this.setState({
             withdraw_address_selected: new_withdraw_address,
@@ -167,7 +169,7 @@ class WithdrawModalBlocktrades extends React.Component {
         this._validateAddress(new_withdraw_address);
     }
 
-    onWithdrawAddressChanged( e ) {
+    onWithdrawAddressChanged(e) {
         let new_withdraw_address = e.target.value.trim();
 
         this.setState({
@@ -180,7 +182,7 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     _validateAddress(new_withdraw_address, props = this.props) {
-        validateAddress({url: props.url, walletType: props.output_wallet_type, newAddress: new_withdraw_address})
+        validateAddress({ url: props.url, walletType: props.output_wallet_type, newAddress: new_withdraw_address })
             .then(isValid => {
                 if (this.state.withdraw_address === new_withdraw_address) {
                     this.setState({
@@ -192,12 +194,12 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     _checkBalance() {
-        const {feeAmount, withdraw_amount} = this.state;
-        const {asset, balance, gateFee} = this.props;
+        const { feeAmount, withdraw_amount } = this.state;
+        const { asset, balance, gateFee } = this.props;
         if (!balance || !feeAmount) return;
         const hasBalance = checkBalance(withdraw_amount, asset, feeAmount, balance, gateFee);
         if (hasBalance === null) return;
-        this.setState({balanceError: !hasBalance});
+        this.setState({ balanceError: !hasBalance });
         return hasBalance;
     }
 
@@ -205,22 +207,22 @@ class WithdrawModalBlocktrades extends React.Component {
         if ((!this.state.withdraw_address_check_in_progress) && (this.state.withdraw_address && this.state.withdraw_address.length) && (this.state.withdraw_amount !== null)) {
             if (!this.state.withdraw_address_is_valid) {
                 ZfApi.publish(this.getWithdrawModalId(), "open");
-            } else if (parseFloat(this.state.withdraw_amount) > 0){
+            } else if (parseFloat(this.state.withdraw_amount) > 0) {
                 if (!WithdrawAddresses.has(this.props.output_wallet_type)) {
                     let withdrawals = [];
                     withdrawals.push(this.state.withdraw_address);
-                    WithdrawAddresses.set({wallet: this.props.output_wallet_type, addresses: withdrawals});
+                    WithdrawAddresses.set({ wallet: this.props.output_wallet_type, addresses: withdrawals });
                 } else {
                     let withdrawals = WithdrawAddresses.get(this.props.output_wallet_type);
                     if (withdrawals.indexOf(this.state.withdraw_address) == -1) {
                         withdrawals.push(this.state.withdraw_address);
-                        WithdrawAddresses.set({wallet: this.props.output_wallet_type, addresses: withdrawals});
+                        WithdrawAddresses.set({ wallet: this.props.output_wallet_type, addresses: withdrawals });
                     }
                 }
-                WithdrawAddresses.setLast({wallet: this.props.output_wallet_type, address: this.state.withdraw_address});
+                WithdrawAddresses.setLast({ wallet: this.props.output_wallet_type, address: this.state.withdraw_address });
                 let asset = this.props.asset;
 
-                const {feeAmount} = this.state;
+                const { feeAmount } = this.state;
 
                 const amount = parseFloat(String.prototype.replace.call(this.state.withdraw_amount, /,/g, ""));
                 const gateFee = parseFloat(String.prototype.replace.call(this.props.gateFee, /,/g, ""));
@@ -274,20 +276,20 @@ class WithdrawModalBlocktrades extends React.Component {
         if (!WithdrawAddresses.has(this.props.output_wallet_type)) {
             let withdrawals = [];
             withdrawals.push(this.state.withdraw_address);
-            WithdrawAddresses.set({wallet: this.props.output_wallet_type, addresses: withdrawals});
+            WithdrawAddresses.set({ wallet: this.props.output_wallet_type, addresses: withdrawals });
         } else {
             let withdrawals = WithdrawAddresses.get(this.props.output_wallet_type);
             if (withdrawals.indexOf(this.state.withdraw_address) == -1) {
                 withdrawals.push(this.state.withdraw_address);
-                WithdrawAddresses.set({wallet: this.props.output_wallet_type, addresses: withdrawals});
+                WithdrawAddresses.set({ wallet: this.props.output_wallet_type, addresses: withdrawals });
             }
         }
-        WithdrawAddresses.setLast({wallet: this.props.output_wallet_type, address: this.state.withdraw_address});
+        WithdrawAddresses.setLast({ wallet: this.props.output_wallet_type, address: this.state.withdraw_address });
         let asset = this.props.asset;
         let precision = utils.get_asset_precision(asset.get("precision"));
         let amount = String.prototype.replace.call(this.state.withdraw_amount, /,/g, "");
 
-        const {feeAmount} = this.state;
+        const { feeAmount } = this.state;
 
         AccountActions.transfer(
             this.props.account.get("id"),
@@ -304,13 +306,13 @@ class WithdrawModalBlocktrades extends React.Component {
 
         if (WithdrawAddresses.has(this.props.output_wallet_type)) {
 
-            if(this.state.options_is_valid === false) {
-                this.setState({options_is_valid: true});
+            if (this.state.options_is_valid === false) {
+                this.setState({ options_is_valid: true });
                 this.setState({ withdraw_address_first: false });
             }
 
-            if(this.state.options_is_valid === true) {
-                this.setState({options_is_valid: false});
+            if (this.state.options_is_valid === true) {
+                this.setState({ options_is_valid: false });
             }
         }
     }
@@ -321,7 +323,7 @@ class WithdrawModalBlocktrades extends React.Component {
 
     onAccountBalance() {
         const { feeAmount } = this.state;
-        if (Object.keys(this.props.account.get("balances").toJS()).includes(this.props.asset.get("id")) ) {
+        if (Object.keys(this.props.account.get("balances").toJS()).includes(this.props.asset.get("id"))) {
             let total = new Asset({
                 amount: this.props.balance.get("balance"),
                 asset_id: this.props.asset.get("id"),
@@ -329,12 +331,12 @@ class WithdrawModalBlocktrades extends React.Component {
             });
 
             // Subtract the fee if it is using the same asset
-            if(total.asset_id === feeAmount.asset_id) {
+            if (total.asset_id === feeAmount.asset_id) {
                 total.minus(feeAmount);
             }
 
             this.setState({
-                withdraw_amount: total.getAmount({real: true}),
+                withdraw_amount: total.getAmount({ real: true }),
                 empty_withdraw_value: false
             }, this._checkBalance);
         }
@@ -344,7 +346,7 @@ class WithdrawModalBlocktrades extends React.Component {
         this.nestedRef = ref;
     }
 
-    onFeeChanged({asset}) {
+    onFeeChanged({ asset }) {
         this.setState({
             fee_asset_id: asset.get("id")
         }, this._updateFee);
@@ -364,7 +366,7 @@ class WithdrawModalBlocktrades extends React.Component {
 
         let fee_asset_types = [];
         if (!(from_account && from_account.get("balances"))) {
-            return {fee_asset_types};
+            return { fee_asset_types };
         }
         let account_balances = state.from_account.get("balances").toJS();
         fee_asset_types = Object.keys(account_balances).sort(utils.sortID);
@@ -389,12 +391,12 @@ class WithdrawModalBlocktrades extends React.Component {
             return hasFeePoolBalance(a) && hasBalance(a);
         });
 
-        return {fee_asset_types};
+        return { fee_asset_types };
     }
 
     render() {
-        let {withdraw_address_selected, memo} = this.state;
-        let {gateFee} = this.props;
+        let { withdraw_address_selected, memo } = this.state;
+        let { gateFee } = this.props;
 
         let storedAddress = WithdrawAddresses.get(this.props.output_wallet_type);
         let balance = null;
@@ -410,29 +412,28 @@ class WithdrawModalBlocktrades extends React.Component {
         if (this.state.options_is_valid) {
             options =
                 <div className={!storedAddress.length ? "blocktrades-disabled-options" : "blocktrades-options"}>
-                    {storedAddress.map(function(name, index){
+                    {storedAddress.map(function (name, index) {
                         return <a key={index} onClick={this.onSelectChanged.bind(this, index)}>{name}</a>;
                     }, this)}
                 </div>;
         }
 
-        if (!this.state.withdraw_address_check_in_progress && (this.state.withdraw_address && this.state.withdraw_address.length))
-        {
+        if (!this.state.withdraw_address_check_in_progress && (this.state.withdraw_address && this.state.withdraw_address.length)) {
             if (!this.state.withdraw_address_is_valid) {
 
-                invalid_address_message = <div className="has-error" style={{paddingTop: 10}}><Translate content="gateway.valid_address" coin_type={this.props.output_coin_type} /></div>;
+                invalid_address_message = <div className="has-error" style={{ paddingTop: 10 }}><Translate content="gateway.valid_address" coin_type={this.props.output_coin_type} /></div>;
                 confirmation =
                     <Modal id={withdrawModalId} overlay={true}>
                         <Trigger close={withdrawModalId}>
                             <a href="#" className="close-button">&times;</a>
                         </Trigger>
-                        <br/>
-                        <label><Translate content="modal.confirmation.title"/></label>
-                        <br/>
+                        <br />
+                        <label><Translate content="modal.confirmation.title" /></label>
+                        <br />
                         <div className="content-block">
                             <input type="submit" className="button"
-                                   onClick={this.onSubmitConfirmation.bind(this)}
-                                   value={counterpart.translate("modal.confirmation.accept")} />
+                                onClick={this.onSubmitConfirmation.bind(this)}
+                                value={counterpart.translate("modal.confirmation.accept")} />
                             <Trigger close={withdrawModalId}>
                                 <a href className="secondary button"><Translate content="modal.confirmation.cancel" /></a>
                             </Trigger>
@@ -452,16 +453,17 @@ class WithdrawModalBlocktrades extends React.Component {
 
         if (asset_types.length > 0) {
             let current_asset_id = this.props.asset.get("id");
-            if( current_asset_id ){
+            if (current_asset_id) {
                 let current = account_balances[current_asset_id];
                 balance = (
-                    <span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}}>
-                        <Translate component="span" content="transfer.available"/>&nbsp;:&nbsp;
+                    <span style={{ borderBottom: "#A09F9F 1px dotted", cursor: "pointer" }}>
+                        <Translate component="span" content="transfer.available" />&nbsp;:&nbsp;
                         <span className="set-cursor" onClick={this.onAccountBalance.bind(this)}>
-                            {current ? <BalanceComponent balance={account_balances[current_asset_id]}/> : 0}
+                            {current ? <BalanceComponent balance={account_balances[current_asset_id]} /> : 0}
                         </span>
                     </span>
-                );}
+                );
+            }
             else
                 balance = "No funds";
         } else {
@@ -474,90 +476,102 @@ class WithdrawModalBlocktrades extends React.Component {
             !this.state.withdraw_amount;
 
         return (<form className="grid-block vertical full-width-content">
-                <div className="grid-container">
-                    <div className="content-block">
-                        <h3><Translate content="gateway.withdraw_coin" coin={this.props.output_coin_name} symbol={this.props.output_coin_symbol} /></h3>
-                    </div>
+            <div className="grid-container">
+                <div className="content-block">
+                    <h3><Translate content="gateway.withdraw_coin" coin={this.props.output_coin_name} symbol={this.props.output_coin_symbol} /></h3>
+                </div>
 
-                    {/* Withdraw amount */}
-                    <div className="content-block">
-                        <AmountSelector label="modal.withdraw.amount"
-                                        amount={this.state.withdraw_amount}
-                                        asset={this.props.asset.get("id")}
-                                        assets={[this.props.asset.get("id")]}
-                                        placeholder=""
-                                        onChange={this.onWithdrawAmountChange.bind(this)}
-                                        display_balance={balance}
-                        />
-                        {this.state.empty_withdraw_value ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.valid" />
-                            </p>:null}
-                        {this.state.balanceError ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.insufficient" />
-                            <span style={{marginLeft: 5}}> (<Translate content="transfer.errors.valid_with_fee" /> {gateFee * 2} {this.props.output_coin_name}) </span></p>:null}
-                    </div>
+                {/* Withdraw amount */}
+                <div className="content-block">
+                    <AmountSelector label="modal.withdraw.amount"
+                        amount={this.state.withdraw_amount}
+                        asset={this.props.asset.get("id")}
+                        assets={[this.props.asset.get("id")]}
+                        placeholder=""
+                        onChange={this.onWithdrawAmountChange.bind(this)}
+                        display_balance={balance}
+                    />
+                    {this.state.empty_withdraw_value ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.valid" />
+                    </p> : null}
+                    {this.state.balanceError ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.insufficient" />
+                        <span style={{ marginLeft: 5 }}> (<Translate content="transfer.errors.valid_with_fee" /> {gateFee * 2} {this.props.output_coin_name}) </span></p> : null}
+                </div>
 
-                    {/* Fee selection */}
-                    {this.state.feeAmount ? <div className="content-block gate_fee">
-                        <AmountSelector
-                            refCallback={this.setNestedRef.bind(this)}
-                            label="transfer.fee"
-                            disabled={true}
-                            amount={this.state.feeAmount.getAmount({real: true})}
-                            onChange={this.onFeeChanged.bind(this)}
-                            asset={this.state.feeAmount.asset_id}
-                            assets={fee_asset_types}
-                            tabIndex={tabIndex++}
-                        />
-                        {!this.state.hasBalance ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.noFeeBalance" /></p> : null}
-                        {!this.state.hasPoolBalance ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.noPoolBalance" /></p> : null}
-                    </div> : null}
+                {/* Fee selection */}
+                {this.state.feeAmount ? <div className="content-block gate_fee">
+                    <AmountSelector
+                        refCallback={this.setNestedRef.bind(this)}
+                        label="transfer.fee"
+                        disabled={true}
+                        amount={this.state.feeAmount.getAmount({ real: true })}
+                        onChange={this.onFeeChanged.bind(this)}
+                        asset={this.state.feeAmount.asset_id}
+                        assets={fee_asset_types}
+                        tabIndex={tabIndex++}
+                    />
+                    {!this.state.hasBalance ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.noFeeBalance" /></p> : null}
+                    {!this.state.hasPoolBalance ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.noPoolBalance" /></p> : null}
+                </div> : null}
 
-                    {/* Gate fee */}
-                    {this.props.gateFee ?
-                        (<div className="amount-selector right-selector gate_fee" style={{paddingBottom: 20}}>
-                            <label className="left-label"><Translate content="gateway.fee" /></label>
-                            <div className="inline-label input-wrapper">
-                                <input type="text" disabled value={this.props.gateFee} />
+                {/* Gate fee */}
+                {this.props.gateFee ?
+                    (<div className="amount-selector right-selector gate_fee" style={{ paddingBottom: 20 }}>
+                        <label className="left-label"><Translate content="gateway.fee" /></label>
+                        <div className="inline-label input-wrapper">
+                            <input type="text" disabled value={this.props.gateFee} />
 
-                                <div className="form-label select floating-dropdown">
-                                    <div className="dropdown-wrapper inactive">
-                                        <div>{this.props.output_coin_symbol}</div>
-                                    </div>
+                            <div className="form-label select floating-dropdown">
+                                <div className="dropdown-wrapper inactive">
+                                    <div>{this.props.output_coin_symbol}</div>
                                 </div>
                             </div>
-                        </div>):null}
-                    <div className="content-block">
-                        <label className="left-label">
-                            <Translate component="span" content="modal.withdraw.address"/>
-                        </label>
-                        <div className="blocktrades-select-dropdown">
-                            <div className="inline-label">
-                                <input type="text" value={withdraw_address_selected} tabIndex="4" onChange = {this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
-                                <span onClick={this.onDropDownList.bind(this)} >&#9660;</span>
-                            </div>
                         </div>
-                        <div className="blocktrades-position-options">
-                            {options}
+                    </div>) : null}
+
+                <div className="content-block">
+                    <label className="left-label">
+                        <Translate component="span" content="modal.withdraw.address" />
+                    </label>
+                    <div className="blocktrades-select-dropdown">
+                        <div className="inline-label">
+                            <input type="text" value={withdraw_address_selected} tabIndex="4" onChange={this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
+                            <span onClick={this.onDropDownList.bind(this)} >&#9660;</span>
                         </div>
-                        {invalid_address_message}
                     </div>
-
-
-                    {/* Withdraw/Cancel buttons */}
-                    <div className="button-group">
-
-                        <div onClick={this.onSubmit.bind(this)} className={"button" + (disableSubmit ? (" disabled") : "")}>
-                            <Translate content="modal.withdraw.submit" />
-                        </div>
-
-                        <Trigger close={this.props.modal_id}>
-                            <div className="button"><Translate content="account.perm.cancel" /></div>
-                        </Trigger>
+                    <div className="blocktrades-position-options">
+                        {options}
                     </div>
-                    {confirmation}
+                    {invalid_address_message}
                 </div>
-            </form>
+
+                {/*  M E M O  */}
+                <div className="content-block">
+                    <label className="left-label">
+                        <Translate component="span" content="transfer.memo" />
+                    </label>
+                    <div className="blocktrades-select-dropdown">
+                        <div className="inline-label">
+                              <textarea rows="1" value={this.state.memo} tabIndex="5" onChange={this.onMemoChanged.bind(this)} />
+                        </div>             
+                    </div>
+                </div>
+
+                {/* Withdraw/Cancel buttons */}
+                <div className="button-group">
+
+                    <div onClick={this.onSubmit.bind(this)} className={"button" + (disableSubmit ? (" disabled") : "")}>
+                        <Translate content="modal.withdraw.submit" />
+                    </div>
+
+                    <Trigger close={this.props.modal_id}>
+                        <div className="button"><Translate content="account.perm.cancel" /></div>
+                    </Trigger>
+                </div>
+                {confirmation}
+            </div>
+        </form>
         );
     }
 };
 
-export default BindToChainState(WithdrawModalBlocktrades, {keep_updating:true});
+export default BindToChainState(WithdrawModalBlocktrades, { keep_updating: true });

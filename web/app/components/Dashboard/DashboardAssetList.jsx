@@ -447,6 +447,7 @@ class DashboardAssetList extends React.Component {
                     balances={this.props.balances}
                     {...currentWithdrawAsset}
                     isDown={false}
+                    supportsMemos={true}
                 />
             </div>
         );

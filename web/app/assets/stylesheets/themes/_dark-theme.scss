@@ -6,6 +6,7 @@ $light-text-color: #fff;
 $dark-text-color: #444;
 $primary-text-color: #ffffff;
 $secondary-text-color: darken($primary-text-color, 20%);
+$help-text-color: #8e8e8e;
 $link-text-color: #4A90E2;
 $error-text-color: #E3745B;
 
@@ -47,6 +48,7 @@ $account-background: #3f3f3f;
 .darkTheme {
   @include theme(
     $primary-text-color,
+    $help-text-color,
     $bg-color,
     $dark-text-color,
     $link-text-color,

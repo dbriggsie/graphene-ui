@@ -6,6 +6,7 @@ $light-text-color: #fff;
 $dark-text-color: #444;
 $primary-text-color: #e0e0e0;
 $secondary-text-color: darken($primary-text-color, 20%);
+$help-text-color: darken($primary-text-color,50%);
 $link-text-color: #4A90E2;
 $error-text-color: #E3745B;
 
@@ -47,6 +48,7 @@ $account-background: $bg-color;
 .olDarkTheme {
   @include theme(
     $primary-text-color,
+    $help-text-color,
     $bg-color,
     $dark-text-color,
     $link-text-color,

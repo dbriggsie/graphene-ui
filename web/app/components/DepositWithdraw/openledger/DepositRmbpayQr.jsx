@@ -29,16 +29,18 @@ class DepositRmbpayQr extends Component {
                                 src={logoAliPay}
                                 alt="Alipay" />
                         </div>
-                        <p>To complete the deposit scan the QR-code and send money to that address</p>
+                        <Translate className="font-secondary" component="p" content="gateway.rmbpay.scan_qr" />
                         <div>
                             <img style={{ maxWidth: '150px' }}
-                                 src={qrCodeLink}
-                                 alt="qrCode"
+                                src={qrCodeLink}
+                                alt="qrCode"
                             />
                         </div>
                     </div>}
-                <h4>Amount to transfer: {depositAmount} {coinName}</h4>
-                <p>Tokens will be transferred to your account in 24 hours</p>
+                <h4>
+                    <Translate content="gateway.rmbpay.amount_to_transfer" /> {depositAmount} {coinName}
+                </h4>
+                <Translate className="font-secondary" component="p" content="gateway.rmbpay.transfer_24_h" />
                 <Trigger close={this.props.modal_id} >
                     <div style={{ minWidth: '100px' }} className="button"><Translate content="gateway.rmbpay.ok" /></div>
                 </Trigger>

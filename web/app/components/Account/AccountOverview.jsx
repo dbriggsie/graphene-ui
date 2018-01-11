@@ -734,6 +734,7 @@ console.log(this.props.balances)
                     balances={this.props.balances}
                     {...currentWithdrawAsset}
                     isDown={this.props.gatewayDown.get("OPEN")}
+                    supportsMemos={true}
                 />
 
                 {/* Bridge modal */}

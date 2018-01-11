@@ -18,9 +18,25 @@ import SettingsActions from "actions/SettingsActions";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import DepositRmbpayQr from "./DepositRmbpayQr";
 import LoadingIndicator from "components/LoadingIndicator";
+import moment from "moment";
 
 let qrCode = '/app/assets/getCode.png';
-const serverUrl = "https://test-cny.openledger.info/api/v1";
+const SERVER_URL = "https://test-cny.openledger.info/api/v1";
+const ATTEMPTS_BEFORE_CAPTCHA = 1;
+const ATTEMPTS_AFTER_CAPTCHA = 1;
+const LOCK_TIMER_MINUTES = 1;
+const COUNTER_KEY = "requestsCounter";
+const REQUEST_TIME_KEY = "lastRequestTime";
+const DEFAULT_DEP_DATA = {
+    list_service: [{
+        name: "Alipay",
+        link_qr_code: ""
+    }],
+    fees: {
+        fee_share_dep: 0.0,
+        fee_min_val_dep: 0
+    }
+};
 
 class DepositModalRmbpay extends React.Component {
 
@@ -40,30 +56,16 @@ class DepositModalRmbpay extends React.Component {
         super(props);
 
         this.state = {
-            withdraw_address: "",
-            withdraw_address_check_in_progress: true,
-            withdraw_address_is_valid: null,
-            options_is_valid: false,
-            confirmation_is_valid: false,
-            userServiceId: '',
+            requestsCounter: 0,
+            userServiceId: "",
             memo: "",
-            withdraw_address_first: true,
             from_account: props.account,
             fee_asset_id: "1.3.0",
             feeStatus: {},
             qrLoaded: false,
             tokenAmount: 0,
             loading: true,
-            depositData: {
-                list_service: [{
-                    name: "Alipay",
-                    link_qr_code: ""
-                }],
-                fees: {
-                    fee_share_dep: 0.0,
-                    fee_min_val_dep: 0
-                }
-            },
+            depositData: DEFAULT_DEP_DATA,
             fee: 0.00
         };
         this._validateDepositAmount = this._validateDepositAmount.bind(this);
@@ -129,13 +131,18 @@ class DepositModalRmbpay extends React.Component {
     }
 
     _round(value, fixed) {
+        value = this._fixFloatPrecision(value)
+        fixed = fixed || 0
+        fixed = Math.pow(10, fixed)
+        return Math.floor(this._fixFloatPrecision(value * fixed)) / fixed
+    }
+
+    _fixFloatPrecision(value) {
         const rounded = value.toFixed(4)
         if (Math.abs(rounded - value) < 0.00001) {
             value = rounded
         }
-        fixed = fixed || 0
-        fixed = Math.pow(10, fixed)
-        return Math.floor(value * fixed) / fixed
+        return +value
     }
 
     onWithdrawAddressChanged(e) {
@@ -176,9 +183,44 @@ class DepositModalRmbpay extends React.Component {
         });
     }
 
+    _validateCaptchaEmpty() {
+        const captchaText = this.refs.captchaInput.value;
+        const emptyCaptchaError = captchaText.length == 0 || captchaText == undefined;
+
+        this.setState({
+            emptyCaptchaError: emptyCaptchaError
+        });
+    }
+
     _checkInputEmpty() {
         this._validateDepositEmpty();
         this._validateServiceEmpty();
+        if (this.state.shouldShowCaptcha) {
+            this._validateCaptchaEmpty();
+        }
+    }
+
+    _checkRequestsNumber() {
+        let requestsCounter = window.localStorage.getItem(COUNTER_KEY);
+        const lastRequestDate = window.localStorage.getItem(REQUEST_TIME_KEY);
+
+        const nowDate = moment();
+
+        const range = nowDate.diff(lastRequestDate, "minutes");
+
+        if (range >= LOCK_TIMER_MINUTES) {
+            requestsCounter = window.localStorage.setItem(COUNTER_KEY, 0);
+        }
+
+        this.setState({
+            maxRequestsError: requestsCounter > ATTEMPTS_BEFORE_CAPTCHA + ATTEMPTS_AFTER_CAPTCHA,
+            shouldShowCaptcha: requestsCounter > ATTEMPTS_BEFORE_CAPTCHA
+        });
+    }
+
+    onOpen() {
+        this._fetchDepositData();
+        // this._checkRequestsNumber();
     }
 
     onSubmit() {
@@ -187,14 +229,17 @@ class DepositModalRmbpay extends React.Component {
         });
 
         promise.then(response => {
-            if ((!this.state.depositEmpty) && (!this.state.invalidAddressMessage) && (!this.state.depositAmountError)) {
+            if (!this.state.depositEmpty
+                && !this.state.invalidAddressMessage
+                && !this.state.depositAmountError
+                && !this.state.emptyCaptchaError) {
                 this._sendDeposit();
             }
         })
     }
 
-    fetchDepositData() {
-        fetch(serverUrl, { //TODO: change URL
+    _fetchDepositData() {
+        fetch(SERVER_URL, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -204,8 +249,9 @@ class DepositModalRmbpay extends React.Component {
                 operation_name: "deposit",
                 action: "get_data",
                 data: {
-                    currency_name_id: "RMBPAY",//TODO: change currency
-                    account_ol: this.props.account.get("name")
+                    currency_name_id: "RMBPAY",
+                    account_ol: this.props.account.get("name"),
+                    account_id: this.props.account.get("id")
                 }
             })
         }).then(
@@ -214,20 +260,29 @@ class DepositModalRmbpay extends React.Component {
                     throw "Request failed";
                 }
                 response.json().then((data) => {
-                    if (data.error === "true") {
-                        throw "Request failed";
+                    if (data.success !== "true") {
+                        if (data.error == 606) {
+                            this.setState({
+                                unlockTime: data.unlock_time
+                            });
+                            this._handleError(false);
+                            return;
+                        } else {
+                            throw "Request failed";
+                        }
                     }
                     this.setState({
-                        depositData: data
+                        depositData: data,
+                        unlockTime: data.unlock_time
                     });
-                    this._handleRmbPay(false);
+                    this._handleError(false);
                 });
             }).catch(() => {
-            this._handleRmbPay(true);
-        });
+                this._handleError(true);
+            });
     }
 
-    _handleRmbPay(isError) {
+    _handleError(isError) {
         this.setState({
             serverError: isError,
             loading: false
@@ -241,7 +296,7 @@ class DepositModalRmbpay extends React.Component {
         const fees = this.state.depositData.fees;
         const service = this.state.depositData.list_service
             && this.state.depositData.list_service[0] || {};
-        fetch(serverUrl, {
+        fetch(SERVER_URL, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -250,11 +305,14 @@ class DepositModalRmbpay extends React.Component {
             body: JSON.stringify({
                 operation_name: "deposit",
                 action: "add",
+                captcha: this.refs.captchaInput ? this.refs.captchaInput.value : 0,
+                token: this.state.depositData.token,
                 data: {
                     dep_amount: this.state.depositAmount,
                     dep_fee: this.state.fee,
                     dep_receive_amount_from_user: this.state.tokenAmount,
                     account_ol: this.props.account.get("name"),
+                    account_id: this.props.account.get("id"),
                     currency_name_id: "RMBPAY",
                     services_id: service.id,
                     user_service_id: this.state.userServiceId,
@@ -264,23 +322,36 @@ class DepositModalRmbpay extends React.Component {
                     }
                 }
             })
-        }).then(
-            response => {
-                if (response.status !== 200) {
-                    throw "Request failed";
-                }
-                response.json().then((data) => {
-                    if (response.status !== 200 || data.error === "true") {
-                        throw "Request failed";
-                    }
-                    this.setState({
-                        showQr: true
-                    });
-                    this._handleRmbPay(false);
-                });
-            }).catch(() => {
-            this._handleRmbPay(true);
+        }).then(this._handleResponse.bind(this)).catch(() => {
+            this._handleError(true);
         });
+    }
+
+    _handleResponse(response) {
+        if (response.status === 200) {
+            response.json().then((data) => {
+                if (response.status !== 200 || data.success !== "true") {
+                    if (data.error === "605") {
+                        this.setState({
+                            wrongCaptchaError: true
+                        });
+                        this._handleError(false);
+                        return;
+                    } else {
+                        this._handleError(true);
+                    }
+                }
+                this.setState({
+                    showQr: true
+                });
+                const requestsCounter = window.localStorage.getItem(COUNTER_KEY) || 0;
+                window.localStorage.setItem(COUNTER_KEY, +requestsCounter + 1);
+                window.localStorage.setItem(REQUEST_TIME_KEY, moment().utc());
+                this._handleError(false);
+            });
+            return;
+        }
+        this._handleError(true);
     }
 
     onClose() {
@@ -290,15 +361,20 @@ class DepositModalRmbpay extends React.Component {
 
     _resetState() {
         this.setState({
+            unlockTime: null,
             depositAmount: undefined,
             userServiceId: "",
             invalidAddressMessage: false,
+            depositData: DEFAULT_DEP_DATA,
+            emptyCaptchaError: false,
             depositEmpty: false,
             depositAmountError: false,
             tokenAmount: 0,
             showQr: false,
             qrLoaded: false,
             serverError: false,
+            maxRequestsError: false,
+            wrongCaptchaError: false,
             loading: true,
             fee: 0.00
         });
@@ -319,80 +395,117 @@ class DepositModalRmbpay extends React.Component {
             || {};
         const fees = this.state.depositData.fees;
         const minFee = fees && fees.fee_min_val_dep;
+        const captchaUrl = this.state.depositData.images_link_captcha;
 
         return (
             <div>
-                <div className="content-block">
-                    <Translate component="div"
-                               className="left-label"
-                               content="modal.deposit.amount"
-                    />
-                    <AmountSelector
-                        amount={this.state.depositAmount}
-                        asset={this.props.asset.get("id")}
-                        assets={[this.props.asset.get("id")]}
-                        placeholder=""
-                        onChange={this.onDepositAmountChange}
-                        display_balance={balance}
-                        checkText={true}
-                        ref="amountDeposit"
-                    />
-                    {!this.state.depositEmpty ? <Translate component="div"
-                                                           className={!this.state.depositAmountError ? "mt_2 mb_5 color-dark-gray fz_14" : "mt_2 mb_5 color-danger fz_14"}
-                                                           content="gateway.rmbpay.deposit_min_amount"
-                                                           fee={minFee}
-                    /> : null}
-                    {this.state.depositEmpty && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="gateway.rmbpay.error_emty" />}
-                </div>
+                <div className={this._isDisabled() ? "disabled-form" : ""}>
 
-                {/* Fee selection */}
+                    {this.state.loading && <LoadingIndicator />}
+                    <div className="content-block">
+                        <Translate component="div"
+                            className="left-label"
+                            content="gateway.rmbpay.amount_to_deposit"
+                        />
+                        <AmountSelector
+                            amount={this.state.depositAmount}
+                            asset={this.props.asset.get("id")}
+                            assets={[this.props.asset.get("id")]}
+                            placeholder=""
+                            onChange={this.onDepositAmountChange}
+                            display_balance={balance}
+                            checkText={true}
+                            ref="amountDeposit"
+                        />
+                        {!this.state.depositEmpty ? <Translate component="div"
+                            className={!this.state.depositAmountError ? "mt_2 mb_5 help-text fz_14" : "mt_2 mb_5 color-danger fz_14"}
+                            content="gateway.rmbpay.deposit_min_amount"
+                            fee={+minFee}
+                        /> : null}
+                        {this.state.depositEmpty && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="gateway.rmbpay.error_emty" />}
+                    </div>
 
-                <div className="content-block ">
-                    <label className="left-label">
-                        <Translate component="span" content="gateway.transwiser.fee_deposit" />
-                    </label>
-                    <div className="content-block input-wrapper">
-                        <input type="text" disabled value={this.state.fee} />
-                        <div className="form-label select floating-dropdown color_white">
-                            <div className="dropdown-wrapper inactive">
-                                <div>CNY</div>
+                    {/* Fee selection */}
+
+                    <div className="content-block ">
+                        <label className="left-label">
+                            <Translate component="span" content="gateway.transwiser.fee_deposit" />
+                        </label>
+                        <div className="content-block input-wrapper">
+                            <input type="text" disabled value={this.state.fee} />
+                            <div className="form-label select floating-dropdown light-text">
+                                <div className="dropdown-wrapper inactive">
+                                    <div>CNY</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div>
-                    <div className="content-block gate_fee left-label">
-                        <Translate component="span" content="gateway.rmbpay.tokens_receive" />
-                    </div>
-                    <div className="content-block gate_fee text-right color_white">
-                        {this.state.tokenAmount} RMBPAY
-                    </div>
-                </div>
-
-
-                {/*Payment service ID*/}
-                <div>
-                    <label className="left-label">
-                        <Translate component="span" content="gateway.pay_service" /> ({paymentService.name})
-                    </label>
-                    <div className="blocktrades-select-dropdown">
-                        <div className="inline-label">
-                            <input type="text"
-                                   value={userServiceId}
-                                   tabIndex="4"
-                                   onChange={this.onWithdrawAddressChanged.bind(this)}
-                                   ref="paymentId"
-                                   autoComplete="off"
-                            />
+                    <div>
+                        <div className="content-block gate_fee left-label">
+                            <Translate component="span" content="gateway.rmbpay.tokens_receive" />
+                        </div>
+                        <div className="content-block gate_fee text-right light-text">
+                            {this.state.tokenAmount} RMBPAY
                         </div>
                     </div>
-                    {<Translate component="div" className={"mt_2 mb_5 color-danger fz_14 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
+
+
+                    {/*Payment service ID*/}
+                    <div>
+                        <label className="left-label">
+                            <Translate component="span" content="gateway.pay_service_alipay" />
+                    </label>
+                        <div className="blocktrades-select-dropdown">
+                            <div className="inline-label">
+                                <input type="text"
+                                    value={userServiceId}
+                                    tabIndex="4"
+                                    onChange={this.onWithdrawAddressChanged.bind(this)}
+                                    ref="paymentId"
+                                    autoComplete="off"
+                                />
+                            </div>
+                        </div>
+                        {<Translate component="div" className={"mt_2 mb_5 color-danger fz_14 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
+                    </div>
+
+                    {/*Captcha*/}
+
+                    {captchaUrl &&
+                        <div>
+                            <div className="mb_5">
+                                <img src={captchaUrl} alt="OL" />
+                            </div>
+                            <div className="blocktrades-select-dropdown">
+                                <div className="inline-label">
+                                    <input
+                                        type="text"
+                                        name="captcha"
+                                        ref="captchaInput"
+                                        onChange={this._validateCaptchaEmpty.bind(this)}
+                                    />
+                                </div>
+                            </div>
+                            {!(this.state.emptyCaptchaError || this.state.wrongCaptchaError) && <Translate component="div"
+                                className="mt_2 mb_5 help-text fz_14"
+                                content="gateway.rmbpay.captcha_label"
+                            />}
+                            {this.state.emptyCaptchaError && !this.state.wrongCaptchaError && <Translate component="div"
+                                className="mt_2 mb_5 color-danger fz_14 "
+                                content="gateway.rmbpay.error_emty"
+                            />}
+                            {this.state.wrongCaptchaError && <Translate component="div"
+                                className="mt_2 mb_5 color-danger fz_14"
+                                content="gateway.rmbpay.wrong_captcha_error"
+                            />}
+                        </div>
+                    }
                 </div>
 
                 {/* Request Deposit/Cancel buttons */}
                 <div className="float-right">
-                    <div onClick={this.onSubmit.bind(this)} className="button" >
+                    <div onClick={this.onSubmit.bind(this)} className={"button " + (this._isDisabled() ? "disabled" : "")} >
                         <Translate content="gateway.rmbpay.btn_request_deposit" />
                     </div>
                     <div className="button" onClick={this.onClose.bind(this)} >
@@ -416,21 +529,31 @@ class DepositModalRmbpay extends React.Component {
         )
     }
 
+    _isDisabled() {
+        return this.state.loading || this.state.serverError || this.state.unlockTime;
+    }
+
     render() {
-        const disable = this.state.loading || this.state.serverError;
+        const nextRequestDate = moment(window.localStorage.getItem(REQUEST_TIME_KEY))
+            .add(LOCK_TIMER_MINUTES, "m")
+            .format("DD/MM/YYYY HH:mm");
         return (
             <div>
                 <form className="grid-block vertical full-width-content form-deposit-withdraw-rmbpay" >
                     <div className="grid-container">
                         <div className="content-block">
-                            <h3><Translate content="gateway.deposit_coin" coin={this.props.output_coin_name} symbol={this.props.output_coin_symbol} /></h3>
+                            <h3>
+                                <Translate content="gateway.deposit_coin" coin={this.props.output_coin_name} symbol={this.props.output_coin_symbol} />
+                            </h3>
                         </div>
-                        {disable && <div className="center-content content-block">
-                            {this.state.serverError ?
-                                <Translate className="has-error" content="gateway.service_unavailable" /> : <LoadingIndicator />
+                        {this._isDisabled() && <div className="center-content content-block">
+                            {this.state.serverError ? <Translate className="has-error" content="gateway.service_unavailable" /> :
+                                (this.state.unlockTime && <Translate className="has-error" unsafe content="gateway.rmbpay.max_requests_error"
+                                    date={this.state.unlockTime}
+                                />)
                             }
                         </div>}
-                        <div className={disable ? "disabled-form" : ""}>
+                        <div>
                             {this.state.showQr ? this._renderQR() : this._renderDepositeForm()}
                         </div>
                     </div>

@@ -1,5 +1,5 @@
 import React, {PropTypes, Component} from "react";
-import {Link} from "react-router/es";
+import {Link, browserHistory} from "react-router/es";
 import {FormattedDate} from "react-intl";
 import { connect } from "alt-react";
 import WalletActions from "actions/WalletActions";
@@ -85,6 +85,7 @@ class BackupRestore extends Component {
                         </NewWalletName>
                     </DecryptBackup>
                 </Upload>
+
             </div>
         );
     }
@@ -334,6 +335,7 @@ class Upload extends Component {
     }
 
     render() {
+
         let resetButton = (
             <div style={{paddingTop: 20}}>
                 <div
@@ -342,6 +344,8 @@ class Upload extends Component {
                 >
                     <Translate content="wallet.reset" />
                 </div>
+                {browserHistory.getCurrentLocation().pathname == '/login' ?  <Link to="/create-wallet-brainkey" className="button outline" > <Translate content="settings.backup_brainkey_restore" /></Link> : null}
+
             </div>
         );
 

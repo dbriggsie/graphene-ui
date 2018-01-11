@@ -39,6 +39,16 @@ class AccountSelector extends React.Component {
         autosubscribe: false
     };
 
+    constructor(props){
+        super(props);
+
+        this.state = {
+            starred : false,
+            storageAccountFavorites : JSON.parse(localStorage.getItem("toAccountFavorites")) || localStorage.setItem("toAccountFavorites",JSON.stringify([]))
+        };
+
+    }
+
     // can be used in parent component: this.refs.account_selector.getAccount()
     getAccount() {
         return this.props.account;
@@ -73,6 +83,8 @@ class AccountSelector extends React.Component {
         if (newValue) value = newValue[1];
 
         if (this.props.onChange && value !== this.props.accountName) this.props.onChange(value);
+
+        this.coincidenceFavorites(value);
     }
 
     onKeyDown(event) {
@@ -99,7 +111,62 @@ class AccountSelector extends React.Component {
         }
     }
 
+    _onStar() {
+        let currentName = this.props.accountName, 
+        сoincidenceFavorites = false;
+
+        if (this.state.storageAccountFavorites.length !== 0){
+            сoincidenceFavorites = this.state.storageAccountFavorites.some(function(item){
+                return  item == currentName
+            })
+        }
+
+        if (currentName !== "" && !сoincidenceFavorites){
+            let storageFavorites = this.state.storageAccountFavorites.slice();
+            storageFavorites.push(currentName);
+            this.setState({storageAccountFavorites : storageFavorites});
+            localStorage.setItem("toAccountFavorites", JSON.stringify(storageFavorites));
+
+        }
+
+        if (currentName !== "" ){
+            if (!this.state.starred) {
+                this.starOn()
+            } else {
+                this.starOff()
+            }
+        }
+    }
+
+    starOn(){
+        this.setState({starred : true});
+
+    }
+
+    starOff(){
+        this.setState({starred : false});
+        this.removeFavorites(this.props.accountName);
+    }
+
+    removeFavorites(value){
+        let indStorageAccaunt;
+        this.state.storageAccountFavorites.forEach(function(el, ind){
+            el == value ? indStorageAccaunt = ind : null;
+        });
+
+        this.state.storageAccountFavorites.splice(indStorageAccaunt, 1);
+        localStorage.setItem("toAccountFavorites",JSON.stringify(this.state.storageAccountFavorites));
+    }
+
+    coincidenceFavorites(valInp){
+        let itemFav = this.state.storageAccountFavorites.some(function(item){
+            return item == valInp;
+        });
+        itemFav ? this.setState({starred : true}) : this.setState({starred : false});
+    }
+
     render() {
+        let {starred} = this.state;
         let error = this.getError();
         let type = this.getNameType(this.props.accountName);
         let lookup_display;
@@ -115,6 +182,8 @@ class AccountSelector extends React.Component {
             member_status = counterpart.translate("account.member." + ChainStore.getAccountMemberStatus(this.props.account));
 
         let action_class = classnames("button", {"disabled" : !(this.props.account || type === "pubkey") || error || this.props.disableActionButton});
+
+        let starClass = starred ? "gold-star" : "grey-star";
 
         return (
             <div className="account-selector" style={this.props.style}>
@@ -150,6 +219,23 @@ class AccountSelector extends React.Component {
                                         onChange={this.props.onDropdownSelect}
                                     />
                                 </div> : null}
+                            {this.props.label == 'transfer.to' ?
+                                <div className="starToAccount" onClick={this._onStar.bind(this)} >
+                                    <Icon className={starClass} name="fi-star"/>
+                                </div>
+                                : null}
+                            {this.props.dropdownFavorites ? <div className="form-label select floating-dropdown">
+                                <FloatingDropdown
+                                    label="transfer.to"
+                                    favoritesDel={this.removeFavorites.bind(this)}
+                                    coincidenceFav={this.coincidenceFavorites.bind(this)}
+                                    entries={this.state.storageAccountFavorites}
+                                    values={this.state.storageAccountFavorites.reduce((map, a) => {if (a) map[a] = a; return map;}, {})}
+                                    singleEntry={this.props.dropdownFavorites[0]}
+                                    value={this.props.dropDownValue || ""}
+                                    onChange={this.props.onDropdownFavorites}
+                                />
+                            </div> : null}
                                 { this.props.children }
                                 { this.props.onAction ? (
                                     <button className={action_class}

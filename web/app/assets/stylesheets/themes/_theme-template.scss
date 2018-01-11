@@ -2,6 +2,7 @@
 
 @mixin theme(
   $primary-text-color,
+  $help-text-color,
   $bg-color,
   $dark-text-color,
   $link-text-color,
@@ -64,9 +65,12 @@
 
   .form-deposit-withdraw-rmbpay{
     font-family: 'RobotoCondensed-Regular', arial, sans-serif;
-    color: #adadad;
+    color: $secondary-text-color;
+    div.grid-container {
+      overflow: hidden;
+    }
     input{
-      color: #adadad !important;
+      color: $secondary-text-color !important;
     }
       .left-label, .right-label{
         margin-bottom: 0;
@@ -76,6 +80,21 @@
     }
     .set-cursor{
         cursor: pointer;
+    }
+
+    .button-group > li > a{
+      border: none;
+    }
+    
+    .dropdown-wrapper {
+      ul.dropdown {
+        min-width: 230px;
+
+        > li > span {
+          color: $secondary-text-color;
+          font-weight: normal;
+        }
+      }
     }
   }
 
@@ -99,8 +118,8 @@
     color: darken($primary-text-color,20%);
   }
 
-  .color-dark-gray{
-    color: darken($primary-text-color,50%);
+  .help-text{
+    color: $help-text-color;
   }
 
   #deposit_asset_openledger-dex_CNY,
@@ -114,12 +133,20 @@
     margin-top: .2rem;
   }
 
-  .mb_5{
-    margin-bottom: .5rem;
+  .mt_3{
+    margin-top: .4rem;
   }
 
   .mt_5{
     margin-top: .5rem;
+  }
+
+  .mt_6{
+    margin-top: .7rem;
+  }
+
+  .mb_5{
+    margin-bottom: .5rem;
   }
 
   .button-group.btn-row{
@@ -152,6 +179,21 @@
     vertical-align: top;
     .amount-selector:first-child{
       padding-right: 10px;
+    }
+    .amount-selector{
+      width: 100%;
+      display: inline-block;
+    }
+    .right-selector{
+      text-align: right;
+      width: 26%;
+      display: inline-block;
+      color: $secondary-text-color;
+      text-transform: uppercase;
+      .right-selector-input{
+        text-align: right;
+        width: 100%;
+      }
     }
   }
 
@@ -551,19 +593,6 @@
   div.input-wrapper {
     > div.input-right-symbol {
       color: $secondary-text-color;
-    }
-  }
-
-  .rmbpay {
-    .dropdown-wrapper {
-      ul.dropdown {
-        min-width: 230px;
-
-        > li > span {
-          color: $secondary-text-color;
-          font-weight: normal;
-        }
-      }
     }
   }
 
@@ -1673,25 +1702,11 @@
             }
         }
     }
+    .light-text {
+      color: $light-text-color;
+    }
 }
 
-.olDarkTheme .gate_fee .amount-selector {
-  width: 100%;
-  display: inline-block;
-}
-
-.olDarkTheme .gate_fee .right-selector {
-    text-align: right;
-    width: 26%;
-    display: inline-block;
-    color: #adadad;
-    text-transform: uppercase;
-}
-
-.olDarkTheme .gate_fee .right-selector .right-selector-input {
-  text-align: right;
-  width: 100%;
-}
 
 .starToAccount{
   cursor: pointer;
