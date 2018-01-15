@@ -6,6 +6,4 @@
 
 [# deposit-short]
 
-### Внесение депозита или снятие койнов
-
 [Информация о комиссиях](components/DepositWithdraw_OL)

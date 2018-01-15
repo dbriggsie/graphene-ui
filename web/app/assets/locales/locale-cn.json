@@ -83,9 +83,9 @@
       "borrow": "从系统借出 %(asset)s 。这将创建一个智能合约，冻结你的抵押物，直到你调整仓位或进行平仓。",
       "account_notify": "当前活跃账户为 %(account)s",
       "withdraw_blockchain_fee": "区块链交易费，是用来支付BitShares区块链交易的费用。<br/>用户可以用任何代币支付该费用，用户需要有足够的余额。费用从选定的代币中扣除，如果余额不足的话，将从提现金额中扣除。",
-      "withdraw_take_from_amount": "<span style='color:orange'><b>区块链交易费将从输入的\"取款金额\"中扣除（或部分扣除）。</b></span> <br/><br/>",
+      "withdraw_take_from_amount": "<span style='color:orange'><b>区块链交易费将从输入的\"提现金额\"中扣除（或部分扣除）。</b></span> <br/><br/>",
       "receive_blockchain_fee": "区块链交易费，是用来支付BitShares区块链交易的费用。<br/>用户可以用任何代币支付该费用，用户需要有足够的余额。<br/>费用从选定的代币中扣除。",
-      "withdraw_fee": "取款佣金是经售费， 是对从交易所提取资金支付的。佣金金额是从提款金额中扣除的。"
+      "withdraw_fee": "提现交易费将从输入的\"提现金额\"中扣除。"
   },
   "account": {
     "unlocked_tip": "钱包已解锁，点击锁定。",
@@ -395,8 +395,8 @@
       "valid": "请输入一个合法的大于0的半角数字",
       "balance": "最终余额必须大于0",
       "insufficient": "余额不足",
-      "noFeeBalance": "Your balance is insufficient to pay fees using this asset, please choose another asset to pay your fees with",
-      "noPoolBalance": "That asset has an insufficient fee pool balance to pay the fees with. Please inform the asset owner or select another asset for paying fees."
+      "noFeeBalance": "当前支付货币/代币余额不足，请选择其他货币/代币支付。",
+      "noPoolBalance": "余额不足，请选择其他货币/代币支付。"
     },
     "back": "返回",
     "confirm": "确认发送",
@@ -1199,7 +1199,7 @@
     "enter_refcode": "输入推荐码"
   },
   "gateway": {
-    "title": "存款 存款",
+    "title": "转入或提现",
     "service_unavailable": "服务暂时不可用。请稍后再试。",
     "history_title": "交易历史",
     "transaction_history": "显示交易历史",
@@ -1298,7 +1298,7 @@
       "deposit_min_amount": "充值金额必须大于等于 %(fee)s 元人民币",
       "btn_request_deposit": "申请充值",
       "error_emty": "必填",
-      "captcha_label": "请输入你看到的下面的文字",
+      "captcha_label": "请输入你看到的字母",
       "max_requests_error": "您已超出申请提现次数。<br />世界标准时间 %(date)s 可再次申请。",
       "wrong_captcha_error": "验证码错误。请重新验证。",
       "error_max_value": "提现金额必须大于或等于 %(val)s RMBPAY",
@@ -1313,9 +1313,9 @@
       "amount_to_deposit": "充值金额",
       "withdrawal_modal": {
         "fee_blockchain": "区块链交易费",
-        "fee_withdraw": "转出交易费",
+        "fee_withdraw": "提现交易费",
         "amount_receive": "收到金额",
-        "amount_withdraw": "转出金额",
+        "amount_withdraw": "提现金额",
         "withdraw_amount": "我想提现 RMBPAY",
         "receive_amount": "我想收到 元人民币"
       }

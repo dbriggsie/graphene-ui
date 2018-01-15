@@ -17,6 +17,7 @@ import { checkFeeStatusAsync, checkBalance } from "common/trxHelper";
 import { debounce } from "lodash";
 import { Asset } from "common/MarketClasses";
 
+const BTS_ASSET_ID = "1.3.0";
 
 class Transfer extends React.Component {
 
@@ -72,7 +73,7 @@ class Transfer extends React.Component {
             propose: false,
             propose_account: "",
             feeAsset: null,
-            fee_asset_id: "1.3.0",
+            fee_asset_id: BTS_ASSET_ID,
             feeAmount: new Asset({amount: 0}),
             feeStatus: {}
         };
@@ -126,7 +127,7 @@ class Transfer extends React.Component {
                 from_name: np.currentAccount,
                 from_account: ChainStore.getAccount(np.currentAccount),
                 feeStatus: {},
-                fee_asset_id: "1.3.0",
+                fee_asset_id: BTS_ASSET_ID,
                 feeAmount: new Asset({amount: 0})
             }, () => {this._updateFee(); this._checkFeeStatus(ChainStore.getAccount(np.currentAccount));});
         }
@@ -146,7 +147,7 @@ class Transfer extends React.Component {
         let balanceObject = ChainStore.getObject(balanceID);
         let feeBalanceObject = feeBalanceID ? ChainStore.getObject(feeBalanceID) : null;
         if (!feeBalanceObject || feeBalanceObject.get("balance") === 0) {
-            this._updateFee("1.3.0");
+            this.setState({fee_asset_id: BTS_ASSET_ID}, this._updateFee);
         }
         const hasBalance = checkBalance(amount, asset, feeAmount, balanceObject);
         if (hasBalance === null) return;
@@ -274,7 +275,7 @@ class Transfer extends React.Component {
             asset.get("id"),
             this.state.memo ? new Buffer(this.state.memo, "utf-8") : this.state.memo,
             this.state.propose ? this.state.propose_account : null,
-            this.state.feeAsset ? this.state.feeAsset.get("id") : "1.3.0"
+            this.state.feeAsset ? this.state.feeAsset.get("id") : BTS_ASSET_ID
         ).then( () => {
             TransactionConfirmStore.unlisten(this.onTrxIncluded);
             TransactionConfirmStore.listen(this.onTrxIncluded);
@@ -382,7 +383,7 @@ class Transfer extends React.Component {
             if (asset_types.length === 1) asset = ChainStore.getAsset(asset_types[0]);
             if (asset_types.length > 0) {
                 let current_asset_id = asset ? asset.get("id") : asset_types[0];
-                let feeID = feeAsset ? feeAsset.get("id") : "1.3.0";
+                let feeID = feeAsset ? feeAsset.get("id") : BTS_ASSET_ID;
                 balance = (<span style={{borderBottom: "#A09F9F 1px dotted", cursor: "pointer"}} onClick={this._setTotal.bind(this, current_asset_id, account_balances[current_asset_id], fee, feeID)}><Translate component="span" content="transfer.available"/>: <BalanceComponent balance={account_balances[current_asset_id]}/></span>);
             } else {
                 balance = "No funds";

@@ -18,7 +18,7 @@ import ZfApi from "react-foundation-apps/src/utils/foundation-api"
 import Icon from "components/Icon/Icon"
 import LoadingIndicator from "components/LoadingIndicator"
 
-const SERVER_URL = "https://test-cny.openledger.info/api/v1"
+const SERVER_URL = "https://fiat.openledger.info/api/v1"
 const RMBPAY_ASSET_ID = "1.3.2562"
 const BTS_ASSET_ID = "1.3.0"
 const CNY_ASSET_ID = "1.3.113"

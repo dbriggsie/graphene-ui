@@ -27,7 +27,8 @@ import DepositModalRmbpay from "../DepositWithdraw/openledger/DepositModalRmbpay
 import WithdrawModalRmbpay from "../DepositWithdraw/openledger/WithdrawModalRmbpay";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 
-const RMBPAY_ASSET_ID = "1.3.2562"
+const RMBPAY_ASSET_ID = "1.3.2562";
+const SERVER_URL = "https://fiat.openledger.info/api/v1";
 
 class AccountDepositWithdraw extends React.Component {
 
@@ -47,6 +48,7 @@ class AccountDepositWithdraw extends React.Component {
             btService: props.viewSettings.get("btService", "bridge"),
             metaService: props.viewSettings.get("metaService", "bridge"),
             activeService: props.viewSettings.get("activeService", 0),
+            showRMBpay: false,
             rmbPay: {
                 list_service: [{
                     name: "Alipay",
@@ -68,7 +70,8 @@ class AccountDepositWithdraw extends React.Component {
             nextState.olService !== this.state.olService ||
             nextState.btService !== this.state.btService ||
             nextState.metaService !== this.state.metaService ||
-            nextState.activeService !== this.state.activeService
+            nextState.activeService !== this.state.activeService ||
+            nextState.showRMBpay !== this.state.showRMBpay
         );
     }
 
@@ -117,6 +120,10 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
+    componentDidMount() {
+        this._getAvailableServices();
+    }
+
     _showDepositWithdraw(action, asset, fiatModal, e) {
         e.preventDefault();
         this.setState({
@@ -135,6 +142,80 @@ class AccountDepositWithdraw extends React.Component {
         return balanceObject ? balanceObject.get("balance") / precision : 0
     }
 
+    _getAvailableServices() {
+        fetch(SERVER_URL, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ operation_name: "transfer_service" })
+        }).then(
+            response => {
+                if (response.status !== 200) {
+                    throw "Request failed";
+                }
+                response.json().then((data) => {
+                    if (data.success !== "true") {
+                        throw "Request failed";
+                    }
+                    const availableServices = data.list_transfer_service;
+                    if (availableServices.length > 0) {
+                        const rmbPayService = availableServices.find((service) => {
+                            return service.name === "RMBpay"
+                        });
+                        if (rmbPayService && rmbPayService.is_active == 1) {
+                            this.setState({
+                                showRMBpay: true
+                            });
+                        }
+                    }
+                });
+            }).catch(() => {
+                console.log("Server failed.");
+            });
+    }
+
+    _addRMBPayService(){
+        // const services = this.state.servicesList;
+        const rmbpayBalance = this._getRmbpayBalance();
+        const rbmbPay  = {
+            name: "RMBpay",
+            template: (
+                <div>
+                    <div>
+                        <p>
+                            <Translate content="gateway.rmbpay.info" />
+                        </p>
+                        <p>
+                            <Translate content="gateway.rmbpay.balance" /> {rmbpayBalance} RMBPAY
+                        </p>
+                    </div>
+                    <div className="grid-block vertical medium-horizontal no-margin no-padding">
+
+                        <div className="medium-5">
+                            <p>
+                                <Translate content="gateway.rmbpay.deposit_info" />
+                            </p>
+                            <button className="button success" style={{ fontSize: "1.3rem" }} onClick={this.onDeposit.bind(this)}>
+                                <Translate content="gateway.deposit" />
+                            </button>
+                        </div>
+                        <div className="medium-5 medium-offset-2">
+                            <p>
+                                <Translate content="gateway.rmbpay.withdrawal_info" />
+                            </p>
+                            <button className="button success" style={{ fontSize: "1.3rem" }} onClick={this.onWithdraw.bind(this)}><Translate content="gateway.withdraw" /></button>
+                        </div>
+                    </div>
+
+                </div>
+            )
+        };
+
+        return rbmbPay;
+    }
+    
     renderServices(blockTradesGatewayCoins, openLedgerGatewayCoins) {
         //let services = ["Openledger (OPEN.X)", "BlockTrades (TRADE.X)", "Transwiser", "BitKapital"];
         let serList = [];
@@ -222,77 +303,42 @@ class AccountDepositWithdraw extends React.Component {
                     </div>
                 </div>)
         });
+        
 
-        const rmbpayBalance = this._getRmbpayBalance()
-        /* 
-        serList.push({
-            name: "RMBpay",
-            template: (
-                <div>
-                    <div>
-                        <p>
-                            <Translate content="gateway.rmbpay.info" />
-                        </p>
-                        <p>
-                            <Translate content="gateway.rmbpay.balance" /> {rmbpayBalance} RMBPAY
-                        </p>
-                    </div>
-                    <div className="grid-block vertical medium-horizontal no-margin no-padding">
-
-                        <div className="medium-5">
-                            <p>
-                                <Translate content="gateway.rmbpay.deposit_info" />
-                            </p>
-                            <button className="button success" style={{ fontSize: "1.3rem" }} onClick={this.onDeposit.bind(this)}>
-                                <Translate content="gateway.deposit" />
-                            </button>
-                        </div>
-                        <div className="medium-5 medium-offset-2">
-                            <p>
-                                <Translate content="gateway.rmbpay.withdrawal_info" />
-                            </p>
-                            <button className="button success" style={{ fontSize: "1.3rem" }} onClick={this.onWithdraw.bind(this)}><Translate content="gateway.withdraw" /></button>
-                        </div>
-                    </div>
-
-                </div>
-            )
-        });
-
-          serList.push({
-               name: "Transwiser",
-               template: (
-                   <div>
-                       <div className="float-right"><a href="http://www.transwiser.com" rel="noopener noreferrer" target="_blank"><Translate content="gateway.website" /></a></div>
-                       <table className="table">
-                           <thead>
-                           <tr>
-                               <th><Translate content="gateway.symbol" /></th>
-                               <th><Translate content="gateway.deposit_to" /></th>
-                               <th><Translate content="gateway.balance" /></th>
-                               <th><Translate content="gateway.withdraw" /></th>
-                           </tr>
-                           </thead>
-                           <tbody>
-                           {/!* <TranswiserDepositWithdraw
-                               issuerAccount="transwiser-wallet"
-                               account={account.get("name")}
-                               receiveAsset="TCNY" /> *!/}
-                           <TranswiserDepositWithdraw
-                               issuerAccount="transwiser-wallet"
-                               account={account.get("name")}
-                               receiveAsset="CNY" />
-                           {/!*
-                           <TranswiserDepositWithdraw
-                               issuerAccount="transwiser-wallet"
-                               account={this.props.account.get("name")}
-                               receiveAsset="BOTSCNY" />
-                           *!/}
-                           </tbody>
-                       </table>
-                   </div>
-               )
-           });*/
+            /*   serList.push({
+                       name: "Transwiser",
+                       template: (
+                           <div>
+                               <div className="float-right"><a href="http://www.transwiser.com" rel="noopener noreferrer" target="_blank"><Translate content="gateway.website" /></a></div>
+                               <table className="table">
+                                   <thead>
+                                   <tr>
+                                       <th><Translate content="gateway.symbol" /></th>
+                                       <th><Translate content="gateway.deposit_to" /></th>
+                                       <th><Translate content="gateway.balance" /></th>
+                                       <th><Translate content="gateway.withdraw" /></th>
+                                   </tr>
+                                   </thead>
+                                   <tbody>
+                                   {/!* <TranswiserDepositWithdraw
+                                       issuerAccount="transwiser-wallet"
+                                       account={account.get("name")}
+                                       receiveAsset="TCNY" /> *!/}
+                                   <TranswiserDepositWithdraw
+                                       issuerAccount="transwiser-wallet"
+                                       account={account.get("name")}
+                                       receiveAsset="CNY" />
+                                   {/!*
+                                   <TranswiserDepositWithdraw
+                                       issuerAccount="transwiser-wallet"
+                                       account={this.props.account.get("name")}
+                                       receiveAsset="BOTSCNY" />
+                                   *!/}
+                                   </tbody>
+                               </table>
+                           </div>
+                       )
+                   });*/
 
         /* serList.push({
              name: "BitKapital",
@@ -356,6 +402,10 @@ class AccountDepositWithdraw extends React.Component {
             });
 
         let services = this.renderServices(blockTradesGatewayCoins, openLedgerGatewayCoins);
+
+        if (this.state.showRMBpay) {
+            services.push(this._addRMBPayService());
+        }
 
         let options = services.map((services_obj, index) => {
             return <option key={index} value={index}>{services_obj.name}</option>;
@@ -427,7 +477,7 @@ class AccountDepositWithdraw extends React.Component {
                     <div className="grid-block vertical">
                         <WithdrawModalRmbpay
                             account={this.props.account.get("name")}
-                            issuer_account="openledger-fiat"
+                            issuer_account="rmbpay-wallet"
                             asset="RMBPAY"
                             output_coin_name="RMBPAY"
                             output_coin_symbol="RMBPAY"

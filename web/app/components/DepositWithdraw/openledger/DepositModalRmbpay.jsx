@@ -21,7 +21,7 @@ import LoadingIndicator from "components/LoadingIndicator";
 import moment from "moment";
 
 let qrCode = '/app/assets/getCode.png';
-const SERVER_URL = "https://test-cny.openledger.info/api/v1";
+const SERVER_URL = "https://fiat.openledger.info/api/v1";
 const ATTEMPTS_BEFORE_CAPTCHA = 1;
 const ATTEMPTS_AFTER_CAPTCHA = 1;
 const LOCK_TIMER_MINUTES = 1;
