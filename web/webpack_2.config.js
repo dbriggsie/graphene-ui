@@ -32,12 +32,13 @@ function CreateWebpackConfig(type, options) {
             __DEV__: false,
             ENV: JSON.stringify(options.ENV),
             SET: JSON.stringify(options.SET),
-            'process.env': {
+            "process.env": {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-            }
+            },
+            SERVER_ADMIN_URL: JSON.stringify(options.ENV === "production" ? "https://fiat.openledger.info" : "https://test-cny.openledger.info")
         })
     ];
-
+    
     if (options.ENV == "production") {
         this.plugins.push(new webpack.LoaderOptionsPlugin({
             minimize: true,

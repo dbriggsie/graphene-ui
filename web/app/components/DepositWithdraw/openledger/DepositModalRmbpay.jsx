@@ -19,9 +19,9 @@ import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import DepositRmbpayQr from "./DepositRmbpayQr";
 import LoadingIndicator from "components/LoadingIndicator";
 import moment from "moment";
+import { EquivalentValueComponent } from "components/Utility/EquivalentValueComponent";
 
-let qrCode = '/app/assets/getCode.png';
-const SERVER_URL = "https://fiat.openledger.info/api/v1";
+const SERVER_URL = `${SERVER_ADMIN_URL}/api/v1`;
 const ATTEMPTS_BEFORE_CAPTCHA = 1;
 const ATTEMPTS_AFTER_CAPTCHA = 1;
 const LOCK_TIMER_MINUTES = 1;
@@ -49,7 +49,8 @@ class DepositModalRmbpay extends React.Component {
         url: React.PropTypes.string,
         output_wallet_type: React.PropTypes.string,
         amount_to_withdraw: React.PropTypes.string,
-        balance: ChainTypes.ChainObject
+        balance: ChainTypes.ChainObject,
+        activeMarketHistory: React.PropTypes.object.isRequired,
     };
 
     constructor(props) {
@@ -397,6 +398,8 @@ class DepositModalRmbpay extends React.Component {
         const minFee = fees && fees.fee_min_val_dep;
         const captchaUrl = this.state.depositData.images_link_captcha;
 
+        const precision = utils.get_asset_precision(this.props.asset.get("precision"));
+
         return (
             <div>
                 <div className={this._isDisabled() ? "disabled-form" : ""}>
@@ -445,8 +448,17 @@ class DepositModalRmbpay extends React.Component {
                         <div className="content-block gate_fee left-label">
                             <Translate component="span" content="gateway.rmbpay.tokens_receive" />
                         </div>
-                        <div className="content-block gate_fee text-right light-text">
+                        <div className="gate_fee text-right light-text">
                             {this.state.tokenAmount} RMBPAY
+                        </div>
+                        <div className="text-right help-text mb_5">
+                        ≈ <EquivalentValueComponent
+                            fullPrecision={true}
+                            fromAsset="1.3.113"
+                            toAsset="1.3.861"
+                            amount={this.state.tokenAmount * precision}
+                            hide_asset={true}
+                        /> BTC
                         </div>
                     </div>
 
@@ -455,7 +467,7 @@ class DepositModalRmbpay extends React.Component {
                     <div>
                         <label className="left-label">
                             <Translate component="span" content="gateway.pay_service_alipay" />
-                    </label>
+                        </label>
                         <div className="blocktrades-select-dropdown">
                             <div className="inline-label">
                                 <input type="text"
@@ -504,6 +516,10 @@ class DepositModalRmbpay extends React.Component {
                 </div>
 
                 {/* Request Deposit/Cancel buttons */}
+
+                <div className="mt_6 float-left help-text">
+                    {`${moment().utc().add(8, "h").format("YYYY-MM-DD HH-mm")} (UTC+8)`}
+                </div>
                 <div className="float-right">
                     <div onClick={this.onSubmit.bind(this)} className={"button " + (this._isDisabled() ? "disabled" : "")} >
                         <Translate content="gateway.rmbpay.btn_request_deposit" />
@@ -534,9 +550,7 @@ class DepositModalRmbpay extends React.Component {
     }
 
     render() {
-        const nextRequestDate = moment(window.localStorage.getItem(REQUEST_TIME_KEY))
-            .add(LOCK_TIMER_MINUTES, "m")
-            .format("DD/MM/YYYY HH:mm");
+        const unlockTime = moment(this.state.unlockTime).format("YYYY-MM-DD HH-mm");
         return (
             <div>
                 <form className="grid-block vertical full-width-content form-deposit-withdraw-rmbpay" >
@@ -549,7 +563,7 @@ class DepositModalRmbpay extends React.Component {
                         {this._isDisabled() && <div className="center-content content-block">
                             {this.state.serverError ? <Translate className="has-error" content="gateway.service_unavailable" /> :
                                 (this.state.unlockTime && <Translate className="has-error" unsafe content="gateway.rmbpay.max_requests_error"
-                                    date={this.state.unlockTime}
+                                    date={unlockTime}
                                 />)
                             }
                         </div>}

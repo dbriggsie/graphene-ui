@@ -17,8 +17,9 @@ import { debounce } from "lodash"
 import ZfApi from "react-foundation-apps/src/utils/foundation-api"
 import Icon from "components/Icon/Icon"
 import LoadingIndicator from "components/LoadingIndicator"
+import moment from "moment"
 
-const SERVER_URL = "https://fiat.openledger.info/api/v1"
+const SERVER_URL = `${SERVER_ADMIN_URL}/api/v1`;
 const RMBPAY_ASSET_ID = "1.3.2562"
 const BTS_ASSET_ID = "1.3.0"
 const CNY_ASSET_ID = "1.3.113"
@@ -428,7 +429,7 @@ class WithdrawModalRmbpay extends React.Component {
                     ).then(() => {
                         this._sendWithdrawAudit()
                         ZfApi.publish(this.props.modal_id, "close")
-                        
+
                     }).catch(() => {
                         ZfApi.publish(this.props.modal_id, "close")
                     })
@@ -766,11 +767,11 @@ class WithdrawModalRmbpay extends React.Component {
                                 </div>
 
                                 <div>
-                                    <div className="content-block gate_fee left-label" style={{ marginBottom: '2.6rem' }}>
+                                    <div className="content-block gate_fee left-label">
                                         <Translate content={isWithdrawAction ? "gateway.rmbpay.withdrawal_modal.amount_receive" : "gateway.rmbpay.withdrawal_modal.amount_withdraw"} />
                                     </div>
                                     <div className="content-block gate_fee text-right light-text">
-                                        {isWithdrawAction ? this.state.tokenAmount + " CNY" : this.state.quantity + " RMBPAY"}
+                                        {isWithdrawAction ? `${this.state.tokenAmount} CNY` : `${this.state.quantity} RMBPAY`}
                                     </div>
                                 </div>
                                 <div className="medium-12">
@@ -793,6 +794,9 @@ class WithdrawModalRmbpay extends React.Component {
                         </div>
 
                         {/* Withdraw/Cancel buttons */}
+                        <div className="mt_6 float-left help-text">
+                            {`${moment().utc().add(8, "h").format("YYYY-MM-DD HH-mm")} (UTC+8)`}
+                        </div>
                         <div className="float-right">
                             <div onClick={this.onSubmit.bind(this)} className={"button " + (disableForm && "disabled")}>
                                 <Translate content="modal.withdraw.submit" />

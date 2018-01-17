@@ -28,7 +28,7 @@ import WithdrawModalRmbpay from "../DepositWithdraw/openledger/WithdrawModalRmbp
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 
 const RMBPAY_ASSET_ID = "1.3.2562";
-const SERVER_URL = "https://fiat.openledger.info/api/v1";
+const SERVER_URL = `${SERVER_ADMIN_URL}/api/v1`;
 
 class AccountDepositWithdraw extends React.Component {
 
@@ -215,7 +215,7 @@ class AccountDepositWithdraw extends React.Component {
 
         return rbmbPay;
     }
-    
+
     renderServices(blockTradesGatewayCoins, openLedgerGatewayCoins) {
         //let services = ["Openledger (OPEN.X)", "BlockTrades (TRADE.X)", "Transwiser", "BitKapital"];
         let serList = [];
