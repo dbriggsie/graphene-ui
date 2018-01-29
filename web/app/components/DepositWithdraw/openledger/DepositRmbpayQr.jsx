@@ -21,28 +21,26 @@ class DepositRmbpayQr extends Component {
         const { coinName, depositAmount, qrCodeLink } = this.props;
         return (
             <div className="grid-container center-content">
-                {
+                {<div className="content-block">
                     <div>
-                        <div>
-                            <img
-                                style={{ marginBottom: '10px' }}
-                                src={logoAliPay}
-                                alt="Alipay" />
-                        </div>
-                        <Translate className="font-secondary" component="p" content="gateway.rmbpay.scan_qr" />
-                        <div>
-                            <img style={{ maxWidth: '150px' }}
-                                src={qrCodeLink}
-                                alt="qrCode"
-                            />
-                        </div>
-                    </div>}
-                <h4>
+                        <img
+                            style={{ marginBottom: '10px' }}
+                            src={logoAliPay}
+                            alt="Alipay" />
+                    </div>
+                    <Translate className="font-secondary" component="p" content="gateway.rmbpay.scan_qr" />
+                    <div>
+                        <img style={{ maxWidth: '150px' }}
+                            src={qrCodeLink}
+                            alt="qrCode"
+                        />
+                    </div>
+                </div>}
+                <div className="content-block fz_22">
                     <Translate content="gateway.rmbpay.amount_to_transfer" /> {depositAmount} {coinName}
-                </h4>
-                <Translate className="font-secondary" component="p" content="gateway.rmbpay.transfer_24_h" />
+                </div>
                 <Trigger close={this.props.modal_id} >
-                    <div style={{ minWidth: '100px' }} className="button"><Translate content="gateway.rmbpay.ok" /></div>
+                    <div style={{ minWidth: '100px' }} className="button mt_6 content-block"><Translate content="gateway.rmbpay.ok" /></div>
                 </Trigger>
             </div>)
     }
