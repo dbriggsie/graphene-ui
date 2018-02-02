@@ -77,7 +77,7 @@ class AccountOverview extends React.Component {
             favorites: window.localStorage.getItem("account.filters.favorites")
             && window.localStorage.getItem("account.filters.favorites").split(",")
             || DEFAULT_FILTERS.favorites,
-            hideZeroBalances: window.localStorage.getItem("account.filters.hideZero") === "true"
+            hideZeroBalances: window.localStorage.getItem("account.filters.hideZero") ? window.localStorage.getItem("account.filters.hideZero") === "true" : true
         };
 
         this.tableHeightMountInterval = tableHeightHelper.tableHeightMountInterval.bind(this);
@@ -356,9 +356,15 @@ class AccountOverview extends React.Component {
                     <td style={{
                         textAlign: "left",
                         paddingLeft: 10,
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        height: "30px"
                     }}>
-                        <AssetImage assetName={symbol} className="asset-image" />
+                        <AssetImage style={{
+                            height: "30px",
+                            width: "30px" }} 
+                            assetName={symbol} 
+                            className="asset-image" 
+                        />
                         <LinkToAssetById asset={assetId} />
                     </td>
                     <td style={{textAlign: "right"}}>
