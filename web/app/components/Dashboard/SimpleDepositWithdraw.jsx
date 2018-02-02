@@ -9,7 +9,7 @@ import ChainTypes from "../Utility/ChainTypes";
 import AccountActions from "actions/AccountActions";
 import ReactTooltip from "react-tooltip";
 import counterpart from "counterpart";
-import {requestDepositAddress, validateAddress, WithdrawAddresses, getDepositAddress} from "common/blockTradesMethods";
+import { requestDepositAddress, validateAddress, WithdrawAddresses, getDepositAddress } from "common/blockTradesMethods";
 import BlockTradesDepositAddressCache from "common/BlockTradesDepositAddressCache";
 import CopyButton from "../Utility/CopyButton";
 import Icon from "../Icon/Icon";
@@ -18,7 +18,7 @@ import { checkFeeStatusAsync, checkBalance } from "common/trxHelper";
 import AssetName from "../Utility/AssetName";
 import { ChainStore } from "bitsharesjs/es";
 import { debounce } from "lodash";
-import {DecimalChecker} from "../Exchange/ExchangeInput";
+import { DecimalChecker } from "../Exchange/ExchangeInput";
 import { blockTradesAPIs } from "api/apiConfig";
 
 // import DepositFiatOpenLedger from "components/DepositWithdraw/openledger/DepositFiatOpenLedger";
@@ -43,9 +43,9 @@ class DepositWithdrawContent extends DecimalChecker {
 
         this.state = {
             toAddress: WithdrawAddresses.getLast(props.walletType),
-            withdrawValue:"",
+            withdrawValue: "",
             amountError: null,
-            symbol:props.asset.get("symbol"),
+            symbol: props.asset.get("symbol"),
             to_withdraw: new Asset({
                 asset_id: props.asset.get("id"),
                 precision: props.asset.get("precision")
@@ -83,7 +83,7 @@ class DepositWithdrawContent extends DecimalChecker {
                 }),
                 gateFee: np.asset.get("gateFee"),
                 intermediateAccount: np.asset.get("intermediateAccount"),
-                symbol:np.asset.get("symbol"),
+                symbol: np.asset.get("symbol"),
                 memo: "",
                 withdrawValue: "",
                 receive_address: null,
@@ -96,7 +96,7 @@ class DepositWithdrawContent extends DecimalChecker {
         if (!this.props.backingCoinType) return;
         let account_name = this.props.sender.get("name");
 
-        let receive_address =  getDepositAddress({coin: `open.${(this.props.backingCoinType).toLowerCase()}`,  account: this.props.account,  stateCallback: this.addDepositAddress})
+        let receive_address = getDepositAddress({ coin: `open.${(this.props.backingCoinType).toLowerCase()}`, account: this.props.account, stateCallback: this.addDepositAddress })
         if (!receive_address) {
             requestDepositAddress(this._getDepositObject());
         } else {
@@ -115,7 +115,7 @@ class DepositWithdrawContent extends DecimalChecker {
         };
     }
 
-    requestDepositAddressLoad(){
+    requestDepositAddressLoad() {
         this.setState({
             loading: true,
             emptyAddressDeposit: false
@@ -123,22 +123,22 @@ class DepositWithdrawContent extends DecimalChecker {
         requestDepositAddress(this._getDepositObject())
     }
 
-    addDepositAddress( receive_address ) {
-        console.log('simpleDepWith receive_address===',receive_address)
+    addDepositAddress(receive_address) {
+        console.log('simpleDepWith receive_address===', receive_address)
         let account_name = this.props.sender.get("name");
 
-        if(receive_address.error){
-            receive_address.error.message == 'no_address' ? this.setState({emptyAddressDeposit: true}) : this.setState({emptyAddressDeposit: false})
+        if (receive_address.error) {
+            receive_address.error.message == 'no_address' ? this.setState({ emptyAddressDeposit: true }) : this.setState({ emptyAddressDeposit: false })
         }
 
-     /*   this.deposit_address_cache.cacheInputAddress(
-            "openledger",
-            account_name,
-            this.props.backingCoinType.toLowerCase(),
-            this.props.symbol.toLowerCase(),
-            receive_address.address,
-            receive_address.memo
-        );*/
+        /*   this.deposit_address_cache.cacheInputAddress(
+               "openledger",
+               account_name,
+               this.props.backingCoinType.toLowerCase(),
+               this.props.symbol.toLowerCase(),
+               receive_address.address,
+               receive_address.memo
+           );*/
 
         this.setState({
             receive_address,
@@ -197,13 +197,13 @@ class DepositWithdrawContent extends DecimalChecker {
         });
 
         // Subtract the fee if it is using the same asset
-        if(total.asset_id === feeAmount.asset_id) {
+        if (total.asset_id === feeAmount.asset_id) {
             total.minus(feeAmount);
         }
 
-        this.state.to_withdraw.setAmount({sats: total.getAmount()});
+        this.state.to_withdraw.setAmount({ sats: total.getAmount() });
         this.setState({
-            withdrawValue: total.getAmount({real: true}),
+            withdrawValue: total.getAmount({ real: true }),
             amountError: null
         }, this._checkBalance);
     }
@@ -251,7 +251,7 @@ class DepositWithdrawContent extends DecimalChecker {
                 content: this.props.backingCoinType + ":" + this.state.toAddress + (this.state.memo ? ":" + this.state.memo : "")
             }
         })
-            .then(({fee, hasBalance, hasPoolBalance}) => {
+            .then(({ fee, hasBalance, hasPoolBalance }) => {
                 this.setState({
                     feeAmount: fee,
                     hasBalance,
@@ -268,19 +268,19 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     _checkBalance() {
-        const {feeAmount, to_withdraw} = this.state;
-        const {asset, gateFee} = this.props;
+        const { feeAmount, to_withdraw } = this.state;
+        const { asset, gateFee } = this.props;
         const balance = this._getCurrentBalance();
         if (!balance || !feeAmount) return;
-        const hasBalance = checkBalance(to_withdraw.getAmount({real: true}), asset, this._getFee(), balance, gateFee);
+        const hasBalance = checkBalance(to_withdraw.getAmount({ real: true }), asset, this._getFee(), balance, gateFee);
         if (hasBalance === null) return;
-        this.setState({balanceError: !hasBalance});
+        this.setState({ balanceError: !hasBalance });
 
         return hasBalance;
     }
 
     _getFee() {
-        const defaultFee = {getAmount: function() {return 0;}, asset_id: this.state.fee_asset_id};
+        const defaultFee = { getAmount: function () { return 0; }, asset_id: this.state.fee_asset_id };
 
         if (!this.state.feeStatus || !this.state.feeAmount) return defaultFee;
 
@@ -298,7 +298,7 @@ class DepositWithdrawContent extends DecimalChecker {
     _onInputAmount(e) {
         let coinSKY = e.target.value;
 
-        if(this.props.name == 'SKY'){
+        if (this.props.name == 'SKY') {
             coinSKY = parseInt(coinSKY, 10)
         }
         try {
@@ -309,7 +309,7 @@ class DepositWithdrawContent extends DecimalChecker {
                 withdrawValue: coinSKY,
                 amountError: null
             }, this._checkBalance);
-        } catch(err) {
+        } catch (err) {
             console.error("err:", err);
         }
         let currentBalance = this._getCurrentBalance();
@@ -319,9 +319,9 @@ class DepositWithdrawContent extends DecimalChecker {
             precision: this.props.asset.get("precision"),
             amount: currentBalance.get("balance")
         }) : null;
-        
 
-        this.setState({balanceError: (e.target.value > this.props.gateFee * 2) && (asset.getAmount({real: true}) > e.target.value) ? false : true}); // !_!
+
+        this.setState({ balanceError: (e.target.value > this.props.gateFee * 2) && (asset.getAmount({ real: true }) > e.target.value) ? false : true }); // !_!
 
     }
 
@@ -339,11 +339,11 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     _onMemoChanged(e) {
-        this.setState({memo: e.target.value}, this._updateFee);
+        this.setState({ memo: e.target.value }, this._updateFee);
     }
 
     _validateAddress(address, props = this.props) {
-        validateAddress({url: blockTradesAPIs.BASE_OL, walletType: props.walletType, newAddress: address})
+        validateAddress({ url: blockTradesAPIs.BASE_OL, walletType: props.walletType, newAddress: address })
             .then(isValid => {
                 if (this.state.toAddress === address) {
                     this.setState({
@@ -352,8 +352,8 @@ class DepositWithdrawContent extends DecimalChecker {
                     });
                 }
             }).catch(err => {
-            console.error("Error when validating address:", err);
-        });
+                console.error("Error when validating address:", err);
+            });
     }
 
     _openRegistrarSite(e) {
@@ -363,7 +363,7 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     _getGateFee() {
-        const {gateFee, asset} = this.props;
+        const { gateFee, asset } = this.props;
         return new Asset({
             real: parseFloat(gateFee ? gateFee.replace(",", "") : 0),
             asset_id: asset.get("id"),
@@ -372,10 +372,10 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     _renderWithdraw() {
-        const {amountError} = this.state;
-        const {name: assetName} = utils.replaceName(this.props.asset.get("symbol"), !!this.props.asset.get("bitasset"));
+        const { amountError } = this.state;
+        const { name: assetName } = utils.replaceName(this.props.asset.get("symbol"), !!this.props.asset.get("bitasset"));
         let tabIndex = 1;
-        const {supportsMemos} = this.props;
+        const { supportsMemos } = this.props;
 
         // if(this.props.fiatModal){
         //     if(~this.props.fiatModal.indexOf('canFiatWith')){
@@ -425,15 +425,15 @@ class DepositWithdrawContent extends DecimalChecker {
                             </div>
                         </div>
                     </div>
-                    {amountError ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content={amountError} /></p>:null}
-                    {this.state.balanceError ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.insufficient" />
-                        <span style={{marginLeft: 5}}> (<Translate content="transfer.errors.valid_with_fee" /> {gateFee.getAmount({real: true}) * 2})</span></p>:null}
+                    {amountError ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content={amountError} /></p> : null}
+                    {this.state.balanceError ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.insufficient" />
+                        <span style={{ marginLeft: 5 }}> (<Translate content="transfer.errors.valid_with_fee" /> {gateFee.getAmount({ real: true }) * 2})</span></p> : null}
                 </div>
 
                 <div className="SimpleTrade__withdraw-row">
                     <label className="left-label">{counterpart.translate("transfer.fee")}</label>
                     <div className="inline-label input-wrapper">
-                        <input type="text" disabled value={currentFee.getAmount({real: true})} />
+                        <input type="text" disabled value={currentFee.getAmount({ real: true })} />
 
                         <div className="form-label select floating-dropdown">
                             <div className="dropdown-wrapper inactive">
@@ -441,13 +441,13 @@ class DepositWithdrawContent extends DecimalChecker {
                             </div>
                         </div>
                     </div>
-                    {feeStatus && !feeStatus.hasBalance ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.insufficient" /></p>:null}
+                    {feeStatus && !feeStatus.hasBalance ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.insufficient" /></p> : null}
                 </div>
 
                 <div className="SimpleTrade__withdraw-row">
                     <label className="left-label">{counterpart.translate("gateway.fee")}</label>
                     <div className="inline-label input-wrapper">
-                        <input type="text" disabled value={gateFee.getAmount({real: true})} />
+                        <input type="text" disabled value={gateFee.getAmount({ real: true })} />
 
                         <div className="form-label select floating-dropdown">
                             <div className="dropdown-wrapper inactive">
@@ -455,23 +455,23 @@ class DepositWithdrawContent extends DecimalChecker {
                             </div>
                         </div>
                     </div>
-                    {feeStatus && !feeStatus.hasBalance ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.insufficient" /></p>:null}
+                    {feeStatus && !feeStatus.hasBalance ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.insufficient" /></p> : null}
                 </div>
 
                 <div className="SimpleTrade__withdraw-row">
                     <label className="left-label">{counterpart.translate("modal.withdraw.address")}</label>
                     <div className="inline-label input-wrapper">
-                        <input placeholder={counterpart.translate("gateway.withdraw_placeholder", {asset: assetName})} tabIndex={tabIndex++} type="text" value={this.state.toAddress} onChange={this._onInputTo.bind(this)} />
+                        <input placeholder={counterpart.translate("gateway.withdraw_placeholder", { asset: assetName })} tabIndex={tabIndex++} type="text" value={this.state.toAddress} onChange={this._onInputTo.bind(this)} />
 
                         <div className="form-label select floating-dropdown">
                             <div className="dropdown-wrapper inactive">
-                                <div data-place="right" data-tip={counterpart.translate("tooltip.withdraw_address", {asset: assetName})}>
+                                <div data-place="right" data-tip={counterpart.translate("tooltip.withdraw_address", { asset: assetName })}>
                                     ?
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {!this.state.validAddress && this.state.toAddress ? <div className="has-error" style={{paddingTop: 10}}><Translate content="gateway.valid_address" coin_type={assetName} /></div> : null}
+                    {!this.state.validAddress && this.state.toAddress ? <div className="has-error" style={{ paddingTop: 10 }}><Translate content="gateway.valid_address" coin_type={assetName} /></div> : null}
                 </div>
 
                 {supportsMemos ? (
@@ -494,8 +494,8 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     _renderDeposit() {
-        const {receive_address, loading, emptyAddressDeposit} = this.state;
-        const {name: assetName} = utils.replaceName(this.props.asset.get("symbol"), !!this.props.asset.get("bitasset"));
+        const { receive_address, loading, emptyAddressDeposit } = this.state;
+        const { name: assetName } = utils.replaceName(this.props.asset.get("symbol"), !!this.props.asset.get("bitasset"));
         const hasMemo = receive_address && "memo" in receive_address && receive_address.memo;
         const addressValue = receive_address && receive_address.address || "";
         let tabIndex = 1;
@@ -513,40 +513,43 @@ class DepositWithdrawContent extends DecimalChecker {
         //         return (<p>Click <a href='#' onClick={this._openRegistrarSite} >here</a> to register for deposits </p>);
         //     }
         // }
+
         return (
             <div className={!addressValue ? "no-overflow" : ""}>
-                <p><Translate unsafe content="gateway.add_funds" account={this.props.sender.get("name")} /></p>
+                <Translate unsafe component="p" content="gateway.add_funds" account={this.props.sender.get("name")} />
 
-                {this._renderCurrentBalance()}
+                {/* {this._renderCurrentBalance()} */}
 
                 <div className="SimpleTrade__withdraw-row">
-                    <p style={{marginBottom: 10}} data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", {asset: assetName})}>
+                    <p style={{ marginBottom: 10 }} data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", { asset: assetName })}>
                         <Translate className="help-tooltip" content="gateway.deposit_to" asset={assetName} />:
                         <label className="fz_12 left-label"><Translate content="gateway.deposit_notice_delay" /></label>
                     </p>
-                    {!addressValue ? <LoadingIndicator type="three-bounce"/> :<label>
-
-                           {emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> : <span className="inline-label"><input readOnly type="text" value={addressValue} /><CopyButton text={addressValue} /> </span> }
-
+                    {!addressValue ? <LoadingIndicator type="three-bounce" /> : <label>
+                        {emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> :
+                            <span className="inline-label">
+                                <input readOnly type="text" value={addressValue} />
+                                <CopyButton text={addressValue} />
+                            </span>}
                     </label>}
                     {hasMemo ?
                         <label>
                             <span className="inline-label">
                                 <input readOnly type="text" value={counterpart.translate("transfer.memo") + ": " + receive_address.memo} />
-
                                 <CopyButton
                                     text={receive_address.memo}
                                 />
                             </span>
                         </label> : null}
 
-                  {/*  {receive_address && receive_address.error ?
+                    {/*  {receive_address && receive_address.error ?
                         <div className="has-error" style={{paddingTop: 10}}>
                             {receive_address.error.message}
                         </div> : null}*/}
                 </div>
 
-                <div className="button-group SimpleTrade__withdraw-row">
+                <Translate className="has-error fz_14" unsafe component="p" content="gateway.min_deposit_warning" minDeposit={this.props.gateFee * 2 || (assetName === "USDT" ? 25 : 0)} coin={assetName}/>
+                <div className="float-right">
                     <button tabIndex={tabIndex++} className="button spinner-button-circle" onClick={this.requestDepositAddressLoad.bind(this)} type="submit" >
                         {loading ? <LoadingIndicator type="circle" /> : null}<Translate content="gateway.generate_new" />
                     </button>
@@ -605,15 +608,14 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     render() {
-
-        let {asset, action} = this.props;
+        let { asset, action } = this.props;
         let isDeposit = action === "deposit";
 
         if (!asset) {
             return null;
         }
 
-        const {name: assetName} = utils.replaceName(asset.get("symbol"), true);
+        const { name: assetName } = utils.replaceName(asset.get("symbol"), true);
 
         let content = this.props.isDown ?
             <div><Translate className="txtlabel cancel" content="gateway.unavailable_OPEN" component="p" /></div> :
@@ -623,19 +625,11 @@ class DepositWithdrawContent extends DecimalChecker {
 
         return (
             <div className="SimpleTrade__modal">
-                <div className="Modal__header">
+                <div className="content-block">
                     <h3><Translate content={isDeposit ? "gateway.deposit" : "modal.withdraw.submit"} /> {assetName}</h3>
                 </div>
-                <div className="Modal__divider"></div>
 
-                <div
-                    className="grid-block vertical no-overflow"
-                    style={{
-                        zIndex: 1002,
-                        paddingLeft: "2rem",
-                        paddingRight: "2rem",
-                        paddingTop: "1rem"
-                    }}>
+                <div className="grid-block vertical no-overflow">
 
                     {content}
                 </div>
@@ -649,17 +643,17 @@ export default class SimpleDepositWithdrawModal extends React.Component {
     constructor() {
         super();
 
-        this.state = {open: false};
+        this.state = { open: false };
     }
 
     show() {
-        this.setState({open: true}, () => {
+        this.setState({ open: true }, () => {
             ZfApi.publish(this.props.modalId, "open");
         });
     }
 
     onClose() {
-        this.setState({open: false});
+        this.setState({ open: false });
     }
 
     render() {

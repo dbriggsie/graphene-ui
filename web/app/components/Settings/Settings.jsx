@@ -11,6 +11,7 @@ import PasswordSettings from "./PasswordSettings";
 import RestoreSettings from "./RestoreSettings";
 import BackupSettings from "./BackupSettings";
 import AccessSettings from "./AccessSettings";
+import AccountStore from "stores/AccountStore";
 
 class Settings extends React.Component {
 
@@ -174,6 +175,7 @@ class Settings extends React.Component {
     }
 
     render() {
+
         let {settings, defaults} = this.props;
         const {menuEntries, activeSetting, settingEntries} = this.state;
 
@@ -198,7 +200,8 @@ class Settings extends React.Component {
             break;
 
         case "restore":
-            entries = <RestoreSettings passwordLogin={this.props.settings.get("passwordLogin")} />;
+            // Temporary disable pass restore
+           if(!this.props.settings.get("passwordLogin")) entries = <RestoreSettings passwordLogin={this.props.settings.get("passwordLogin")} />;
             break;
 
         case "access":

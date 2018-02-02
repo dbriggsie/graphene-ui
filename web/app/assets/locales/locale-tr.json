@@ -827,7 +827,6 @@
     "accounts_text": "Hesap listesi",
     "password_text": "Şifre değiştirme",
     "backup_text": "Cüzdan yedekleme",
-    "restore_text": "TekAnahtar ya da .bin dosyası ile cüzdan kurtarma",
     "access_text": "Hangi tam noda bağlanacağınızı seçin.<br/><br/>Kayıt ücretini ödemek için ücretsiz bir servis kullanılacaktır.",
     "view_keys": "Anahtarları göster",
     "add_api": "API ekle",

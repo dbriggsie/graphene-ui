@@ -1,3 +1,16 @@
+
+
+
+.overview-tabs{
+  .filter-account-balances{
+    margin-bottom: 0;
+  }
+  div.tab-content {
+    padding-top: 0px !important;
+  }
+}
+
+
 .account-left-panel {
   > div.grid-block {
     border-right: 1px solid $border-color;
@@ -253,12 +266,13 @@ table.table.dashboard-table {
         border-bottom: none;
         word-wrap: none;
       }
-      td:first-of-type {
+      td:first-of-type, td:nth-child(2) {
         text-align: left;
         text-transform: uppercase;
         font-weight: 600;
+        padding: 10px 0 10px 0;
       }
-      td:nth-child(3) {
+      td:nth-child(4) {
         font-weight: 600;
         text-align: right;
       }

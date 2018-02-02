@@ -45,6 +45,8 @@ $account-dimmed: #606060;
 $account-border: #525050;
 $account-background: $bg-color;
 
+$icon-svg: #fff;
+
 .olDarkTheme {
   @include theme(
     $primary-text-color,
@@ -79,7 +81,8 @@ $account-background: $bg-color;
     $account-primarytext,
     $account-dimmed,
     $account-border,
-    $account-background
+    $account-background,
+    $icon-svg
   );
 
   ul.button-group.segmented.login-tabs{

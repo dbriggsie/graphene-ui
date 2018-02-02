@@ -259,7 +259,6 @@ class MyMarkets extends React.Component {
 
     constructor(props) {
         super();
-
         // let inputValue = null; // props.viewSettings.get("marketLookupInput", null);
         // let symbols = inputValue ? inputValue.split(":") : [null];
         // let quote = symbols[0];
@@ -584,6 +583,7 @@ class MyMarkets extends React.Component {
             });
 
         allMarkets = Immutable.Map(allMarkets);
+
         let activeMarkets = myMarketTab ? defaultMarkets : allMarkets;
         if (myMarketTab && userMarkets.size) {
             userMarkets.forEach((market, key) => {
@@ -653,6 +653,7 @@ class MyMarkets extends React.Component {
         if (listHeight) {
             listStyle.height = listHeight;
         }
+
         return (
             <div className={this.props.className} style={this.props.style}>
                 <div

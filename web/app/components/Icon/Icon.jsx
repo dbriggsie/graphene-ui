@@ -38,7 +38,7 @@ let icons = ["user", "trash", "chevron-down", "menu", "database", "search", "tra
     "accounts", "witnesses", "assets", "proposals", "blocks", "committee_members", "workers", "key",
     "checkmark-circle", "checkmark", "piggy", "locked", "unlocked", "markets", "fi-star", "fees",
     "thumb-tack", "clock", "clippy", "lnr-cross", "dollar", "settle", "deposit", "withdraw", "adjust", "excel","csv",
-    "shuffle", "share", "minus-circle", "locked", "checkmark-circle", "info", "info-warn"
+    "shuffle", "share", "minus-circle", "locked", "checkmark-circle", "info", "info-warn", "warning"
 ];
 
 let icons_map = {};

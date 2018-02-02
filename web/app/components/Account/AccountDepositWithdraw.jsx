@@ -21,7 +21,6 @@ import BitKapital from "../DepositWithdraw/BitKapital";
 import GatewayStore from "stores/GatewayStore";
 import GatewayActions from "actions/GatewayActions";
 import AccountImage from "../Account/AccountImage";
-import SimpleDepositWithdraw from "../Dashboard/SimpleDepositWithdraw";
 import BaseModal from "../Modal/BaseModal";
 import DepositModalRmbpay from "../DepositWithdraw/openledger/DepositModalRmbpay";
 import WithdrawModalRmbpay from "../DepositWithdraw/openledger/WithdrawModalRmbpay";
@@ -135,7 +134,8 @@ class AccountDepositWithdraw extends React.Component {
     }
 
     _getRmbpayBalance() {
-        const rmbpayBalance = this.props.account.get("balances").toJS()[RMBPAY_ASSET_ID]
+        const account = this.props.account
+        const rmbpayBalance = account && account.get("balances").toJS()[RMBPAY_ASSET_ID]
         const balanceObject = rmbpayBalance ? ChainStore.getObject(rmbpayBalance) : 0
         const rmbPayAsset = ChainStore.getAsset("RMBPAY")
         const precision = rmbPayAsset ? utils.get_asset_precision(rmbPayAsset) : 1
@@ -216,6 +216,7 @@ class AccountDepositWithdraw extends React.Component {
         return rbmbPay;
     }
 
+    // {"success":"true","error":"false","list_transfer_service":[{"id":1,"name":"RMBpay","is_active":"0"}]}
     renderServices(blockTradesGatewayCoins, openLedgerGatewayCoins) {
         //let services = ["Openledger (OPEN.X)", "BlockTrades (TRADE.X)", "Transwiser", "BitKapital"];
         let serList = [];
@@ -519,7 +520,7 @@ export default connect(DepositStoreWrapper, {
     },
     getProps() {
         return {
-            account: AccountStore.getState().currentAccount,
+            account: AccountStore.getState().currentAccount || AccountStore.getState().passwordAccount,
             viewSettings: SettingsStore.getState().viewSettings,
             openLedgerBackedCoins: GatewayStore.getState().backedCoins.get("OPEN", []),
             blockTradesBackedCoins: GatewayStore.getState().backedCoins.get("TRADE", [])

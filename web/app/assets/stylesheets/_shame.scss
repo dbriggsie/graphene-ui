@@ -211,6 +211,10 @@ div.modal {
   border: 1px solid #008CBA;
 }
 
+span.disabled {
+  opacity: 0.4;
+  pointer-events: none !important;
+}
 div.disabled * {
     opacity: 0.8 !important;
     cursor: default !important;

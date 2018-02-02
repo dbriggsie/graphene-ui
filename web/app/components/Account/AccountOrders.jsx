@@ -218,12 +218,6 @@ class AccountOrders extends React.Component {
 
         return (
             <div className="grid-content no-overflow no-padding" style={{paddingBottom: 15}}>
-                <div style={{maxWidth: "50%", marginBottom: "1em"}}>
-                    {orders && ordersCount ? <input type="text" placeholder={counterpart.translate("account.filter_orders")} style={{display: "inline-block", maxWidth: "50%", marginRight: "1em", marginBottom: "0"}} onChange={this.setFilterValue.bind(this)}/> : null}
-                    {selectedOrders.length ? <button className="button"><Translate content="account.reset_orders" onClick={this.resetSelected.bind(this)} /></button> : null}
-                    {selectedOrders.length ? <button className="button"><Translate content="account.submit_orders" onClick={this.cancelSelected.bind(this)} /></button> : null}
-                </div>
-
                 <table className="table table-striped dashboard-table">
                     <TableHeader settings={this.props.settings} dashboard isMyAccount={this.props.isMyAccount}/>
                     {tables}

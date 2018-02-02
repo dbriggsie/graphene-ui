@@ -60,7 +60,7 @@ class FormattedAsset extends React.Component {
     }
 
     render() {
-        let {amount, decimalOffset, color, asset, hide_asset, hide_amount, asPercentage} = this.props;
+        let {amount, decimalOffset, color, asset, hide_asset, hide_amount, asPercentage, hide_coin_name} = this.props;
 
         if( asset && asset.toJS ) asset = asset.toJS();
 
@@ -116,9 +116,9 @@ class FormattedAsset extends React.Component {
                                 onOuterAction={this.closePopover}
                                 body={currency_popover_body}
                             >
-                        <span className="currency click-for-help" onClick={this.togglePopover}><AssetName name={asset.symbol} /></span>
+                        <span className="currency click-for-help" onClick={this.togglePopover}>{!hide_coin_name ? <AssetName name={asset.symbol} /> : null}</span>
                     </Popover></span>) :
-                    <span className="currency" onClick={this.togglePopover}> <AssetName noTip={this.props.noTip} noPrefix={this.props.noPrefix} name={asset.symbol} replace={this.props.replace} /></span>)}
+                    <span className="currency" onClick={this.togglePopover}> {!hide_coin_name ? <AssetName noTip={this.props.noTip} noPrefix={this.props.noPrefix} name={asset.symbol} replace={this.props.replace} /> : null}</span>)}
                 </span>
         );
     }

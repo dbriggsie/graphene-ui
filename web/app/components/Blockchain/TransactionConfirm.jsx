@@ -52,6 +52,7 @@ class TransactionConfirm extends React.Component {
 
     onCloseClick(e) {
         e.preventDefault();
+        ZfApi.publish("transaction-action", "cancel");
         TransactionConfirmActions.close();
     }
 

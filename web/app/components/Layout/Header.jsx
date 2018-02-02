@@ -24,7 +24,8 @@ import SettingsActions from "actions/SettingsActions";
 
 import {ChainStore} from "bitsharesjs/es";
 
-let logo = '/app/assets/logo.png';
+const logo = "/app/assets/logo.png";
+const OPENLEDGER_IDS = ["1.2.96393", "1.2.369892", "1.2.96397", "1.2.100614"];
 
 const FlagImage = ({flag, width = 20, height = 20}) => {
     return <img height={height} width={width} src={"/app/assets/language-dropdown/img/" + flag.toUpperCase() + ".png"} />;
@@ -40,9 +41,11 @@ class Header extends React.Component {
     constructor(props, context) {
         super();
         this.state = {
-            active: context.location.pathname
+            active: context.location.pathname,
+            showVoting: false
         };
-
+        this._checkVoting = this._checkVoting.bind(this);
+        ChainStore.subscribe(this._checkVoting);
         this.unlisten = null;
 
     }
@@ -59,6 +62,7 @@ class Header extends React.Component {
         });
     }
 
+    /* NOTE: is needed for Simple Mode. */
     componentWillReceiveProps(nextProps) {
         if (nextProps.traderMode && !this.props.traderMode) {
             this.context.router.push("/dashboard");
@@ -71,6 +75,11 @@ class Header extends React.Component {
         setTimeout(() => {
             ReactTooltip.rebuild();
         }, 1250);
+        ZfApi.subscribe("fast-voting-message", (name, msg) => {
+            if (msg === "done") {
+                this._setVoting(false);
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -78,12 +87,13 @@ class Header extends React.Component {
             this.unlisten();
             this.unlisten = null;
         }
+        ZfApi.unsubscribe("fast-voting-message");
     }
 
     shouldComponentUpdate(nextProps, nextState) {
         return (
             nextProps.linkedAccounts !== this.props.linkedAccounts ||
-            nextProps.traderMode !== this.props.traderMode ||
+            nextProps.traderMode !== this.props.traderMode || // NOTE: is needed for Simple Mode.
             nextProps.currentAccount !== this.props.currentAccount ||
             nextProps.passwordLogin !== this.props.passwordLogin ||
             nextProps.locked !== this.props.locked ||
@@ -91,7 +101,8 @@ class Header extends React.Component {
             nextProps.lastMarket !== this.props.lastMarket ||
             nextProps.starredAccounts !== this.props.starredAccounts ||
             nextProps.currentLocale !== this.props.currentLocale ||
-            nextState.active !== this.state.active
+            nextState.active !== this.state.active ||
+            nextState.showVoting !== this.state.showVoting
         );
     }
 
@@ -150,6 +161,24 @@ class Header extends React.Component {
         // this.onClickUser(account_name, e);
     }
 
+    _checkVoting() {
+        const accountName = this.props.currentAccount;
+        const account = ChainStore.getAccount(accountName);
+        if (account) {
+            ChainStore.unsubscribe(this._checkVoting);
+            const options = account.get("options");
+            const proxyAccount = options && options.get("voting_account");
+            this._setVoting(OPENLEDGER_IDS.indexOf(proxyAccount) === -1);
+        }
+    }
+
+    _setVoting(show) {
+        this.setState({
+            showVoting: show
+        });
+    }
+
+    /* NOTE: is needed for Simple Mode. */
     onSwitchTraderMode() {
 
         if(SettingsStore.getState().settings.get("traderMode")){
@@ -171,23 +200,15 @@ class Header extends React.Component {
         }
         console.log('@>airbitz_backup_option header',localStorage.getItem("airbitz_backup_option"))
     }    
-
-    // onClickUser(account, e) {
-    //     e.stopPropagation();
-    //     e.preventDefault();
-    //
-    //     this.context.router.push(`/account/${account}/overview`);
-    // }
-
     render() {
         let {active} = this.state;
         let {linkedAccounts, currentAccount, starredAccounts, traderMode, passwordLogin} = this.props;
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
-
         let tradingAccounts = AccountStore.getMyAccounts();
 
         if (starredAccounts.size) {
+
             for (let i = tradingAccounts.length - 1; i >= 0; i--) {
                 if (!starredAccounts.has(tradingAccounts[i])) {
                     tradingAccounts.splice(i, 1);
@@ -199,15 +220,15 @@ class Header extends React.Component {
                 }
             });
         }
-
-
         let myAccounts = AccountStore.getMyAccounts();
-        let myAccountCount = myAccounts.length;
 
+
+        let myAccountCount = myAccounts.length;
         let walletBalance = myAccounts.length && this.props.currentAccount ? (
                             <div className="grp-menu-item header-balance">
                                 <a><TotalBalanceValue.AccountWrapper label="exchange.balance" accounts={[this.props.currentAccount]} inHeader={true}/></a>
                             </div>) : null;
+        
 
         let dashboard = (
             <a
@@ -218,7 +239,8 @@ class Header extends React.Component {
                 <img style={{margin:0,height: 30}} src={logo} />
             </a>
         );
-
+        
+        /* NOTE: is needed for Simple Mode. */
         let switchTraderMode = (
             <ActionSheet.Button title="" setActiveState={() => {}}  >
                 <a className="grp-menu-item switch_button" onClick={this.onSwitchTraderMode} >
@@ -385,18 +407,21 @@ class Header extends React.Component {
                 <div className="grid-block show-for-medium">
                     <ul className="menu-bar">
                         <li>{dashboard}</li>
-                       {/* {(!traderMode && hasOrders) ? <li><Link to="/my-orders" activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}*/}
+                        {/* {(!traderMode && hasOrders) ? <li><Link to="/my-orders" activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}*/}
+                        {/* {(traderMode && this.state.showVoting) ? <li><Link to={`/fast-voting`} className={cnames({active: active.indexOf("fast-voting") !== -1})}><Translate content="account.fast_voting.vote" /></Link></li> : null} */}
                         {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} className={cnames({active: active.indexOf("account/") !== -1})}><Translate content="header.account" /></Link></li>}
                         {!traderMode ? null : <li><Link to="/transfer" className={cnames({active: active.indexOf("transfer") !== -1})} ><Translate component="span" content="header.payments" /></Link></li>}
                         {!traderMode ? null : <li>{tradeLink}</li>}
                         {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
-                    </ul>
+                   </ul>
                 </div>
                 <div className="grid-block show-for-medium shrink">
                     <div className="grp-menu-items-group header-right-menu">
 
                         {!myAccountCount || !walletBalance ? null : walletBalance}
-                        {switchTraderMode}
+
+                        {/*  {switchTraderMode}  NOTE: is needed for Simple Mode. */}
+
                         {myAccountCount !== 0 ? null :<div className="grp-menu-item overflow-visible" >
                             {settingsDropdown}
                         </div>}

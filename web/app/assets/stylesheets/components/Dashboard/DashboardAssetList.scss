@@ -5,8 +5,12 @@ td.pin-column:hover .icon{
 a.disabled {
     color: grey!important;
     cursor: default!important;
+    svg{
+        opacity: .4;
+    }
 }
 
 .simple-td-name {
     min-width: 250px;
 }
+

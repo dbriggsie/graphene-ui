@@ -16,7 +16,7 @@ import Explorer from "components/Explorer/Explorer";
 import AccountPage from "./components/Account/AccountPage";
 import AccountOverview from "./components/Account/AccountOverview";
 import AccountAssets from "./components/Account/AccountAssets";
-import {AccountAssetCreate} from "./components/Account/AccountAssetCreate";
+import { AccountAssetCreate } from "./components/Account/AccountAssetCreate";
 import AccountAssetUpdate from "./components/Account/AccountAssetUpdate";
 import AccountSignedMessages from "./components/Account/AccountSignedMessages";
 import AccountMembership from "./components/Account/AccountMembership";
@@ -34,13 +34,13 @@ import BlockContainer from "./components/Blockchain/BlockContainer";
 import AssetContainer from "./components/Blockchain/AssetContainer";
 import CreateAccount from "./components/Account/CreateAccount";
 import CreateAccountPassword from "./components/Account/CreateAccountPassword";
-import {ExistingAccount, ExistingAccountOptions} from "./components/Wallet/ExistingAccount";
-import { WalletCreate , CreateWalletFromBrainkey } from "./components/Wallet/WalletCreate";
+import { ExistingAccount, ExistingAccountOptions } from "./components/Wallet/ExistingAccount";
+import { WalletCreate, CreateWalletFromBrainkey } from "./components/Wallet/WalletCreate";
 import ImportKeys from "./components/Wallet/ImportKeys";
 import Invoice from "./components/Transfer/Invoice";
-import {BackupCreate, BackupRestore} from "./components/Wallet/Backup";
+import { BackupCreate, BackupRestore } from "./components/Wallet/Backup";
 import WalletChangePassword from "./components/Wallet/WalletChangePassword";
-import {WalletManager, WalletOptions, ChangeActiveWallet, WalletDelete} from "./components/Wallet/WalletManager";
+import { WalletManager, WalletOptions, ChangeActiveWallet, WalletDelete } from "./components/Wallet/WalletManager";
 import BalanceClaimActive from "./components/Wallet/BalanceClaimActive";
 import BackupBrainkey from "./components/Wallet/BackupBrainkey";
 import Login from "./components/Login/Login";
@@ -48,6 +48,7 @@ import Brainkey from "./components/Wallet/Brainkey";
 import Help from "./components/Help";
 import InitError from "./components/InitError";
 import Residents_unsupported from "./components/Residents_unsupported";
+import FastVoting from "./components/Account/FastVoting";
 
 import MyOrders from "./components/Account/MyOrders";
 import LoginSelector from "./components/LoginSelector";
@@ -58,16 +59,16 @@ import Welcome from "./components/Welcome/Welcome";
 const history = __HASH_HISTORY__ ? hashHistory : browserHistory;
 
 class Auth extends React.Component {
-    render() {return null; }
+    render() { return null; }
 }
 
 const routes = (
     <Route path="/" component={App} onEnter={willTransitionTo}>
-        <IndexRoute component={DashboardContainer}/>
-        <Route path="/auth/:data" component={Auth}/>
-        <Route path="/dashboard" component={DashboardContainer}/>
-        <Route path="/welcome" component={Welcome}/>
-        <Route path="explorer" component={Explorer}/>
+        <IndexRoute component={DashboardContainer} />
+        <Route path="/auth/:data" component={Auth} />
+        <Route path="/dashboard" component={DashboardContainer} />
+        <Route path="/welcome" component={Welcome} />
+        <Route path="explorer" component={Explorer} />
 
         <Route path="/explorer/fees" component={FeesContainer} />
         <Route path="/explorer/blocks" component={BlocksContainer} />
@@ -94,7 +95,7 @@ const routes = (
         <Route path="create-wallet" component={WalletCreate} />
         <Route path="create-wallet-brainkey" component={CreateWalletFromBrainkey} />
 
-        <Route path="transfer" component={Transfer}/>
+        <Route path="transfer" component={Transfer} />
 
         <Route path="invoice/:data" component={Invoice} />
         <Route path="explorer/markets" component={MarketsContainer} />
@@ -117,7 +118,7 @@ const routes = (
             <Route path="balance-claim" component={BalanceClaimActive} />
         </Route>
 
-        <Route path="my-orders" component={MyOrders}/>
+        <Route path="my-orders" component={MyOrders} />
 
         <Route path="/account/:account_name" component={AccountPage} >
             <IndexRoute component={AccountOverview} />
@@ -134,6 +135,8 @@ const routes = (
             <Route path="whitelist" component={AccountWhitelist} />
             <Route path="signedmessages" component={AccountSignedMessages} />
         </Route>
+
+        {/* <Route path="/fast-voting" component={FastVoting} /> */}
 
         <Route path="deposit-withdraw" component={AccountDepositWithdraw} />
         <Route path="create-worker" component={CreateWorker} />

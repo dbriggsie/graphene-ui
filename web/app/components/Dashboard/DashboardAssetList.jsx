@@ -107,6 +107,7 @@ class DashboardAssetList extends React.Component {
     }
 
     _renderRow(assetName) {
+     
         let isPinned = this._isPinned(assetName);
         let asset = ChainStore.getAsset(assetName);
 
@@ -132,7 +133,6 @@ class DashboardAssetList extends React.Component {
                 let canFiatWith = ~this.props.openLedgerBackedFiatCoins.withdraw.indexOf(e.backingCoinType)?'canFiatWith':'';
                 fiatModal=canFiatDep+' '+canFiatWith;
             }
-
         });
 
         return (
@@ -270,7 +270,9 @@ class DashboardAssetList extends React.Component {
         }) || {};
         // console.log("currentDepositAsset", currentDepositAsset, "openLedgerBackedCoins:", this.props.openLedgerBackedCoins);
 
+
         let sortedAssets = ((els)=>{
+
             let isPinnedArr = [];
             let isBalanceArr = [];
             let resultArray = [];
@@ -303,7 +305,7 @@ class DashboardAssetList extends React.Component {
                     a_bal = a_bal / Math.pow(10,a_precision.precision);
                     b_bal = b_bal / Math.pow(10,b_precision.precision);
                 }
-
+               
                 if(a_bal>b_bal){
                     return -1;
                 }else if(a_bal<b_bal){
@@ -311,11 +313,10 @@ class DashboardAssetList extends React.Component {
                 }else{
                     return 0;
                 }
-
             }).map(e=>{
                 e&&isBalanceArr.push(e.toJS());
             });
-
+            
             isBalanceArr.map(e1=>{
                 let isPinned = false;
                 isPinnedArr.map((e2,index)=>{
@@ -330,14 +331,16 @@ class DashboardAssetList extends React.Component {
 
             resultArray = resultArray.concat(exceptPinnedResultArray);
             resultArray = resultArray.concat(isPinnedArr.filter(e=>e));
+
+
             resultArray = resultArray.map(e=>{
                 if(all_AssetKeys[e]){
                     return all_AssetKeys[e].symbol;
                 }
-
                 return e;
             });
 
+            
             for(let i in assetKeys){
                 let indexResEl = resultArray.indexOf(assetKeys[i].symbol);
                 indexResEl===-1?resultArray.push(all_AssetKeys[i].symbol):1;
@@ -476,7 +479,6 @@ class ListWrapper extends React.Component {
         let openLedgerBackedCoins;
         let openLedgerBackedFiatCoins;
 
-        console.log()
         let json_rpc_request = { "jsonrpc": "2.0", "id": 1, "method": "isValidatedForFiat", "params": {"bitsharesAccountName": this.props.account.get('name')}};
 
         fetchCoins()

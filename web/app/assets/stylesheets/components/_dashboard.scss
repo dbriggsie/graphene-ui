@@ -171,9 +171,7 @@ div.fm-container {
 }
 
 #simple_transfer_modal,
-#simple_deposit_modal,
 #simple_deposit_modal_ask,
-#simple_withdraw_modal,
 #simple_bridge_modal,
 #simple_bridge_modal_ask {
     padding: 0;
@@ -181,7 +179,6 @@ div.fm-container {
 
 #simple_deposit_modal,
 #simple_deposit_modal_ask,
-#simple_withdraw_modal,
 #simple_bridge_modal,
 #simple_bridge_modal_ask {
     overflow: auto !important;
@@ -190,7 +187,6 @@ div.fm-container {
 
 #simple_deposit_modal label,
 #simple_deposit_modal_ask label,
-#simple_withdraw_modal label,
 #simple_bridge_modal label,
 #simple_bridge_modal_ask label {
     text-transform: none !important;

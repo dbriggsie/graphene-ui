@@ -7,6 +7,7 @@ import counterpart from "counterpart";
 import SettingsActions from "actions/SettingsActions";
 import WalletUnlockActions from "actions/WalletUnlockActions";
 
+
 export default class RestoreSettings extends React.Component {
 
     constructor() {

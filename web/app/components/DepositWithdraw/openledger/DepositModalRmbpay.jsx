@@ -49,8 +49,7 @@ class DepositModalRmbpay extends React.Component {
         url: React.PropTypes.string,
         output_wallet_type: React.PropTypes.string,
         amount_to_withdraw: React.PropTypes.string,
-        balance: ChainTypes.ChainObject,
-        activeMarketHistory: React.PropTypes.object.isRequired,
+        balance: ChainTypes.ChainObject
     };
 
     constructor(props) {

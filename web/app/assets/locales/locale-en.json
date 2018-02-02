@@ -118,7 +118,8 @@
   "propose": "Propose",
   "cancel": "Cancel",
   "account": {
-
+    "filter_favorites": "Show favorites",
+    "filter_hedden_balance":"Hide 0 balances",
     "centralized": "Your Decentralized Exchange",
     "new_user": "New user?",
     "existing_user": "Existing user",
@@ -427,11 +428,13 @@
     "voting": "Voting",
     "fast_voting": {
       "invitation_intro": "It gives us great pleasure to offer you the opportunity to take part in the development of the OpenLedger DC.",
-      "invitation_explanation": "As you know, BitShares is a blockchain based on {DPOS consensus} (link), which means that your funds (stake) influence the quality and stability of the entire network. It is therefore important that you are voting actively and regularly, according to the rapidly changing developments within the blockchain (witness & committees structure and stats, working proposals, etc.). Everything related to voting can be found {here} link.",
+      "invitation_explanation": "As you know, BitShares is a blockchain based on <a href=\"https://bitshares.org/technology/delegated-proof-of-stake-consensus/\" target=\"_blank\">DPOS consensus</a>, which means that your funds (stake) influence the quality and stability of the entire network. It is therefore important that you are voting actively and regularly, according to the rapidly changing developments within the blockchain (witness & committees structure and stats, working proposals, etc.). Everything related to voting can be found <a href=\"http://docs.bitshares.org/bitshares/user/voting.html\" target=\"_blank\">here</a>.",
       "invitation_conclusion": "If you are not able to stay updated on the developments and an active voter, we suggest an alternative option - to delegate your votes to OpenLedger, by choosing the official OpenLedger account as a 'proxy'. This will be a great support for OpenLedger as a project, and it will allow you to automatically vote for the same proposals as OpenLedger. This will ensure that your votes (funds) are active on the network, and we promise that we will handle your votes with due diligence and responsibility, by supporting proposals that benefits the overall network and in partcular our users - the only way for OpenLedger to succeed is for its users to succeed!",
       "invitation_click": "If you would like to support OpenLedger, simply click the 'Vote' button below:",
       "vote": "Vote",
-      "title": "Vote for openledger"
+      "title": "Vote for openledger",
+      "thanks": "Thank you for your vote, we very appreciate your support!",
+      "continue": "Continue"
     },
     "orders": "Orders",
     "select_placeholder": "Select Account...",
@@ -941,7 +944,7 @@
     "password_text": "Change your password.",
     "backup_text": "Choose type of backup.",
     "backup_account_model_text": "Create backups here.",
-    "restore_text": "Restore from a backup or import keys.",
+    "restore_text": "There is no password recovery option on Bitshares platform for account model.",
     "access_text": "",
     "view_keys": "View keys",
     "backup_backup": "Restore from a backup file (.bin)",
@@ -1417,6 +1420,10 @@
     "deposit_to": "Please send your %(asset)s to the address below",
     "deposit_notice_delay": "(new address can be generated once per 5 minutes)",
     "add_funds": "Quickly and easily add funds to your BitShares account <strong>%(account)s</strong>. This service is provided by Openledger.",
+    "min_deposit_warning": "Minimum value to deposit should be %(minDeposit)s.<br /><br />IMPORTANT: Send only %(coin)s to this deposit address. Sending less than %(minDeposit)s %(coin)s or any other currency to this address may result in the loss of your deposit.",
+    "under_mentainance": "The gate is temporarily under maintenance",
+    "not_enough_funds": "Not enough funds to withdraw",
+    "transfer": "Transfer",
     "withdraw_funds": "You are going to withdraw funds from your BitShares account to your external %(asset)s account.",
     "balance_asset": "Current %(asset)s balance",
     "withdraw_placeholder": "Please enter your %(asset)s address",

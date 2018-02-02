@@ -278,18 +278,11 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                         <Translate component="h4" content="gateway.deposit_inst" />
                         <label className="left-label"><Translate content="gateway.deposit_to" asset={this.props.deposit_asset} />:</label>
                         <label className="fz_12 left-label"><Translate content="gateway.deposit_notice_delay" /></label>
-                        <div style={{padding: "10px 0", fontSize: "1.1rem", fontWeight: "bold"}}>
-                            <table className="table">
-                                <tbody>
-                                    <tr>
-                                        <td>{emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> : deposit_address_fragment }</td>
-                                    </tr>
-                                    {deposit_memo ? (
-                                    <tr>
-                                        <td>memo: {deposit_memo}</td>
-                                    </tr>) : null}
-                                </tbody>
-                            </table>
+                        <div>
+                            {emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> : deposit_address_fragment }
+                            <div>
+                                {deposit_memo && ("memo: " + deposit_memo)}
+                            </div>
                             <div className="button-group" style={{paddingTop: 10}}>
                                 {deposit_address_fragment ? <div className="button" onClick={this.toClipboard.bind(this, clipboardText)}>
                                     <Translate content="gateway.copy_address" />
@@ -299,6 +292,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                                 </div> : null}
                                 <button className={"button spinner-button-circle"} onClick={this.requestDepositAddressLoad.bind(this)}>{indicatorButtonAddr ? <LoadingIndicator type="circle" /> : null}<Translate content="gateway.generate_new" /></button>
                             </div>
+                            <Translate className="has-error fz_14" unsafe component="p" content="gateway.min_deposit_warning" minDeposit={this.props.gateFee * 2} coin={this.props.deposit_asset}/>
                         </div>
                     </div>
                 </div>
@@ -347,8 +341,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                             <button className="button success" style={{fontSize: "1.3rem"}} onClick={this.onWithdraw.bind(this)}><Translate content="gateway.withdraw_now" /> </button>
                         </div>
                     </div>
-                    <BaseModal id={withdraw_modal_id} overlay={true}>
-                        <br/>
+                    <BaseModal id={withdraw_modal_id} overlay={true} className="withdraw_modal" >
                         <div className="grid-block vertical">
                             <WithdrawModalBlocktrades
                                 account={this.props.account.get("name")}
@@ -361,7 +354,6 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                                 output_coin_type={this.props.deposit_coin_type}
                                 output_wallet_type={this.props.deposit_wallet_type}
 								output_supports_memos={this.props.supports_output_memos}
-                                memo_prefix={withdraw_memo_prefix}
                                 modal_id={withdraw_modal_id}
                                 balance={this.props.account.get("balances").toJS()[this.props.receive_asset.get("id")]} />
                         </div>

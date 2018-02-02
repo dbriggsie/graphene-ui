@@ -51,7 +51,7 @@ class Chat extends React.Component {
 
         document.body.addEventListener("click",(e)=>{
             let chat_div = document.getElementById("chatbox");
-            if(e.target.id=="chatbox"||chat_div.contains(e.target)){
+            if(!chat_div || e.target.id=="chatbox"||chat_div.contains(e.target)){
                 return false;
             }else{
                 if(chat_div.childNodes[0].style.display==="block"){

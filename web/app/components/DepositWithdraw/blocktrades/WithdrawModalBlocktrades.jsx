@@ -142,7 +142,7 @@ class WithdrawModalBlocktrades extends React.Component {
     }
 
     onMemoChanged(e) {
-        this.setState({ 
+        this.setState({
             memo: e.target.value
         }, this._updateFee);
     }
@@ -420,8 +420,7 @@ class WithdrawModalBlocktrades extends React.Component {
 
         if (!this.state.withdraw_address_check_in_progress && (this.state.withdraw_address && this.state.withdraw_address.length)) {
             if (!this.state.withdraw_address_is_valid) {
-
-                invalid_address_message = <div className="has-error" style={{ paddingTop: 10 }}><Translate content="gateway.valid_address" coin_type={this.props.output_coin_type} /></div>;
+                invalid_address_message = <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="gateway.valid_address" coin_type={this.props.output_coin_type} />;
                 confirmation =
                     <Modal id={withdrawModalId} overlay={true}>
                         <Trigger close={withdrawModalId}>
@@ -491,10 +490,14 @@ class WithdrawModalBlocktrades extends React.Component {
                         onChange={this.onWithdrawAmountChange.bind(this)}
                         display_balance={balance}
                     />
-                    {this.state.empty_withdraw_value ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.valid" />
-                    </p> : null}
-                    {this.state.balanceError ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.insufficient" />
-                        <span style={{ marginLeft: 5 }}> (<Translate content="transfer.errors.valid_with_fee" /> {gateFee * 2} {this.props.output_coin_name}) </span></p> : null}
+                    {this.state.empty_withdraw_value ?
+                        <Translate component="div" content="transfer.errors.valid" className="mt_2 mb_5 color-danger fz_14" /> :
+                        this.state.balanceError && <div className="color-danger mt_2">
+                            <Translate content="transfer.errors.insufficient" className="mb_5 fz_14" />
+                            <span>
+                                (<Translate content="transfer.errors.valid_with_fee" className="mb_5 fz_14" /> {gateFee * 2} {this.props.output_coin_name})
+                            </span>
+                        </div>}
                 </div>
 
                 {/* Fee selection */}
@@ -509,8 +512,8 @@ class WithdrawModalBlocktrades extends React.Component {
                         assets={fee_asset_types}
                         tabIndex={tabIndex++}
                     />
-                    {!this.state.hasBalance ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.noFeeBalance" /></p> : null}
-                    {!this.state.hasPoolBalance ? <p className="has-error no-margin" style={{ paddingTop: 10 }}><Translate content="transfer.errors.noPoolBalance" /></p> : null}
+                    {!this.state.hasBalance && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noFeeBalance" />}
+                    {!this.state.hasPoolBalance && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noPoolBalance" />}
                 </div> : null}
 
                 {/* Gate fee */}
@@ -534,7 +537,7 @@ class WithdrawModalBlocktrades extends React.Component {
                     </label>
                     <div className="blocktrades-select-dropdown">
                         <div className="inline-label">
-                            <input type="text" value={withdraw_address_selected} tabIndex="4" onChange={this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
+                            <input type="text" className="half-rounded" value={withdraw_address_selected} tabIndex="4" onChange={this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
                             <span onClick={this.onDropDownList.bind(this)} >&#9660;</span>
                         </div>
                     </div>
@@ -545,19 +548,19 @@ class WithdrawModalBlocktrades extends React.Component {
                 </div>
 
                 {/*  M E M O  */}
-                <div className="content-block">
+                {this.props.output_supports_memos && <div className="content-block">
                     <label className="left-label">
                         <Translate component="span" content="transfer.memo" />
                     </label>
                     <div className="blocktrades-select-dropdown">
                         <div className="inline-label">
-                              <textarea rows="1" value={this.state.memo} tabIndex="5" onChange={this.onMemoChanged.bind(this)} />
-                        </div>             
+                            <textarea rows="1" value={this.state.memo} tabIndex="5" onChange={this.onMemoChanged.bind(this)} />
+                        </div>
                     </div>
-                </div>
+                </div>}
 
                 {/* Withdraw/Cancel buttons */}
-                <div className="button-group">
+                <div className="float-right">
 
                     <div onClick={this.onSubmit.bind(this)} className={"button" + (disableSubmit ? (" disabled") : "")}>
                         <Translate content="modal.withdraw.submit" />

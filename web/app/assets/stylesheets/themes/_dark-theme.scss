@@ -24,6 +24,8 @@ $success-color: #50D2C2;
 $warning-color: #FCAB53;
 $fee-color: $secondary-text-color;
 
+
+
 // Exchange colors
 $bid-color: #6BA583;
 $ask-color: #E3745B;
@@ -44,6 +46,8 @@ $account-primarytext: white;
 $account-dimmed: #afafaf;
 $account-border: #323131;
 $account-background: #3f3f3f;
+
+$icon-svg: #fff;
 
 .darkTheme {
   @include theme(
@@ -79,9 +83,13 @@ $account-background: #3f3f3f;
     $account-primarytext,
     $account-dimmed,
     $account-border,
-    $account-background
+    $account-background,
+    $icon-svg
   );
 
+  .grey-star > svg > path{
+    fill: #fff;
+  }
 
   ul.button-group.segmented.login-tabs{
     > li.is-active > a {

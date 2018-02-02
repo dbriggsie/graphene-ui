@@ -33,63 +33,131 @@
   $account-primarytext,
   $account-dimmed,
   $account-border,
-  $account-background
-  ) {
+  $account-background,
+  $icon-svg
+) {
+
+// Account page MyPortfolio
+  .filter-account-balances {
+    padding: 1rem;
+    background-color: lighten($account-header, 4%);
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+
+    .filter-search-accaunt input, .button{
+      height: 39px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    .button{
+      padding-top: .55rem;
+      padding-bottom: .55rem;
+
+      label{
+        margin-right: 0;
+      }
+
+      .fi-star{
+        top: 0px;
+      }
+      &.no-active{
+        background-color: $input-background;
+      }
+    }
+
+    .grey-star svg path{
+      fill: $icon-svg;
+    }
+
+}
+  // --- End --- Account page MyPortfolio
 
 
   .hidden {
     visibility: hidden;
   }
-  
-  .spinner-button-circle .circle-wrapper{
+
+  .filter-search-accaunt{
+    width: 100%;
+    margin-right: 1rem;
+    position: relative;
+    max-width: 14rem;
+  }
+
+  .vertical-center{
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+
+  .spinner-button-circle .circle-wrapper {
     display: inline-block;
     vertical-align: middle;
     margin-right: 7px;
     margin-top: -2px;
-    .circle:before{
+    .circle:before {
       background-color: #fff;
     }
   }
 
-  .color_white{
-      color: #fff;
+  .color_white {
+    color: #fff;
   }
 
-  .fz_12{
+  .fz_12 {
     font-size: 12px;
   }
 
-  .fz_14{
+  .fz_14 {
     font-size: 14px;
   }
 
   .fz_22 {
     font-size: 22px;
   }
-  
-  .form-deposit-withdraw-rmbpay{
+
+  .form-deposit-withdraw-rmbpay {
     font-family: 'RobotoCondensed-Regular', arial, sans-serif;
     color: $secondary-text-color;
     div.grid-container {
       overflow: hidden;
     }
-    input{
+    input {
       color: $secondary-text-color !important;
     }
-      .left-label, .right-label{
-        margin-bottom: 0;
-      }
-    .dropdown-wrapper > div{
+    .left-label, .right-label {
+      margin-bottom: 0;
+    }
+    .dropdown-wrapper > div {
       font-weight: normal;
     }
-    .set-cursor{
-        cursor: pointer;
+    .set-cursor {
+      cursor: pointer;
     }
 
-    .button-group > li > a{
+    .button-group > li > a {
       border: none;
     }
-    
+
     .dropdown-wrapper {
       ul.dropdown {
         min-width: 230px;
@@ -103,77 +171,88 @@
   }
 
   .disabled-form {
-    pointer-events:none;
+    pointer-events: none;
     opacity: 0.4;
   }
 
-  .tabs-withdraw{
+  .tabs-withdraw {
     width: 100%;
     margin-bottom: 20px;
-    .is-active a{
+    .is-active a {
       color: #fff !important;
     }
   }
-  .color-danger{
+  .color-danger {
     color: #E3745B;
   }
 
-  .color-gray{
-    color: darken($primary-text-color,20%);
+  .color-gray {
+    color: darken($primary-text-color, 20%);
   }
 
-  .help-text{
+  .help-text {
     color: $help-text-color;
   }
 
   #deposit_asset_openledger-dex_CNY,
   #depositRmbpayModal,
-  #withdraw_asset_openledger-dex_CNY
-  {
-    max-width:500px;
+  #withdraw_asset_openledger-dex_CNY,
+  .withdraw_modal {
+    max-width: 500px;
   }
 
-  .mt_2{
+  .mt_2 {
     margin-top: .2rem;
   }
 
-  .mt_3{
+  .mt_3 {
     margin-top: .4rem;
   }
 
-  .mt_5{
-    margin-top: .5rem;
+  .mt_5 {
+    margin-top: .6rem;
   }
 
-  .mt_6{
-    margin-top: .7rem;
+  .mt_6 {
+    margin-top: .8rem;
   }
 
-  .mb_5{
-    margin-bottom: .5rem;
+  .mb_5 {
+    margin-bottom: .6rem;
   }
 
-  .button-group.btn-row{
+  .mb_6 {
+    margin-bottom: .8rem;
+  }
+
+
+
+  .icon-filter-star{
+    margin-right: .4rem;
+    cursor: pointer;
+  }
+
+  .button-group.btn-row {
     flex-direction: column;
     text-transform: uppercase;
-    &.segmented > li > a{
+    &.segmented > li > a {
       text-align: left;
     }
   }
 
   .modal .close-button, .modal [fa-close] {
-    z-index: 1000 ;
+    z-index: 1000;
   }
 
-  .icon.rotate90>svg {
+  .icon.rotate90 > svg {
     transform: rotate(90deg);
   }
 
-  .icon svg{
-    fill: #fff;
+  .icon svg {
+    fill:  $icon-svg ;
   }
 
-  .account-creation{
+  .account-creation {
     max-width: 700px;
   }
 
@@ -181,48 +260,46 @@
     width: 50% !important;
     display: inline-block;
     vertical-align: top;
-    .amount-selector:first-child{
+    .amount-selector:first-child {
       padding-right: 10px;
     }
-    .amount-selector{
+    .amount-selector {
       width: 100%;
       display: inline-block;
     }
-    .right-selector{
+    .right-selector {
       text-align: right;
       width: 26%;
       display: inline-block;
       color: $secondary-text-color;
       text-transform: uppercase;
-      .right-selector-input{
+      .right-selector-input {
         text-align: right;
         width: 100%;
       }
     }
   }
 
-  .panel.login{
+  .panel.login {
     background-color: $account-background;
-    .grid-content{
+    .grid-content {
       background-color: $account-cells;
       border-left: 1px solid rgba(128, 128, 128, 0.45);
       border-right: 1px solid rgba(128, 128, 128, 0.45);
       border-bottom: 1px solid rgba(128, 128, 128, 0.45);
     }
-    .service-selector .login-tabs li:last-child a{
+    .service-selector .login-tabs li:last-child a {
       border-right: none;
     }
-    .login-tabs{
-      a{
+    .login-tabs {
+      a {
         background-color: $panel-bg-color;
       }
     }
   }
 
-
-
   .font-secondary {
-      color: $secondary-text-color;
+    color: $secondary-text-color;
   }
 
   #content-wrapper {
@@ -248,8 +325,6 @@
   // select:hover {
   //   background-color: $panel-bg-color;
   // }
-
-
 
   .label.success {
     color: $success-color;
@@ -368,7 +443,7 @@
       }
     }
 
-    h3{
+    h3 {
       font-size: 1.5rem;
     }
   }
@@ -394,9 +469,8 @@
   }
 
   .tabs {
-  @include color($secondary-text-color, $bg-color);
+    @include color($secondary-text-color, $bg-color);
   }
-
 
   .page-layout {
     background-color: $bg-color;
@@ -457,7 +531,7 @@
     }
   }
 
-  .header .button,  .header .button:active {
+  .header .button, .header .button:active {
     background-color: $panel-bg-color !important;
   }
 
@@ -483,35 +557,46 @@
 
   .grp-menu-item {
     > a, .button {
-      color: $primary-text-color /*!important*/;
+      color: $primary-text-color /*!important*/
+    ;
     }
   }
-
 
   .header .logo {
     color: $secondary-text-color;
   }
 
   .header-right-menu {
-    a:hover {background-color: lighten($panel-bg-color, 4%);}
-    a.active {background-color: lighten($panel-bg-color, 4%);}
-    li.current-account > a {
-        color: $info-color;
-        &:hover {
-            color: $info-color;
-        }
-        > span { font-weight: bold; }
+    a:hover {
+      background-color: lighten($panel-bg-color, 4%);
     }
-    svg > path { fill: $secondary-text-color; }
-    svg:hover > path { fill: $primary-text-color; }
+    a.active {
+      background-color: lighten($panel-bg-color, 4%);
+    }
+    li.current-account > a {
+      color: $info-color;
+      &:hover {
+        color: $info-color;
+      }
+      > span {
+        font-weight: bold;
+      }
+    }
+    svg > path {
+      fill: $secondary-text-color;
+    }
+    svg:hover > path {
+      fill: $primary-text-color;
+    }
   }
 
   .settings-cog {
-      svg > path { fill: $secondary-text-color; }
+    svg > path {
+      fill: $secondary-text-color;
+    }
   }
 
   // cards
-
 
   .card-section {
     color: black;
@@ -523,7 +608,6 @@
       margin-left: 0;
     }
   }
-
 
   .card {
     @include color($primary-text-color, $panel-bg-color);
@@ -582,7 +666,6 @@
       color: $secondary-text-color;
     }
   }
-
 
   // forms
 
@@ -680,30 +763,29 @@
     }
   }
 
-  .login .service-selector{
+  .login .service-selector {
     border-bottom: none;
   }
 
-  ul.button-group.segmented.login-tabs{
+  ul.button-group.segmented.login-tabs {
     > li.is-active > a {
       color: $primary-text-color;
 
     }
   }
 
-
   ul.button-group.segmented {
-   /*   > li.is-active > a {
-        background: darken($input-background, 10%);
-        color: $primary-text-color;
-      //  border-bottom: 1px solid $button-bg-color;
-      }
+    /*   > li.is-active > a {
+         background: darken($input-background, 10%);
+         color: $primary-text-color;
+       //  border-bottom: 1px solid $button-bg-color;
+       }
+     > li > a {
+       background: $input-background;
+       color: $primary-text-color;
+     //  border-bottom: 1px solid $button-bg-color;
+     }*/
     > li > a {
-      background: $input-background;
-      color: $primary-text-color;
-    //  border-bottom: 1px solid $button-bg-color;
-    }*/
-    > li > a{
       color: $secondary-text-color;
     }
   }
@@ -723,14 +805,12 @@
     }
   }
 
-
-
   // Exchange
 
   .depthchart {
     background-color: $bg-color;
     &:hover {
-    background-color: $bg-color;
+      background-color: $bg-color;
     }
     &.area {
       color: #FFF;
@@ -764,7 +844,7 @@
   }
 
   .active-bucket {
-    background-color: lighten($light-panel-bg-color, 12%) ;
+    background-color: lighten($light-panel-bg-color, 12%);
   }
 
   .bucket-option:hover {
@@ -772,17 +852,17 @@
   }
 
   .buy-sell-box {
-      background-color: lighten($light-panel-bg-color, 12%);
+    background-color: lighten($light-panel-bg-color, 12%);
 
-      > select {
-        background-color: lighten($light-panel-bg-color, 12%);
-        background: lighten($light-panel-bg-color, 12%) url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20version%3D%221.1%22%20width%3D%2232%22%20height%3D%2224%22%20viewBox%3D%220%200%2032%2024%22%3E%3Cpolygon%20points%3D%220%2C0%2032%2C0%2016%2C24%22%20style%3D%22fill%3A%20black%22%3E%3C/polygon%3E%3C/svg%3E") right 10px center no-repeat;
-      }
+    > select {
+      background-color: lighten($light-panel-bg-color, 12%);
+      background: lighten($light-panel-bg-color, 12%) url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20version%3D%221.1%22%20width%3D%2232%22%20height%3D%2224%22%20viewBox%3D%220%200%2032%2024%22%3E%3Cpolygon%20points%3D%220%2C0%2032%2C0%2016%2C24%22%20style%3D%22fill%3A%20black%22%3E%3C/polygon%3E%3C/svg%3E") right 10px center no-repeat;
+    }
   }
 
   .buy-sell-input > input.no-balance {
-      color: $alert-color;
-   }
+    color: $alert-color;
+  }
 
   // Account page
   .account-left-panel {
@@ -790,35 +870,34 @@
       color: $primary-text-color;
     }
     h6 {
-        font-weight: bold;
+      font-weight: bold;
     }
     .bottom {
       border-top-color: $bg-color;
     }
 
     .advanced-toggle > a {
-        color: $primary-text-color;
+      color: $primary-text-color;
     }
 
     a.pay-button {
-        background-color: $bg-color;
-        color: $primary-text-color;
+      background-color: $bg-color;
+      color: $primary-text-color;
 
-        &:hover {
-            background-color: $light-panel-bg-color !important;
-        }
+      &:hover {
+        background-color: $light-panel-bg-color !important;
+      }
     }
 
     div.create-account-button {
-        background: transparent;
-        border: 2px solid $button-bg-color;
+      background: transparent;
+      border: 2px solid $button-bg-color;
 
-        > a {
-            font-weight: bold;
-            color: $primary-text-color;
-        }
+      > a {
+        font-weight: bold;
+        color: $primary-text-color;
+      }
     }
-
 
   }
 
@@ -860,9 +939,8 @@
     }
   }
 
-
   .pagination {
-      background-color: $panel-bg-color;
+    background-color: $panel-bg-color;
   }
 
   .invoice {
@@ -921,15 +999,15 @@
   }
 
   .circle-wrapper {
-     .circle:before {
-       background-color: $secondary-text-color;
-     }
+    .circle:before {
+      background-color: $secondary-text-color;
+    }
   }
 
   // Misc
 
   .chart-zoom-dropdown {
-    width:24px;
+    width: 24px;
     height: 28px;
     padding: 4px;
     opacity: 0.5;
@@ -945,7 +1023,7 @@
       border-radius: 2px;
       color: $light-text-color;
       font-size: 60%;
-      width:348px;
+      width: 348px;
       height: 48px;
     }
   }
@@ -979,11 +1057,10 @@
       border-color: $dark-text-color;
     }
 
-    h5{
+    h5 {
       font-weight: bold;
     }
   }
-
 
   .click-for-help {
     border-bottom-color: $secondary-text-color !important;
@@ -1021,22 +1098,21 @@
 
   .menu-group.primary, .menu-group.primary .menu-bar {
     background-color: $panel-bg-color;
-      .menu-bar > li {
+    .menu-bar > li {
 
-          > a {
-              color: $primary-text-color;
-          }
-
-          > a:hover {
-            background-color: lighten($panel-bg-color, 5%) !important;
-          }
-
-          > a.active {
-            background-color: lighten($panel-bg-color, 5%) !important;
-          }
+      > a {
+        color: $primary-text-color;
       }
-  }
 
+      > a:hover {
+        background-color: lighten($panel-bg-color, 5%) !important;
+      }
+
+      > a.active {
+        background-color: lighten($panel-bg-color, 5%) !important;
+      }
+    }
+  }
 
   // Asset Detail
 
@@ -1045,7 +1121,6 @@
       background: $panel-bg-color;
     }
   }
-
 
   // Exchange
   .mymarkets-header {
@@ -1086,7 +1161,6 @@
       opacity: 0.6;
     }
 
-
   }
 
   .orderbook td.orderHistoryBid {
@@ -1096,27 +1170,26 @@
     }
   }
 
-  td.orderHistoryAsk  {
-
+  td.orderHistoryAsk {
 
     > span.price-integer, > span > span.price-integer {
       font-weight: bold;
       color: $ask-color;
     }
 
-    > span.price-decimal, > span >span.price-decimal {
+    > span.price-decimal, > span > span.price-decimal {
       color: $primary-text-color;
       opacity: 0.6;
     }
 
   }
 
-.orderbook td.orderHistoryAsk {
+  .orderbook td.orderHistoryAsk {
 
-  > span.price-integer, > span > span.price-integer {
-    font-weight: bold;
-    color: $primary-text-color;
-  }
+    > span.price-integer, > span > span.price-integer {
+      font-weight: bold;
+      color: $primary-text-color;
+    }
   }
 
   td.orderHistoryCall {
@@ -1125,7 +1198,7 @@
       color: $call-color;
     }
 
-    > span.price-decimal, > span >span.price-decimal {
+    > span.price-decimal, > span > span.price-decimal {
       color: $primary-text-color;
       opacity: 0.6;
     }
@@ -1135,7 +1208,7 @@
     > tr.my-order > td {
       font-weight: bold;
       color: $info-color;
-      > span.price-integer, > span > span.price-integer, > span >span.price-decimal {
+      > span.price-integer, > span > span.price-integer, > span > span.price-decimal {
         color: $info-color;
         opacity: 1;
       }
@@ -1161,7 +1234,6 @@
     }
   }
 
-
   .order-table {
 
     > tbody > tr:nth-of-type(even) {
@@ -1179,11 +1251,13 @@
   }
 
   .market-stats .stat .value {
-      color: $primary-text-color;
+    color: $primary-text-color;
   }
 
   li.stat.input {
-      &:hover {background-color: lighten($panel-bg-color, 4%);}
+    &:hover {
+      background-color: lighten($panel-bg-color, 4%);
+    }
   }
   .stats .stat {
     > span {
@@ -1196,30 +1270,30 @@
       }
     }
     &.is-call {
-      >span > b {
+      > span > b {
         color: $call-color;
       }
     }
   }
 
   .buy-sell-box {
+    background-color: $header-color;
+
+    > select {
+      padding: 0;
+      margin: 0;
+      height: 1.75rem;
+      line-height: 1.75rem;
+      border: none;
+      color: $primary-text-color;
+      background-size: 8px 8px;
       background-color: $header-color;
+      font-size: 12px;
 
-      > select {
-          padding: 0;
-          margin: 0;
-          height: 1.75rem;
-          line-height: 1.75rem;
-          border: none;
-          color: $primary-text-color;
-          background-size: 8px 8px;
-          background-color: $header-color;
-          font-size: 12px;
-
-          > option {
-              color: $chat-text-color;
-          }
+      > option {
+        color: $chat-text-color;
       }
+    }
   }
 
   .change-up {
@@ -1267,41 +1341,38 @@
     @include button-focus($primary-text-color, $panel-bg-color, 10);
   }
 
-
-  .indicators, li.stat.clickable{
+  .indicators, li.stat.clickable {
     color: $secondary-text-color;
     // &:hover{
     //   @include button-focus($primary-text-color, $panel-bg-color, 10);
     // }
   }
 
-
   .mymarkets-tabs {
-      > li {
-          @include button-focus($secondary-text-color, $panel-bg-color, 0);
-          &:hover {
-            @include button-focus($primary-text-color, $panel-bg-color, 10);
-          }
-
-          &.active {
-              @include button-focus($primary-text-color, $panel-bg-color, 10);
-          }
+    > li {
+      @include button-focus($secondary-text-color, $panel-bg-color, 0);
+      &:hover {
+        @include button-focus($primary-text-color, $panel-bg-color, 10);
       }
+
+      &.active {
+        @include button-focus($primary-text-color, $panel-bg-color, 10);
+      }
+    }
   }
 
   .mymarkets-list {
-      border-top: 2px solid $panel-bg-color;
+    border-top: 2px solid $panel-bg-color;
   }
 
   select.bts-select, select.native-coin-types, select.external-coin-types {
-      color: $secondary-text-color;
+    color: $secondary-text-color;
+    background-color: $input-background;
+    border: 0;
+    &:hover, &:focus, &:active {
       background-color: $input-background;
-      border: 0;
-      &:hover, &:focus, &:active {
-        background-color: $input-background;
-      }
+    }
   }
-
 
   div.fm-container:hover {
     background-color: darken($light-panel-bg-color, 5%);
@@ -1314,9 +1385,9 @@
 
     }
 
-    .chatbox{
-        background-color: $header-color;
-        color: $light-text-color;
+    .chatbox {
+      background-color: $header-color;
+      color: $light-text-color;
     }
 
     .chatbox-content {
@@ -1333,317 +1404,328 @@
     }
 
     input {
-        color: $chat-text-color;
+      color: $chat-text-color;
     }
   }
 
-    // Settings
-    .settings-menu {
-        margin-left: 0;
-        > li {
-            padding: .2rem 1rem;
-            &:hover {
-                background-color: darken($light-panel-bg-color, 5%);
-            }
+  // Settings
+  .settings-menu {
+    margin-left: 0;
+    > li {
+      padding: .2rem 1rem;
+      &:hover {
+        background-color: darken($light-panel-bg-color, 5%);
+      }
 
-            &.active {
-                color: $link-text-color;
-            }
-        }
+      &.active {
+        color: $link-text-color;
+      }
+    }
+  }
+
+  a {
+    &.order-cancel > .icon > svg {
+      > path {
+        fill: $negative-color;
+      }
     }
 
+    &.action-plus > .icon > svg {
+      > path {
+        fill: $positive-color;
+      }
+    }
+  }
+
+  tr.margin-row {
+    > td.danger {
+      background-color: darken($alert-color, 15%) !important;
+      color: $dark-text-color;
+      font-weight: bold;
+    }
+
+    > td.warning {
+      background-color: darken($warning-color, 15%) !important;
+      color: $dark-text-color;
+      font-weight: bold;
+    }
+  }
+
+  .react-stockcharts-tooltip {
+    fill: $primary-text-color;
+  }
+  .react-stockcharts-tooltip-label {
+    fill: $link-text-color;
+  }
+
+  div.custom-dropdown-content {
+    background: $panel-bg-color;
+    color: $primary-text-color;
+    > ul > li {
+      &.clickable:hover {
+        background-color: lighten($panel-bg-color, 5%);
+      }
+      > div.clickable:hover {
+        background-color: lighten($panel-bg-color, 5%);
+      }
+    }
+  }
+
+  .blocktrades-bridge input, .blocktrades-bridge select {
+    color: $secondary-text-color;
+
+    border: 1px solid $secondary-text-color;
+    background-color: $panel-bg-color !important;
+    &.native-coin-types, &.external-coin-types {
+      background-color: transparent !important;
+    }
+    > option {
+      color: $primary-text-color;
+      background-color: $panel-bg-color !important;
+    }
+    &:hover, &:focus {
+      color: $primary-text-color;
+      //box-shadow: 1px 2px 3px #000;
+      border: 2px solid $primary-text-color;
+    }
+  }
+
+  /*OL addon */
+
+  h4 {
+    padding: 30px 0 10px 0;
+    border-bottom: 1px solid $dark-text-color;
+    margin: 0 0 35px 0;
+  }
+
+  .vertical {
+    [type=password] {
+      height: auto;
+    }
+  }
+
+  .symbols_input {
+    text-align: center;
+    position: relative;
+    input[type=text] {
+      text-align: left;
+      display: block;
+      background: none;
+      z-index: 10;
+      color: #000;
+      position: relative;
+      text-transform: uppercase;
+    }
+    & > div {
+      position: relative;
+      display: inline-block;
+      width: 130px;
+      margin: 10px;
+      & > .hide_tooltip {
+        background: rgba(2, 0, 0, .1);
+        z-index: 0;
+        background: #fff;
+        position: absolute;
+        color: #aaa;
+      }
+    }
+  }
+
+  .orders-switch input + label {
+    background: #50d2c2;
+    border-color: #50d2c2;
+  }
+  .orders-switch input:checked + label {
+    background: #e3745b;
+    border-color: #e3745b;
+  }
+  .orders-switch input + label:after {
+    border-color: #50d2c2;
+  }
+  .switch input:checked + label::after {
+    border-color: inherit;
+  }
+  .error {
+    color: #e3745b;
+  }
+
+  .SimpleTrade__modal {
+    .Modal__header {
+      background-color: lighten($panel-bg-color, 5%);
+    }
+    .Modal__divider {
+      border-bottom: 2px solid #020202;
+    }
+  }
+
+  .simpleMode_wallet {
+    font-size: 9px;
+    bottom: 2px;
+    line-height: 1;
+    text-align: center;
+  }
+
+  ul.dashboard-links {
+    > li.active {
+      color: $primary-text-color;
+    }
+  }
+
+  .switch input:checked + label {
+    background-color: darken($positive-color, 10%);
+    &::after {
+      border: none;
+      background-color: lighten($positive-color, 5%);
+    }
+  }
+
+  div.Account_create {
+    button.submit-button, div.backup-submit .button {
+      background-color: $warning-color;
+    }
+
+    label > a {
+      color: $secondary-text-color;
+    }
+  }
+
+  div.ok-indicator {
+    color: $secondary-text-color;
+    &.success {
+      color: $success-color;
+    }
+  }
+
+  .popups {
+    .addcoin_text {
+      font-size: 1rem;
+      font-variant: normal;
+      font-family: Arial;
+      text-transform: none;
+    }
+    h6 {
+      font-size: 1.3rem;
+    }
     a {
-        &.order-cancel > .icon > svg {
-            > path {
-                fill : $negative-color;
-            }
-        }
-
-        &.action-plus > .icon > svg {
-            > path {
-                fill : $positive-color;
-            }
-        }
+      text-decoration: none;
     }
+  }
 
-    tr.margin-row {
-        > td.danger {
-            background-color: darken($alert-color, 15%) !important;
-            color: $dark-text-color;
-            font-weight: bold;
-        }
+  .pointer {
+    cursor: pointer;
+    justify-content: center;
+  }
 
-        > td.warning {
-            background-color: darken($warning-color, 15%) !important;
-            color: $dark-text-color;
-            font-weight: bold;
-        }
+  @media screen and (max-height: 678px) {
+    #addcoin {
+      height: 100%;
+      overflow: auto !important;
     }
+  }
 
-    .react-stockcharts-tooltip {
-        fill: $primary-text-color;
-    }
-    .react-stockcharts-tooltip-label {
-        fill: $link-text-color;
-    }
-
-    div.custom-dropdown-content {
-        background: $panel-bg-color;
+  .login-selector {
+    > div.box {
+      // background-color: $panel-bg-color;
+      /* &:hover {
+           background-color: darken($panel-bg-color, 2%);
+       }*/
+      a {
         color: $primary-text-color;
-        > ul > li {
-            &.clickable:hover {
-                background-color: lighten($panel-bg-color, 5%);
-            }
-            > div.clickable:hover {
-                background-color: lighten($panel-bg-color, 5%);
-            }
-        }
-    }
-
-    .blocktrades-bridge input, .blocktrades-bridge select{
-        color: $secondary-text-color;
-
-        border: 1px solid $secondary-text-color;
-        background-color: $panel-bg-color !important;
-        &.native-coin-types, &.external-coin-types {
-            background-color: transparent !important;
-        }
-        > option {
-            color: $primary-text-color;
-            background-color: $panel-bg-color !important;
-        }
-        &:hover, &:focus {
-            color: $primary-text-color;
-            //box-shadow: 1px 2px 3px #000;
-            border: 2px solid $primary-text-color;
-        }
-    }
-
-    /*OL addon */
-
-    h4 {
-        padding: 30px 0 10px 0;
-        border-bottom: 1px solid $dark-text-color;
-        margin: 0 0 35px 0;
-    }
-
-    .vertical{
-      [type=password]{
-            height: auto;
       }
     }
+  }
 
-    .symbols_input {
-        text-align: center;
-        position: relative;
-        input[type=text] {
-            text-align: left;
-            display: block;
-            background: none;
-            z-index: 10;
-            color: #000;
-            position: relative;
-            text-transform: uppercase;
+  table.table > tbody > tr.in-use {
+    > td:nth-child(2) {
+      font-weight: bold;
+    }
+  }
+
+  .SimpleDepositBridge__info-row {
+    > div {
+      > div.float-right {
+        &.above-limit {
+          color: $error-text-color;
         }
-        &>div {
-            position: relative;
-            display: inline-block;
-            width: 130px;
-            margin: 10px;
-            &>.hide_tooltip {
-                background: rgba(2, 0, 0, .1);
-                z-index: 0;
-                background: #fff;
-                position: absolute;
-                color: #aaa;
-            }
-        }
-    }
-
-    .orders-switch input+label {
-        background: #50d2c2;
-        border-color: #50d2c2;
-    }
-    .orders-switch input:checked+label {
-        background: #e3745b;
-        border-color: #e3745b;
-    }
-    .orders-switch input+label:after {
-        border-color: #50d2c2;
-    }
-    .switch input:checked + label::after {
-        border-color: inherit;
-    }
-    .error {
-        color: #e3745b;
-    }
-
-
-    .SimpleTrade__modal {
-        .Modal__header {
-            background-color: lighten($panel-bg-color, 5%);
-        }
-        .Modal__divider {
-            border-bottom: 2px solid #020202;
-        }
-    }
-
-    .simpleMode_wallet{
-        font-size: 9px;
-        bottom: 2px;
-        line-height: 1;
-        text-align: center;
-    }
-
-    ul.dashboard-links {
-        > li.active {
-            color: $primary-text-color;
-        }
-    }
-
-    .switch input:checked + label{
-        background-color: darken($positive-color, 10%);
-        &::after {
-            border: none;
-            background-color: lighten($positive-color, 5%);
-        }
-    }
-
-    div.Account_create {
-        button.submit-button, div.backup-submit .button {
-            background-color: $warning-color;
-        }
-
-        label > a {
-            color: $secondary-text-color;
-        }
-    }
-
-    div.ok-indicator {
-        color: $secondary-text-color;
-        &.success {
-            color: $success-color;
-        }
-    }
-
-    .popups{
-      .addcoin_text{
-        font-size: 1rem;
-        font-variant: normal;
-        font-family: Arial;
-        text-transform: none;
-      }
-      h6{
-        font-size: 1.3rem;
-      }
-      a{
-        text-decoration: none;
       }
     }
+  }
 
-    .pointer{
-      cursor: pointer;
-      justify-content: center;
+  input.my-key, td.my-key a {
+    font-weight: bold;
+    color: $info-color;
+  }
+
+  /* Table view account */
+  div.overview-tabs {
+    background-color: $account-background;
+    > div.service-selector {
+      background-color: $account-header;
     }
+  }
+  ul.account-overview {
 
-    @media screen and (max-height: 678px) {
-      #addcoin{
-        height: 100%;
-        overflow: auto !important;
+    li {
+      > a {
+        color: $account-dimmed;
+        background-color: $account-header;
+        border: none;
+        transition: .3s;
+        &:hover {
+          background-color: $account-header;
+          color: $account-primarytext;
+        }
+        > div.tab-subtext {
+          margin-top: 3px;
+          color: $account-green;
+        }
+      }
+      &.is-active {
+        background-color: lighten($account-header, 4%);
+        > a {
+          color: $account-primarytext;
+          background-color: lighten($account-header, 4%) !important;
+        }
+      }
+      &.total-value {
+        > a {
+          background-color: $account-cells;
+          &:hover > span.tab-title {
+            color: $account-dimmed;
+          }
+        }
+        .icon.locked > svg > path {
+          fill: $button-bg-color;
+        }
       }
     }
+  }
 
-
-    .login-selector {
-        > div.box {
-           // background-color: $panel-bg-color;
-           /* &:hover {
-                background-color: darken($panel-bg-color, 2%);
-            }*/
-            a {
-                color: $primary-text-color;
-            }
-        }
+  table.table.dashboard-table {
+    > thead > tr > th {
+      background-color: darken($account-header, 4%);
+      color: $account-primarytext;
+      border-color: $account-border;
+      &:first-of-type {
+        border-left: 1px solid $account-border;
+      }
+      &:last-of-type {
+        border-right: 1px solid $account-border;
+      }
     }
-
-    table.table > tbody > tr.in-use {
-        > td:nth-child(2) {
-            font-weight: bold;
+    > tbody > tr {
+      > td {
+        background-color: $account-cells;
+        color: $account-primarytext;
+        border-color: $account-border;
+        .icon > svg > path {
+          //fill: $account-primarytext;
         }
-    }
 
-    .SimpleDepositBridge__info-row {
-        > div {
-            > div.float-right {
-                &.above-limit {
-                    color: $error-text-color;
-                }
-            }
+        .icon.locked > svg > path {
+          fill: $button-bg-color;
         }
-    }
 
-    input.my-key, td.my-key a {
-        font-weight: bold;
-        color: $info-color;
-    }
-
-    /* Table view account */
-    div.overview-tabs {
-        background-color: $account-background;
-        > div.service-selector {
-            background-color: $account-header;
-        }
-    }
-    ul.account-overview {
-
-        li {
-            > a {
-                color: $account-dimmed;
-                background-color: $account-header;
-                border: none;
-                transition: .3s;
-                &:hover {
-                    background-color: $account-header;
-                    color: $account-primarytext;
-                }
-                > div.tab-subtext {
-                    margin-top: 3px;
-                    color: $account-green;
-                }
-            }
-            &.is-active {
-                background-color: lighten($account-header, 4%);
-                > a {
-                    color: $account-primarytext;
-                    background-color: lighten($account-header, 4%) !important;
-                }
-            }
-            &.total-value {
-                > a {
-                    background-color: $account-cells;
-                    &:hover > span.tab-title {
-                        color: $account-dimmed;
-                    }
-                }
-                .icon.locked > svg > path {
-                    fill: $button-bg-color;
-                }
-            }
-        }
-    }
-
-    table.table.dashboard-table {
-        > thead > tr > th {
-            background-color: $account-header;
-            color: $account-primarytext;
-            border-color: $account-border;
-            &:first-of-type {
-                border-left: 1px solid $account-border;
-            }
-            &:last-of-type {
-                border-right: 1px solid $account-border;
-            }
-        }
         > tbody > tr {
             > td {
                 background-color: $account-cells;
@@ -1679,66 +1761,170 @@
                     }
                 }
             }
-        }
-    }
+          &:nth-child(odd) td{
+            background-color: lighten($account-cells, 1%);
+          }
+          &:hover td{
+            background-color: darken($account-cells, 5%);
+          }
 
-    div.account-creation {
-        background-color: $account-cells;
-
-        div.button > a {
-            color: $primary-text-color;
         }
-    }
-    span.danger {
-        color: darken($alert-color, 15%);
-    }
-    span.warning {
-        color: darken($warning-color, 15%);
-    }
-
-    .footer {
-        div.footer-status {
-            > span.success {
-                color: $success-color;
-            }
-            > span.warning {
-                color: $alert-color;
-            }
+        td:nth-child(n+2) {
+          color: $account-green;
+          text-align: right;
         }
+      }
+
+      &.unsupported {
+        > td {
+          color: grey;
+          > a {
+            color: grey;
+          }
+
+          svg > path {
+            fill: grey;
+          }
+        }
+      }
+      &:nth-child(odd) td {
+        background-color: lighten($account-cells, 1%);
+      }
+      &:hover td {
+        background-color: darken($account-cells, 5%);
+      }
     }
-    .light-text {
-      color: $light-text-color;
+  }
+
+  div.account-creation {
+    background-color: $account-cells;
+
+    div.button > a {
+      color: $primary-text-color;
     }
+  }
+  span.danger {
+    color: darken($alert-color, 15%);
+  }
+  span.warning {
+    color: darken($warning-color, 15%);
+  }
+
+  .footer {
+    div.footer-status {
+      > span.success {
+        color: $success-color;
+      }
+      > span.warning {
+        color: $alert-color;
+      }
+    }
+  }
+  .light-text {
+    color: $light-text-color;
+  }
+
+  .blocktrades-position-options {
+    .blocktrades-options {
+      min-width: 200px;
+      position: absolute;
+      right: 0;
+      z-index: 999;
+      margin-left: 0;
+
+      max-height: 0;
+      width: 100%;
+      height: auto;
+      max-height: 250px;
+      top: 1px;
+      overflow: auto;
+    
+      border-radius: 0 0 5px 5px;
+      border: 1px solid rgba(0,0,0,0.2);
+      border-top: none;
+      border-bottom: none;
+      transition: all 0.3s ease-out;
+      @include color($light-text-color, $super-light-panel-bg-color);
+      &::after {
+        border-bottom-color: $super-light-panel-bg-color;
+      }
+      a {
+        font-size: 0.9rem;
+        font-weight: bold;
+        display: block;
+        text-decoration: none;
+        padding: 10px 10px;
+        transition: all 0.3s ease-out;
+        color: $light-text-color;
+      }
+      a:hover {
+        @include color($light-text-color, lighten($super-light-panel-bg-color, 4%));
+        color: $link-text-color;
+      }
+    }
+    .blocktrades-disabled-options {
+      display: none;
+    }
+  }
+  
+
+  .blocktrades-select-dropdown {
+    input.half-rounded {
+      border-radius: 5px 0 0 5px !important;
+    }
+    span {
+      width: 38px;
+      color: $primary-text-color;
+      background: $super-light-panel-bg-color;
+      text-align: center;
+      line-height: 38px;
+      cursor: pointer;
+      font-size: 10px;
+      border-radius: 0 5px 5px 0;
+    }
+  }
 }
 
-
-.starToAccount{
+.starToAccount {
   cursor: pointer;
   position: absolute;
   top: 8px;
   right: 35px;
-  & + .floating-dropdown .dropdown-wrapper{
+  & + .floating-dropdown .dropdown-wrapper {
     padding-left: 5px;
     padding-right: 5px;
   }
 }
 
-.iconRemoveFavorites{
+.iconRemoveFavorites {
   position: absolute;
   z-index: 10;
   top: 0px;
   right: 0px;
-  .icon{
+  .icon {
     top: 2px;
     padding: 0 !important;
-    & > svg > path{
+    & > svg > path {
       fill: #E1424A;
     }
   }
 }
 
-#residents_confirm{
+td.favorite {
+  width: 50px;
+  cursor: pointer;
+}
+
+#residents_confirm {
   text-transform: none;
 }
 
+tr.total-value td {
+  border: none;
+}
 
+img.asset-image {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}

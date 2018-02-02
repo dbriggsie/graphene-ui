@@ -71,6 +71,15 @@ class WithdrawModalRmbpay extends React.Component {
         this._checkBalance = this._checkBalance.bind(this)
         this._updateFee = debounce(this._updateFee.bind(this), 250)
 
+        this._transactionListener = this._transactionListener.bind(this)
+    }
+
+    _transactionListener(name, msg) {
+        if (msg === "cancel") {
+            this.setState({
+                loading: false
+            })
+        }
     }
 
     componentWillMount() {
@@ -80,6 +89,8 @@ class WithdrawModalRmbpay extends React.Component {
 
     componentWillUnmount() {
         this.unMounted = true
+        ZfApi.unsubscribe("transaction-action", this._transactionListener)
+        ZfApi.unsubscribe(this.props.modal_id, this._modalListener)
     }
 
     componentWillReceiveProps(np) {
@@ -568,12 +579,15 @@ class WithdrawModalRmbpay extends React.Component {
         })
     }
 
+    _modalListener(name, msg) {
+        if (msg === "close") {
+            this._resetState()
+        }
+    }
+
     componentDidMount() {
-        ZfApi.subscribe(this.props.modal_id, (name, msg) => {
-            if (msg === "close") {
-                this._resetState();
-            }
-        });
+        ZfApi.subscribe(this.props.modal_id, this._modalListener)
+        ZfApi.subscribe("transaction-action", this._transactionListener)
     }
 
     changeActionTab(type) {
@@ -688,12 +702,12 @@ class WithdrawModalRmbpay extends React.Component {
 
                                     <li className={isWithdrawAction ? "is-active" : ""}>
                                         <a onClick={this.changeActionTab.bind(this, true)}>
-                                            {counterpart.translate("gateway.rmbpay.withdrawal_modal.withdraw_amount")}
+                                            • {counterpart.translate("gateway.rmbpay.withdrawal_modal.withdraw_amount")}
                                         </a>
                                     </li>
                                     <li className={!isWithdrawAction ? "is-active" : ""}>
                                         <a onClick={this.changeActionTab.bind(this, false)}>
-                                            {counterpart.translate("gateway.rmbpay.withdrawal_modal.receive_amount")}
+                                            • {counterpart.translate("gateway.rmbpay.withdrawal_modal.receive_amount")}
                                         </a>
                                     </li>
                                 </ul>

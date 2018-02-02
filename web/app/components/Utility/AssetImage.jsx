@@ -10,10 +10,8 @@ import React from "react";
 
 
 function _onError(el, imgName) {
-    console.log('@#>ERR',imgName);
 
-    el.target.style = "visibility: hidden";
-
+    el.target.classList.add("hidden");
 
     /*if (!this.state.imgError) {
         this.refs[imgName.toLowerCase()].src = "/app/assets/asset-symbols/bts.png";
@@ -22,6 +20,10 @@ function _onError(el, imgName) {
         });
     }*/
 
+}
+
+function _handleImageLoaded(el, imgName) {
+    el.target.classList.remove("hidden");
 }
 
 export default function(props) {
@@ -34,7 +36,7 @@ export default function(props) {
     }
 
     let img_path = "/app/assets/asset-symbols/" + img_name + ".png";
-    return <img className={className} onError={(e)=>{_onError(e,img_name)}} style={props.style} src={img_path} />
+    return <img className={className} onError={(e)=>{_onError(e,img_name)}} onLoad={(e)=>{_handleImageLoaded(e,img_name)}} style={props.style} src={img_path} />
 }
 
 //<img className="align-center" ref={imgName.toLowerCase()} onError={this._onError.bind(this, imgName)} style={{maxWidth: 70}} src={"/app/assets/asset-symbols/"+ imgName.toLowerCase() + ".png"} />
