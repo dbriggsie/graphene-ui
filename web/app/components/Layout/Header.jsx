@@ -182,7 +182,7 @@ class Header extends React.Component {
     onSwitchTraderMode() {
 
         if(SettingsStore.getState().settings.get("traderMode")){
-            SettingsActions.changeSetting({setting: "traderMode", value: false});
+            //SettingsActions.changeSetting({setting: "traderMode", value: false});
         }else{
             SettingsActions.changeSetting({setting: "traderMode", value: true});
         }
