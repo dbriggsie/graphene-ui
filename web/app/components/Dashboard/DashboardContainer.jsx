@@ -26,7 +26,8 @@ class Content extends React.Component {
     }
 
     render() {
-        return this.props.traderMode ? <Dashboard {...this.props} /> : <SimpleDashboard {...this.props} />;
+        return /*this.props.traderMode ?*/ <Dashboard {...this.props} /> /*: <SimpleDashboard {...this.props} />*/;
+
     }
 }
 
