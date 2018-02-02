@@ -470,7 +470,7 @@ export default connect(Header, {
             passwordLogin: SettingsStore.getState().settings.get("passwordLogin"),
             currentLocale: SettingsStore.getState().settings.get("locale"),
             locales: SettingsStore.getState().defaults.locale,
-            traderMode: SettingsStore.getState().settings.get("traderMode"),
+            traderMode: true //SettingsStore.getState().settings.get("traderMode"), // temporary force trader mode true
         };
     }
 });

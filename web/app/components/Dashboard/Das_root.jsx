@@ -472,7 +472,7 @@ class Das_Container extends React.Component {
                 stores={[AccountStore, SettingsStore, MarketsStore]}
                 inject={{
                     traderMode: () => {
-                        return SettingsStore.getState().settings.get("traderMode");
+                        return true; //SettingsStore.getState().settings.get("traderMode"); // temporary force trader mode true
                     },
                     defaultAssets: () => {
                         return SettingsStore.getState().topMarkets;
