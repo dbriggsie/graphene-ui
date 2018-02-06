@@ -119,7 +119,7 @@
   "cancel": "Cancel",
   "account": {
     "filter_favorites": "Show favorites",
-    "filter_hedden_balance":"Hide 0 balances",
+    "filter_hedden_balance": "Hide 0 balances",
     "centralized": "Your Decentralized Exchange",
     "new_user": "New user?",
     "existing_user": "Existing user",
@@ -1421,7 +1421,7 @@
     "deposit_notice_delay": "(new address can be generated once per 5 minutes)",
     "add_funds": "Quickly and easily add funds to your BitShares account <strong>%(account)s</strong>. This service is provided by Openledger.",
     "min_deposit_warning": "Minimum value to deposit should be %(minDeposit)s.<br /><br />IMPORTANT: Send only %(coin)s to this deposit address. Sending less than %(minDeposit)s %(coin)s or any other currency to this address may result in the loss of your deposit.",
-    "under_mentainance": "The gate is temporarily under maintenance",
+    "under_mentainance": "The gate is temporarily under mentainance",
     "not_enough_funds": "Not enough funds to withdraw",
     "transfer": "Transfer",
     "withdraw_funds": "You are going to withdraw funds from your BitShares account to your external %(asset)s account.",

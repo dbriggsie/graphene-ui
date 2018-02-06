@@ -60,6 +60,7 @@ let marketsList = [
     "OPEN.ZDC",
     "OPEN.ZGC",
     "OPEN.ZRX",
+    "OPEN.CLOAK",
     "APPX.WARRANT",
     "BTS",
     "BTSR",

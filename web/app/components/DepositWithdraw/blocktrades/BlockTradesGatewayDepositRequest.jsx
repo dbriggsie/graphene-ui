@@ -281,7 +281,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
                         <div>
                             {emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> : deposit_address_fragment }
                             <div>
-                                {deposit_memo && ("memo: " + deposit_memo)}
+                                {deposit_memo && (<span>memo: {deposit_memo}</span>)}
                             </div>
                             <div className="button-group" style={{paddingTop: 10}}>
                                 {deposit_address_fragment ? <div className="button" onClick={this.toClipboard.bind(this, clipboardText)}>
