@@ -72,6 +72,7 @@ class WithdrawModalRmbpay extends React.Component {
         this._updateFee = debounce(this._updateFee.bind(this), 250)
 
         this._transactionListener = this._transactionListener.bind(this)
+        this._modalListener = this._modalListener.bind(this)
     }
 
     _transactionListener(name, msg) {
