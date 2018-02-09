@@ -76,7 +76,9 @@ let marketsList = [
     "REALITY",
     "RMBPAY",
     "USD",
-    "YOYOW"
+    "YOYOW",
+    "GDEX.DHT",
+    "OPEN.PURA"
 ];
 
 let topMarkets = {
