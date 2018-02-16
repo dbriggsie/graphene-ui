@@ -20,6 +20,7 @@ import { ChainStore } from "bitsharesjs/es";
 import { debounce } from "lodash";
 import { DecimalChecker } from "../Exchange/ExchangeInput";
 import { blockTradesAPIs } from "api/apiConfig";
+import AssetImage from "../Utility/AssetImage";
 
 // import DepositFiatOpenLedger from "components/DepositWithdraw/openledger/DepositFiatOpenLedger";
 // import WithdrawFiatOpenLedger from "components/DepositWithdraw/openledger/WithdrawFiatOpenLedger";
@@ -124,7 +125,6 @@ class DepositWithdrawContent extends DecimalChecker {
     }
 
     addDepositAddress(receive_address) {
-        console.log('simpleDepWith receive_address===', receive_address)
         let account_name = this.props.sender.get("name");
 
         if (receive_address.error) {
@@ -495,6 +495,7 @@ class DepositWithdrawContent extends DecimalChecker {
 
     _renderDeposit() {
         const { receive_address, loading, emptyAddressDeposit } = this.state;
+        let symbol = this.props.asset.get('symbol');
         const { name: assetName } = utils.replaceName(this.props.asset.get("symbol"), !!this.props.asset.get("bitasset"));
         const hasMemo = receive_address && "memo" in receive_address && receive_address.memo;
         const addressValue = receive_address && receive_address.address || "";
@@ -516,43 +517,54 @@ class DepositWithdrawContent extends DecimalChecker {
 
         return (
             <div className={!addressValue ? "no-overflow" : ""}>
-                <Translate unsafe component="p" content="gateway.add_funds" account={this.props.sender.get("name")} />
+                <div className="SimpleTrade__modal-wrapper-text">
+                    <div className="wrapper-icon-modal">
+                        <AssetImage style={{
+                            height: "70px",
+                            width: "70px" }}
+                            assetName={symbol}
+                            className="asset-image"
+                        />
+                    </div>
 
-                {/* {this._renderCurrentBalance()} */}
+                    <Translate unsafe component="div" className='text-center mb_6' content="gateway.add_funds" account={this.props.sender.get("name")} />
 
-                <div className="SimpleTrade__withdraw-row">
-                    <p style={{ marginBottom: 10 }} data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", { asset: assetName })}>
-                        <Translate className="help-tooltip" content="gateway.deposit_to" asset={assetName} />:
-                        <label className="fz_12 left-label"><Translate content="gateway.deposit_notice_delay" /></label>
-                    </p>
-                    {!addressValue ? <LoadingIndicator type="three-bounce" /> : <label>
-                        {emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> :
-                            <span className="inline-label">
-                                <input readOnly type="text" value={addressValue} />
-                                <CopyButton text={addressValue} />
-                            </span>}
-                    </label>}
-                    {hasMemo ?
-                        <label>
-                            <span className="inline-label">
-                                <input readOnly type="text" value={counterpart.translate("transfer.memo") + ": " + receive_address.memo} />
-                                <CopyButton
-                                    text={receive_address.memo}
-                                />
-                            </span>
-                        </label> : null}
+                    {/* {this._renderCurrentBalance()} */}
 
-                    {/*  {receive_address && receive_address.error ?
-                        <div className="has-error" style={{paddingTop: 10}}>
-                            {receive_address.error.message}
-                        </div> : null}*/}
-                </div>
+                    <div className="SimpleTrade__withdraw-row text-center">
+                        <p style={{ marginBottom: 20 }} data-place="right" data-tip={counterpart.translate("tooltip.deposit_tip", { asset: assetName })}>
+                            <Translate className="help-tooltip" content="gateway.deposit_to" asset={assetName} />:
+                            <div className="fz_12 "><Translate content="gateway.deposit_notice_delay" /></div>
+                        </p>
+                        {!addressValue ? <LoadingIndicator type="three-bounce" /> : <label>
+                            {emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> :
+                                <span className="inline-label">
+                                    <input readOnly type="text" value={addressValue} />
+                                    <CopyButton text={addressValue} />
+                                </span>}
+                        </label>}
+                        {hasMemo ?
+                            <label>
+                                <span className="inline-label">
+                                    <input readOnly type="text" value={counterpart.translate("transfer.memo") + ": " + receive_address.memo} />
+                                    <CopyButton
+                                        text={receive_address.memo}
+                                    />
+                                </span>
+                            </label> : null}
 
-                <Translate className="has-error fz_14" unsafe component="p" content="gateway.min_deposit_warning" minDeposit={this.props.gateFee * 2 || (assetName === "USDT" ? 25 : 0)} coin={assetName}/>
-                <div className="float-right">
-                    <button tabIndex={tabIndex++} className="button spinner-button-circle" onClick={this.requestDepositAddressLoad.bind(this)} type="submit" >
-                        {loading ? <LoadingIndicator type="circle" /> : null}<Translate content="gateway.generate_new" />
-                    </button>
+                        {/*  {receive_address && receive_address.error ?
+                            <div className="has-error" style={{paddingTop: 10}}>
+                                {receive_address.error.message}
+                            </div> : null}*/}
+                    </div>
+
+                    <Translate className="has-error fz_14" unsafe component="p" content="gateway.min_deposit_warning" minDeposit={this.props.gateFee * 2 || (assetName === "USDT" ? 25 : 0)} coin={assetName}/>
+                    <div className="text-right">
+                        <button tabIndex={tabIndex++} className="button spinner-button-circle" onClick={this.requestDepositAddressLoad.bind(this)} type="submit" >
+                            {loading ? <LoadingIndicator type="circle" /> : null}<Translate content="gateway.generate_new" />
+                        </button>
+                    </div>
                 </div>
             </div>
         );

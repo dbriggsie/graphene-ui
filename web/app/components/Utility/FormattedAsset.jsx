@@ -89,6 +89,8 @@ class FormattedAsset extends React.Component {
 
         let description = assetUtils.parseDescription(asset.options.description);
 
+        const value = this.props.exact_amount ? amount : amount / precision;
+
         const currency_popover_body = !hide_asset && this.props.assetInfo && <div>
             <HelpContent
                 path={"assets/Asset"}
@@ -104,7 +106,7 @@ class FormattedAsset extends React.Component {
             <span className={colorClass}  >
                 {!hide_amount ?
                     <FormattedNumber
-                        value={this.props.exact_amount ? amount : amount / precision}
+                        value={utils.format_from_exponential(value)}
                         minimumFractionDigits={Math.max(decimals, 0)}
                         maximumFractionDigits={Math.max(decimals, 0)}
                     />

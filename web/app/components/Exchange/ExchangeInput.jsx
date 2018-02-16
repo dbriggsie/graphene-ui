@@ -1,4 +1,5 @@
 import React from "react";
+import utils from "common/utils";
 
 export class DecimalChecker extends React.Component {
     onKeyPress(e){
@@ -25,7 +26,7 @@ class ExchangeInput extends DecimalChecker {
     }
 
     render(){
-        return <input ref="input" type="text" {...this.props} onKeyPress={this.onKeyPress.bind(this)} />;
+        return <input ref="input" type="text" {...this.props} value={utils.format_from_exponential(this.props.value)} onKeyPress={this.onKeyPress.bind(this)} />;
     }
 }
 

@@ -238,7 +238,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
 
         if (this.props.action === "deposit") {
             return (
-                <div className="Blocktrades__gateway grid-block no-padding no-margin">
+                <div className="blocktrades-gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
                         <Translate component="h4" content="gateway.deposit_summary" />
                         <div className="small-12 medium-10">
@@ -299,7 +299,7 @@ class BlockTradesGatewayDepositRequest extends React.Component {
             );
         } else {
             return (
-                <div className="Blocktrades__gateway grid-block no-padding no-margin">
+                <div className="blocktrades-gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
                         <Translate component="h4" content="gateway.withdraw_summary" />
                         <div className="small-12 medium-10">

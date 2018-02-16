@@ -351,7 +351,7 @@ class DashboardAssetList extends React.Component {
         })(assets);
 
         return (
-            <div>
+            <div className="blocktrades-gateway">
                 <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40, padding: '15px 0 0 0'}} />
                 <Translate content="transfer.my_balance" component="h4"  />
                 <div >
@@ -450,7 +450,7 @@ class DashboardAssetList extends React.Component {
                     balances={this.props.balances}
                     {...currentWithdrawAsset}
                     isDown={false}
-                    supportsMemos={true}
+                    supportsMemos={true}    
                 />
             </div>
         );

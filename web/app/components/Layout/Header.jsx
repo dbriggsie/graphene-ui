@@ -21,11 +21,14 @@ import notify from "actions/NotificationActions";
 import IntlActions from "actions/IntlActions";
 import AccountImage from "../Account/AccountImage";
 import SettingsActions from "actions/SettingsActions";
+import BaseModal from "components/Modal/BaseModal";
+import Transfer from "../Transfer/Transfer";
 
 import {ChainStore} from "bitsharesjs/es";
 
 const logo = "/app/assets/logo.png";
 const OPENLEDGER_IDS = ["1.2.96393", "1.2.369892", "1.2.96397", "1.2.100614"];
+const TRANSFER_MODAL_ID = "header_transfer_modal";
 
 const FlagImage = ({flag, width = 20, height = 20}) => {
     return <img height={height} width={width} src={"/app/assets/language-dropdown/img/" + flag.toUpperCase() + ".png"} />;
@@ -101,6 +104,7 @@ class Header extends React.Component {
             nextProps.lastMarket !== this.props.lastMarket ||
             nextProps.starredAccounts !== this.props.starredAccounts ||
             nextProps.currentLocale !== this.props.currentLocale ||
+            nextProps.currentUnit !== this.props.currentUnit ||
             nextState.active !== this.state.active ||
             nextState.showVoting !== this.state.showVoting
         );
@@ -178,31 +182,26 @@ class Header extends React.Component {
         });
     }
 
-    /* NOTE: is needed for Simple Mode. */
-    onSwitchTraderMode() {
-
-        if(SettingsStore.getState().settings.get("traderMode")){
-            //SettingsActions.changeSetting({setting: "traderMode", value: false});
-        }else{
-            SettingsActions.changeSetting({setting: "traderMode", value: true});
-        }
-
-        /*notify.addNotification({
-            message: counterpart.translate("header.trader_mode_notify"),
-            level: "success",
-            autoDismiss: 10
-        });*/
-    }
-
     go_with_airbitz(){
         if(!this.props.currentAccount){
             localStorage.setItem("airbitz_backup_option","true")
         }
         console.log('@>airbitz_backup_option header',localStorage.getItem("airbitz_backup_option"))
-    }    
+    }
+
+    onChangeUnit( unit, e){
+        e.preventDefault();
+        SettingsActions.changeSetting({setting: 'unit', value: unit});
+    }
+
+    _showTransferModal(e){
+        e.preventDefault();
+        ZfApi.publish(TRANSFER_MODAL_ID, "open");
+    }
+
     render() {
         let {active} = this.state;
-        let {linkedAccounts, currentAccount, starredAccounts, traderMode, passwordLogin} = this.props;
+        let {linkedAccounts, currentAccount, starredAccounts, traderMode, passwordLogin, units, currentUnit} = this.props;
         let locked_tip = counterpart.translate("header.locked_tip");
         let unlocked_tip = counterpart.translate("header.unlocked_tip");
         let tradingAccounts = AccountStore.getMyAccounts();
@@ -225,10 +224,25 @@ class Header extends React.Component {
 
         let myAccountCount = myAccounts.length;
         let walletBalance = myAccounts.length && this.props.currentAccount ? (
-                            <div className="grp-menu-item header-balance">
-                                <a><TotalBalanceValue.AccountWrapper label="exchange.balance" accounts={[this.props.currentAccount]} inHeader={true}/></a>
-                            </div>) : null;
-        
+
+            <div className="grp-menu-item header-balance cursor-pointer">
+                <ActionSheet>
+                    <ActionSheet.Button title="">
+                        <a className="arrow-change-currency"><TotalBalanceValue.AccountWrapper label="exchange.balance" accounts={[this.props.currentAccount]} inHeader={true}/></a>
+                    </ActionSheet.Button>
+                    <ActionSheet.Content>
+                        <ul className="no-first-element-top-border ">
+                            {units.map((item, ind)=>{
+                                return <li key={ind}>
+                                    <a className={item == currentUnit ? 'active' : null} href onClick={this.onChangeUnit.bind(this, item)}>
+                                        {item}
+                                    </a>
+                                </li>
+                            })}
+                        </ul>
+                    </ActionSheet.Content>
+                </ActionSheet>
+            </div>) : null;
 
         let dashboard = (
             <a
@@ -238,15 +252,6 @@ class Header extends React.Component {
             >
                 <img style={{margin:0,height: 30}} src={logo} />
             </a>
-        );
-        
-        /* NOTE: is needed for Simple Mode. */
-        let switchTraderMode = (
-            <ActionSheet.Button title="" setActiveState={() => {}}  >
-                <a className="grp-menu-item switch_button" onClick={this.onSwitchTraderMode} >
-                    <Icon className="icon-14px" name="assets"/> {traderMode?<Translate content="header.switch_basic" />:<Translate content="header.switch_advanced" />}
-                </a>
-            </ActionSheet.Button>
         );
 
         let createAccountLink = myAccountCount === 0 ? (
@@ -259,18 +264,20 @@ class Header extends React.Component {
 
         //@#>
         let login_with_password = myAccountCount === 0 ? (
-            <Link className="button create-account"
-                to="/login"
-                style={{border: "none"}} >
-                <Icon className="icon-14px" name="key"/> <Translate content="header.login" />
-            </Link>
+            <div className="grp-menu-item overflow-visible account-drop-down">
+                <Link className="button create-account"
+                      to="/login"
+                      style={{border: "none"}} >
+                    <Icon className="icon-14px" name="key"/> <Translate content="header.login" />
+                </Link>
+            </div>
         ) : null;
 
         let lock_unlock = (
             <div className="grp-menu-item" >
-            { this.props.locked ?
-                <a href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={locked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="locked"/></a>
-                : <a href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={unlocked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="unlocked"/></a> }
+                { this.props.locked ?
+                    <a href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={locked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="locked"/></a>
+                    : <a href onClick={this._toggleLock.bind(this)} data-class="unlock-tooltip" data-offset="{'left': 50}" data-tip={unlocked_tip} data-place="bottom" data-html><Icon className="icon-14px" name="unlocked"/></a> }
             </div>
         )
 
@@ -292,44 +299,44 @@ class Header extends React.Component {
             }
             if (tradingAccounts.length >= 1) {
                 accountsList = tradingAccounts
-                .sort()
-                .map((name, index) => {
-                    return (
-                        <li className={name === account_display_name ? "current-account" : ""} key={name}>
-                            <a href onClick={this._accountClickHandler.bind(this, name)}>
-                                <div className="table-cell"><AccountImage style={{position: "relative", top: 5}} size={{height: 20, width: 20}} account={name}/></div>
-                                <div className="table-cell" style={{paddingLeft: 10}}><span>{name}</span></div>
-                            </a>
-                        </li>
-                    );
-                });
+                    .sort()
+                    .map((name, index) => {
+                        return (
+                            <li className={name === account_display_name ? "current-account" : ""} key={name}>
+                                <a href onClick={this._accountClickHandler.bind(this, name)}>
+                                    <div className="table-cell"><AccountImage style={{position: "relative", top: 5}} size={{height: 20, width: 20}} account={name}/></div>
+                                    <div className="table-cell" style={{paddingLeft: 10}}><span>{name}</span></div>
+                                </a>
+                            </li>
+                        );
+                    });
             }
         }
 
         accountsDropDown = createAccountLink ?
-        createAccountLink :
-        tradingAccounts.length === 1 ?
-        (<ActionSheet.Button title="" setActiveState={() => {}}>
-            <a onClick={this._accountClickHandler.bind(this, account_display_name)} style={{cursor: "default", border: "none"}} className="button">
-                <div className="table-cell"><AccountImage style={{display: "inline-block"}} size={{height: 20, width: 20}} account={account_display_name}/></div>
-                <div className="table-cell" style={{paddingLeft: 5, verticalAlign: "middle"}}><div className="inline-block"><span className="lower-case">{account_display_name}</span></div></div> 
-            </a>
-        </ActionSheet.Button>) :
+            createAccountLink :
+            tradingAccounts.length === 1 ?
+                (<ActionSheet.Button title="" setActiveState={() => {}}>
+                    <a onClick={this._accountClickHandler.bind(this, account_display_name)} style={{cursor: "default", border: "none"}} className="button">
+                        <div className="table-cell"><AccountImage style={{display: "inline-block"}} size={{height: 20, width: 20}} account={account_display_name}/></div>
+                        <div className="table-cell" style={{paddingLeft: 5, verticalAlign: "middle"}}><div className="inline-block"><span className="lower-case">{account_display_name}</span></div></div>
+                    </a>
+                </ActionSheet.Button>) :
 
-        (<ActionSheet>
-            <ActionSheet.Button title="">
-                <a style={{ border: "none"}} className="button">
-                    <div className="table-cell"><AccountImage style={{display: "inline-block"}} size={{height: 20, width: 20}} account={account_display_name}/></div>
-                    <div className="table-cell" style={{paddingLeft: 5, verticalAlign: "middle"}}><div className="inline-block"><span className="lower-case">{account_display_name}</span></div></div>
-                </a>
-            </ActionSheet.Button>
-            {tradingAccounts.length > 1 ?
-            <ActionSheet.Content>
-                <ul className="no-first-element-top-border">
-                     {accountsList}
-                </ul>
-            </ActionSheet.Content> : null}
-        </ActionSheet>);
+                (<ActionSheet>
+                    <ActionSheet.Button title="">
+                        <a style={{ border: "none"}} className="button">
+                            <div className="table-cell"><AccountImage style={{display: "inline-block"}} size={{height: 20, width: 20}} account={account_display_name}/></div>
+                            <div className="table-cell" style={{paddingLeft: 5, verticalAlign: "middle"}}><div className="inline-block"><span className="lower-case">{account_display_name}</span></div></div>
+                        </a>
+                    </ActionSheet.Button>
+                    {tradingAccounts.length > 1 ?
+                        <ActionSheet.Content>
+                            <ul className="no-first-element-top-border">
+                                {accountsList}
+                            </ul>
+                        </ActionSheet.Content> : null}
+                </ActionSheet>);
 
         let settingsDropdown = <ActionSheet>
             <ActionSheet.Button title="">
@@ -358,98 +365,75 @@ class Header extends React.Component {
             </ActionSheet.Content>
         </ActionSheet>;
 
-        const flagDropdown = <ActionSheet>
-            <ActionSheet.Button title="">
-                <a style={{ border: "none"}} className="button">
-                    <FlagImage flag={this.props.currentLocale} />
-                </a>
-            </ActionSheet.Button>
-            <ActionSheet.Content>
-                <ul className="no-first-element-top-border">
-                    {this.props.locales.map(locale => {
-                        return (
-                            <li key={locale}>
-                                <a href onClick={(e) => {e.preventDefault(); IntlActions.switchLocale(locale);}}>
-                                    <div className="table-cell"><FlagImage flag={locale} /></div>
-                                    <div className="table-cell" style={{paddingLeft: 10}}><Translate content={"languages." + locale} /></div>
-
-                                </a>
-                            </li>
-                        );
-                    })}
-                </ul>
-            </ActionSheet.Content>
-        </ActionSheet>;
-
         const enableDepositWithdraw = Apis.instance().chain_id.substr(0, 8) === "4018d784";
 
         return (
-            <div className="header menu-group primary">
-                <div className="show-for-small-only">
-                    <ul className="primary menu-bar title">
-                        <li><a href onClick={this._triggerMenu}><Icon className="icon-32px" name="menu"/></a></li>
-                    </ul>
-                </div>
-                {__ELECTRON__ ? <div className="grid-block show-for-medium shrink electron-navigation">
-                    <ul className="menu-bar">
-                        <li>
-                            <div style={{marginLeft: "1rem", height: "3rem"}}>
-                                <div style={{marginTop: "0.5rem"}} onClick={this._onGoBack.bind(this)} className="button outline small">{"<"}</div>
+            <div>
+                <div className="header menu-group primary">
+                    <div className="show-for-small-only">
+                        <ul className="primary menu-bar title">
+                            <li><a href onClick={this._triggerMenu}><Icon className="icon-32px" name="menu"/></a></li>
+                        </ul>
+                    </div>
+                    {__ELECTRON__ ? <div className="grid-block show-for-medium shrink electron-navigation">
+                        <ul className="menu-bar">
+                            <li>
+                                <div style={{marginLeft: "1rem", height: "3rem"}}>
+                                    <div style={{marginTop: "0.5rem"}} onClick={this._onGoBack.bind(this)} className="button outline small">{"<"}</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div style={{height: "3rem", marginLeft: "0.5rem", marginRight: "0.75rem"}}>
+                                    <div style={{marginTop: "0.5rem"}} onClick={this._onGoForward.bind(this)} className="button outline small">></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div> : null}
+                    <div className="grid-block show-for-medium">
+                        <ul className="menu-bar">
+                            <li>{dashboard}</li>
+                            {/* {(!traderMode && hasOrders) ? <li><Link to="/my-orders" activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}*/}
+                            {/* {(traderMode && this.state.showVoting) ? <li><Link to={`/fast-voting`} className={cnames({active: active.indexOf("fast-voting") !== -1})}><Translate content="account.fast_voting.vote" /></Link></li> : null} */}
+                            {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} className={cnames({active: active.indexOf("account/") !== -1})}><Translate content="header.account" /></Link></li>}
+                            {!traderMode ? null : <li><a onClick={this._showTransferModal.bind(this)}><Translate component="span" content="header.payments" /></a></li>}
+                            {!traderMode ? null : <li>{tradeLink}</li>}
+                            {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
+                        </ul>
+                    </div>
+                    <div className="grid-block show-for-medium shrink">
+                        <div className="grp-menu-items-group header-right-menu">
+
+                            {!myAccountCount || !walletBalance ? null : walletBalance}
+
+
+                            {myAccountCount !== 0 ? null :<div className="grp-menu-item overflow-visible" >
+                                {settingsDropdown}
+                            </div>}
+
+                            <div className="grp-menu-item overflow-visible account-drop-down">
+                                {accountsDropDown}
                             </div>
-                        </li>
-                        <li>
-                            <div style={{height: "3rem", marginLeft: "0.5rem", marginRight: "0.75rem"}}>
-                                <div style={{marginTop: "0.5rem"}} onClick={this._onGoForward.bind(this)} className="button outline small">></div>
-                            </div>
-                        </li>
-                    </ul>
-                </div> : null}
-                <div className="grid-block show-for-medium">
-                    <ul className="menu-bar">
-                        <li>{dashboard}</li>
-                        {/* {(!traderMode && hasOrders) ? <li><Link to="/my-orders" activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}*/}
-                        {/* {(traderMode && this.state.showVoting) ? <li><Link to={`/fast-voting`} className={cnames({active: active.indexOf("fast-voting") !== -1})}><Translate content="account.fast_voting.vote" /></Link></li> : null} */}
-                        {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} className={cnames({active: active.indexOf("account/") !== -1})}><Translate content="header.account" /></Link></li>}
-                        {!traderMode ? null : <li><Link to="/transfer" className={cnames({active: active.indexOf("transfer") !== -1})} ><Translate component="span" content="header.payments" /></Link></li>}
-                        {!traderMode ? null : <li>{tradeLink}</li>}
-                        {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
-                   </ul>
-                </div>
-                <div className="grid-block show-for-medium shrink">
-                    <div className="grp-menu-items-group header-right-menu">
 
-                        {!myAccountCount || !walletBalance ? null : walletBalance}
-
-                        {/*  {switchTraderMode}  NOTE: is needed for Simple Mode. */}
-
-                        {myAccountCount !== 0 ? null :<div className="grp-menu-item overflow-visible" >
-                            {settingsDropdown}
-                        </div>}
-
-                        {myAccountCount !== 0 ? null :<div className="grp-menu-item overflow-visible" >
-                            {flagDropdown}
-                        </div>}
-
-                        <div className="grp-menu-item overflow-visible account-drop-down">
-                            {accountsDropDown}
-                        </div>
-
-                        <div className="grp-menu-item overflow-visible account-drop-down">
                             {login_with_password}
+
+                            {!myAccountCount ? null : <div className="grp-menu-item overflow-visible" >
+                                {settingsDropdown}
+                            </div>}
+
+                            {!myAccountCount ? null : lock_unlock}
                         </div>
-
-                        {!myAccountCount ? null : <div className="grp-menu-item overflow-visible account-drop-down">
-                            {flagDropdown}
-                        </div>}
-
-                        {!myAccountCount ? null : <div className="grp-menu-item overflow-visible" >
-                            {settingsDropdown}
-                        </div>}
-
-                        {!myAccountCount ? null : lock_unlock}
                     </div>
                 </div>
+
+                <div className="blocktrades-gateway">
+                    <BaseModal id={TRANSFER_MODAL_ID} overlay={true} className="withdraw_modal">
+                        <div className="grid-block vertical">
+                            <Transfer isModal={true} id={TRANSFER_MODAL_ID} />
+                        </div>
+                    </BaseModal>
+                </div>
             </div>
+
         );
     }
 }
@@ -470,6 +454,8 @@ export default connect(Header, {
             passwordLogin: SettingsStore.getState().settings.get("passwordLogin"),
             currentLocale: SettingsStore.getState().settings.get("locale"),
             locales: SettingsStore.getState().defaults.locale,
+            currentUnit: SettingsStore.getState().settings.get("unit"),
+            units: SettingsStore.getState().defaults.unit,
             traderMode: true //SettingsStore.getState().settings.get("traderMode"), // temporary force trader mode true
         };
     }

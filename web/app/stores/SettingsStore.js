@@ -63,7 +63,6 @@ let marketsList = [
     "OPEN.CLOAK",
     "APPX.WARRANT",
     "BTS",
-    "BTSR",
     "CNY",
     "CVCOIN",
     "EDEV",
@@ -77,8 +76,9 @@ let marketsList = [
     "RMBPAY",
     "USD",
     "YOYOW",
-    "GDEX.DHT",
-    "OPEN.PURA"
+    "OPEN.HTML",
+    "OPEN.PURA",
+    "OPEN.SCR"
 ];
 
 let topMarkets = {
@@ -96,7 +96,7 @@ let dashboard_assets = {
         ["USD", "EDEV"],
         ["OPEN.BTC", "ICOO"],
         ["USD", "OBITS"],
-        ["BTS", "BTSR"],
+        ["BTS", "OPEN.BTC"],
         ["BTS", "OPEN.MUSEOL"],
         ["OPEN.BTC" , "OPEN.EOS"],
         ["BTS", "USD"],

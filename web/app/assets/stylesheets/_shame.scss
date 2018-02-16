@@ -403,6 +403,18 @@ input[type=number] {
     cursor: pointer;
 }
 
+.arrow-down:after {
+  content: "\25bc";
+  display: inline;
+  margin-left: 5px;
+}
+
+.arrow-up:after {
+  content: "\25b2";
+  display: inline;
+  margin-left: 5px;
+}
+
 @include breakpoint(xlarge) {
     form.hide-container {
         display: inherit !important;

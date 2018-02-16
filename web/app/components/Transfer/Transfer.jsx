@@ -1,5 +1,6 @@
 import React from "react";
 import BalanceComponent from "../Utility/BalanceComponent";
+import BaseModal from "components/Modal/BaseModal";
 import AccountActions from "actions/AccountActions";
 import Translate from "react-translate-component";
 import AccountSelect from "../Forms/AccountSelect";
@@ -16,6 +17,9 @@ import {connect} from "alt-react";
 import { checkFeeStatusAsync, checkBalance } from "common/trxHelper";
 import { debounce } from "lodash";
 import { Asset } from "common/MarketClasses";
+import cnames from "classnames";
+import ZfApi from "react-foundation-apps/src/utils/foundation-api";
+
 
 const BTS_ASSET_ID = "1.3.0";
 
@@ -24,7 +28,7 @@ class Transfer extends React.Component {
     constructor(props) {
         super(props);
         this.state = Transfer.getInitialState();
-        let {query} = this.props.location;
+       /* let {query} = this.props.location;
 
         if(query.from) {
             this.state.from_name = query.from;
@@ -40,7 +44,11 @@ class Transfer extends React.Component {
             this.state.asset = ChainStore.getAsset(query.asset);
         }
         if(query.memo) this.state.memo = query.memo;
+
+        ChainStore.getAsset(this.props.assetName);*/
+
         let currentAccount = AccountStore.getState().currentAccount;
+    
         if (!this.state.from_name) this.state.from_name = currentAccount;
         this.onTrxIncluded = this.onTrxIncluded.bind(this);
 
@@ -57,6 +65,7 @@ class Transfer extends React.Component {
         }
 
         this.state.toAccountFavorites = toAccountFavorites;
+
     }
 
     static getInitialState() {
@@ -122,15 +131,21 @@ class Transfer extends React.Component {
 
     componentWillReceiveProps(np) {
 
+        if (np.initialAsset !== this.props.initialAsset) {
+            this.setState({ asset: ChainStore.getAsset(np.initialAsset)});
+        }
+
         if (np.currentAccount !== this.state.from_name && np.currentAccount !== this.props.currentAccount) {
             this.setState({
                 from_name: np.currentAccount,
                 from_account: ChainStore.getAccount(np.currentAccount),
+                asset: ChainStore.getAsset(np.assetName),
                 feeStatus: {},
                 fee_asset_id: BTS_ASSET_ID,
                 feeAmount: new Asset({amount: 0})
             }, () => {this._updateFee(); this._checkFeeStatus(ChainStore.getAccount(np.currentAccount));});
         }
+
     }
 
     componentWillUpdate(nextProps, nextState){
@@ -230,7 +245,6 @@ class Transfer extends React.Component {
             return;
         }
         this.setState({amount, asset, asset_id: asset.get("id"), error: null}, this._checkBalance);
-
     }
 
     onFeeChanged({asset}) {
@@ -361,6 +375,7 @@ class Transfer extends React.Component {
 
     render() {
         let from_error = null;
+        let {isModal, assetName} = this.props;
         let {propose, from_account, to_account, asset, asset_id, propose_account, feeAmount,
             amount, error, to_name, from_name, memo, feeAsset, fee_asset_id, balanceError} = this.state;
         let from_my_account = AccountStore.isMyAccount(from_account) || from_name === this.props.passwordAccount;
@@ -380,6 +395,7 @@ class Transfer extends React.Component {
         if (from_account && from_account.get("balances") && !from_error) {
 
             let account_balances = from_account.get("balances").toJS();
+
             if (asset_types.length === 1) asset = ChainStore.getAsset(asset_types[0]);
             if (asset_types.length > 0) {
                 let current_asset_id = asset ? asset.get("id") : asset_types[0];
@@ -391,7 +407,7 @@ class Transfer extends React.Component {
         }
 
         let propose_incomplete = propose && ! propose_account;
-        let submitButtonClass = "button float-right no-margin";
+        let submitButtonClass = "button ";
         if(!from_account || !to_account || !amount || amount === "0"|| error ||!asset || from_error || propose_incomplete || balanceError)
             submitButtonClass += " disabled";
 
@@ -400,14 +416,17 @@ class Transfer extends React.Component {
         let tabIndex = 1;
 
         return (
+
             <div className="grid-block vertical">
-            <div className="grid-block shrink vertical medium-horizontal" style={{paddingTop: "2rem"}}>
+            <div className={"grid-block shrink vertical medium-horizontal" + (!isModal ? " indent_top" : null)} >
 
-                <form style={{paddingBottom: 20, overflow: "visible"}} className="grid-content small-12 medium-6 large-5 large-offset-1 full-width-content" onSubmit={this.onSubmit.bind(this)} noValidate>
+                <form style={{ overflow: "visible"}} className={cnames("small-12 full-width-content", {"medium-6 large-5 large-offset-1": !isModal})} noValidate>
 
-                        <Translate content="transfer.header" component="h2" />
+                    {!isModal ? <Translate content="transfer.header" component="h2" /> : <div className="content-block header-modal-send">
+                        <Translate unsafe component="h3" content="transfer.header_modal" account={from_name} />
+                    </div>}
                         {/*  F R O M  */}
-                        <div className="content-block">
+                       <div className={cnames("content-block", {"hide": isModal})}>
                             <AccountSelector label="transfer.from" ref="from"
                                 accountName={from_name}
                                 onChange={this.fromChanged.bind(this)}
@@ -420,10 +439,40 @@ class Transfer extends React.Component {
                                 dropDownContent={AccountStore.getMyAccounts()}
                             />
                         </div>
+
+                        {/* P R O P O S E   F R O M
+                                Having some proposed transaction logic here (prior to the transaction confirmation)
+                                allows adjusting of the memo to / from parameters.
+                            */}
+                        {propose ?
+                            <div className="offset-propose form-group transfer-input">
+                                <label className="left-label"><Translate content="account.propose_from" /></label>
+                                <AccountSelect
+                                    className="medium-12"
+                                    account_names={AccountStore.getMyAccounts()}
+                                    onChange={this.onProposeAccount.bind(this)}
+                                    tabIndex={tabIndex++}
+                                />
+                                <div>
+                                    {propose ?
+                                        <span>
+                                            <button className=" button" onClick={this.onPropose.bind(this, false)} tabIndex={tabIndex++}>
+                                                <Translate component="span" content="cancel" />
+                                            </button>
+                                        </span> :
+                                        null}
+                                </div>
+                            </div>:null}
+
                         {/*  T O  */}
                         <div className="content-block">
+                            <div>
+                                <label className="left-label">
+                                    <Translate content="transfer.to" />
+                                </label>
+                            </div>
                             <AccountSelector
-                                label="transfer.to"
+                                // label="transfer.to"
                                 accountName={to_name}
                                 onChange={this.toChanged.bind(this)}
                                 onAccountChanged={this.onToAccountChanged.bind(this)}
@@ -444,6 +493,7 @@ class Transfer extends React.Component {
                                 assets={asset_types}
                                 display_balance={balance}
                                 tabIndex={tabIndex++}
+                                scrollLength={4}
                             />
                             {this.state.balanceError ? <p className="has-error no-margin" style={{paddingTop: 10}}><Translate content="transfer.errors.insufficient" /></p>:null}
                         </div>
@@ -462,7 +512,7 @@ class Transfer extends React.Component {
                         </div>
 
                         {/*  F E E   */}
-                        <div className={"content-block transfer-input fee-row" + (this.state.propose ? " proposal" : "")}>
+                        <div className={" transfer-input" + (this.state.propose ? " proposal" : "")+(!isModal ? " fee-row" : null)}>
                             <AmountSelector
                                 refCallback={this.setNestedRef.bind(this)}
                                 label="transfer.fee"
@@ -474,62 +524,45 @@ class Transfer extends React.Component {
                                 tabIndex={tabIndex++}
                                 error={this.state.hasPoolBalance === false ? "transfer.errors.insufficient" : null}
                             />
-                            {propose ?
-                                <button className={submitButtonClass} type="submit" value="Submit" tabIndex={tabIndex++}>
-                                    <Translate component="span" content="propose" />
+
+                            {!isModal ?
+                                <button onClick={this.onSubmit.bind(this)} className={submitButtonClass + " float-right no-margin"} type="submit" value="Submit" tabIndex={tabIndex++}>
+                                    <Translate component="span" content={propose ? "propose" : "transfer.send"}  />
                                 </button> :
-                                <button className={submitButtonClass} type="submit" value="Submit" tabIndex={tabIndex++}>
-                                    <Translate component="span" content="transfer.send" />
-                                </button>
+                                <div className="button-transfer-modal">
+                                    <button onClick={this.onSubmit.bind(this)} className={submitButtonClass} type="submit" value="Submit" tabIndex={tabIndex++}>
+                                        <Translate component="span" content={propose ? "propose" : "transfer.send"}  />
+                                    </button>
+                                    <button className="button" onClick={()=>{ZfApi.publish((this.props.id ), "close")}}><Translate content="account.perm.cancel" /></button>
+                                </div>
                             }
                         </div>
-
-                        {/* P R O P O S E   F R O M
-                            Having some proposed transaction logic here (prior to the transaction confirmation)
-                            allows adjusting of the memo to / from parameters.
-                        */}
-                        {propose ?
-                        <div className="full-width-content form-group transfer-input">
-                            <label className="left-label"><Translate content="account.propose_from" /></label>
-                            <AccountSelect
-                                account_names={AccountStore.getMyAccounts()}
-                                onChange={this.onProposeAccount.bind(this)}
-                                tabIndex={tabIndex++}
-                            />
-                        </div>:null}
 
 
                         {/*  S E N D  B U T T O N  */}
                         {error ? <div className="content-block has-error">{error}</div> : null}
-                        <div>
-                            {propose ?
-                            <span>
-                                <button className=" button" onClick={this.onPropose.bind(this, false)} tabIndex={tabIndex++}>
-                                    <Translate component="span" content="cancel" />
-                                </button>
-                            </span> :
-                            null}
-                        </div>
+
 
                         {/* TODO: show remaining balance */}
                 </form>
-                <div className="grid-content small-12 medium-6 large-4 large-offset-1 right-column">
-                <div className="grid-content no-padding">
-                    <RecentTransactions
-                        accountsList={accountsList}
-                        limit={25}
-                        compactView={true}
-                        filter="transfer"
-                        fullHeight={true}
-                    />
-                </div>
-                </div>
 
-                <div className="grid-content medium-6 large-4">
+                {!isModal ?
+                    <div className="grid-content small-12 medium-6 large-4 large-offset-1 right-column">
+                        <div className="grid-content no-padding">
+                            <RecentTransactions
+                                accountsList={accountsList}
+                                limit={25}
+                                compactView={true}
+                                filter="transfer"
+                                fullHeight={true}
+                            />
+                        </div>
+                    </div>
+                 : null}
 
-                </div>
                 </div>
             </div>
+
         );
     }
 }

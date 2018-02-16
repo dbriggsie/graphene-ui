@@ -6,13 +6,15 @@ import FormattedAsset from "./FormattedAsset";
 import FloatingDropdown from "./FloatingDropdown";
 import Immutable from "immutable";
 import counterpart from "counterpart";
+import utils from "common/utils";
 
 class AssetSelector extends React.Component {
 
     static propTypes = {
         assets: ChainTypes.ChainAssetsList,
         value: React.PropTypes.string, // asset id
-        onChange: React.PropTypes.func
+        onChange: React.PropTypes.func,
+        scrollLength: React.PropTypes.number
     };
 
     render() {
@@ -24,6 +26,7 @@ class AssetSelector extends React.Component {
             singleEntry={this.props.assets[0] ? <FormattedAsset asset={this.props.assets[0].get("id")} amount={0} hide_amount={true}/> : null}
             value={this.props.value}
             onChange={this.props.onChange}
+            scrollLength={this.props.scrollLength}
         />;
     }
 }
@@ -40,7 +43,8 @@ class AmountSelector extends React.Component {
         placeholder: React.PropTypes.string,
         onChange: React.PropTypes.func.isRequired,
         tabIndex: React.PropTypes.number,
-        error: React.PropTypes.string
+        error: React.PropTypes.string,
+        scrollLength: React.PropTypes.number
     };
 
     static defaultProps = {
@@ -74,8 +78,7 @@ class AmountSelector extends React.Component {
     }
     render() {
         let {label, startListCurrency} = this.props;
-
-        let value = this.props.error ? counterpart.translate(this.props.error) : this.formatAmount(this.props.amount);
+        let value = this.props.error ? counterpart.translate(this.props.error) : utils.format_from_exponential(this.formatAmount(this.props.amount));
 
         return (
             <div className="amount-selector" style={this.props.style}>
@@ -97,6 +100,7 @@ class AmountSelector extends React.Component {
                             value={this.props.asset.get("symbol")}
                             assets={Immutable.List(this.props.assets)}
                             onChange={this.onAssetChange.bind(this)}
+                            scrollLength={this.props.scrollLength}
                         />
                     </div>
                 </div>

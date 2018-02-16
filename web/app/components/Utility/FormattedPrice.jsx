@@ -1,5 +1,5 @@
 import React from "react";
-import {FormattedNumber} from "react-intl";
+import { FormattedNumber } from "react-intl";
 import utils from "common/utils";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
@@ -37,18 +37,18 @@ class FormattedPrice extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {isPopoverOpen: false};
+        this.state = { isPopoverOpen: false };
         this.togglePopover = this.togglePopover.bind(this);
         this.closePopover = this.closePopover.bind(this);
     }
 
     togglePopover(e) {
         e.preventDefault();
-        this.setState({isPopoverOpen: !this.state.isPopoverOpen});
+        this.setState({ isPopoverOpen: !this.state.isPopoverOpen });
     }
 
     closePopover() {
-        this.setState({isPopoverOpen: false});
+        this.setState({ isPopoverOpen: false });
     }
 
     onFlip() {
@@ -74,11 +74,11 @@ class FormattedPrice extends React.Component {
 
     render() {
 
-        let {base_asset, quote_asset, base_amount, quote_amount, callPrice,
-          marketDirections, marketId, hide_symbols, noPopOver} = this.props;
+        let { base_asset, quote_asset, base_amount, quote_amount, callPrice,
+            marketDirections, marketId, hide_symbols, noPopOver, final_price_real } = this.props;
 
         let invertPrice = marketDirections.get(marketId);
-        if( (invertPrice && !callPrice) || this.props.invert) {
+        if ((invertPrice && !callPrice) || this.props.invert) {
             let tmp = base_asset;
             base_asset = quote_asset;
             quote_asset = tmp;
@@ -88,10 +88,15 @@ class FormattedPrice extends React.Component {
         }
 
         let formatted_value = "";
+        let value;
         if (!this.props.hide_value) {
-            let base_precision = utils.get_asset_precision(base_asset.get("precision"));
-            let quote_precision = utils.get_asset_precision(quote_asset.get("precision"));
-            let value = base_amount / base_precision / (quote_amount / quote_precision);
+            if (final_price_real) {
+                value = final_price_real;
+            } else {
+                const base_precision = utils.get_asset_precision(base_asset.get("precision"));
+                const quote_precision = utils.get_asset_precision(quote_asset.get("precision"));
+                value = base_amount / base_precision / (quote_amount / quote_precision);
+            }
             if (isNaN(value) || !isFinite(value)) {
                 return <span>n/a</span>;
             }
@@ -109,24 +114,24 @@ class FormattedPrice extends React.Component {
             );
         }
         let symbols = hide_symbols ? "" :
-                      (<span data-place="bottom" data-tip={noPopOver && !callPrice ? "Click to invert the price" : null} className={noPopOver && !callPrice ? "clickable inline-block" : ""} onClick={noPopOver && !callPrice ? this.onFlip.bind(this) : null}><AssetName name={base_asset.get("symbol")} />/<AssetName name={quote_asset.get("symbol")} /></span>);
+            (<span data-place="bottom" data-tip={noPopOver && !callPrice ? "Click to invert the price" : null} className={noPopOver && !callPrice ? "clickable inline-block" : ""} onClick={noPopOver && !callPrice ? this.onFlip.bind(this) : null}><AssetName name={base_asset.get("symbol")} />/<AssetName name={quote_asset.get("symbol")} /></span>);
 
         const currency_popover_body = !noPopOver && !hide_symbols ? (
-          <div>
-            {!callPrice ? <div className="button" onClick={this.onFlip.bind(this)}><Translate content="exchange.invert" /></div> : null}
-            <div className="button" onClick={this.goToMarket.bind(this)}><Translate content="exchange.to_market" /></div>
-          </div>
+            <div>
+                {!callPrice ? <div className="button" onClick={this.onFlip.bind(this)}><Translate content="exchange.invert" /></div> : null}
+                <div className="button" onClick={this.goToMarket.bind(this)}><Translate content="exchange.to_market" /></div>
+            </div>
         ) : null;
 
         let popOver = currency_popover_body ? (
-          <Popover
-              isOpen={this.state.isPopoverOpen}
-              onOuterAction={this.closePopover}
-              body={currency_popover_body}
-          >
-            <span className="currency click-for-help" onClick={this.togglePopover}>{symbols}</span>
-          </Popover>
-      ) : null;
+            <Popover
+                isOpen={this.state.isPopoverOpen}
+                onOuterAction={this.closePopover}
+                body={currency_popover_body}
+            >
+                <span className="currency click-for-help" onClick={this.togglePopover}>{symbols}</span>
+            </Popover>
+        ) : null;
 
         return (
             <span>{formatted_value} {popOver ? popOver : symbols}</span>
@@ -142,16 +147,16 @@ export default class FormattedPriceWrapper extends React.Component {
         let marketId = this.props.quote_asset + "_" + this.props.base_asset;
 
         return (
-          <AltContainer
-            stores={[SettingsStore]}
-            inject={{
-                marketDirections: () => {
-                    return SettingsStore.getState().marketDirections;
-                }
-            }}
-          >
-            <FormattedPrice {...this.props} marketId={marketId}/>
-          </AltContainer>
+            <AltContainer
+                stores={[SettingsStore]}
+                inject={{
+                    marketDirections: () => {
+                        return SettingsStore.getState().marketDirections;
+                    }
+                }}
+            >
+                <FormattedPrice {...this.props} marketId={marketId} />
+            </AltContainer>
         );
     }
 }

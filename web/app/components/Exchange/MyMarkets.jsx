@@ -20,7 +20,7 @@ import Icon from "../Icon/Icon";
 import AssetSelector from "../Utility/AssetSelector";
 import counterpart from "counterpart";
 import LoadingIndicator from "../LoadingIndicator";
-import {ChainValidation} from "bitsharesjs/es";
+import {ChainValidation, ChainStore} from "bitsharesjs/es";
 
 let lastLookup = new Date();
 
@@ -112,25 +112,37 @@ class MarketGroup extends React.Component {
         SettingsActions.setUserMarket(base, quote, newValue);
     }
 
+    _finalPrice (stats, price, quote, base){
+        return stats && stats.price ?
+            stats.price.toReal() :
+            stats && stats.close && (stats.close.quote.amount && stats.close.base.amount) ?
+                utils.get_asset_price(stats.close.quote.amount, quote, stats.close.base.amount, base, true) :
+                utils.get_asset_price(price.quote.amount, quote, price.base.amount, base, true)
+    };
+
+    _setArrowClass(key) {
+        return this.state.sortBy === key ? (!this.state.inverseSort ? "arrow-up" : "arrow-down") : ""; 
+    }
+
     render() {
         let {columns, markets, base, marketStats, starredMarkets,
             current, findMarketTab} = this.props;
         let {sortBy, inverseSort, open} = this.state;
 
-        if (!markets || !markets.length) {
+        if (!markets || !markets.length) { 
             return null;
         }
 
         let headers = columns.map(header => {
             switch (header.name) {
                 case "market":
-                    return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "name")}><Translate content="exchange.market" /></th>;
+                    return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "name")}><Translate content="exchange.market" className={`${this._setArrowClass("name")}`} /></th>;
 
                 case "vol":
-                    return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "volume")}style={{textAlign: "right"}}><Translate content="exchange.vol_short" /></th>;
+                    return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "volume")}style={{textAlign: "right"}}><Translate content="exchange.vol_short" className={`${this._setArrowClass("volume")}`}/></th>;
 
                 case "price":
-                    return <th key={header.name} style={{textAlign: "right"}}><Translate content="exchange.price" /></th>;
+                    return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "price")} style={{textAlign: "right"}}><Translate content="exchange.price" className={`${this._setArrowClass("price")}`}/></th>;
 
                 case "quoteSupply":
                     return <th key={header.name}><Translate content="exchange.quote_supply" /></th>;
@@ -139,7 +151,7 @@ class MarketGroup extends React.Component {
                     return <th key={header.name}><Translate content="exchange.base_supply" /></th>;
 
                 case "change":
-                    return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "change")} style={{textAlign: "right"}}><Translate content="exchange.change" /></th>;
+                    return <th key={header.name} className="clickable" onClick={this._changeSort.bind(this, "change")} style={{textAlign: "right"}}><Translate content="exchange.change" className={`${this._setArrowClass("change")}`}/></th>;
 
                 case "issuer":
                     return <th key={header.name}><Translate content="explorer.assets.issuer" /></th>;
@@ -156,6 +168,7 @@ class MarketGroup extends React.Component {
 
         let marketRows = markets
             .map(market => {
+
                 return (
                     <MarketRow
                         key={market.id}
@@ -177,6 +190,16 @@ class MarketGroup extends React.Component {
             }).filter(a => {
                 return a !== null;
             }).sort((a, b) => {
+
+                let a_quote = ChainStore.getAsset(a.props.quote);
+                let a_base = ChainStore.getAsset(a.props.base);
+
+                let b_quote = ChainStore.getAsset(b.props.quote);
+                let b_base = ChainStore.getAsset(b.props.base);
+
+                let a_price = utils.convertPrice(a_quote, a_base);
+                let b_price = utils.convertPrice(b_quote, b_base);
+
                 let a_symbols = a.key.split("_");
                 let b_symbols = b.key.split("_");
                 let aStats = marketStats.get(a_symbols[0] + "_" + a_symbols[1]);
@@ -206,6 +229,21 @@ class MarketGroup extends React.Component {
                             } else {
                                 return aStats.volumeBase - bStats.volumeBase;
                             }
+                        } else {
+                            return 0;
+                        }
+
+                   case "price":
+                       if (aStats && bStats) {
+
+                                aStats = this._finalPrice(aStats, a_price, a_quote, a_base);
+                                bStats = this._finalPrice(bStats, b_price, b_quote, b_base);
+
+                                if (inverseSort) {
+                                    return bStats - aStats;
+                                } else {
+                                    return aStats - bStats;
+                                }
                         } else {
                             return 0;
                         }

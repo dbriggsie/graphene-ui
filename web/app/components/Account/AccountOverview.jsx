@@ -40,8 +40,10 @@ import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import SettingsStore from "stores/SettingsStore";
 import AssetImage from "../Utility/AssetImage";
 import AccountStore from "stores/AccountStore";
+import Transfer from "../Transfer/Transfer";
 
 const WITHDRAW_MODAL_ID = "simple_withdraw_modal";
+const TRANSFER_MODAL_ID = "transfer_modal";
 
 const EXCEPTIONAL_DEPOSIT_ASSETS = [
     "OPEN.USD",
@@ -77,7 +79,8 @@ class AccountOverview extends React.Component {
             favorites: window.localStorage.getItem("account.filters.favorites")
             && window.localStorage.getItem("account.filters.favorites").split(",")
             || DEFAULT_FILTERS.favorites,
-            hideZeroBalances: window.localStorage.getItem("account.filters.hideZero") ? window.localStorage.getItem("account.filters.hideZero") === "true" : true
+            hideZeroBalances: window.localStorage.getItem("account.filters.hideZero") ? window.localStorage.getItem("account.filters.hideZero") === "true" : true,
+            currentAsset: null
         };
 
         this.tableHeightMountInterval = tableHeightHelper.tableHeightMountInterval.bind(this);
@@ -102,7 +105,7 @@ class AccountOverview extends React.Component {
             let bRef = this.priceRefs[b.props.symbol];
             if (!aRef && bRef) {
                 return 1;
-            } 
+            }
             if (aRef && !bRef) {
                 return -1;
             }
@@ -114,6 +117,17 @@ class AccountOverview extends React.Component {
                 if (!aPrice && !bPrice) return this.sortFunctions.alphabetic(a, b, true);
                 return this.state.sortDirection ? aPrice - bPrice : bPrice - aPrice;
             }
+        },
+        balanceValue: function(a, b) {
+            const aBalance = a.props.balance;
+            const bBalance = b.props.balance;
+            if (!aBalance && bBalance) {
+                return 1;
+            }
+            if (aBalance && !bBalance) {
+                return -1;
+            }
+            return this.state.sortDirection ? aBalance - bBalance : bBalance - aBalance;
         },
         totalValue: function(a, b) {
             let aRef = this.valueRefs[a.props.symbol];
@@ -130,7 +144,7 @@ class AccountOverview extends React.Component {
                 if (!aValue && bValue) return 1;
                 if (aValue && !bValue) return -1;
                 if (!aValue && !bValue) return this.sortFunctions.alphabetic(a, b, true);
-                return !this.state.sortDirection ? aValue - bValue : bValue - aValue;
+                return this.state.sortDirection ? aValue - bValue : bValue - aValue;
             }
         },
         changeValue: function(a, b) {
@@ -276,6 +290,15 @@ class AccountOverview extends React.Component {
         });
     }
 
+    _showTransferModal(asset, e){
+        e.preventDefault();
+        ZfApi.publish(TRANSFER_MODAL_ID, "open");
+        this.setState({
+            currentAsset: asset
+        })
+
+    }
+
     _renderBalances(balanceList, visible) {
         const {core_asset} = this.props;
         let {settings, hiddenAssets, orders, account_name} = this.props;
@@ -283,7 +306,7 @@ class AccountOverview extends React.Component {
         let currentAccount = AccountStore.getMyAccounts();
 
         let isCurrentAccount;
-        
+
         currentAccount.forEach((el)=>{
             if(el ==  account_name) isCurrentAccount = true;
         })
@@ -329,8 +352,8 @@ class AccountOverview extends React.Component {
                 <Link to={`/market/${symbol}_${preferredMarket}`}><Icon name="trade" className="icon-14px" /></Link> :
                 notCorePrefUnit ? <Link to={`/market/${symbol}_${preferredUnit}`}><Icon name="trade" className="icon-14px" /></Link> :
                     emptyCell;
-            transferLink = <Link to={`/transfer?asset=${assetId}`}><Icon name="transfer" className="icon-14px" /></Link>;
-
+            transferLink =  <a onClick={this._showTransferModal.bind(this, assetId)}><Icon name="transfer" className="icon-14px" /></a>;
+           // <Link to={`/transfer?asset=${assetId}`}><Icon name="transfer" className="icon-14px" /></Link>
             let {isBitAsset, borrowModal, borrowLink} = this._renderBorrow(asset, this.props.account);
 
             /* Popover content */
@@ -350,25 +373,28 @@ class AccountOverview extends React.Component {
             const isOpen = symbol.toLowerCase().indexOf("open") === 0
                 && EXCEPTIONAL_DEPOSIT_ASSETS.indexOf(symbol) === -1;
 
+            const precision = utils.get_asset_precision(asset.get("precision"));
+            const balanceAmount = hasBalance && balanceObject.get("balance");
+            const balancePrecised = balanceAmount / precision;
+
             balances.push(
-                <tr key={ind} symbol={symbol} style={{maxWidth: "100rem"}}>
+                <tr key={ind} symbol={symbol} balance={balancePrecised} style={{maxWidth: "100rem"}}>
                     <td className="favorite" onClick={() => {this._favotiteClicked(assetId)}}><Icon className={starClass} name="fi-star"/></td>
                     <td style={{
                         textAlign: "left",
                         paddingLeft: 10,
-                        fontWeight: 'bold',
-                        height: "30px"
+                        fontWeight: 'bold'
                     }}>
                         <AssetImage style={{
-                            height: "30px",
-                            width: "30px" }} 
-                            assetName={symbol} 
-                            className="asset-image" 
+                            height: "25px",
+                            width: "25px" }}
+                            assetName={symbol}
+                            className="asset-image"
                         />
                         <LinkToAssetById asset={assetId} />
                     </td>
                     <td style={{textAlign: "right"}}>
-                        <BalanceComponent balance={balance} hide_asset hide_coin_name={true} />
+                        <BalanceComponent balance={balance} hide_asset hide_coin_name={true}/>
                     </td>
                     <td style={{textAlign: "right"}} className="column-hide-small">
                         <EquivalentPrice
@@ -397,7 +423,7 @@ class AccountOverview extends React.Component {
                         {hasBalance ? <BalanceComponent balance={balance} asPercentage={true} /> : null}
                     </td> : null}
                     <td>
-                        {transferLink}
+                        {hasBalance ? transferLink : emptyCell}
                     </td>
                     {/*    <td>
                         {canBuy && this.props.isMyAccount ?
@@ -411,7 +437,7 @@ class AccountOverview extends React.Component {
                         <span>
                             {isOpen && isCurrentAccount ?
                                 !canDepositWithdraw ?
-                                    <span data-tip={counterpart.translate("gateway.under_mentainance")} className="inline-block tooltip">
+                                    <span data-tip={counterpart.translate("gateway.under_maintenance")} className="inline-block tooltip">
                                         <Icon name="warning" />
                                     </span> :
                                     <a onClick={canDepositWithdraw ? this._showDepositWithdraw.bind(this, "deposit_modal", symbol, false) : () => { }}>
@@ -423,7 +449,7 @@ class AccountOverview extends React.Component {
                         <span>
                             {isOpen && isCurrentAccount ?
                                 !canDepositWithdraw ?
-                                    <span data-tip={counterpart.translate("gateway.under_mentainance")} className="inline-block tooltip">
+                                    <span data-tip={counterpart.translate("gateway.under_maintenance")} className="inline-block tooltip">
                                         <Icon name="warning" />
                                     </span> :
                                     !canWithdraw ?
@@ -502,9 +528,10 @@ class AccountOverview extends React.Component {
     _applyFilters(balancesIds, assetsIds) {
         // filters here
         const hideZeroBalances = this.state.hideZeroBalances;
-        let balancesList = hideZeroBalances ? balancesIds : [...assetsIds, ...balancesIds];
+        let balancesList = [];
 
-        if(this.state.filter){
+        if (this.state.filter) {
+            balancesList = [...assetsIds, ...balancesIds];
             balancesList = balancesList.filter((itemId) => {
                 const chainObject = ChainStore.getObject(itemId);
                 if (!chainObject) {
@@ -513,17 +540,18 @@ class AccountOverview extends React.Component {
                 const assetId = chainObject.get("symbol") ? itemId : chainObject.get("asset_type");
                 return this._isSearch(assetId);
             });
-        }
-
-        if (this.state.showOnlyFavorites) {
-            balancesList = balancesList.filter((itemId) => {
-                const chainObject = ChainStore.getObject(itemId);
-                if (!chainObject) {
-                    return;
-                }
-                const assetId = chainObject.get("symbol") ? itemId : chainObject.get("asset_type");
-                return this._isFavorite(assetId);
-            });
+        } else {
+            balancesList = hideZeroBalances ? balancesIds : [...assetsIds, ...balancesIds];
+            if (this.state.showOnlyFavorites) {
+                balancesList = balancesList.filter((itemId) => {
+                    const chainObject = ChainStore.getObject(itemId);
+                    if (!chainObject) {
+                        return;
+                    }
+                    const assetId = chainObject.get("symbol") ? itemId : chainObject.get("asset_type");
+                    return this._isFavorite(assetId);
+                });
+            }
         }
 
         return balancesList;
@@ -547,6 +575,10 @@ class AccountOverview extends React.Component {
         this.setState({
             filter: e.target.value.toUpperCase()
         });
+    }
+
+    _setArrowClass(key) {
+        return this.state.sortKey === key ? (this.state.sortDirection ? "arrow-up" : "arrow-down") : "";
     }
 
     render() {
@@ -682,7 +714,7 @@ class AccountOverview extends React.Component {
         const {showOnlyFavorites, hideZeroBalances} = this.state;
 
         return (
-            <div className="grid-content app-tables" >
+            <div className="grid-content app-tables blocktrades-gateway" >
                 <div className="content-block small-12">
                     <div className="generic-bordered-box">
                         <Tabs defaultActiveTab={0} segmented={false} setting="overviewTab" className="overview-tabs" tabsClass="account-overview no-padding bordered-header content-block" onChangeTab={this.adjustHeightOnChangeTab.bind(this)}>
@@ -705,10 +737,10 @@ class AccountOverview extends React.Component {
                                                 <label htmlFor="" style={{marginBottom: 0, cursor: 'pointer'}}><Translate content="account.filter_favorites" /></label>
                                         </span>
 
-                                        <span className={cnames("filter-hidden-balance button", {"no-active": !hideZeroBalances})} onChange={this._onHideZeroChange.bind(this)} >
-                                                <input id="inp-hide-balance" type="checkbox" defaultChecked={this.state.hideZeroBalances} />
-                                                <label className="cursor-pointer" htmlFor="inp-hide-balance"><Translate  content="account.filter_hedden_balance" /></label>
-                                         </span>
+                                        <button className={cnames("filter-hidden-balance button", {"no-active": !hideZeroBalances})} onClick={this._onHideZeroChange.bind(this)} >
+                                                <span className="arrow-hidden-balance"><Icon class="checkmark" name="checkmark"/></span>
+                                               <Translate  content="account.filter_hedden_balance" />
+                                         </button>
                                 </div>
 
                                 <table className="table dashboard-table">
@@ -716,19 +748,58 @@ class AccountOverview extends React.Component {
                                     <tr>
                                         {/*<th><Translate component="span" content="modal.settle.submit" /></th>*/}
                                         <th><Icon class="gold-star" name="fi-star"/></th>
-                                        <th style={{ textAlign: "left", paddingLeft: 10 }} className="clickable" onClick={this._toggleSortOrder.bind(this, "alphabetic")}><Translate component="span" content="account.asset" /></th>
-                                        <th style={{ textAlign: "right" }}><Translate content="account.qty" /></th>
-                                        <th onClick={this._toggleSortOrder.bind(this, "priceValue")} className="column-hide-small clickable" style={{ textAlign: "right" }}><Translate content="exchange.price" /> (<AssetName name={preferredUnit} />)</th>
-                                        <th onClick={this._toggleSortOrder.bind(this, "changeValue")} className="column-hide-small clickable" style={{ textAlign: "right" }}><Translate content="account.hour_24_short" /></th>
-                                        {/*<<th style={{textAlign: "right"}}><Translate component="span" content="account.bts_market" /></th>*/}
-                                        <th onClick={this._toggleSortOrder.bind(this, "totalValue")} style={{ textAlign: "right" }} className="column-hide-small clickable">
-                                            <TranslateWithLinks
-                                                noLink
-                                                string="account.eq_value_header"
-                                                keys={[
-                                                    {type: "asset", value: preferredUnit, arg: "asset"}
-                                                ]}
+                                        <th
+                                            onClick={this._toggleSortOrder.bind(this, "alphabetic")}
+                                            style={{ textAlign: "left", paddingLeft: 10 }}
+                                            className="clickable"
+                                        >
+                                            <Translate component="span" content="account.asset" 
+                                                className={this._setArrowClass("alphabetic")} 
                                             />
+                                        </th>
+
+                                        <th 
+                                            onClick={this._toggleSortOrder.bind(this, "balanceValue")} 
+                                            style={{ textAlign: "right" }} 
+                                            className="clickable"
+                                        >
+                                            <Translate content="account.qty"
+                                                className={this._setArrowClass("balanceValue")} 
+                                            />
+                                        </th>
+                                        <th
+                                            onClick={this._toggleSortOrder.bind(this, "priceValue")}
+                                            style={{ textAlign: "right" }}
+                                            className="column-hide-small clickable"
+                                        >
+                                            <span className={this._setArrowClass("priceValue")}>
+                                                <Translate content="exchange.price" /> (<AssetName name={preferredUnit} />)
+                                            </span>
+                                        </th>
+                                        <th 
+                                            onClick={this._toggleSortOrder.bind(this, "changeValue")} 
+                                            className="column-hide-small clickable"
+                                            style={{ textAlign: "right" }}
+                                        >
+                                            <Translate content="account.hour_24_short" 
+                                                className={this._setArrowClass("changeValue")} 
+                                            />
+                                        </th>
+                                        {/*<<th style={{textAlign: "right"}}><Translate component="span" content="account.bts_market" /></th>*/}
+                                        <th 
+                                            onClick={this._toggleSortOrder.bind(this, "totalValue")} 
+                                            style={{ textAlign: "right" }} 
+                                            className="column-hide-small clickable"
+                                        >
+                                            <span className={this._setArrowClass("totalValue")}>
+                                                <TranslateWithLinks
+                                                    noLink
+                                                    string="account.eq_value_header"
+                                                    keys={[
+                                                        {type: "asset", value: preferredUnit, arg: "asset"}
+                                                    ]}
+                                                />
+                                            </ span>
                                         </th>
                                         {showAssetPercent ? <th style={{textAlign: "right"}}><Translate component="span" content="account.percent" /></th> : null}
                                         <th><Translate content="header.payments" /></th>
@@ -855,6 +926,14 @@ class AccountOverview extends React.Component {
                     bridges={currentBridges}
                     isDown={this.props.gatewayDown.get("TRADE")}
                 />
+
+                {/* Transfer modal */}
+                <BaseModal id={TRANSFER_MODAL_ID} overlay={true} className="withdraw_modal">
+                    <div className="grid-block vertical">
+                        <Transfer isModal={true} initialAsset={this.state.currentAsset} id={TRANSFER_MODAL_ID} />
+                    </div>
+                </BaseModal>
+
             </div>
 
         );

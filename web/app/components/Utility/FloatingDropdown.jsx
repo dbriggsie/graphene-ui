@@ -4,7 +4,16 @@ import Icon from "../Icon/Icon";
 
 class Dropdown extends React.Component {
 
+    static propTypes = {
+        scrollLength: React.PropTypes.number
+    }
+
+    static defaultProps = {
+        scrollLength: 9
+    }
+
     constructor(props) {
+        const scrollLength = props.scrollLength;
         super(props);
         this.state = {
             active: false
@@ -137,7 +146,7 @@ class Dropdown extends React.Component {
             return (
                 <div onClick={this._toggleDropdown.bind(this)} className={"dropdown-wrapper" + (active ? " active" : "")  + (this.props.upperCase ? " upper-case" : "")}>
                     <div style={{paddingRight: 15}}>{value ? value : <span className="hidden">A</span>}</div>
-                    <ul className="dropdown" style={{overflow: entries.length > 9 ? "auto": "hidden"}}>
+                    <ul className="dropdown" style={{overflow: entries.length >= this.props.scrollLength ? "auto": "hidden"}}>
                         {this.props.label == "transfer.to" ? optionsWithDel : options}
                     </ul>
                 </div>

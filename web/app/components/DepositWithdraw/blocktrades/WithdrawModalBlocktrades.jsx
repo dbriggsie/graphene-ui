@@ -511,6 +511,7 @@ class WithdrawModalBlocktrades extends React.Component {
                         asset={this.state.feeAmount.asset_id}
                         assets={fee_asset_types}
                         tabIndex={tabIndex++}
+                        scrollLength={4}
                     />
                     {!this.state.hasBalance && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noFeeBalance" />}
                     {!this.state.hasPoolBalance && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noPoolBalance" />}

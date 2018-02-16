@@ -75,11 +75,18 @@ div.service-selector {
   @include breakpoint(medium) {
     border-bottom: 1px solid $border-color;
   }
+
+
+
   > ul.button-group.segmented {
     border-bottom: none;
     border-top: none;
     border-right: none;
     flex-wrap: wrap;
+
+    &:not(.bordered-header) li:first-child a{
+      border-left: 1px solid $border-color;
+    }
 
     a {
       border-top: 1px solid $border-color;

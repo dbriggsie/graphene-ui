@@ -25,8 +25,6 @@ class BaseModal extends React.Component {
 
     clearInputModal(){
         ZfApi.publish(this.props.id, "close");
-        console.log('clear')
-        // console.log(id)
     }
 
     render() {

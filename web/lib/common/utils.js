@@ -86,6 +86,32 @@ var Utils = {
         }
     },
 
+    format_from_exponential(x) {
+        if (x) {
+            if (Math.abs(x) < 1.0) {
+                var e = parseInt(x.toString().split("e-")[1]);
+                if (e) {
+                    const pow = Math.pow(10,e-1);
+                    x *= pow;
+                    const rounded = x.toFixed(e)
+                    if (Math.abs(rounded - x) < 1/pow) {
+                        x = +rounded
+                    }
+                    x = `0.${(new Array(e)).join("0")}${x.toString().substring(2)}`;
+                }
+            } else {
+                var e = parseInt(x.toString().split("+")[1]);
+                if (e > 20) {
+                    e -= 20;
+                    x /= Math.pow(10,e);
+                    x += (new Array(e+1)).join("0");
+                }
+            }
+        }
+        return x;
+    },
+
+
     format_number: (number, decimals, trailing_zeros = true) => {
         if(isNaN(number) || !isFinite(number) || number === undefined || number === null) return "";
         let zeros = ".";

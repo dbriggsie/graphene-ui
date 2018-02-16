@@ -86,6 +86,10 @@ $icon-svg: #444;
     $icon-svg
   );
 
+  .filter-hidden-balance{
+    color: #242424;
+  }
+
   .change-up {
       font-weight: bold;
   }
@@ -109,5 +113,12 @@ $icon-svg: #444;
 
   .shuffle.icon svg path{
       fill: $icon-svg
+  }
+
+  .button-group.segmented > li.is-active > a{
+    background-color: darken(#fff, 10%);
+  }
+  .button-group > li:not(:last-child) > a{
+    border-right: none;
   }
 }

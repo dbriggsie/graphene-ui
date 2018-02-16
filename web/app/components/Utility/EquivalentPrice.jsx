@@ -18,7 +18,7 @@ export class MarketStatsCheck extends React.Component {
         this.toStatsInterval = null;
     }
 
-    _checkStats(newStats = {close: {}}, oldStats = {close: {}}) {
+    _checkStats(newStats = { close: {} }, oldStats = { close: {} }) {
         return (
             newStats.volumeBase !== oldStats.volumeBase ||
             !utils.are_equal_shallow(newStats.close && newStats.close.base, oldStats.close && oldStats.close.base) ||
@@ -39,7 +39,7 @@ export class MarketStatsCheck extends React.Component {
     }
 
     _startUpdates(props) {
-        let {coreAsset, fromAssets, fromAsset} = props;
+        let { coreAsset, fromAssets, fromAsset } = props;
         if (coreAsset) {
             if (!fromAssets && fromAsset) fromAssets = [fromAsset];
 
@@ -75,7 +75,7 @@ export class MarketStatsCheck extends React.Component {
     }
 
     shouldComponentUpdate(np) {
-        let {fromAsset, fromAssets} = this.props;
+        let { fromAsset, fromAssets, toAsset } = this.props;
         const toMarket = np.toAsset.get("symbol") + "_" + np.coreAsset.get("symbol");
         if (!fromAssets && fromAsset) fromAssets = [fromAsset];
         const fromMarkets = fromAssets.map(asset => {
@@ -89,7 +89,9 @@ export class MarketStatsCheck extends React.Component {
 
         return (
             this._checkStats(np.marketStats.get(toMarket), this.props.marketStats.get(toMarket)) ||
-            fromCheck
+            fromCheck ||
+            fromAsset.get("id") !== np.fromAsset.get("id") ||
+            toAsset.get("id") !== np.toAsset.get("id")
         );
     }
 }
@@ -112,8 +114,6 @@ class EquivalentPrice extends MarketStatsCheck {
         super(props);
     }
 
-    componentD
-
     shouldComponentUpdate(np, nextState) {
         return (
             super.shouldComponentUpdate(np) ||
@@ -125,7 +125,7 @@ class EquivalentPrice extends MarketStatsCheck {
     }
 
     getFinalPrice(real = false) {
-        const {coreAsset, fromAsset, toAsset, marketStats} = this.props;
+        const { coreAsset, fromAsset, toAsset, marketStats } = this.props;
         const toMarket = toAsset.get("symbol") + "_" + coreAsset.get("symbol");
         const fromMarket = fromAsset.get("symbol") + "_" + coreAsset.get("symbol");
         let toPrice, fromPrice;
@@ -143,7 +143,7 @@ class EquivalentPrice extends MarketStatsCheck {
             finalPrice = toPrice.times(fromPrice);
         } else if (toPrice) {
             finalPrice = toPrice;
-        } else  if (fromPrice) {
+        } else if (fromPrice) {
             finalPrice = fromPrice;
         }
         if (!finalPrice) return null;
@@ -158,9 +158,10 @@ class EquivalentPrice extends MarketStatsCheck {
     }
 
     render() {
-        const { toAsset, forceDirection, ...others} = this.props;
+        const { toAsset, forceDirection, ...others } = this.props;
 
         const finalPrice = this.getFinalPrice();
+        const finalPriceReal = this.getFinalPrice(true);
 
         if (finalPrice === 1) {
             return <span>1.00</span>;
@@ -175,6 +176,7 @@ class EquivalentPrice extends MarketStatsCheck {
                 base_asset={finalPrice.base.asset_id}
                 quote_amount={finalPrice.quote.amount}
                 quote_asset={finalPrice.quote.asset_id}
+                final_price_real={finalPriceReal}
                 {...others}
             />
         );
