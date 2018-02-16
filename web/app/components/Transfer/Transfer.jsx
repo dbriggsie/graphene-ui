@@ -43,9 +43,9 @@ class Transfer extends React.Component {
             this.state.asset_id = query.asset;
             this.state.asset = ChainStore.getAsset(query.asset);
         }
-        if(query.memo) this.state.memo = query.memo;
+        if(query.memo) this.state.memo = query.memo;*/
 
-        ChainStore.getAsset(this.props.assetName);*/
+       //ChainStore.getAsset(this.props.assetName);
 
         let currentAccount = AccountStore.getState().currentAccount;
     
@@ -76,7 +76,7 @@ class Transfer extends React.Component {
             to_account: null,
             amount: "",
             asset_id: null,
-            asset: null,
+            asset:  null,
             memo: "",
             error: null,
             propose: false,
@@ -465,14 +465,9 @@ class Transfer extends React.Component {
                             </div>:null}
 
                         {/*  T O  */}
-                        <div className="content-block">
-                            <div>
-                                <label className="left-label">
-                                    <Translate content="transfer.to" />
-                                </label>
-                            </div>
+                        <div className={cnames("content-block", {"label-in-left": isModal})}>
                             <AccountSelector
-                                // label="transfer.to"
+                                label="transfer.to"
                                 accountName={to_name}
                                 onChange={this.toChanged.bind(this)}
                                 onAccountChanged={this.onToAccountChanged.bind(this)}
@@ -526,9 +521,9 @@ class Transfer extends React.Component {
                             />
 
                             {!isModal ?
-                                <button onClick={this.onSubmit.bind(this)} className={submitButtonClass + " float-right no-margin"} type="submit" value="Submit" tabIndex={tabIndex++}>
-                                    <Translate component="span" content={propose ? "propose" : "transfer.send"}  />
-                                </button> :
+                            <button onClick={this.onSubmit.bind(this)} className={submitButtonClass + " float-right no-margin"} type="submit" value="Submit" tabIndex={tabIndex++}>
+                                <Translate component="span" content={propose ? "propose" : "transfer.send"}  />
+                            </button> :
                                 <div className="button-transfer-modal">
                                     <button onClick={this.onSubmit.bind(this)} className={submitButtonClass} type="submit" value="Submit" tabIndex={tabIndex++}>
                                         <Translate component="span" content={propose ? "propose" : "transfer.send"}  />

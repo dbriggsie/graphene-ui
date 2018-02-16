@@ -37,6 +37,10 @@
   $icon-svg
 ) {
 
+  .label-in-left .account-selector .header-area{
+    margin-left: 0;
+  }
+
   .arrow-hidden-balance .checkmark{
     margin-right: .4rem;
     margin-top: -4px;
