@@ -522,8 +522,8 @@ class DepositWithdrawContent extends DecimalChecker {
                         <AssetImage style={{
                             height: "70px",
                             width: "70px" }}
-                            assetName={symbol}
-                            className="asset-image"
+                                    assetName={symbol}
+                                    className="asset-image"
                         />
                     </div>
 

@@ -33,13 +33,11 @@ export default class SettingsEntry extends React.Component {
         let options, optional, confirmButton, value, input, selected = settings.get(setting);
         let noHeader = false;
 
-
         switch (setting) {
             case "locale":
                 value = selected;
                 options = defaults.map(entry => {
                     let translationKey = "languages." + entry;
-
                     let value = counterpart.translate(translationKey);
                     return <option key={entry} value={entry}>{value}</option>;
                 });

@@ -142,7 +142,6 @@ class MarketRow extends React.Component {
                         precision = 8;
                     }
 
-
                     return (
                         <td onClick={this._onClick.bind(this, marketID)} className="text-right" key={column.index}>
                             {utils.format_number(finalPrice, finalPrice > 1000 ? 0 : finalPrice > 10 ? 2 : precision)}
