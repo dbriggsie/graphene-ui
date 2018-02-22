@@ -78,7 +78,13 @@ let marketsList = [
     "YOYOW",
     "OPEN.HTML",
     "OPEN.PURA",
-    "OPEN.SCR"
+    "OPEN.SCR",
+    "OPEN.BAR",
+    "OPEN.CAT",
+    "OPEN.ECH",
+    "OPEN.NBC",
+    "OPEN.STU",
+    "OPEN.WAX"
 ];
 
 let topMarkets = {
