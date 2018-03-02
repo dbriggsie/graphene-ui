@@ -122,8 +122,6 @@ class Transaction extends React.Component {
             let key = 0;
             let color = "";
 
-            console.log(ops[op[0]])
-
             switch (ops[op[0]]) { // For a list of trx types, see chain_types.coffee
                 case "transfer":
                     color = "success";
@@ -142,13 +140,6 @@ class Transaction extends React.Component {
                             </td>
                         ) : null;
                     }
-
-                    rows.push(
-                        <tr key={key++}>
-                                <td><Translate component="span" content="explorer.block.operation_id" /></td>
-                            <td>{op[1].order}</td>
-                        </tr>
-                    );
 
                     rows.push(
                         <tr key={key++}>
@@ -183,14 +174,6 @@ class Transaction extends React.Component {
                     color = "warning";
                     // missingAssets = this.getAssets([op[1].amount_to_sell.asset_id, op[1].min_to_receive.asset_id]);
                     // let price = (!missingAssets[0] && !missingAssets[1]) ? utils.format_price(op[1].amount_to_sell.amount, assets.get(op[1].amount_to_sell.asset_id), op[1].min_to_receive.amount, assets.get(op[1].min_to_receive.asset_id), false, inverted) : null;
-
-                this.props.trx.operations.forEach((item) => console.log(item[1].order))
-                    rows.push(
-                        <tr key={key++}>
-                            <td><Translate component="span" content="explorer.block.operation_id" /></td>
-                            <td>{op[1].order}</td>
-                        </tr>
-                    );
 
                     rows.push(
                         <tr key={key++}>

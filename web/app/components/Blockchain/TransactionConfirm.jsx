@@ -160,7 +160,7 @@ class TransactionConfirm extends React.Component {
                                 <Translate content="transfer.confirm" />
                             }
                         </div>
-                        <div className="button" onClick={this.onCloseClick.bind(this)}>
+                        <div className="button cancel" onClick={this.onCloseClick.bind(this)}>
                             <Translate content="account.perm.cancel" />
                         </div>
                     </div>
@@ -172,7 +172,7 @@ class TransactionConfirm extends React.Component {
             <div ref="transactionConfirm">
                 <BaseModal id="transaction_confirm_modal" ref="modal" overlay={true} overlayClose={!broadcasting} noCloseBtn={true}>
                 <div style={{minHeight: 350}} className="grid-block vertical no-padding no-margin">
-                    {!broadcasting ? <div className="close-button" onClick={this.onCloseClick.bind(this)}>&times;</div> : null}
+                    {!broadcasting ? <div className="close-button " onClick={this.onCloseClick.bind(this)}>&times;</div> : null}
                     {header}
                     <div className="grid-content shrink" style={{maxHeight: "60vh", overflowY: "auto", overflowX: "hidden"}}>
                         <Transaction

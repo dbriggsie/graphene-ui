@@ -204,6 +204,7 @@ class RecentTransactions extends React.Component {
                         op={o.op}
                         result={o.result}
                         block={o.block_num}
+                        operation_id={o.id}
                         current={current_account_id}
                         hideFee
                         inverted={false}
@@ -215,6 +216,7 @@ class RecentTransactions extends React.Component {
             <tr className="total-value" key="total_value">
                 <td className="column-hide-tiny">
                 </td>
+                <td></td>
                 <td style={alignRight}>
                     {historyCount > 0 ?
                     <span>
@@ -263,6 +265,7 @@ class RecentTransactions extends React.Component {
                                             <select data-place="left" data-tip={counterpart.translate("tooltip.filter_ops")} style={{paddingTop: 5, width: "auto"}} className="bts-select no-margin" value={this.state.filter} onChange={this._onChangeFilter.bind(this)}>{options}</select>
                                         ) : null}
                                     </th>}
+                                    {compactView ? null : <th style={{width: "15%",padding: "0"}} ><Translate content="account.operation_id" /></th>}
                                     <th style={alignLeft}><Translate content="account.votes.info" /></th>
                                     <th></th>
                                 </tr>
@@ -290,6 +293,7 @@ class RecentTransactions extends React.Component {
                                     <Operation
                                         key={o.id}
                                         op={o.op}
+                                        operation_id={o.id}
                                         result={o.result}
                                         block={o.block_num}
                                         inverted={false}

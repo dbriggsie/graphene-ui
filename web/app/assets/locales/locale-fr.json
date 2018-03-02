@@ -208,7 +208,7 @@
       "noPoolBalance": "That asset has an insufficient fee pool balance to pay the fees with. Please inform the asset owner or select another asset for paying fees."
     },
     "back": "REVENIR",
-    "confirm": "CONFIRMER",
+    "confirm": "Confirmer",
     "broadcast": "Votre transfert a bien été diffusé au reseau",
     "again": "FAIRE UN AUTRE TRANSFERT",
     "see": "VOIRE MES TRANSFERTS",

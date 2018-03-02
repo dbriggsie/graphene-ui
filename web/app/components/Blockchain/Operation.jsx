@@ -77,7 +77,7 @@ class Row extends React.Component {
     }
 
     render() {
-        let {block, fee, color, type, hideOpLabel} = this.props;
+        let {block, fee, color, type, hideOpLabel, operation_id} = this.props;
 
         let last_irreversible_block_num = this.props.dynGlobalObject.get("last_irreversible_block_num" );
         let pending = null;
@@ -93,6 +93,7 @@ class Row extends React.Component {
                     <td style={{textAlign: "left"}} className="left-td column-hide-tiny">
                         <Link className="inline-block" data-place="bottom" data-tip={counterpart.translate("tooltip.show_block", {block: utils.format_number(this.props.block, 0)})} to={`/block/${this.props.block}`}><TransactionLabel color={color} type={type} /></Link>
                     </td>)}
+                <td style={{width: "15%",padding: "0 20px 0 0"}}>{operation_id}</td>
                 <td style={{padding: "8px 5px", textAlign: "left"}}>
                     <div>
                         <span>{this.props.info}</span>
@@ -115,6 +116,7 @@ class Operation extends React.Component {
     static defaultProps = {
         op: [],
         current: "",
+        operation_id: "",
         block: null,
         hideOpLabel: false,
         csvExportMode: false
@@ -123,6 +125,7 @@ class Operation extends React.Component {
     static propTypes = {
         op: React.PropTypes.array.isRequired,
         current: React.PropTypes.string,
+        operation_id: React.PropTypes.string,
         block: React.PropTypes.number,
         csvExportMode: React.PropTypes.bool
     };
@@ -156,7 +159,7 @@ class Operation extends React.Component {
     }
 
     render() {
-        let {op, current, block} = this.props;
+        let {op, current, block, operation_id} = this.props;
         let line = null, column = null, color = "info";
         let memoComponent = null;
 
@@ -882,6 +885,7 @@ class Operation extends React.Component {
             <Row
                 block={block}
                 type={op[0]}
+                operation_id={operation_id}
                 color={color}
                 fee={op[1].fee}
                 hideOpLabel={this.props.hideOpLabel}

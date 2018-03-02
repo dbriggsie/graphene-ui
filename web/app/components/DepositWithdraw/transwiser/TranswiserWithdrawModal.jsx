@@ -218,7 +218,7 @@ class TranswiserWithdrawModal extends React.Component {
                             onClick={this.onSubmit.bind(this)}
                             value={counterpart.translate("modal.withdraw.submit")} />
                        <Trigger close={this.props.modalId}>
-                           <div className="button"><Translate content="account.perm.cancel" /></div>
+                           <div className="button cancel"><Translate content="account.perm.cancel" /></div>
                        </Trigger>
                    </div>
                  </div>

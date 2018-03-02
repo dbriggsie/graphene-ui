@@ -15,7 +15,8 @@ class OrderBookRowVertical extends React.Component {
         if (nextProps.order.market_base !== this.props.order.market_base) return false;
         return (
             nextProps.order.ne(this.props.order) ||
-            nextProps.index !== this.props.index
+            nextProps.index !== this.props.index ||
+            nextProps.currentAccount !== this.props.currentAccount
         );
     }
 
@@ -28,10 +29,11 @@ class OrderBookRowVertical extends React.Component {
         let price = <PriceText price={order.getPrice()} quote={quote} base={base} />;
 
         return (
-            <tr onClick={this.props.onClick} className={classnames({"final-row": final})}>
-                <td>{utils.format_number(order[isBid ? "amountForSale" : "amountToReceive"]().getAmount({real: true}), base.get("precision"))}</td>
+
+            <tr onClick={this.props.onClick} className={classnames("sticky-table-row order-row", {"final-row": final}, {"my-order": order.isMine(this.props.currentAccount)})}>
+                <td className="cell left">{utils.format_number(order[isBid ? "amountForSale" : "amountToReceive"]().getAmount({real: true}), base.get("precision"))}</td>
                 <td>{utils.format_number(order[isBid ? "amountToReceive" : "amountForSale"]().getAmount({real: true}), quote.get("precision"))}</td>
-                <td className={integerClass}>
+                <td className={`cell ${integerClass} right`}>
                     {price}
                 </td>
             </tr>
@@ -44,7 +46,8 @@ class OrderBookRowHorizontal extends React.Component {
         return (
             np.order.ne(this.props.order) ||
             np.position !== this.props.position ||
-            np.index !== this.props.index
+            np.index !== this.props.index ||
+            np.currentAccount !== this.props.currentAccount
         );
     }
 
@@ -67,7 +70,7 @@ class OrderBookRowHorizontal extends React.Component {
             utils.format_number(order.totalToReceive().getAmount({real: true}), base.get("precision"));
 
         return (
-            <tr onClick={this.props.onClick} >
+            <tr onClick={this.props.onClick} className={(order.isMine(this.props.currentAccount) ? "my-order" : "") + (position == 'right' ? ' right' : ' left')}>
                 {position === "left" ? <td>{total}</td> :
                 <td style={{width: "25%"}} className={integerClass}>
                     {price}
@@ -287,6 +290,7 @@ class OrderBook extends React.Component {
                         base={base}
                         quote={quote}
                         position={!this.state.flip ? "left" : "right"}
+                        currentAccount={this.props.currentAccount}
                     /> :
                     <OrderBookRowVertical
                         index={index}
@@ -325,6 +329,7 @@ class OrderBook extends React.Component {
                         quote={quote}
                         type={order.type}
                         position={!this.state.flip ? "right" : "left"}
+                        currentAccount={this.props.currentAccount}
                     /> :
                     <OrderBookRowVertical
                         index={index}
@@ -335,6 +340,7 @@ class OrderBook extends React.Component {
                         quote={quote}
                         type={order.type}
                         final={0 === index}
+                        currentAccount={this.props.currentAccount}
                     />
                     );
             });

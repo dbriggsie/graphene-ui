@@ -610,7 +610,7 @@ class AccountAssetCreate extends React.Component {
                                 </label>
                                 <p>{update.precision}</p>
 
-                                <div style={{marginBottom: 10}} className="txtlabel cancel"><Translate content="account.user_issued_assets.precision_warning" /></div>
+                            {/*    <div style={{marginBottom: 10}} className="txtlabel cancel"><Translate content="account.user_issued_assets.precision_warning" /></div>
 
                                 <table className="table" style={{width: "inherit"}}>
                                     <tbody>
@@ -624,7 +624,7 @@ class AccountAssetCreate extends React.Component {
                                             </td>
                                         </tr>
                                     </tbody>
-                                </table>
+                                </table>*/}
 
                                 {isBitAsset ? (
                                 <table className="table" style={{width: "inherit"}}>
@@ -690,7 +690,7 @@ class AccountAssetCreate extends React.Component {
                                 </label>
                                 <div>
                                     <Translate content="account.user_issued_assets.cer_warning_1" component="label" className="has-error"/>
-                                    <Translate content="account.user_issued_assets.cer_warning_2" component="p" />
+                                    <Translate content="account.user_issued_assets.cer_warning_2" component="p" className="has-error" />
                                 </div>
                             </div>
                         </Tab>
@@ -763,7 +763,7 @@ class AccountAssetCreate extends React.Component {
                                 />
                             </Tab>) : null}
 
-                        <Tab title="account.permissions">
+                     {/*   <Tab title="account.permissions">
                             <div className="small-12 grid-content">
                                 <div style={{maxWidth: 800}}>
                                 <HelpContent
@@ -773,7 +773,7 @@ class AccountAssetCreate extends React.Component {
                                 </div>
                                 {permissions}
                             </div>
-                        </Tab>
+                        </Tab>*/}
 
                         <Tab title="account.user_issued_assets.flags">
                             <div className="small-12 grid-content">

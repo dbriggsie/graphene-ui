@@ -185,7 +185,7 @@ class ProposalApproveModal extends React.Component {
                             onClick={this._onProposalAction.bind(this, proposal)}
                             value={isAdd ? "Approve" : "Remove"}
                         />
-                        <div onClick={this.onCancel.bind(this)} className=" button">
+                        <div onClick={this.onCancel.bind(this)} className="cancel button">
                             <Translate content="account.perm.cancel" />
                         </div>
                     </div>

@@ -352,7 +352,7 @@ class WalletUnlockModal extends React.Component {
                     <div className="button-group">
                         <button className="button" data-place="bottom" data-html data-tip={counterpart.translate("tooltip.login")} onClick={this.onPasswordEnter}><Translate content="header.unlock" /></button>
                         <Trigger close={this.props.modalId}>
-                            <div className=" button"><Translate content="account.perm.cancel" /></div>
+                            <div className="cancel button"><Translate content="account.perm.cancel" /></div>
                         </Trigger>
                     </div>
                     <div onClick={()=>{ this._toggleLoginType(true)}} className="button small outline float-right"><Translate content="wallet.switch_model_password" /></div>
@@ -425,7 +425,7 @@ class WalletUnlockModal extends React.Component {
                     <div className="button-group">
                         <Translate component="button" className="button" onClick={this.restore_brain_airbitz} content="header.unlock_short" tabIndex={tabIndex++} />
                         <Trigger close={this.props.modalId}>
-                            <div tabIndex={tabIndex++} className=" button"><Translate content="account.perm.cancel" /></div>
+                            <div tabIndex={tabIndex++} className="cancel button"><Translate content="account.perm.cancel" /></div>
                         </Trigger>
                     </div>
                 </div>

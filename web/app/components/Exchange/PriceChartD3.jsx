@@ -22,6 +22,8 @@ import cnames from "classnames";
 import counterpart from "counterpart";
 import Icon from "../Icon/Icon";
 
+const translator = require("counterpart");
+
 class CandleStickChartWithZoomPan extends React.Component {
     constructor(props) {
         super();
@@ -607,10 +609,68 @@ export default class Wrapper extends React.Component {
             );
         }
 
+
         return (
             <div className="no-margin no-padding" style={{overflow: "visible", width: "100%"}}>
                 <CandleStickChartWithZoomPan ref="FitWidth" {...this.props} />
-             </div>
+                <div style={{paddingBottom: 10}}>
+                    <ul style={{justifyContent: "center"}} className="market-stats stats bottom-stats">
+                        {/* Chart controls */}
+                            <li className="stat" data-intro={translator.translate("walkthrough.chart_tool_zoom")}>
+                                <span>
+                                    <span><Translate content="exchange.zoom" />:</span>
+                                    <span>{zoomOptions}</span>
+                                </span>
+                            </li>
+                            <li className="stat" data-intro={translator.translate("walkthrough.chart_tool_duration")}>
+                                <span>
+                                    <span><Translate content="exchange.time" />:</span>
+                                    <span>{bucketOptions}</span>
+                                </span>
+                            </li>
+
+                            <li className="stat input custom-dropdown" data-intro={translator.translate("walkthrough.chart_tool_indicators")}>
+                                <div className="v-align indicators clickable" onClick={this._toggleDropdown.bind(this, "indicators")}>
+                                    <Translate content="exchange.chart_options.title" />
+                                </div>
+                                {dropdowns.indicators ?
+                                <div className="custom-dropdown-content" onClick={this._stopPropagation}>
+                                    <ul>
+                                        <li className="indicator-title"><Translate content="exchange.chart_options.price_title" /></li>
+                                        {indicatorOptionsPrice}
+
+                                        {indicatorOptionsVolume.length ? <li className="indicator-title"><Translate content="exchange.chart_options.volume_title" /></li> : null}
+                                        {indicatorOptionsVolume}
+                                    </ul>
+                                </div> : null}
+                            </li>
+
+                            <li className="stat input custom-dropdown">
+                                <div className="v-align indicators clickable" onClick={this._toggleDropdown.bind(this, "tools")}>
+                                    <Translate content="exchange.chart_options.tools" />
+                                </div>
+                                {dropdowns.tools ?
+                                <div className="custom-dropdown-content"  onClick={this._stopPropagation}>
+                                    <ul>
+                                        {toolsOptions}
+                                    </ul>
+                                </div> : null}
+                            </li>
+
+                           <li className="stat input custom-dropdown">
+                                <div className="indicators clickable" onClick={this._toggleDropdown.bind(this, "settings")}>
+                                    <Icon className="icon-14px settings-cog" name="cog"/>
+                                </div>
+                                {dropdowns.settings ?
+                                <div className="custom-dropdown-content" onClick={this._stopPropagation}>
+                                    <ul>
+                                        {settingsOptions}
+                                    </ul>
+                                </div> : null}
+                            </li>
+                    </ul>
+                </div>
+            </div>
         );
     }
 }

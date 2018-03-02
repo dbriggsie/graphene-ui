@@ -40,7 +40,7 @@ hr {
 }
 
 .error {
-  text-transform: uppercase;
+  text-transform: none;
   //padding: 16px;
 }
 
@@ -318,7 +318,7 @@ label.inline {
 }
 
 .small-caps {
-  font-variant: small-caps;
+  font-variant: normal;
   font-size: 85%;
 }
 
@@ -341,8 +341,8 @@ label.inline {
 }
 
 .asset-prefix-replaced {
-  // text-transform: uppercase;
-  font-variant: small-caps;
+  // text-transform: none;
+  font-variant: normal;
 }
 
 select {
@@ -352,7 +352,6 @@ select {
 select.bts-select {
     border-radius: 5px;
     cursor:pointer;
-    height: 2em;
     border: none;
     background: none;
     background-color: transparent;

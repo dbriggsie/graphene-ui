@@ -18,6 +18,7 @@ import ZfApi from "react-foundation-apps/src/utils/foundation-api"
 import Icon from "components/Icon/Icon"
 import LoadingIndicator from "components/LoadingIndicator"
 import moment from "moment"
+import AssetImage from "components/Utility/AssetImage";
 
 const SERVER_URL = `${SERVER_ADMIN_URL}/api/v1`
 const RMBPAY_ASSET_ID = "1.3.2562"
@@ -138,7 +139,7 @@ class WithdrawModalRmbpay extends React.Component {
                     this.setState({
                         fees: data.fees,
                         service: data.list_service && data.list_service[0]
-                    });
+                    }, this._checkBalance);
                     this._handleRmbPayResponse(false);
                 });
             }).catch(() => {
@@ -709,136 +710,142 @@ class WithdrawModalRmbpay extends React.Component {
             <div>
                 <form className="grid-block vertical full-width-content form-deposit-withdraw-rmbpay">
                     <div className="grid-container">
-                        <div className="content-block">
-                            <h3><Translate content="gateway.rmbpay.withdraw" coin={output_coin_name} symbol={output_coin_symbol} /></h3>
+                        <div className="modal-filled-header">
+                            <Translate component="h3" content="gateway.withdraw"></Translate>
                         </div>
-                        <div className="center-content content-block">
-                            {this.state.balanceError && <Translate component="div" className="mt_5 mb_5 color-danger" unsafe content="gateway.rmbpay.not_enaught_balance" />}
-                            {this.state.serverError && <Translate component="div" unsafe className="mt_5 mb_5 color-danger" content="gateway.service_unavailable" />}
-                        </div>
-                        {/* {this.state.loading} */}
-                        <div className={disableForm ? "disabled-form" : null}>
-                            {this.state.loading && <LoadingIndicator />}
-                            <div style={{ paddingBottom: 15 }}>
-                                <ul className="button-group btn-row segmented tabs-withdraw">
-
-                                    <li className={isWithdrawAction ? "is-active" : ""}>
-                                        <a onClick={this.changeActionTab.bind(this, true)}>
-                                            {isWithdrawAction && "•"} {counterpart.translate("gateway.rmbpay.withdrawal_modal.withdraw_amount")}
-                                        </a>
-                                    </li>
-                                    <li className={!isWithdrawAction ? "is-active" : ""}>
-                                        <a onClick={this.changeActionTab.bind(this, false)}>
-                                            {!isWithdrawAction && "•"} {counterpart.translate("gateway.rmbpay.withdrawal_modal.receive_amount")}
-                                        </a>
-                                    </li>
-                                </ul>
+                        <div className="modal-body">
+                            <div className="text-center asset-header">
+                                <h4><AssetImage assetName="rmbpay" style={{ width: "28px" }} /> RMBPAY</h4>
                             </div>
-
-                            {/* Withdraw amount */}
-
-                            <div >
-                                <div className="content-block">
-
-                                    <AmountSelector label={isWithdrawAction ? "gateway.rmbpay.withdrawal_modal.amount_withdraw" : "gateway.rmbpay.withdrawal_modal.amount_receive"}
-                                        amount={isWithdrawAction ? this.state.withdrawAmount : this.state.receiveAmount}
-                                        asset={assetId}
-                                        assets={[assetId]}
-                                        placeholder=""
-                                        onChange={isWithdrawAction ? this.onWithdrawAmountChange.bind(this) : this.onReceiveAmountChange.bind(this)}
-                                        ref="amountWithdraw"
-                                        display_balance={this.state.isWithdrawAction && balance}
-                                    />
-                                    {!this.state.amountError && (
-                                        this.state.isWithdrawAction ? <Translate component="div" className="mt_2 mb_5 help-text fz_14" content="gateway.rmbpay.error_max_value" val={+minFee} />
-                                            : <Translate component="div" className="mt_2 mb_5 help-text fz_14" content="gateway.rmbpay.error_max_receive" val={+maxValue} />
-                                    )}
-                                    {this.state.amountError && <Translate component="div" className="mt_2 mb_5 color-danger fz_14 " content={this.state.amountError.message} val={+this.state.amountError.value} />}
+                            {(this.state.balanceError || this.state.serverError) &&
+                                <div className="content-block left-label">
+                                    {this.state.balanceError && <Translate component="div" className="mt_5 mb_5 color-danger" unsafe content="gateway.rmbpay.not_enaught_balance" />}
+                                    {this.state.serverError && <Translate component="div" unsafe className="mt_5 mb_5 color-danger" content="gateway.service_unavailable" />}
+                                </div>
+                            }
+                            {/* {this.state.loading} */}
+                            <div className={disableForm ? "disabled-form" : null}>
+                                {this.state.loading && <LoadingIndicator />}
+                                <div style={{ paddingBottom: 15 }}>
+                                    <div className="mb_6" onClick={() => this.changeActionTab(true)}>
+                                        <input type="radio" id="withdraw-radio" checked={isWithdrawAction} name="radio-group" className="point-radio" />
+                                        <label htmlFor="withdraw-radio">
+                                            {counterpart.translate("gateway.rmbpay.withdrawal_modal.withdraw_amount")}
+                                        </label>
+                                    </div>
+                                    <div className="mb_6" onClick={() => this.changeActionTab(false)}>
+                                        <input type="radio" id="receive-radio" checked={!isWithdrawAction} name="radio-group" className="point-radio" />
+                                        <label htmlFor="receive-radio">
+                                            {counterpart.translate("gateway.rmbpay.withdrawal_modal.receive_amount")}
+                                        </label>
+                                    </div>
                                 </div>
 
-                                {/* Fee Blockchain selection */}
-                                {this.state.feeAmount ? <div className="content-block gate_fee" style={{ paddingRight: 5 }}>
-                                    <label className="left-label">
-                                        <Translate content="gateway.rmbpay.withdrawal_modal.fee_blockchain" />
+                                {/* Withdraw amount */}
 
-                                        <span data-html={true} data-tip={this.state.isWithdrawAction ? ((this.state.takenFromAmount
-                                            ? counterpart.translate("tooltip.withdraw_take_from_amount")
-                                            : "")
-                                            + counterpart.translate("tooltip.withdraw_blockchain_fee")) : counterpart.translate("tooltip.receive_blockchain_fee")} className="inline-block tooltip" style={{ paddingLeft: '7px' }}>
-                                            <Icon className="icon-14px" name={this.state.takenFromAmount ? "info-warn" : "info"} />
-                                        </span>
-                                    </label>
-                                    <AmountSelector
-                                        label={null}
-                                        disabled={true}
-                                        amount={this.state.feeAmount.getAmount({ real: true })}
-                                        onChange={this.onFeeChanged.bind(this)}
-                                        asset={this.state.fee_asset_id}
-                                        assets={fee_asset_types}
-                                        tabIndex={tabIndex++}
-                                        startListCurrency="RMBPAY"
-                                        scrollLength={5}
-                                    />
-                                    {(!this.state.hasBalance && !this.state.balanceError) ? <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noFeeBalance" /> : null}
-                                    {!this.state.hasPoolBalance ? <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noPoolBalance" /> : null}
-                                </div> : null}
+                                <div >
+                                    <div className="content-block">
 
-                                {/* Gate fee withdrawal*/}
+                                        <AmountSelector label={isWithdrawAction ? "gateway.rmbpay.withdrawal_modal.amount_withdraw" : "gateway.rmbpay.withdrawal_modal.amount_receive"}
+                                            amount={isWithdrawAction ? this.state.withdrawAmount : this.state.receiveAmount}
+                                            asset={assetId}
+                                            assets={[assetId]}
+                                            placeholder=""
+                                            onChange={isWithdrawAction ? this.onWithdrawAmountChange.bind(this) : this.onReceiveAmountChange.bind(this)}
+                                            ref="amountWithdraw"
+                                            display_balance={this.state.isWithdrawAction && balance}
+                                        />
+                                        {!this.state.amountError && (
+                                            this.state.isWithdrawAction ? <Translate component="div" className="mt_2 mb_5 help-text fz_13" content="gateway.rmbpay.error_max_value" val={+minFee} />
+                                                : <Translate component="div" className="mt_2 mb_5 help-text fz_13" content="gateway.rmbpay.error_max_receive" val={+maxValue} />
+                                        )}
+                                        {this.state.amountError && <Translate component="div" className="mt_2 mb_5 color-danger fz_13 " content={this.state.amountError.message} val={+this.state.amountError.value} />}
+                                    </div>
 
-                                <div className="content-block right-selector gate_fee" style={{ paddingLeft: 5 }}>
-                                    <label className="left-label">
-                                        <Translate content="gateway.rmbpay.withdrawal_modal.fee_withdraw" />
-                                        <span data-tip={counterpart.translate("tooltip.withdraw_fee")} className="inline-block tooltip" style={{ paddingLeft: '7px' }}>
-                                            <Icon className="icon-14px" name="info" />
-                                        </span>
-                                    </label>
-                                    <div className="inline-label input-wrapper">
-                                        <input type="text" disabled value={gateFee} />
+                                    {/* Fee Blockchain selection */}
+                                    {this.state.feeAmount ? <div className="content-block gate_fee" style={{ paddingRight: 5 }}>
+                                        <label className="left-label">
+                                            <Translate content="gateway.rmbpay.withdrawal_modal.fee_blockchain" />
 
-                                        <div className="form-label select floating-dropdown">
-                                            <div className="dropdown-wrapper inactive">
-                                                <div>{this.props.output_coin_symbol}</div>
+                                            <span data-html={true} data-tip={this.state.isWithdrawAction ? ((this.state.takenFromAmount
+                                                ? counterpart.translate("tooltip.withdraw_take_from_amount")
+                                                : "")
+                                                + counterpart.translate("tooltip.withdraw_blockchain_fee")) : counterpart.translate("tooltip.receive_blockchain_fee")} className="inline-block tooltip" style={{ paddingLeft: '7px' }}>
+                                                <Icon className="icon-14px" name={this.state.takenFromAmount ? "info-warn" : "info"} />
+                                            </span>
+                                        </label>
+                                        <AmountSelector
+                                            label={null}
+                                            disabled={true}
+                                            amount={this.state.feeAmount.getAmount({ real: true })}
+                                            onChange={this.onFeeChanged.bind(this)}
+                                            asset={this.state.fee_asset_id}
+                                            assets={fee_asset_types}
+                                            tabIndex={tabIndex++}
+                                            startListCurrency="RMBPAY"
+                                            scrollLength={5}
+                                        />
+                                        {(!this.state.hasBalance && !this.state.balanceError) ? <Translate component="div" className="mt_2 mb_5 color-danger fz_13" content="transfer.errors.noFeeBalance" /> : null}
+                                        {!this.state.hasPoolBalance ? <Translate component="div" className="mt_2 mb_5 color-danger fz_13" content="transfer.errors.noPoolBalance" /> : null}
+                                    </div> : null}
+
+                                    {/* Gate fee withdrawal*/}
+
+                                    <div className="content-block right-selector gate_fee" style={{ paddingLeft: 5 }}>
+                                        <label className="left-label">
+                                            <Translate content="gateway.rmbpay.withdrawal_modal.fee_withdraw" />
+                                            <span data-tip={counterpart.translate("tooltip.withdraw_fee")} className="inline-block tooltip" style={{ paddingLeft: '7px' }}>
+                                                <Icon className="icon-14px" name="info" />
+                                            </span>
+                                        </label>
+                                        <div className="inline-label input-wrapper">
+                                            <input type="text" disabled value={gateFee} />
+
+                                            <div className="form-label select floating-dropdown">
+                                                <div className="dropdown-wrapper inactive">
+                                                    <div>{this.props.output_coin_symbol}</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div>
-                                    <div className="content-block gate_fee left-label">
-                                        <Translate content={isWithdrawAction ? "gateway.rmbpay.withdrawal_modal.amount_receive" : "gateway.rmbpay.withdrawal_modal.amount_withdraw"} />
-                                    </div>
-                                    <div className="content-block gate_fee text-right light-text">
-                                        {isWithdrawAction ? `${this.state.tokenAmount} CNY` : `${this._calculateRecieveTokens()} RMBPAY`}
-                                    </div>
-                                </div>
-                                <div className="medium-12">
-                                    <label className="left-label">
-                                        <Translate component="span" content="gateway.pay_service_alipay" />
-                                    </label>
-                                    <div className="blocktrades-select-dropdown">
-                                        <div className="inline-label">
-                                            <input type="text"
-                                                value={userServiceId}
-                                                tabIndex="4"
-                                                onChange={this.onWithdrawAddressChanged.bind(this)}
-                                                ref="paymentId"
-                                                autoComplete="off" />
+                                    <div>
+                                        <div className="content-block gate_fee left-label">
+                                            <Translate content={isWithdrawAction ? "gateway.rmbpay.withdrawal_modal.amount_receive" : "gateway.rmbpay.withdrawal_modal.amount_withdraw"} />
                                         </div>
-                                        {<Translate component="div" className={"mt_2 mb_5 color-danger fz_14 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
+                                        <div className="content-block gate_fee text-right light-text">
+                                            {isWithdrawAction ? `${this.state.tokenAmount} CNY` : `${this._calculateRecieveTokens()} RMBPAY`}
+                                        </div>
+                                    </div>
+                                    <div className="medium-12">
+                                        <label className="left-label">
+                                            <Translate component="span" content="gateway.pay_service_alipay" />
+                                        </label>
+                                        <div className="blocktrades-select-dropdown">
+                                            <div className="inline-label">
+                                                <input type="text"
+                                                    value={userServiceId}
+                                                    tabIndex="4"
+                                                    onChange={this.onWithdrawAddressChanged.bind(this)}
+                                                    ref="paymentId"
+                                                    autoComplete="off" />
+                                            </div>
+                                            {<Translate component="div" className={"mt_2 mb_5 color-danger fz_13 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Withdraw/Cancel buttons */}
-                        <div className="mt_6 float-left help-text">
-                            {`${moment().utc().add(8, "h").format("YYYY-MM-DD HH-mm")} (UTC+8)`}
-                        </div>
-                        <div className="float-right">
-                            <div onClick={this.onSubmit.bind(this)} className={"button " + (disableForm && "disabled")}>
-                                <Translate content="modal.withdraw.submit" />
+                            {/* Withdraw/Cancel buttons */}
+                            <div className="mt_6 help-text content-block">
+                                {`${moment().utc().add(8, "h").format("YYYY-MM-DD HH-mm")} (UTC+8)`}
                             </div>
-                            <div className="button" onClick={this.onClose.bind(this)}><Translate content="account.perm.cancel" /></div>
+                            <div className="buttons-block-center">
+                                <div onClick={this.onSubmit.bind(this)} className={"button " + (disableForm && "disabled")}>
+                                    <Translate content="modal.withdraw.submit" />
+                                </div>
+                                <div className="button cancel" onClick={this.onClose.bind(this)}><Translate content="account.perm.cancel" /></div>
+                            </div>
                         </div>
                     </div>
                 </form>

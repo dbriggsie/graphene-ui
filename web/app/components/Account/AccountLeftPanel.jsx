@@ -30,6 +30,7 @@ class AccountLeftPanel extends React.Component {
         return (
             changed ||
             this.props.account !== nextProps.account ||
+            this.props.isMyAccount !== nextProps.isMyAccount ||
             this.props.linkedAccounts !== nextProps.linkedAccounts ||
             nextState.showAdvanced !== this.state.showAdvanced ||
             nextState.showQR !== this.state.showQR ||
@@ -156,13 +157,13 @@ class AccountLeftPanel extends React.Component {
                         </ul>) : null}
                     </section>
 
-                   {/* {isMyAccount ?
+                   {isMyAccount ?
                         <div className="regular-padding">
                             <div className="button block-button create-account-button">
                                 <Link to={`/create-account/${this.props.passwordLogin ? "password" : "wallet"}`}><Translate content="account.create_new" /></Link>
                             </div>
                         </div>
-                        : null}*/}
+                        : null}
                     </div>
                 </div>
             </div>

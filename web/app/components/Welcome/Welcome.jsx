@@ -71,7 +71,7 @@ class Welcome extends React.Component {
                 <div className="grid-block shrink vertical">
                     <div className="grid-content shrink text-center account-creation welcome">
                         <div>
-                            <img src="/app/assets/logo.png" alt="" />
+                            <img src="/app/assets/logo.png" alt="" />                            
                         </div>
                         <Translate content="account.welcome" component="h4"/>
                         <Translate unsafe content="account.centralized" component="h5" />
@@ -80,7 +80,7 @@ class Welcome extends React.Component {
                             {flagDropdown}
                         </div>
 
-                        <div className="button-group">
+                        <div className="button-group buttons-block-center">
                             <label style={{textAlign: "left"}}><Translate content="account.new_user" /><br/>
                                 <Link to="/create-account">
                                     <div className="button">

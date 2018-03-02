@@ -2,39 +2,17 @@ function server_set(type) {
     //"urls" "apiServer" "faucet_address"
 
     if (type == "urls") {
-        if (SET == "EU1") {
-            return [
-                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
-                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
-                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-                { url: "wss://node.testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
-            ];
-        } else if (SET == "CN") {
-            return [
-                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
-                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
-                { url: "wss://node.testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
-            ];
-        } else {
-            return [
-                { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
-                { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
-                { url: "wss://openledger.hk/ws", location: "Hong Kong" },
-                { url: "wss://node.testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
-            ];
-        }
+        return [
+            { url: "wss://fake.automatic-selection.com", location: {translate: "settings.api_closest"}},
+            { url: "wss://bitshares.openledger.info/ws", location: "Nuremberg, Germany" },
+            { url: "wss://eu.openledger.info/ws", location: "Berlin, Germany" },
+            { url: "wss://openledger.hk/ws", location: "Hong Kong" },
+            { url: "wss://node.testnet.bitshares.eu/ws", location: "Public Testnet Server (Frankfurt, Germany)" }
+        ];
     }
 
-
     if (type == "apiServer") {
-        if (SET == "EU1") {
-            return "wss://bitshares.openledger.info/ws";
-        } else if (SET == "CN") {
-            return "wss://openledger.hk/ws";
-        } else {
-            return "wss://bitshares.openledger.info/ws";
-        }
+        return "wss://fake.automatic-selection.com";
     }
 
     if (type == "faucet_address") {

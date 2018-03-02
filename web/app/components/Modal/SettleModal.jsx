@@ -130,7 +130,7 @@ class SettleModal extends React.Component {
     render() {
         return (
             <BaseModal id="settlement_modal" overlay={true} ref="settlement_modal">
-                <div className="grid-block vertical">
+                <div className="grid-block vertical modal-body">
                     <ModalContent {...this.props} />
                 </div>
             </BaseModal>

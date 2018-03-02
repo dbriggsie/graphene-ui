@@ -210,7 +210,7 @@ class AccountOverview extends React.Component {
     _filtersChanged(nextState) {
         return nextState.favorites !== this.state.favorites ||
             nextState.showOnlyFavorites !== this.state.showOnlyFavorites ||
-            nextState.hideZeroBalances !== this.hideZeroBalances
+            nextState.hideZeroBalances !== this.state.hideZeroBalances
     }
 
     _onSettleAsset(id, e) {
@@ -792,12 +792,9 @@ class AccountOverview extends React.Component {
                                             className="column-hide-small clickable"
                                         >
                                             <span className={this._setArrowClass("totalValue")}>
-                                                <TranslateWithLinks
-                                                    noLink
-                                                    string="account.eq_value_header"
-                                                    keys={[
-                                                        {type: "asset", value: preferredUnit, arg: "asset"}
-                                                    ]}
+                                                <Translate
+                                                    content="account.eq_value_header"
+                                                    asset={preferredUnit}
                                                 />
                                             </ span>
                                         </th>
@@ -838,7 +835,7 @@ class AccountOverview extends React.Component {
                                     <div className="generic-bordered-box">
                                         <MarginPositions preferredUnit={preferredUnit} className="dashboard-table" callOrders={call_orders} account={account}>
                                             <tr className="total-value">
-                                                <td>
+                                                <td style={{paddingLeft: '5px'}}>
                                                     {totalValueText}
                                                 </td>
                                                 <td>{debtValue}</td>

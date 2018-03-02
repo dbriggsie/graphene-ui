@@ -84,7 +84,9 @@ let marketsList = [
     "OPEN.ECH",
     "OPEN.NBC",
     "OPEN.STU",
-    "OPEN.WAX"
+    "OPEN.WAX",
+    "OPEN.GAS",
+    "OPEN.NEO"
 ];
 
 let topMarkets = {
@@ -214,7 +216,7 @@ class SettingsStore {
                 {translate: "no"}
             ],
             themes: [
-                "darkTheme",
+                // "darkTheme",
                 "lightTheme",
                 "olDarkTheme",
                 //"olLightTheme"
@@ -285,7 +287,7 @@ class SettingsStore {
 
             let bases = {
                 markets_4018d784: [ // BTS MAIN NET
-                    "OPEN.BTC", "CNY", "USD", CORE_ASSET, "OBITS"
+                    "OPEN.BTC", "OPEN.ETH", "OPEN.EOS", "CNY", "USD", CORE_ASSET, "OBITS"
                 ],
                 markets_39f5e2ed: [ // TESTNET
                     "TEST"
@@ -475,6 +477,7 @@ class SettingsStore {
     }
 
     onUpdateLatencies(latencies) {
+        ss.set("apiLatencies", latencies);
         this.apiLatencies = latencies;
     }
 

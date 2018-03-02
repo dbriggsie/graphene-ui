@@ -48,33 +48,46 @@
       transform: translateY(-50%) rotate(-45deg);
     }
     &.arrow-login-langeages:after{
-      margin-left: .5rem;
-      width: 8px;
-      height: 8px;
-      border-bottom-width: 2px;
-      border-left-width: 2px;
+        margin-left: .5rem;
+        width: 8px;
+        height: 8px;
+        border-bottom-width: 2px;
+        border-left-width: 2px;
       transform: translateY(-30%) rotate(-45deg);
-    }
+      }
   }
 
   .page-layout{
-    .large-up-4 > div.grid-block{
-      flex: 0 0 24.6%;
-    }
+     .large-up-4 > div.grid-block{
+        flex: 0 0 24.66%;
+      }
   }
 
   .label-in-left .account-selector .header-area{
     margin-left: 0;
   }
 
-  .arrow-hidden-balance .checkmark{
-    margin-right: .4rem;
-    margin-top: -4px;
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    & svg path{
-      fill: $icon-svg;
+  .filter-hidden-balance{
+    &.no-active{
+      .checkmark svg path{
+        fill: transparent;
+      }
+    }
+  }
+
+  .arrow-hidden-balance{
+    .checkmark{
+      margin-right: .4rem;
+      margin-top: -4px;
+      display: inline-block;
+      padding: 1px;
+      border: 1px solid $icon-svg;
+      border-radius: 3px;
+      width: 16px;
+      height: 16px;
+      & svg path{
+        fill: $icon-svg;
+      }
     }
   }
 
@@ -84,12 +97,12 @@
       max-width: 4rem ;
     }
   }
-
+  
   .header-modal-send{
-    h4{
-      padding-top: 20px;
-      margin-bottom: 15px;
-    }
+      h4{
+        padding-top: 20px;
+        margin-bottom: 15px;
+      }
   }
 
   .arrow-change-currency{
@@ -123,13 +136,12 @@
 
   .button-transfer-modal{
     margin-top: 1.5rem;
-    text-align: right;
+    text-align: center;
   }
 
   .wrapper-icon-modal{
     text-align: center;
     margin-bottom: 1rem;
-    margin-top: -10px;
   }
 
   .SimpleTrade__modal-wrapper-text{
@@ -138,7 +150,7 @@
     margin-bottom: 1rem;
   }
 
-  // Account page MyPortfolio
+// Account page MyPortfolio
   .filter-account-balances {
     padding: 1rem;
     background-color: lighten($account-header, 4%);
@@ -188,7 +200,14 @@
     .grey-star svg path{
       fill: $icon-svg;
     }
-
+  }
+  
+  .buttons-block-center {
+    text-align: center;
+    padding-bottom: 0.6em;
+    .button {
+      min-width: 160px;
+    }
   }
   // --- End --- Account page MyPortfolio
 
@@ -228,6 +247,10 @@
     font-size: 12px;
   }
 
+  .fz_13 {
+    font-size: 13px;
+  }
+
   .fz_14 {
     font-size: 14px;
   }
@@ -244,11 +267,12 @@
     }
     .modal {
       max-width: 500px;
+      padding: 0;
     }
   }
 
   .form-deposit-withdraw-rmbpay {
-    font-family: 'RobotoCondensed-Regular', arial, sans-serif;
+    font-family: 'Lato-Regular', arial, sans-serif;
     color: $secondary-text-color;
     div.grid-container {
       overflow: hidden;
@@ -315,6 +339,7 @@
   #depositRmbpayModal,
   #withdraw_asset_openledger-dex_CNY {
     max-width: 500px;
+    padding: 0;
   }
 
   .mt_2 {
@@ -350,7 +375,7 @@
 
   .button-group.btn-row {
     flex-direction: column;
-    text-transform: uppercase;
+    text-transform: none;
     &.segmented > li > a {
       text-align: left;
     }
@@ -388,7 +413,7 @@
       width: 26%;
       display: inline-block;
       color: $secondary-text-color;
-      text-transform: uppercase;
+      text-transform: none;
       .right-selector-input {
         text-align: right;
         width: 100%;
@@ -540,13 +565,27 @@
         color: $primary-text-color;
       }
     }
+    border-radius: 5px;
     .modal-header {
+      > h3 {
+        font-family: 'Montserrat-Regular', arial, sans-serif;
+        font-weight: bold;
+      }
       > h6 {
         color: $secondary-text-color;
       }
       &.has-error > h6 {
         color: $error-text-color
       }
+    }
+    .modal-filled-header {
+      > h3 {
+        font-family: 'Montserrat-Regular', arial, sans-serif;
+        font-weight: bold;
+        margin-bottom: 0.2em;
+      }
+      background: rgba(0, 132, 255, 0.03);
+      padding: 0.5em 0 0.5em 1em;
     }
     .circle-wrapper {
       .circle:before {
@@ -561,6 +600,22 @@
 
     h3 {
       font-size: 1.5rem;
+    }
+
+    .modal-body {
+      padding: 1em;
+    }
+
+    .asset-header {
+      > h4 {
+        border: none;
+        padding: 5px 0 10px 0;
+        margin-bottom: 10px;
+        font-size: 1.4rem;
+        > img {
+          vertical-align: bottom;
+        }
+      }
     }
   }
 
@@ -627,7 +682,7 @@
 
   .button {
     background: $button-bg-color;
-    border-radius: 4px;
+    border-radius: 5px;
     &:hover, &:active {
       background-color: lighten($button-bg-color, 4%) !important;
     }
@@ -639,6 +694,17 @@
         border-color: $light-text-color;
       }
     }
+    &.cancel{
+      background: none;
+      border: $button-bg-color 1px solid;
+      color: $button-bg-color;
+      &:hover {
+        color: $light-text-color;
+      }
+      &:focus{
+        outline: none;
+      }
+    }  
   }
 
   .button.secondary {
@@ -1322,12 +1388,34 @@
   }
 
   table.order-table > tbody, tbody.orderbook {
-    > tr.my-order > td {
-      font-weight: bold;
-      color: $info-color;
-      > span.price-integer, > span > span.price-integer, > span > span.price-decimal {
-        color: $info-color;
-        opacity: 1;
+    > tr.my-order {
+        &.right,  &.right:hover{
+          background-color: transparentize($ask-color, .4) !important;
+          td{
+            background-color: transparentize($ask-color, .4) !important;
+            > span.price-integer, > span > span.price-integer, > span > span.price-decimal{
+              color: #fff !important;
+            }
+        }
+      }
+
+      &.left, &.left:hover{
+        background-color: transparentize($bid-color, .4) !important;
+        td{
+          background-color: transparentize($bid-color, .4) !important;
+          > span.price-integer, > span > span.price-integer, > span > span.price-decimal{
+            color: #fff !important;
+          }
+        }
+      }
+
+      > td {
+        color: #fff !important;
+        font-weight: bold;
+        > span.price-integer, > span > span.price-integer, > span > span.price-decimal {
+          color: $dark-text-color;
+          opacity: 1;
+        }
       }
     }
   }
@@ -1435,7 +1523,7 @@
     padding: 8px 35px;
     border-bottom: 1px solid grey;
     font-weight: bold;
-    text-transform: uppercase;
+    text-transform: none;
     cursor: pointer;
   }
 
@@ -1491,9 +1579,20 @@
     }
   }
 
-  div.fm-container:hover {
+  div.fm-container:hover, .api-node:hover {
     background-color: darken($light-panel-bg-color, 5%);
     cursor: pointer;
+  }
+
+  .api-node {
+    position: relative;
+    padding: 0.5em 1em 0.5em 1em;
+  }
+
+  .api-status {
+      .low { color: $bid-color; }
+      .medium { color: $call-color; }
+      .high { color: $ask-color }
   }
 
   #chatbox {
@@ -1631,7 +1730,7 @@
       z-index: 10;
       color: #000;
       position: relative;
-      text-transform: uppercase;
+      text-transform: none;
     }
     & > div {
       position: relative;
@@ -1918,9 +2017,6 @@
     &.welcome{
       .button-group{
         padding-top: 1rem;
-        .button{
-          min-width: 160px;
-        }
       }
     }
   }
@@ -1959,7 +2055,7 @@
       max-height: 250px;
       top: 1px;
       overflow: auto;
-
+    
       border-radius: 0 0 5px 5px;
       border: 1px solid rgba(0,0,0,0.2);
       border-top: none;
@@ -1987,7 +2083,7 @@
       display: none;
     }
   }
-
+  
 
   .blocktrades-select-dropdown {
     input.half-rounded {
@@ -2003,6 +2099,50 @@
       font-size: 10px;
       border-radius: 0 5px 5px 0;
     }
+  }
+
+  .point-radio {
+    position: absolute;
+    left: -9999px;
+  }
+  .point-radio + label {
+    position: relative;
+    padding-left: 20px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+  }
+  .point-radio + label:before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 1px solid $button-bg-color;
+    border-radius: 100%;
+  }
+  .point-radio + label:after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: $button-bg-color;
+    position: absolute;
+    top: 3px;
+    left: -5px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+  }
+  .point-radio:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  .point-radio:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
   }
 }
 
@@ -2049,3 +2189,4 @@ img.asset-image {
   height: 30px;
   margin-right: 5px;
 }
+

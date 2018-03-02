@@ -43,10 +43,18 @@ class AccountStore extends BaseStore {
             "getMyAccounts",
             "isMyAccount",
             "getMyAuthorityForAccount",
-            "isMyKey"
+            "isMyKey",
+            "reset"
         );
 
         this.getMyAccounts = this.getMyAccounts.bind(this);
+    }
+
+    reset() {
+        if (this.state.subbed) {
+            ChainStore.unsubscribe(this.chainStoreUpdate);
+        }
+        this.setState(this._getInitialState());
     }
 
     _getInitialState() {

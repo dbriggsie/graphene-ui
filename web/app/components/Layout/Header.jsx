@@ -395,7 +395,7 @@ class Header extends React.Component {
                             {/* {(!traderMode && hasOrders) ? <li><Link to="/my-orders" activeClassName="active"><Translate content="exchange.my_orders"/></Link></li> : null}*/}
                             {/* {(traderMode && this.state.showVoting) ? <li><Link to={`/fast-voting`} className={cnames({active: active.indexOf("fast-voting") !== -1})}><Translate content="account.fast_voting.vote" /></Link></li> : null} */}
                             {(!currentAccount || !traderMode) ? null : <li><Link to={`/account/${currentAccount}/overview`} className={cnames({active: active.indexOf("account/") !== -1})}><Translate content="header.account" /></Link></li>}
-                            {!traderMode ? null : <li><a onClick={this._showTransferModal.bind(this)}><Translate component="span" content="header.payments" /></a></li>}
+                            {(!currentAccount || !traderMode) ? null : <li><a onClick={this._showTransferModal.bind(this)}><Translate component="span" content="transaction.trxTypes.transfer" /></a></li>}
                             {!traderMode ? null : <li>{tradeLink}</li>}
                             {(traderMode && currentAccount && myAccounts.indexOf(currentAccount) !== -1) ? <li><Link to={"/deposit-withdraw/"} activeClassName="active"><Translate content="account.deposit_withdraw"/></Link></li> : null}
                         </ul>

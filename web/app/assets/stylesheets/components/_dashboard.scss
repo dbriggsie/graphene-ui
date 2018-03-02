@@ -1,6 +1,6 @@
 div.fm-outer-container {
-    border-left: 1px solid $border-color;
-    border-top: 1px solid $border-color;
+   // border-left: 1px solid $border-color;
+   // border-top: 1px solid $border-color;
     margin-bottom: 20px;
 }
 
@@ -17,7 +17,10 @@ div.fm-outer-container {
 }
 
 div.fm-container {
-    border: 1px solid $border-color;
+   // border: 1px solid $border-color;
+    background-color: rgba(0,0,0, .2);
+    border-radius: 8px;
+    margin: 2px;
     border-top: none;
     border-left: none;
     padding: 1rem 0.5rem;
@@ -38,7 +41,7 @@ div.fm-container {
 
     .fm-volume, .fm-change {
         text-transform: lowercase;
-        font-variant: small-caps;
+        font-variant: normal;
         padding-top: 6px;
     }
 }
@@ -106,7 +109,7 @@ div.fm-container {
     }
     .error-msg {
         font-style: normal;
-        text-transform: uppercase;
+        text-transform: none;
         text-align: right;
         font-size: 90%;
         width: 100%;

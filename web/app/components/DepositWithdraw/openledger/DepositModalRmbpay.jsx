@@ -420,11 +420,11 @@ class DepositModalRmbpay extends React.Component {
                             ref="amountDeposit"
                         />
                         {!this.state.depositEmpty ? <Translate component="div"
-                            className={!this.state.depositAmountError ? "mt_2 mb_5 help-text fz_14" : "mt_2 mb_5 color-danger fz_14"}
+                            className={!this.state.depositAmountError ? "mt_2 mb_5 help-text fz_13" : "mt_2 mb_5 color-danger fz_13"}
                             content="gateway.rmbpay.deposit_min_amount"
                             fee={+minFee}
                         /> : null}
-                        {this.state.depositEmpty && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="gateway.rmbpay.error_emty" />}
+                        {this.state.depositEmpty && <Translate component="div" className="mt_2 mb_5 color-danger fz_13" content="gateway.rmbpay.error_emty" />}
                     </div>
 
                     {/* Fee selection */}
@@ -478,7 +478,7 @@ class DepositModalRmbpay extends React.Component {
                                 />
                             </div>
                         </div>
-                        {<Translate component="div" className={"mt_2 mb_5 color-danger fz_14 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
+                        {<Translate component="div" className={"mt_2 mb_5 color-danger fz_13 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
                     </div>
 
                     {/*Captcha*/}
@@ -499,15 +499,15 @@ class DepositModalRmbpay extends React.Component {
                                 </div>
                             </div>
                             {!(this.state.emptyCaptchaError || this.state.wrongCaptchaError) && <Translate component="div"
-                                className="mt_2 mb_5 help-text fz_14"
+                                className="mt_2 mb_5 help-text fz_13"
                                 content="gateway.rmbpay.captcha_label"
                             />}
                             {this.state.emptyCaptchaError && !this.state.wrongCaptchaError && <Translate component="div"
-                                className="mt_2 mb_5 color-danger fz_14 "
+                                className="mt_2 mb_5 color-danger fz_13 "
                                 content="gateway.rmbpay.error_emty"
                             />}
                             {this.state.wrongCaptchaError && <Translate component="div"
-                                className="mt_2 mb_5 color-danger fz_14"
+                                className="mt_2 mb_5 color-danger fz_13"
                                 content="gateway.rmbpay.wrong_captcha_error"
                             />}
                         </div>
@@ -516,14 +516,14 @@ class DepositModalRmbpay extends React.Component {
 
                 {/* Request Deposit/Cancel buttons */}
 
-                <div className="mt_6 float-left help-text">
+                <div className="mt_6 help-text content-block">
                     {`${moment().utc().add(8, "h").format("YYYY-MM-DD HH-mm")} (UTC+8)`}
                 </div>
-                <div className="float-right">
+                <div className="buttons-block-center">
                     <div onClick={this.onSubmit.bind(this)} className={"button " + (this._isDisabled() ? "disabled" : "")} >
                         <Translate content="gateway.rmbpay.btn_request_deposit" />
                     </div>
-                    <div className="button" onClick={this.onClose.bind(this)} >
+                    <div className="button cancel" onClick={this.onClose.bind(this)} >
                         <Translate content="account.perm.cancel" />
                     </div>
                 </div>
@@ -554,20 +554,22 @@ class DepositModalRmbpay extends React.Component {
             <div>
                 <form className="grid-block vertical full-width-content form-deposit-withdraw-rmbpay" >
                     <div className="grid-container">
-                        <div className="content-block">
+                        <div className="modal-filled-header">
                             <h3>
                                 <Translate content="gateway.deposit_coin" coin={this.props.output_coin_name} symbol={this.props.output_coin_symbol} />
                             </h3>
                         </div>
-                        {this._isDisabled() && <div className="center-content content-block">
-                            {this.state.serverError ? <Translate className="has-error" content="gateway.service_unavailable" /> :
-                                (this.state.unlockTime && <Translate className="has-error" unsafe content="gateway.rmbpay.max_requests_error"
-                                    date={unlockTime}
-                                />)
-                            }
-                        </div>}
-                        <div>
-                            {this.state.showQr ? this._renderQR() : this._renderDepositeForm()}
+                        <div className="modal-body">
+                            {this._isDisabled() && <div className="center-content content-block">
+                                {this.state.serverError ? <Translate className="has-error" content="gateway.service_unavailable" /> :
+                                    (this.state.unlockTime && <Translate className="has-error" unsafe content="gateway.rmbpay.max_requests_error"
+                                        date={unlockTime}
+                                    />)
+                                }
+                            </div>}
+                            <div>
+                                {this.state.showQr ? this._renderQR() : this._renderDepositeForm()}
+                            </div>
                         </div>
                     </div>
                 </form>

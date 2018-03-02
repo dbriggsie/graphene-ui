@@ -2,14 +2,33 @@
   height: 36px;
   line-height: 36px;
   text-transform: lowercase;
-  font-variant: small-caps;
-  font-weight: bold;
+  font-variant: normal;
   background-color: #777;
   vertical-align: middle;
   color: #fff;
   padding-left: 1.75rem;
   padding-right: 1.75rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  div.footer-status {
+    position: absolute;
+    right: 0;
+    > span {
+        position: relative;
+        top: -9px;
+    }
+  }
+  div.footer-block {
+    position: relative;
+    bottom: 0;
+    > span {
+        position: relative;
+        top: 7px;
+        font-size: 0.95rem;
+        > .footer-block-title {
+            font-size: 0.85rem;
+        }
+    }
+  }
   /*pre {
       font-size: 0.8rem;
   }

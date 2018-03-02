@@ -15,6 +15,7 @@ import Modal from "react-foundation-apps/src/modal";
 import { checkFeeStatusAsync, checkBalance } from "common/trxHelper";
 import { Asset } from "common/MarketClasses";
 import { debounce } from "lodash";
+import AssetImage from "components/Utility/AssetImage";
 
 class WithdrawModalBlocktrades extends React.Component {
 
@@ -35,7 +36,16 @@ class WithdrawModalBlocktrades extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.state = this._getDefaultState(props);
+
+        this._validateAddress(this.state.withdraw_address, props);
+
+        this._checkBalance = this._checkBalance.bind(this);
+        this._updateFee = debounce(this._updateFee.bind(this), 250);
+    }
+
+    _getDefaultState(props) {
+        return  {
             withdraw_amount: this.props.amount_to_withdraw,
             withdraw_address: WithdrawAddresses.getLast(props.output_wallet_type),
             withdraw_address_check_in_progress: true,
@@ -50,12 +60,6 @@ class WithdrawModalBlocktrades extends React.Component {
             fee_asset_id: "1.3.0",
             feeStatus: {}
         };
-
-
-        this._validateAddress(this.state.withdraw_address, props);
-
-        this._checkBalance = this._checkBalance.bind(this);
-        this._updateFee = debounce(this._updateFee.bind(this), 250);
     }
 
     componentWillMount() {
@@ -67,6 +71,10 @@ class WithdrawModalBlocktrades extends React.Component {
         this.unMounted = true;
     }
 
+    componentDidMount() {
+        ZfApi.subscribe(this.props.modal_id, this._modalListener.bind(this));
+    }
+
     componentWillReceiveProps(np) {
         if (np.account !== this.state.from_account && np.account !== this.props.account) {
             this.setState({
@@ -75,6 +83,13 @@ class WithdrawModalBlocktrades extends React.Component {
                 fee_asset_id: "1.3.0",
                 feeAmount: new Asset({ amount: 0 })
             }, () => { this._updateFee(); this._checkFeeStatus(); });
+        }
+    }
+
+    _modalListener(name, msg) {
+        if (msg === "close") {
+            this.setState(this._getDefaultState(this.props));
+            this._validateAddress(this.state.withdraw_address, this.props);
         }
     }
 
@@ -420,7 +435,7 @@ class WithdrawModalBlocktrades extends React.Component {
 
         if (!this.state.withdraw_address_check_in_progress && (this.state.withdraw_address && this.state.withdraw_address.length)) {
             if (!this.state.withdraw_address_is_valid) {
-                invalid_address_message = <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="gateway.valid_address" coin_type={this.props.output_coin_type} />;
+                invalid_address_message = <Translate component="div" className="mt_2 mb_5 color-danger fz_13" content="gateway.valid_address" coin_type={this.props.output_coin_type} />;
                 confirmation =
                     <Modal id={withdrawModalId} overlay={true}>
                         <Trigger close={withdrawModalId}>
@@ -474,104 +489,110 @@ class WithdrawModalBlocktrades extends React.Component {
             this.state.balanceError ||
             !this.state.withdraw_amount;
 
+        const assetLabel = this.props.output_coin_symbol + (this.props.output_coin_symbol !== this.props.output_coin_name ? " (" + this.props.output_coin_name + ")" : "");
+
         return (<form className="grid-block vertical full-width-content">
             <div className="grid-container">
-                <div className="content-block">
-                    <h3><Translate content="gateway.withdraw_coin" coin={this.props.output_coin_name} symbol={this.props.output_coin_symbol} /></h3>
+                <div className="modal-filled-header">
+                    <h3><Translate content="gateway.withdraw" /></h3>
                 </div>
+                <div className="modal-body">
+                    <div className="text-center asset-header">
+                        <h4><AssetImage assetName={this.props.output_coin_symbol} style={{ width: "28px" }} /> {assetLabel}</h4>
+                    </div>
+                    {/* Withdraw amount */}
+                    <div className="content-block">
+                        <AmountSelector label="modal.withdraw.amount"
+                            amount={this.state.withdraw_amount}
+                            asset={this.props.asset.get("id")}
+                            assets={[this.props.asset.get("id")]}
+                            placeholder=""
+                            onChange={this.onWithdrawAmountChange.bind(this)}
+                            display_balance={balance}
+                        />
+                        {this.state.empty_withdraw_value ?
+                            <Translate component="div" content="transfer.errors.valid" className="mt_2 mb_5 color-danger fz_13" /> :
+                            this.state.balanceError && <div className="color-danger mt_2">
+                                <Translate content="transfer.errors.insufficient" className="mb_5 fz_13" />
+                                <span>
+                                    (<Translate content="transfer.errors.valid_with_fee" className="mb_5 fz_13" /> {gateFee * 2} {this.props.output_coin_name})
+                                </span>
+                            </div>}
+                    </div>
 
-                {/* Withdraw amount */}
-                <div className="content-block">
-                    <AmountSelector label="modal.withdraw.amount"
-                        amount={this.state.withdraw_amount}
-                        asset={this.props.asset.get("id")}
-                        assets={[this.props.asset.get("id")]}
-                        placeholder=""
-                        onChange={this.onWithdrawAmountChange.bind(this)}
-                        display_balance={balance}
-                    />
-                    {this.state.empty_withdraw_value ?
-                        <Translate component="div" content="transfer.errors.valid" className="mt_2 mb_5 color-danger fz_14" /> :
-                        this.state.balanceError && <div className="color-danger mt_2">
-                            <Translate content="transfer.errors.insufficient" className="mb_5 fz_14" />
-                            <span>
-                                (<Translate content="transfer.errors.valid_with_fee" className="mb_5 fz_14" /> {gateFee * 2} {this.props.output_coin_name})
-                            </span>
-                        </div>}
-                </div>
+                    {/* Fee selection */}
+                    {this.state.feeAmount ? <div className="content-block gate_fee">
+                        <AmountSelector
+                            refCallback={this.setNestedRef.bind(this)}
+                            label="transfer.fee"
+                            disabled={true}
+                            amount={this.state.feeAmount.getAmount({ real: true })}
+                            onChange={this.onFeeChanged.bind(this)}
+                            asset={this.state.feeAmount.asset_id}
+                            assets={fee_asset_types}
+                            tabIndex={tabIndex++}
+                            scrollLength={4}
+                        />
+                        {!this.state.hasBalance && <Translate component="div" className="mt_2 mb_5 color-danger fz_13" content="transfer.errors.noFeeBalance" />}
+                        {!this.state.hasPoolBalance && <Translate component="div" className="mt_2 mb_5 color-danger fz_13" content="transfer.errors.noPoolBalance" />}
+                    </div> : null}
 
-                {/* Fee selection */}
-                {this.state.feeAmount ? <div className="content-block gate_fee">
-                    <AmountSelector
-                        refCallback={this.setNestedRef.bind(this)}
-                        label="transfer.fee"
-                        disabled={true}
-                        amount={this.state.feeAmount.getAmount({ real: true })}
-                        onChange={this.onFeeChanged.bind(this)}
-                        asset={this.state.feeAmount.asset_id}
-                        assets={fee_asset_types}
-                        tabIndex={tabIndex++}
-                        scrollLength={4}
-                    />
-                    {!this.state.hasBalance && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noFeeBalance" />}
-                    {!this.state.hasPoolBalance && <Translate component="div" className="mt_2 mb_5 color-danger fz_14" content="transfer.errors.noPoolBalance" />}
-                </div> : null}
+                    {/* Gate fee */}
+                    {this.props.gateFee ?
+                        (<div className="amount-selector right-selector gate_fee" style={{ paddingBottom: 20 }}>
+                            <label className="left-label"><Translate content="gateway.fee" /></label>
+                            <div className="inline-label input-wrapper">
+                                <input type="text" disabled value={this.props.gateFee} />
 
-                {/* Gate fee */}
-                {this.props.gateFee ?
-                    (<div className="amount-selector right-selector gate_fee" style={{ paddingBottom: 20 }}>
-                        <label className="left-label"><Translate content="gateway.fee" /></label>
-                        <div className="inline-label input-wrapper">
-                            <input type="text" disabled value={this.props.gateFee} />
-
-                            <div className="form-label select floating-dropdown">
-                                <div className="dropdown-wrapper inactive">
-                                    <div>{this.props.output_coin_symbol}</div>
+                                <div className="form-label select floating-dropdown">
+                                    <div className="dropdown-wrapper inactive">
+                                        <div>{this.props.output_coin_symbol}</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>) : null}
+                        </div>) : null}
 
-                <div className="content-block">
-                    <label className="left-label">
-                        <Translate component="span" content="modal.withdraw.address" />
-                    </label>
-                    <div className="blocktrades-select-dropdown">
-                        <div className="inline-label">
-                            <input type="text" className="half-rounded" value={withdraw_address_selected} tabIndex="4" onChange={this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
-                            <span onClick={this.onDropDownList.bind(this)} >&#9660;</span>
+                    <div className="content-block">
+                        <label className="left-label">
+                            <Translate component="span" content="modal.withdraw.address" />
+                        </label>
+                        <div className="blocktrades-select-dropdown">
+                            <div className="inline-label">
+                                <input type="text" className="half-rounded" value={withdraw_address_selected} tabIndex="4" onChange={this.onWithdrawAddressChanged.bind(this)} autoComplete="off" />
+                                <span onClick={this.onDropDownList.bind(this)} >&#9660;</span>
+                            </div>
                         </div>
+                        <div className="blocktrades-position-options">
+                            {options}
+                        </div>
+                        {invalid_address_message}
                     </div>
-                    <div className="blocktrades-position-options">
-                        {options}
+
+                    {/*  M E M O  */}
+                    {this.props.output_supports_memos && <div className="content-block">
+                        <label className="left-label">
+                            <Translate component="span" content="transfer.memo" />
+                        </label>
+                        <div className="blocktrades-select-dropdown">
+                            <div className="inline-label">
+                                <textarea rows="1" value={this.state.memo} tabIndex="5" onChange={this.onMemoChanged.bind(this)} />
+                            </div>
+                        </div>
+                    </div>}
+
+                    {/* Withdraw/Cancel buttons */}
+                    <div className="buttons-block-center">
+
+                        <div onClick={this.onSubmit.bind(this)} className={"button" + (disableSubmit ? (" disabled") : "")}>
+                            <Translate content="modal.withdraw.submit" />
+                        </div>
+
+                        <Trigger close={this.props.modal_id}>
+                            <div className="button cancel"><Translate content="account.perm.cancel" /></div>
+                        </Trigger>
                     </div>
-                    {invalid_address_message}
+                    {confirmation}
                 </div>
-
-                {/*  M E M O  */}
-                {this.props.output_supports_memos && <div className="content-block">
-                    <label className="left-label">
-                        <Translate component="span" content="transfer.memo" />
-                    </label>
-                    <div className="blocktrades-select-dropdown">
-                        <div className="inline-label">
-                            <textarea rows="1" value={this.state.memo} tabIndex="5" onChange={this.onMemoChanged.bind(this)} />
-                        </div>
-                    </div>
-                </div>}
-
-                {/* Withdraw/Cancel buttons */}
-                <div className="float-right">
-
-                    <div onClick={this.onSubmit.bind(this)} className={"button" + (disableSubmit ? (" disabled") : "")}>
-                        <Translate content="modal.withdraw.submit" />
-                    </div>
-
-                    <Trigger close={this.props.modal_id}>
-                        <div className="button"><Translate content="account.perm.cancel" /></div>
-                    </Trigger>
-                </div>
-                {confirmation}
             </div>
         </form>
         );

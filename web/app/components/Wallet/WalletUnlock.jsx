@@ -208,7 +208,7 @@ class WalletUnlockModal extends React.Component {
                 <div style={{marginLeft: "3.5rem"}}>
                     <div className="button-group">
                         <Translate component="button" className="button" onClick={this.onPasswordEnter} content="header.unlock_short" tabIndex={tabIndex++} />
-                        <Link to="/welcome" tabIndex={tabIndex++} className=" button" style={{color: "white"}}><Translate content="account.perm.cancel" /></Link>
+                        <Link to="/welcome" tabIndex={tabIndex++} className="cancel button" ><Translate content="account.perm.cancel" /></Link>
                     </div>
                 </div>
             </form>
