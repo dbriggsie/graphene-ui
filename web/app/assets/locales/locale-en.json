@@ -1446,7 +1446,7 @@
     "website": "Visit the website",
     "deposit_to": "Please send your %(asset)s to the address below",
     "deposit_notice_delay": "(new address can be generated once per 5 minutes)",
-    "add_funds": "Funds will be sent to account <strong>%(account)s</strong>.",
+    "add_funds": "Funds will send to account <strong>%(account)s</strong>.",
     "min_deposit_warning": "Minimum value to deposit should be %(minDeposit)s.<br /><br />IMPORTANT: Send only %(coin)s to this deposit address. Sending less than %(minDeposit)s %(coin)s or any other currency to this address may result in the loss of your deposit.",
     "under_maintenance": "The gate is temporarily under maintenance",
     "not_enough_funds": "Not enough funds to withdraw",

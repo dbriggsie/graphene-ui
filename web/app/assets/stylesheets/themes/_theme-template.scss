@@ -61,6 +61,7 @@
      .large-up-4 > div.grid-block{
         flex: 0 0 24.66%;
       }
+
   }
 
   .label-in-left .account-selector .header-area{
@@ -97,12 +98,12 @@
       max-width: 4rem ;
     }
   }
-  
+
   .header-modal-send{
-      h4{
-        padding-top: 20px;
-        margin-bottom: 15px;
-      }
+    h4{
+      padding-top: 20px;
+      margin-bottom: 15px;
+    }
   }
 
   .arrow-change-currency{
@@ -150,7 +151,7 @@
     margin-bottom: 1rem;
   }
 
-// Account page MyPortfolio
+  // Account page MyPortfolio
   .filter-account-balances {
     padding: 1rem;
     background-color: lighten($account-header, 4%);
@@ -208,6 +209,7 @@
     .button {
       min-width: 160px;
     }
+
   }
   // --- End --- Account page MyPortfolio
 
@@ -1389,31 +1391,23 @@
 
   table.order-table > tbody, tbody.orderbook {
     > tr.my-order {
-        &.right,  &.right:hover{
-          background-color: transparentize($ask-color, .4) !important;
-          td{
-            background-color: transparentize($ask-color, .4) !important;
-            > span.price-integer, > span > span.price-integer, > span > span.price-decimal{
-              color: #fff !important;
-            }
+      background-color: transparentize( $info-color, .7) !important;
+      > td {
+        color: #fff !important;
+        > span.price-integer, > span > span.price-integer, > span > span.price-decimal{
+          color: #fff !important;
         }
-      }
+    }
 
-      &.left, &.left:hover{
-        background-color: transparentize($bid-color, .4) !important;
-        td{
-          background-color: transparentize($bid-color, .4) !important;
-          > span.price-integer, > span > span.price-integer, > span > span.price-decimal{
-            color: #fff !important;
-          }
-        }
-      }
+    &:hover td{
+      background-color: transparentize( $info-color, .7) !important;
+    }
 
       > td {
         color: #fff !important;
         font-weight: bold;
         > span.price-integer, > span > span.price-integer, > span > span.price-decimal {
-          color: $dark-text-color;
+          color: $dark-text-color ;
           opacity: 1;
         }
       }
@@ -2017,6 +2011,10 @@
     &.welcome{
       .button-group{
         padding-top: 1rem;
+        .button{
+          min-width: 160px;
+        }
+
       }
     }
   }
@@ -2055,7 +2053,7 @@
       max-height: 250px;
       top: 1px;
       overflow: auto;
-    
+
       border-radius: 0 0 5px 5px;
       border: 1px solid rgba(0,0,0,0.2);
       border-top: none;
@@ -2083,7 +2081,7 @@
       display: none;
     }
   }
-  
+
 
   .blocktrades-select-dropdown {
     input.half-rounded {

@@ -39,7 +39,8 @@ export default class SettingsEntry extends React.Component {
                 options = defaults.map(entry => {
                     let translationKey = "languages." + entry;
                     let value = counterpart.translate(translationKey);
-                    return <option key={entry} value={entry}>{value}</option>;
+
+                    return <option key={entry} value={entry} >{value}</option>;
                 });
 
                 break;

@@ -11,7 +11,7 @@ import { connect } from "alt-react";
 import accountUtils from "common/account_utils";
 
 class AccountPage extends React.Component {
-
+    
     static propTypes = {
         account: ChainTypes.ChainAccount.isRequired
     };
