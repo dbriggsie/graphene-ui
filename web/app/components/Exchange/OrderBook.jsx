@@ -70,7 +70,7 @@ class OrderBookRowHorizontal extends React.Component {
             utils.format_number(order.totalToReceive().getAmount({real: true}), base.get("precision"));
 
         return (
-            <tr onClick={this.props.onClick} className={(order.isMine(this.props.currentAccount) ? "my-order" : "") + (position == 'right' ? ' right' : ' left')}>
+            <tr onClick={this.props.onClick} className={order.isMine(this.props.currentAccount) ? "my-order" : ""}>
                 {position === "left" ? <td>{total}</td> :
                 <td style={{width: "25%"}} className={integerClass}>
                     {price}
@@ -300,6 +300,7 @@ class OrderBook extends React.Component {
                         base={base}
                         quote={quote}
                         final={index === 0}
+                        currentAccount={this.props.currentAccount}
                     />
                 );
             });

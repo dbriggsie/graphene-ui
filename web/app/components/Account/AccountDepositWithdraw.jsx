@@ -172,8 +172,8 @@ class AccountDepositWithdraw extends React.Component {
                     }
                 });
             }).catch(() => {
-                console.log("Server failed.");
-            });
+            console.log("Server failed.");
+        });
     }
 
     _addRMBPayService(){
@@ -306,40 +306,40 @@ class AccountDepositWithdraw extends React.Component {
         });
 
 
-            /*   serList.push({
-                       name: "Transwiser",
-                       template: (
-                           <div>
-                               <div className="float-right"><a href="http://www.transwiser.com" rel="noopener noreferrer" target="_blank"><Translate content="gateway.website" /></a></div>
-                               <table className="table">
-                                   <thead>
-                                   <tr>
-                                       <th><Translate content="gateway.symbol" /></th>
-                                       <th><Translate content="gateway.deposit_to" /></th>
-                                       <th><Translate content="gateway.balance" /></th>
-                                       <th><Translate content="gateway.withdraw" /></th>
-                                   </tr>
-                                   </thead>
-                                   <tbody>
-                                   {/!* <TranswiserDepositWithdraw
-                                       issuerAccount="transwiser-wallet"
-                                       account={account.get("name")}
-                                       receiveAsset="TCNY" /> *!/}
-                                   <TranswiserDepositWithdraw
-                                       issuerAccount="transwiser-wallet"
-                                       account={account.get("name")}
-                                       receiveAsset="CNY" />
-                                   {/!*
-                                   <TranswiserDepositWithdraw
-                                       issuerAccount="transwiser-wallet"
-                                       account={this.props.account.get("name")}
-                                       receiveAsset="BOTSCNY" />
-                                   *!/}
-                                   </tbody>
-                               </table>
-                           </div>
-                       )
-                   });*/
+        /*   serList.push({
+                   name: "Transwiser",
+                   template: (
+                       <div>
+                           <div className="float-right"><a href="http://www.transwiser.com" rel="noopener noreferrer" target="_blank"><Translate content="gateway.website" /></a></div>
+                           <table className="table">
+                               <thead>
+                               <tr>
+                                   <th><Translate content="gateway.symbol" /></th>
+                                   <th><Translate content="gateway.deposit_to" /></th>
+                                   <th><Translate content="gateway.balance" /></th>
+                                   <th><Translate content="gateway.withdraw" /></th>
+                               </tr>
+                               </thead>
+                               <tbody>
+                               {/!* <TranswiserDepositWithdraw
+                                   issuerAccount="transwiser-wallet"
+                                   account={account.get("name")}
+                                   receiveAsset="TCNY" /> *!/}
+                               <TranswiserDepositWithdraw
+                                   issuerAccount="transwiser-wallet"
+                                   account={account.get("name")}
+                                   receiveAsset="CNY" />
+                               {/!*
+                               <TranswiserDepositWithdraw
+                                   issuerAccount="transwiser-wallet"
+                                   account={this.props.account.get("name")}
+                                   receiveAsset="BOTSCNY" />
+                               *!/}
+                               </tbody>
+                           </table>
+                       </div>
+                   )
+               });*/
 
         /* serList.push({
              name: "BitKapital",
@@ -441,12 +441,12 @@ class AccountDepositWithdraw extends React.Component {
                                         account={account.get("name")} custom_image={null}
                                     />
                                     <input type="text"
-                                        value={account.get("name")}
-                                        placeholder={null}
-                                        disabled
-                                        onChange={() => { }}
-                                        onKeyDown={() => { }}
-                                        tabIndex={1}
+                                           value={account.get("name")}
+                                           placeholder={null}
+                                           disabled
+                                           onChange={() => { }}
+                                           onKeyDown={() => { }}
+                                           tabIndex={1}
                                     />
                                 </div>
                             </div>
@@ -469,7 +469,7 @@ class AccountDepositWithdraw extends React.Component {
                             output_coin_type="cny"
                             modal_id={deposit_modal_id}
                             ref={modal => { this.depositModalRmbpay = modal; }}
-                        /* balance={{'id': 100}}*/
+                            /* balance={{'id': 100}}*/
                         />
                     </div>
                 </BaseModal>
