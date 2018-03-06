@@ -12,6 +12,11 @@ const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when 
 const STORAGE_KEY = "__graphene__";
 let ss = new ls(STORAGE_KEY);
 
+const intAssets = [
+    "OPEN.SKY",
+    "OPEN.NEO"
+]
+
 let marketsList = [
     "OPEN.EUR",
     "OPEN.USD",
@@ -490,9 +495,9 @@ class SettingsStore {
     }
 }
 
-let set_obj = alt.createStore(SettingsStore, "SettingsStore");
+let store = alt.createStore(SettingsStore, "SettingsStore");
 
-set_obj.fiatAssets = [{
+store.fiatAssets = [{
     backingCoinType: "USD",
     name: "Dollar",
     supportsMemos: false,
@@ -512,12 +517,14 @@ set_obj.fiatAssets = [{
     walletType: "openledger-fiat"
 }];
 
-set_obj.dashboard_assets = dashboard_assets;
-set_obj.lang = lang;
-set_obj.checkBit = checkBit;
-set_obj.marketsList = marketsList;
-set_obj.marketsOpenList = marketsList.filter(e => {
+store.dashboard_assets = dashboard_assets;
+store.lang = lang;
+store.checkBit = checkBit;
+store.marketsList = marketsList;
+store.marketsOpenList = marketsList.filter(e => {
     return e.indexOf("OPEN.") === 0;
 }).map(e => e.split("OPEN.").join(""));
 
-export default set_obj;
+store.intAssets = intAssets;
+
+export default store;

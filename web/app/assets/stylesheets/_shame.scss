@@ -139,6 +139,9 @@ td > button:last-child, td > .button:last-child, div > button:last-child, div > 
   .actions {
     padding: 1rem 0 1rem 0;
   }
+  &.with-error {
+    margin-bottom: 1.2rem;
+  }
 }
 
 .no-border {

@@ -16,6 +16,7 @@ import { checkFeeStatusAsync, checkBalance } from "common/trxHelper";
 import { Asset } from "common/MarketClasses";
 import { debounce } from "lodash";
 import AssetImage from "components/Utility/AssetImage";
+import SettingsStore from "stores/SettingsStore";
 
 class WithdrawModalBlocktrades extends React.Component {
 
@@ -42,6 +43,9 @@ class WithdrawModalBlocktrades extends React.Component {
 
         this._checkBalance = this._checkBalance.bind(this);
         this._updateFee = debounce(this._updateFee.bind(this), 250);
+
+        const symbol = props.asset.get("symbol");
+        this.onlyInteger = SettingsStore.intAssets.indexOf(symbol) > -1;
     }
 
     _getDefaultState(props) {
@@ -58,7 +62,8 @@ class WithdrawModalBlocktrades extends React.Component {
             empty_withdraw_value: false,
             from_account: props.account,
             fee_asset_id: "1.3.0",
-            feeStatus: {}
+            feeStatus: {},
+            balanceError: false
         };
     }
 
@@ -162,12 +167,19 @@ class WithdrawModalBlocktrades extends React.Component {
         }, this._updateFee);
     }
 
-    onWithdrawAmountChange({ amount }) {
+    _validateAmount(value, fixed) {
+        let regexp = this.onlyInteger ? new RegExp("^[0-9]*$") : new RegExp(`^((\\s*|[1-9][0-9]*\\.?[0-9]{0,${fixed}})|(0|(0\\.)[0-9]{0,${fixed}}))$`);
+        return regexp.test(value)
+    }
 
-        this.setState({
-            withdraw_amount: amount,
-            empty_withdraw_value: amount !== undefined && !parseFloat(amount)
-        }, this._checkBalance);
+    onWithdrawAmountChange({ amount }) {
+        const precision = this.props.asset.get("precision");
+        if (this._validateAmount(amount, precision)) {
+            this.setState({
+                withdraw_amount: amount,
+                empty_withdraw_value: amount !== undefined && !parseFloat(amount)
+            }, this._checkBalance);
+        }
     }
 
     onSelectChanged(index) {
@@ -413,6 +425,7 @@ class WithdrawModalBlocktrades extends React.Component {
         let { withdraw_address_selected, memo } = this.state;
         let { gateFee } = this.props;
 
+        const addressValid = this.state.withdraw_address_is_valid;
         let storedAddress = WithdrawAddresses.get(this.props.output_wallet_type);
         let balance = null;
 
@@ -420,7 +433,8 @@ class WithdrawModalBlocktrades extends React.Component {
         let asset_types = Object.keys(account_balances);
 
         let withdrawModalId = this.getWithdrawModalId();
-        let invalid_address_message = null;
+        let invalid_address_message = <Translate component="div" className={"mt_2 mb_5 color-danger fz_13" + (addressValid === false ? "" : " hidden")} content="gateway.valid_address" coin_type={this.props.output_coin_type} />;
+                
         let options = null;
         let confirmation = null;
 
@@ -434,8 +448,7 @@ class WithdrawModalBlocktrades extends React.Component {
         }
 
         if (!this.state.withdraw_address_check_in_progress && (this.state.withdraw_address && this.state.withdraw_address.length)) {
-            if (!this.state.withdraw_address_is_valid) {
-                invalid_address_message = <Translate component="div" className="mt_2 mb_5 color-danger fz_13" content="gateway.valid_address" coin_type={this.props.output_coin_type} />;
+            if (!addressValid) {
                 confirmation =
                     <Modal id={withdrawModalId} overlay={true}>
                         <Trigger close={withdrawModalId}>
@@ -490,6 +503,16 @@ class WithdrawModalBlocktrades extends React.Component {
             !this.state.withdraw_amount;
 
         const assetLabel = this.props.output_coin_symbol + (this.props.output_coin_symbol !== this.props.output_coin_name ? " (" + this.props.output_coin_name + ")" : "");
+        const emptyValue = this.state.empty_withdraw_value;
+
+        const errorMessage = this.state.balanceError && !emptyValue ?         
+        <div className="color-danger mt_2 mb_5 fz_13">
+            <Translate content="transfer.errors.insufficient" className="mb_5" />
+            <span>
+                (<Translate content="transfer.errors.valid_with_fee" className="mb_5" /> {gateFee * 2} {this.props.output_coin_name})
+            </span>
+        </div> : 
+        <Translate component="div" content="transfer.errors.valid" className="mt_2 mb_5 color-danger fz_13" />
 
         return (<form className="grid-block vertical full-width-content">
             <div className="grid-container">
@@ -501,7 +524,7 @@ class WithdrawModalBlocktrades extends React.Component {
                         <h4><AssetImage assetName={this.props.output_coin_symbol} style={{ width: "28px" }} /> {assetLabel}</h4>
                     </div>
                     {/* Withdraw amount */}
-                    <div className="content-block">
+                    <div className="content-block with-error">
                         <AmountSelector label="modal.withdraw.amount"
                             amount={this.state.withdraw_amount}
                             asset={this.props.asset.get("id")}
@@ -510,14 +533,7 @@ class WithdrawModalBlocktrades extends React.Component {
                             onChange={this.onWithdrawAmountChange.bind(this)}
                             display_balance={balance}
                         />
-                        {this.state.empty_withdraw_value ?
-                            <Translate component="div" content="transfer.errors.valid" className="mt_2 mb_5 color-danger fz_13" /> :
-                            this.state.balanceError && <div className="color-danger mt_2">
-                                <Translate content="transfer.errors.insufficient" className="mb_5 fz_13" />
-                                <span>
-                                    (<Translate content="transfer.errors.valid_with_fee" className="mb_5 fz_13" /> {gateFee * 2} {this.props.output_coin_name})
-                                </span>
-                            </div>}
+                            <div className={(emptyValue || this.state.balanceError) ? "" : "hidden"}>{errorMessage}</div>
                     </div>
 
                     {/* Fee selection */}
@@ -552,7 +568,7 @@ class WithdrawModalBlocktrades extends React.Component {
                             </div>
                         </div>) : null}
 
-                    <div className="content-block">
+                    <div className="content-block with-error">
                         <label className="left-label">
                             <Translate component="span" content="modal.withdraw.address" />
                         </label>
