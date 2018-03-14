@@ -49,7 +49,7 @@ class Footer extends React.Component {
 
     onAccess() {
         SettingsActions.changeViewSetting({activeSetting: 3});
-        this.context.router.push("/settings");
+        this.context.router.push("/settings/access");
     }
 
     render() {

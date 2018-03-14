@@ -2,6 +2,8 @@ import ls from "./localStorage";
 import {blockTradesAPIs} from "api/apiConfig";
 const blockTradesStorage = new ls("");
 
+const assetException = "CVCOIN";
+
 export function fetchCoins(url = (blockTradesAPIs.BASE_OL + blockTradesAPIs.COINS_LIST)) {
     return fetch(url).then(reply => reply.json().then(result => {
         return result;
@@ -87,12 +89,17 @@ export function getDepositAddress({coin, account, stateCallback}) {
 }
 
 export function requestDepositAddress({inputCoinType, outputCoinType, outputAddress, url = blockTradesAPIs.BASE_OL, stateCallback}) {
+
+    if(outputCoinType === assetException.toLowerCase()){
+        outputCoinType = outputCoinType + '_ol'
+    }
+
     let body = {
         inputCoinType,
         outputCoinType,
         outputAddress
     };
-
+   
     let body_string = JSON.stringify(body);
 
     fetch( url + "/simple-api/initiate-trade", {
@@ -116,6 +123,7 @@ export function requestDepositAddress({inputCoinType, outputCoinType, outputAddr
 }
 
 export function getBackedCoins({allCoins, tradingPairs, backer}) {
+
     let coins_by_type = {};
     allCoins.forEach(coin_type => coins_by_type[coin_type.coinType] = coin_type);
 
@@ -127,8 +135,12 @@ export function getBackedCoins({allCoins, tradingPairs, backer}) {
     });
 
     let blocktradesBackedCoins = [];
+
     allCoins.forEach(coin_type => {
-        if (coin_type.walletSymbol.startsWith(backer + ".") && coin_type.backingCoinType && coins_by_type[coin_type.backingCoinType]) {
+        if(coin_type.walletSymbol === assetException){
+            coin_type.backingCoinType = assetException.toLowerCase()
+        }
+        if ((coin_type.walletSymbol.startsWith(backer + ".")  && coin_type.backingCoinType && coins_by_type[coin_type.backingCoinType]) || coin_type.walletSymbol === assetException) {
             let isDepositAllowed = allowed_outputs_by_input[coin_type.backingCoinType] && allowed_outputs_by_input[coin_type.backingCoinType][coin_type.coinType];
             let isWithdrawalAllowed = allowed_outputs_by_input[coin_type.coinType] && allowed_outputs_by_input[coin_type.coinType][coin_type.backingCoinType];
 

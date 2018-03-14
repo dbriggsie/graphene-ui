@@ -101,6 +101,7 @@ const routes = (
         <Route path="explorer/markets" component={MarketsContainer} />
         <Route path="market/:marketID" component={ExchangeContainer} />
         <Route path="settings" component={SettingsContainer} />
+        <Route path="settings/:tab" component={SettingsContainer} />
         <Route path="block/:height" component={BlockContainer} />
         <Route path="asset/:symbol" component={AssetContainer} />
         <Route path="create-account" component={LoginSelector}>

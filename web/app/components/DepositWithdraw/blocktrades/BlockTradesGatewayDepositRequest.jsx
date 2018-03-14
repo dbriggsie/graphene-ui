@@ -122,8 +122,6 @@ class BlockTradesGatewayDepositRequest extends React.Component {
     }
 
     getWithdrawModalId() {
-        // console.log( "this.props.issuer: ", this.props.issuer_account.toJS() )
-        // console.log( "this.receive_asset.issuer: ", this.props.receive_asset.toJS() )
         return "withdraw_asset_"+this.props.issuer_account.get("name") + "_"+this.props.receive_asset.get("symbol");
     }
 

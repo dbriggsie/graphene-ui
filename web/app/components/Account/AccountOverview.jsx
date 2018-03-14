@@ -50,6 +50,10 @@ const EXCEPTIONAL_DEPOSIT_ASSETS = [
     "OPEN.EUR"
 ]
 
+const EXCEPTIONAL_NOT_OPEN_ASSETS = [
+    "CVCOIN"
+]
+
 const DEFAULT_FILTERS = {
     favorites: []
 }
@@ -370,7 +374,8 @@ class AccountOverview extends React.Component {
 
             const starClass = this._isFavorite(assetId) ? "gold-star" : "grey-star";
 
-            const isOpen = symbol.toLowerCase().indexOf("open") === 0
+            const isOpen = (symbol.toLowerCase().indexOf("open") === 0
+                || EXCEPTIONAL_NOT_OPEN_ASSETS.indexOf(symbol) > -1)
                 && EXCEPTIONAL_DEPOSIT_ASSETS.indexOf(symbol) === -1;
 
             const precision = utils.get_asset_precision(asset.get("precision"));

@@ -80,7 +80,10 @@ class WithdrawModalBlocktrades extends React.Component {
         ZfApi.subscribe(this.props.modal_id, this._modalListener.bind(this));
     }
 
-    componentWillReceiveProps(np) {
+    componentWillReceiveProps(np) {        
+        if ((np.asset && np.asset.get("id")) !== (this.props.asset && this.props.asset.get("id"))) {
+            this.onlyInteger = SettingsStore.intAssets.indexOf(np.asset.get("symbol")) > -1;
+        }
         if (np.account !== this.state.from_account && np.account !== this.props.account) {
             this.setState({
                 from_account: np.account,
@@ -362,10 +365,11 @@ class WithdrawModalBlocktrades extends React.Component {
                 total.minus(feeAmount);
             }
 
-            this.setState({
-                withdraw_amount: total.getAmount({ real: true }),
-                empty_withdraw_value: false
-            }, this._checkBalance);
+            var amount = total.getAmount({ real: true });
+
+            this.onWithdrawAmountChange({
+                amount: this.onlyInteger ? Math.trunc(amount) : amount
+            });
         }
     }
 

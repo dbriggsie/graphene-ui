@@ -28,7 +28,7 @@ class SettingsContainer extends React.Component {
                     },
                   }}
                   >
-                <Settings/>
+                <Settings {...this.props} />
               </AltContainer>
         );
     }

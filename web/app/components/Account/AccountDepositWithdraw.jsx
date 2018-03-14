@@ -519,6 +519,8 @@ export default connect(DepositStoreWrapper, {
         return [AccountStore, SettingsStore, GatewayStore];
     },
     getProps() {
+        //console.log(GatewayStore.getState().coins.get("OPEN", []))
+        //console.log(GatewayStore.getState().backedCoins.get("OPEN", []))
         return {
             account: AccountStore.getState().currentAccount || AccountStore.getState().passwordAccount,
             viewSettings: SettingsStore.getState().viewSettings,
