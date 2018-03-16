@@ -91,7 +91,8 @@ let marketsList = [
     "OPEN.STU",
     "OPEN.WAX",
     "OPEN.GAS",
-    "OPEN.NEO"
+    "OPEN.NEO",
+    "OPEN.RISE"
 ];
 
 let topMarkets = {
@@ -197,7 +198,9 @@ class SettingsStore {
                 "de",
                 "es",
                 "tr",
-                "ru"
+                "ru",
+                "jp",
+                "vn"
             ],
             apiServer: [],
             unit: [
@@ -528,3 +531,4 @@ store.marketsOpenList = marketsList.filter(e => {
 store.intAssets = intAssets;
 
 export default store;
+
