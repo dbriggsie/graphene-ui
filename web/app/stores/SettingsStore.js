@@ -198,7 +198,9 @@ class SettingsStore {
                 "de",
                 "es",
                 "tr",
-                "ru"
+                "ru",
+                "jp",
+                "vn"
             ],
             apiServer: [],
             unit: [
