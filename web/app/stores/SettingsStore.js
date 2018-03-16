@@ -91,7 +91,8 @@ let marketsList = [
     "OPEN.STU",
     "OPEN.WAX",
     "OPEN.GAS",
-    "OPEN.NEO"
+    "OPEN.NEO",
+    "OPEN.RISE"
 ];
 
 let topMarkets = {
@@ -528,3 +529,4 @@ store.marketsOpenList = marketsList.filter(e => {
 store.intAssets = intAssets;
 
 export default store;
+
