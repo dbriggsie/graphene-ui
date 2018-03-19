@@ -528,5 +528,10 @@ store.marketsOpenList = marketsList.filter(e => {
 
 store.intAssets = intAssets;
 
+store.FIAT_ASSETS = [
+    "RMBPAY"
+]
+store.RESTRICT_DEPOSIT = [
+    "CVCOIN"
+]
 export default store;
-

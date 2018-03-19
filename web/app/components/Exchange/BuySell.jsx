@@ -14,6 +14,7 @@ import {Asset} from "common/MarketClasses";
 import ExchangeInput from "./ExchangeInput";
 import assetUtils from "common/asset_utils";
 import Icon from "../Icon/Icon";
+import SettingsStore from "stores/SettingsStore";
 
 class BuySell extends React.Component {
 
@@ -67,6 +68,10 @@ class BuySell extends React.Component {
     _onBuy(e) {
         e.preventDefault();
         this.refs.bridge_modal.show();
+    }
+
+    _canDeposit(name) {
+        return SettingsStore.RESTRICT_DEPOSIT.indexOf(name) === -1;
     }
 
     render() {
@@ -220,7 +225,7 @@ class BuySell extends React.Component {
                         {this.props.onTogglePosition ? <span onClick={this.props.onTogglePosition} style={{cursor: "pointer", fontSize: "1rem"}}>  &#8645;</span> : null}
                         {<div onClick={this.props.onToggleOpen} className="float-right clickable hide-for-xlarge" style={{paddingLeft: 10}}>{caret}</div>}
                         {/*{this.props.currentBridges ? <div className="float-right buy-sell-deposit"><a onClick={this._onBuy.bind(this)}><Translate content="exchange.buy" />&nbsp;<span className="asset-name">{buyBorrowDepositName}</span></a></div> : null}*/}
-                        {this.props.backedCoin ? <div className="float-right buy-sell-deposit"><a onClick={this._onDeposit.bind(this)}><Translate content="modal.deposit.submit" /> <span className="asset-name">{buyBorrowDepositName}</span></a></div> : null}
+                        {this.props.backedCoin && this._canDeposit(name) ? <div className="float-right buy-sell-deposit"><a onClick={this._onDeposit.bind(this)}><Translate content="modal.deposit.submit" /> <span className="asset-name">{buyBorrowDepositName}</span></a></div> : null}
                         {this.props.onBorrow ? <div className="float-right buy-sell-deposit"><a onClick={this.props.onBorrow}><Translate content="exchange.borrow" />&nbsp;<span className="asset-name">{buyBorrowDepositName}</span></a></div> : null}
 
 

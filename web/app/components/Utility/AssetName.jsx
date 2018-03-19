@@ -4,6 +4,7 @@ import asset_utils from "common/asset_utils";
 import ChainTypes from "./ChainTypes";
 import BindToChainState from "./BindToChainState";
 import counterpart from "counterpart";
+import SettingsStore from "stores/SettingsStore";
 
 class AssetName extends React.Component {
 
@@ -28,6 +29,10 @@ class AssetName extends React.Component {
         );
     }
 
+    _isFiat(name) {
+        return SettingsStore.FIAT_ASSETS.indexOf(name) > -1;
+    }
+
     render() {
         let {name, replace, asset, noPrefix} = this.props;
         let isBitAsset = asset.has("bitasset");
@@ -40,7 +45,7 @@ class AssetName extends React.Component {
         let excludeList = ["BTWTY", "BANCOR", "BTCSHA", "CROWDFUN", "DRAGON", "TESTME"];
         let includeBitAssetDescription = isBitAsset && !isPredMarket && excludeList.indexOf(name) === -1;
 
-        if (replace && replacedName !== this.props.name || isBitAsset) {
+        if (replace && replacedName !== this.props.name || isBitAsset || this._isFiat(name)) {
             let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
             let realPrefix = name.split(".");
             realPrefix = realPrefix.length > 1 ? realPrefix[0] : null;

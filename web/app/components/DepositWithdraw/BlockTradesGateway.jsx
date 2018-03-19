@@ -89,7 +89,8 @@ class BlockTradesGateway extends React.Component {
         }
 
         let filteredCoins = coins.filter(a => {
-            if (!a || !a.symbol) {
+            if (!a || !a.symbol || 
+                (action === "deposit" && SettingsStore.RESTRICT_DEPOSIT.indexOf(a.symbol) > -1)) {
                 return false;
             } else {
                 return true;

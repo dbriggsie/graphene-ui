@@ -41,6 +41,7 @@ import SettingsStore from "stores/SettingsStore";
 import AssetImage from "../Utility/AssetImage";
 import AccountStore from "stores/AccountStore";
 import Transfer from "../Transfer/Transfer";
+import { connect } from "alt-react";
 
 const WITHDRAW_MODAL_ID = "simple_withdraw_modal";
 const TRANSFER_MODAL_ID = "transfer_modal";
@@ -342,20 +343,14 @@ class AccountOverview extends React.Component {
             const symbol = asset.get("symbol");
             const assetId = asset.get("id");
             const notCore = assetId !== "1.3.0";
-            const notCorePrefUnit = preferredUnit !== core_asset.get("symbol");
 
-            let {market} = assetUtils.parseDescription(asset.getIn(["options", "description"]));
-
-            //   if (symbol.indexOf("OPEN.") !== -1 && !market) market = "USD";
-            let preferredMarket = market ? market : preferredUnit;
-
-            if (notCore && preferredMarket === symbol) preferredMarket = core_asset.get("symbol");
-
+            let base = this.props.preferredBases.get(this.props.viewSettings.get("activeMarketTab", 0)); 
+            base = base !== symbol ? base : core_asset.get("symbol");
+            
             /* Table content */
-            directMarketLink = notCore ?
-                <Link to={`/market/${symbol}_${preferredMarket}`}><Icon name="trade" className="icon-14px" /></Link> :
-                notCorePrefUnit ? <Link to={`/market/${symbol}_${preferredUnit}`}><Icon name="trade" className="icon-14px" /></Link> :
-                    emptyCell;
+            directMarketLink = base !== symbol ? 
+                <Link to={`/market/${symbol}_${base}`}><Icon name="trade" className="icon-14px" /></Link> :
+                emptyCell;
             transferLink =  <a onClick={this._showTransferModal.bind(this, assetId)}><Icon name="transfer" className="icon-14px" /></a>;
            // <Link to={`/transfer?asset=${assetId}`}><Icon name="transfer" className="icon-14px" /></Link>
             let {isBitAsset, borrowModal, borrowLink} = this._renderBorrow(asset, this.props.account);
@@ -440,7 +435,7 @@ class AccountOverview extends React.Component {
                     </td>*/}
                     <td>
                         <span>
-                            {isOpen && isCurrentAccount ?
+                            {(isOpen && isCurrentAccount && this._canDeposit(symbol)) ?
                                 !canDepositWithdraw ?
                                     <span data-tip={counterpart.translate("gateway.under_maintenance")} className="inline-block tooltip">
                                         <Icon name="warning" />
@@ -483,8 +478,11 @@ class AccountOverview extends React.Component {
 
         balances.sort(this.sortFunctions[this.state.sortKey]);
         return balances;
+    }    
+    
+    _canDeposit(name) {
+        return SettingsStore.RESTRICT_DEPOSIT.indexOf(name) === -1;
     }
-
 
     _toggleSortOrder(key) {
         if (this.state.sortKey === key) {
@@ -987,4 +985,16 @@ class BalanceWrapper extends React.Component {
     };
 }
 
-export default BindToChainState(BalanceWrapper);
+BalanceWrapper = BindToChainState(BalanceWrapper);
+
+export default connect(BalanceWrapper, {
+    listenTo() {
+        return [SettingsStore];
+    },
+    getProps() {
+        return {
+            preferredBases: SettingsStore.getState().preferredBases,
+            viewSettings: SettingsStore.getState().viewSettings
+        };
+    }
+});
