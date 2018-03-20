@@ -92,7 +92,8 @@ let marketsList = [
     "OPEN.WAX",
     "OPEN.GAS",
     "OPEN.NEO",
-    "OPEN.RISE"
+    "OPEN.RISE",
+    "OPEN.LIF"
 ];
 
 let topMarkets = {
