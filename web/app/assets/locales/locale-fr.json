@@ -6,7 +6,9 @@
     "ko": "한국어",
     "de": "Deutsch",
     "es": "Español",
-    "tr": "Turkish"
+    "tr": "Turkish",
+    "jp": "日本語",
+    "vn": "Tiếng Việt"
   },
   "header": {
     "title": "Openledger",

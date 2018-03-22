@@ -49,7 +49,7 @@ const TRANSFER_MODAL_ID = "transfer_modal";
 const EXCEPTIONAL_DEPOSIT_ASSETS = [
     "OPEN.USD",
     "OPEN.EUR"
-]
+];
 
 const EXCEPTIONAL_NOT_OPEN_ASSETS = [
     "CVCOIN"
@@ -57,7 +57,7 @@ const EXCEPTIONAL_NOT_OPEN_ASSETS = [
 
 const DEFAULT_FILTERS = {
     favorites: []
-}
+};
 
 class AccountOverview extends React.Component {
 
@@ -68,7 +68,7 @@ class AccountOverview extends React.Component {
 
     static defaultProps = {
         core_asset: "1.3.0"
-    }
+    };
 
     constructor(props) {
         super();
@@ -137,6 +137,7 @@ class AccountOverview extends React.Component {
         totalValue: function(a, b) {
             let aRef = this.valueRefs[a.props.symbol];
             let bRef = this.valueRefs[b.props.symbol];
+
             if (!aRef && bRef) {
                 return 1;
             }
@@ -370,7 +371,7 @@ class AccountOverview extends React.Component {
             const starClass = this._isFavorite(assetId) ? "gold-star" : "grey-star";
 
             const isOpen = (symbol.toLowerCase().indexOf("open") === 0
-                || EXCEPTIONAL_NOT_OPEN_ASSETS.indexOf(symbol) > -1)
+                || SettingsStore.EXCEPTIONAL_NOT_OPEN_ASSETS.indexOf(symbol) > -1)
                 && EXCEPTIONAL_DEPOSIT_ASSETS.indexOf(symbol) === -1;
 
             const precision = utils.get_asset_precision(asset.get("precision"));
@@ -425,14 +426,6 @@ class AccountOverview extends React.Component {
                     <td>
                         {hasBalance ? transferLink : emptyCell}
                     </td>
-                    {/*    <td>
-                        {canBuy && this.props.isMyAccount ?
-                        <span>
-                            <a onClick={this._showDepositWithdraw.bind(this, "bridge_modal", assetName, false)}>
-                                <Icon name="dollar" className="icon-14px" />
-                            </a>
-                        </span> : emptyCell}
-                    </td>*/}
                     <td>
                         <span>
                             {(isOpen && isCurrentAccount && this._canDeposit(symbol)) ?
@@ -717,7 +710,7 @@ class AccountOverview extends React.Component {
         const {showOnlyFavorites, hideZeroBalances} = this.state;
 
         return (
-            <div className="grid-content app-tables blocktrades-gateway" >
+            <div className="grid-content app-tables blocktrades-gateway modal-with-header" >
                 <div className="content-block small-12">
                     <div className="generic-bordered-box">
                         <Tabs defaultActiveTab={0} segmented={false} setting="overviewTab" className="overview-tabs" tabsClass="account-overview no-padding bordered-header content-block" onChangeTab={this.adjustHeightOnChangeTab.bind(this)}>

@@ -399,10 +399,10 @@ class AccountSignedMessages extends React.Component {
                                     <text style={{color: "gray"}}>{this.state.tabvm_message}</text>
                                     {this.state.tabvm_verified !== null &&
                                     <div style={{float: "right"}}>
-                                        Message is:
+                                        <Translate content="account.signedmessages.message_status" />
                                         <div
                                             style={{backgroundColor: this.state.tabvm_verified ? "green" : "red"}}>
-                                            <label>{this.state.tabvm_verified ? "verified" : "not verified"}</label>
+                                            <label>{this.state.tabvm_verified ? "verified" : <Translate content="account.signedmessages.message_status_red" />}</label>
                                         </div>
                                     </div>
                                     }

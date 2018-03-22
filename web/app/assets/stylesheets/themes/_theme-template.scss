@@ -37,6 +37,63 @@
   $icon-svg
 ) {
 
+  .page-dep-with{
+    max-width: 55rem;
+  }
+
+  .emulate-options{
+    text-transform: uppercase;
+    position: relative;
+    padding: 10px 10px 10px 20px;
+    &:after{
+      position: absolute;
+      top: 50%;
+      margin-top: -3px;
+      right: 5px;
+      content: "";
+      width: 0;
+      height: 0;
+      border-top: 6px solid #fff;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+    }
+    &:hover{
+      background-color: #22232a;
+    }
+    &.close-list ul{
+      opacity: 0;
+      visibility: hidden;
+      z-index: -1;
+    }
+    ul{
+      opacity:1;
+      visibility: visible;
+      z-index: 10;
+      border: 1px solid $info-color;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      z-index: 100;
+      width: 100%;
+      background-color: $bg-color;
+      li{
+        padding-left: 20px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        border-bottom: none ;
+        &:hover{
+          background-color: $info-color;
+        }
+      }
+    }
+    .emulate-options-flag{
+          margin-top: -2px;
+          width: 20px;
+          height: 20px;
+          margin-right:7px;
+    }
+  }
+
   .arrow-down-styling{
     &:after{
       content: "";
@@ -267,10 +324,11 @@
         max-height: 150px;
       }
     }
-    .modal {
-      max-width: 500px;
-      padding: 0;
-    }
+  }
+
+  .modal-with-header .modal {
+    max-width: 500px;
+    padding: 0;
   }
 
   .form-deposit-withdraw-rmbpay {

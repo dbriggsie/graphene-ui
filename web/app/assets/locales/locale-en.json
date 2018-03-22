@@ -16,7 +16,9 @@
     "de": "Deutsch",
     "es": "Español",
     "tr": "Turkish",
-    "ru": "Русский"
+    "ru": "Русский",
+    "jp": "日本語",
+    "vn": "Tiếng Việt"
   },
   "incognito": {
     "no_support": "This BitShares Wallet relies on Local Storage and IndexedDB which are not persistent when using Incognito Browsing. We recommend using a regular browsing session.",
@@ -353,6 +355,8 @@
       "title": "Signed Messages",
       "signmessage": "Sign Message",
       "verifymessage": "Verify Message",
+      "message_status": "Message is:",
+      "message_status_red": "not verified",
       "signing": "Signing, please wait ...",
       "verifying": "Verifying, please wait ...",
       "invalidformat": "Signed message format can't be recognized",
@@ -1031,7 +1035,9 @@
     "unsynced": "Out of sync",
     "disconnected": "Disconnected",
     "connected": "Connected",
-    "latency": "Latency"
+    "latency": "Latency",
+    "support_footer": "support"
+
   },
   "exchange": {
     "chart_options": {
@@ -1416,6 +1422,7 @@
     "id": "Proposal object id"
   },
   "gateway": {
+    "address": "Address",
     "please_generate_address": "Please, get new address ",
     "service_unavailable": "Service is temporarily unavailable. Please try again later.",
     "pay_service_alipay": "Payment Service ID (Alipay)",
@@ -1446,7 +1453,7 @@
     "website": "Visit the website",
     "deposit_to": "Please send your %(asset)s to the address below",
     "deposit_notice_delay": "(new address can be generated once per 5 minutes)",
-    "add_funds": "Funds will be send to account <strong>%(account)s</strong>.",
+    "add_funds": "Funds will be sent to account <strong>%(account)s</strong>.",
     "min_deposit_warning": "Minimum value to deposit should be %(minDeposit)s.<br /><br />IMPORTANT: Send only %(coin)s to this deposit address. Sending less than %(minDeposit)s %(coin)s or any other currency to this address may result in the loss of your deposit.",
     "under_maintenance": "The gate is temporarily under maintenance",
     "not_enough_funds": "Not enough funds to withdraw",

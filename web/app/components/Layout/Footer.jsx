@@ -70,7 +70,7 @@ class Footer extends React.Component {
         return (
             <div className="show-for-medium grid-block shrink footer">
                 <div className="grid-block">
-                    <a className="pointer fresh_support" onClick={(e) => { e.preventDefault; window.open("https://openledger.freshdesk.com", "_blank") }}>  SUPPORT     </a>
+                    <a className="pointer fresh_support" onClick={(e) => { e.preventDefault; window.open("https://openledger.freshdesk.com", "_blank") }}> {counterpart.translate("footer.support_footer")}   </a>
                 </div>
                 <Translate component="div" content="popups.sign_up" className="align-justify grid-block pointer" onClick={() => { this.show("subscribe") }} />
                 <Translate component="div" content="popups.add_coin" className="align-justify grid-block pointer" onClick={() => { this.show("addcoin") }} />

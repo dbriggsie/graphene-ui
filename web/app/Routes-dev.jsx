@@ -21,7 +21,7 @@ import AccountAssetUpdate from "./components/Account/AccountAssetUpdate";
 import AccountSignedMessages from "./components/Account/AccountSignedMessages";
 import AccountMembership from "./components/Account/AccountMembership";
 import AccountVesting from "./components/Account/AccountVesting";
-import AccountDepositWithdraw from "./components/Account/AccountDepositWithdraw";
+import DepositWithdrawPage from "./components/Account/DepositWithdrawPage";
 import AccountPermissions from "./components/Account/AccountPermissions";
 import AccountWhitelist from "./components/Account/AccountWhitelist";
 import AccountVoting from "./components/Account/AccountVoting";
@@ -131,7 +131,7 @@ const routes = (
             <Route path="vesting" component={AccountVesting} />
             <Route path="permissions" component={AccountPermissions} />
             <Route path="voting" component={AccountVoting} />
-            <Route path="deposit-withdraw" component={AccountDepositWithdraw} />
+            <Route path="deposit-withdraw" component={DepositWithdrawPage} />
             <Route path="orders" component={AccountOrders} />
             <Route path="whitelist" component={AccountWhitelist} />
             <Route path="signedmessages" component={AccountSignedMessages} />
@@ -139,7 +139,7 @@ const routes = (
 
         {/* <Route path="/fast-voting" component={FastVoting} /> */}
 
-        <Route path="deposit-withdraw" component={AccountDepositWithdraw} />
+        <Route path="deposit-withdraw" component={DepositWithdrawPage} />
         <Route path="create-worker" component={CreateWorker} />
         <Route path="/init-error" component={InitError} />
         <Route path="/residents-unsupported" component={Residents_unsupported} />

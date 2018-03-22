@@ -2,6 +2,9 @@ import React from "react";
 import counterpart from "counterpart";
 import Translate from "react-translate-component";
 import SettingsActions from "actions/SettingsActions";
+import {languages} from "../../assets/language-dropdown/flagConstants";
+import cnames from "classnames";
+import IntlActions from "actions/IntlActions";
 
 export default class SettingsEntry extends React.Component {
 
@@ -9,9 +12,10 @@ export default class SettingsEntry extends React.Component {
         super();
 
         this.state = {
-            message: null
+            message: null,
+            languageToggle: false
         };
-
+        this._handleClickOutside = this._handleClickOutside.bind(this)
     }
 
     _setMessage(key) {
@@ -24,8 +28,35 @@ export default class SettingsEntry extends React.Component {
         }, 4000);
     }
 
+    componentDidMount() {
+        document.addEventListener('mousedown', this._handleClickOutside);
+    }
+
     componentWillUnmount() {
+        document.removeEventListener('mousedown', this._handleClickOutside);
         clearTimeout(this.timer);
+    }
+
+    _toggleLanguage(){
+        this.setState({
+            languageToggle: !this.state.languageToggle
+        })
+    }
+
+    _handleClickOutside(e){
+           if((e.target.className).indexOf('emulate-options')) {
+               this.setState({
+                   languageToggle: false
+               })
+           }
+    }
+
+    _changeLocale(value){
+        let myLocale = counterpart.getLocale();
+            if (value !== myLocale) {
+                IntlActions.switchLocale(value);
+                SettingsActions.changeSetting({setting: "locale", value: value });
+        }
     }
 
     render() {
@@ -36,12 +67,19 @@ export default class SettingsEntry extends React.Component {
         switch (setting) {
             case "locale":
                 value = selected;
-                options = defaults.map(entry => {
-                    let translationKey = "languages." + entry;
-                    let value = counterpart.translate(translationKey);
 
-                    return <option key={entry} value={entry} >{value}</option>;
-                });
+                input = <div>
+                            <div className={cnames("emulate-options",{"close-list" : !this.state.languageToggle})} onClick={this._toggleLanguage.bind(this)} >
+                                <img className="emulate-options-flag" src={"/app/assets/language-dropdown/img/" + value.toUpperCase() + ".png"} />{value}
+                                <ul className="emulate-options-list">
+                                    {defaults.map(entry => {
+                                        let translationKey = "languages." + entry;
+                                        let value = counterpart.translate(translationKey);
+                                        return <li className="emulate-options-li" onClick={this._changeLocale.bind(this, entry)} key={entry} value={entry}><img className="emulate-options-flag" src={"/app/assets/language-dropdown/img/" + entry.toUpperCase() + ".png"} />{value}</li>;
+                                    })}
+                                </ul>
+                            </div>
+                        </div>;
 
                 break;
 

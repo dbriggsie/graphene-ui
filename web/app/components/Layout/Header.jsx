@@ -182,6 +182,22 @@ class Header extends React.Component {
         });
     }
 
+        /* NOTE: is needed for Simple Mode. */
+    onSwitchTraderMode() {
+
+        if(SettingsStore.getState().settings.get("traderMode")){
+            SettingsActions.changeSetting({setting: "traderMode", value: false});
+        }else{
+            SettingsActions.changeSetting({setting: "traderMode", value: true});
+        }
+
+        /*notify.addNotification({
+            message: counterpart.translate("header.trader_mode_notify"),
+            level: "success",
+            autoDismiss: 10
+        });*/
+    }
+
     go_with_airbitz(){
         if(!this.props.currentAccount){
             localStorage.setItem("airbitz_backup_option","true")
@@ -253,6 +269,15 @@ class Header extends React.Component {
                 <img style={{margin:0,height: 30}} src={logo} />
             </a>
         );
+
+        let switchTraderMode = (
+            <ActionSheet.Button title="" setActiveState={() => {}}  >
+                <a className="grp-menu-item switch_button" onClick={this.onSwitchTraderMode} >
+                    <Icon className="icon-14px" name="assets"/> {traderMode?<Translate content="header.switch_basic" />:<Translate content="header.switch_advanced" />}
+                </a>
+            </ActionSheet.Button>
+        );
+
 
         let createAccountLink = myAccountCount === 0 ? (
             <ActionSheet.Button title="" setActiveState={this.go_with_airbitz.bind(this)}>
@@ -405,7 +430,6 @@ class Header extends React.Component {
 
                             {!myAccountCount || !walletBalance ? null : walletBalance}
 
-
                             {myAccountCount !== 0 ? null :<div className="grp-menu-item overflow-visible" >
                                 {settingsDropdown}
                             </div>}
@@ -425,7 +449,7 @@ class Header extends React.Component {
                     </div>
                 </div>
 
-                <div className="blocktrades-gateway">
+                <div className="blocktrades-gateway modal-with-header">
                     <BaseModal id={TRANSFER_MODAL_ID} overlay={true} className="withdraw_modal">
                         <div className="grid-block vertical">
                             <Transfer isModal={true} id={TRANSFER_MODAL_ID} />

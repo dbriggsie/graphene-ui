@@ -30,8 +30,8 @@ class GatewayActions {
 
                         let backedCoins = getBackedCoins({allCoins: coins, tradingPairs: tradingPairs, backer: backer}).filter(a => { return wallets.indexOf(a.walletType) !== -1 })
 
-                       backedCoins.forEach(a => {
-                            a.isAvailable = wallets.indexOf(a.walletType) !== -1;
+                        backedCoins.forEach(a => {
+                           a.isAvailable = wallets.indexOf(a.walletType) !== -1;
                         });
 
                         dispatch({

@@ -7,7 +7,9 @@
     "de":"Deutsch",
     "es":"Español",
     "tr":"Turkish",
-    "ru":"Русский"
+    "ru":"Русский",
+    "jp": "日本語",
+    "vn": "Tiếng Việt"
   },
   "sync_fail":{
     "title":"Невозможно синхронизоваться с API сервером",
@@ -314,7 +316,10 @@
       "use_text":"Использовать",
       "remove_text":"Удалить",
       "valid_pub":"Допустимый открытый ключ"
+      
     },
+    "signedmessages": {
+      "signmessage": "Подписать сообщение"},
     "votes":{
       "save_finish": "Нажмите кнопку опубликовать изменения",
       "proxy_current":"Ваш текущий прокси",

@@ -157,22 +157,32 @@ class DepositWithdrawContent extends DecimalChecker {
                             <Translate className="help-tooltip" content="gateway.deposit_to" asset={assetName} />:
                             <div className="fz_12 help-text"><Translate content="gateway.deposit_notice_delay" /></div>
                         </p>
-                        {!addressValue ? <LoadingIndicator type="three-bounce" /> : <label>
-                            {emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> :
-                                <span className="inline-label">
-                                    <input readOnly type="text" value={addressValue} />
-                                    <CopyButton text={addressValue} />
-                                </span>}
-                        </label>}
+                    </div>
+                    <div>
+                        {!addressValue ? <LoadingIndicator type="three-bounce" /> :
+                            emptyAddressDeposit ? <Translate content="gateway.please_generate_address" /> :
+                                <div className="content-block">
+                                    <label className="left-label">
+                                        <Translate component="span" content="gateway.address" />
+                                    </label>
+                                    <span className="inline-label">
+                                        <input readOnly type="text" value={addressValue} />
+                                        <CopyButton text={addressValue} />
+                                    </span>
+                                </div>}
                         {hasMemo ?
-                            <label>
+                            <div className="content-block">
+                                <label className="left-label">
+                                    <Translate component="span" content="transfer.memo" />
+                                </label>
                                 <span className="inline-label">
-                                    <input readOnly type="text" value={counterpart.translate("transfer.memo") + ": " + receive_address.memo} />
+                                    <input readOnly type="text" value={receive_address.memo} />
                                     <CopyButton
                                         text={receive_address.memo}
                                     />
                                 </span>
-                            </label> : null}
+                            </div>
+                            : null}
 
                         {/*  {receive_address && receive_address.error ?
                             <div className="has-error" style={{paddingTop: 10}}>

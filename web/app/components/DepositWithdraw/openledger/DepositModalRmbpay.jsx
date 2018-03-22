@@ -20,18 +20,16 @@ import DepositRmbpayQr from "./DepositRmbpayQr";
 import LoadingIndicator from "components/LoadingIndicator";
 import moment from "moment";
 import { EquivalentValueComponent } from "components/Utility/EquivalentValueComponent";
+import FiatApi from "api/FiatApi"
 
-const SERVER_URL = `${SERVER_ADMIN_URL}/api/v1`;
+const GET_DEPOSIT_URL = `${SERVER_ADMIN_URL}/api/v1/deposit/get_data`;
+const ADD_DEPOSIT_URL = `${SERVER_ADMIN_URL}/api/v1/deposit/add`;
 const ATTEMPTS_BEFORE_CAPTCHA = 1;
 const ATTEMPTS_AFTER_CAPTCHA = 1;
 const LOCK_TIMER_MINUTES = 1;
 const COUNTER_KEY = "requestsCounter";
 const REQUEST_TIME_KEY = "lastRequestTime";
 const DEFAULT_DEP_DATA = {
-    list_service: [{
-        name: "Alipay",
-        link_qr_code: ""
-    }],
     fees: {
         fee_share_dep: 0.0,
         fee_min_val_dep: 0
@@ -109,7 +107,7 @@ class DepositModalRmbpay extends React.Component {
             if (!this._validateFloat(amount) || amount.length > 15) {
                 return
             }
-            const fees = this.state.depositData.fees || {
+            const fees = this.state.fees || {
                 fee_share_dep: 0,
                 fee_min_val_dep: 0
             }
@@ -194,10 +192,8 @@ class DepositModalRmbpay extends React.Component {
 
     _checkInputEmpty() {
         this._validateDepositEmpty();
-        this._validateServiceEmpty();
-        if (this.state.shouldShowCaptcha) {
-            this._validateCaptchaEmpty();
-        }
+        this.state.paymentService && this._validateServiceEmpty();
+        this.state.shouldShowCaptcha && this._validateCaptchaEmpty();
     }
 
     _checkRequestsNumber() {
@@ -220,7 +216,6 @@ class DepositModalRmbpay extends React.Component {
 
     onOpen() {
         this._fetchDepositData();
-        // this._checkRequestsNumber();
     }
 
     onSubmit() {
@@ -239,50 +234,19 @@ class DepositModalRmbpay extends React.Component {
     }
 
     _fetchDepositData() {
-        fetch(SERVER_URL, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                operation_name: "deposit",
-                action: "get_data",
-                data: {
-                    currency_name_id: "RMBPAY",
-                    account_ol: this.props.account.get("name"),
-                    account_id: this.props.account.get("id")
-                }
-            })
-        }).then(
-            response => {
-                if (response.status !== 200) {
-                    throw "Request failed";
-                }
-                response.json().then((data) => {
-                    if (data.success !== "true") {
-                        if (data.error == 606) {
-                            this.setState({
-                                unlockTime: data.unlock_time
-                            });
-                            this._handleError(false);
-                            return;
-                        } else {
-                            throw "Request failed";
-                        }
-                    }
-                    this.setState({
-                        depositData: data,
-                        unlockTime: data.unlock_time
-                    });
-                    this._handleError(false);
-                });
-            }).catch(() => {
-                this._handleError(true);
-            });
+        FiatApi.getDepositData({
+            currencyName: "RMBPAY",
+            accountName: this.props.account.get("name"),
+            accountId: this.props.account.get("id")
+        }).then((data) => {
+            this.setState({...data});
+            this._handleResponse(false);
+        }).catch((error) => {
+            this._handleResponse(true);
+        });
     }
 
-    _handleError(isError) {
+    _handleResponse(isError) {
         this.setState({
             serverError: isError,
             loading: false
@@ -293,65 +257,27 @@ class DepositModalRmbpay extends React.Component {
         this.setState({
             loading: true
         });
-        const fees = this.state.depositData.fees;
-        const service = this.state.depositData.list_service
-            && this.state.depositData.list_service[0] || {};
-        fetch(SERVER_URL, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                operation_name: "deposit",
-                action: "add",
-                captcha: this.refs.captchaInput ? this.refs.captchaInput.value : 0,
-                token: this.state.depositData.token,
-                data: {
-                    dep_amount: this.state.depositAmount,
-                    dep_fee: this.state.fee,
-                    dep_receive_amount_from_user: this.state.tokenAmount,
-                    account_ol: this.props.account.get("name"),
-                    account_id: this.props.account.get("id"),
-                    currency_name_id: "RMBPAY",
-                    services_id: service.id,
-                    user_service_id: this.state.userServiceId,
-                    fees: {
-                        "fee_share_dep": fees && fees.fee_share_dep,
-                        "fee_min_val_dep": fees && fees.fee_min_val_dep
-                    }
-                }
-            })
-        }).then(this._handleResponse.bind(this)).catch(() => {
-            this._handleError(true);
-        });
-    }
+        const fees = this.state.fees;
+        const service = this.state.paymentService;
 
-    _handleResponse(response) {
-        if (response.status === 200) {
-            response.json().then((data) => {
-                if (response.status !== 200 || data.success !== "true") {
-                    if (data.error === "605") {
-                        this.setState({
-                            wrongCaptchaError: true
-                        });
-                        this._handleError(false);
-                        return;
-                    } else {
-                        this._handleError(true);
-                    }
-                }
-                this.setState({
-                    showQr: true
-                });
-                const requestsCounter = window.localStorage.getItem(COUNTER_KEY) || 0;
-                window.localStorage.setItem(COUNTER_KEY, +requestsCounter + 1);
-                window.localStorage.setItem(REQUEST_TIME_KEY, moment().utc());
-                this._handleError(false);
-            });
-            return;
-        }
-        this._handleError(true);
+        FiatApi.addDeposit({
+            captcha: this.refs.captchaInput ? this.refs.captchaInput.value : 0,
+            token: this.state.token,
+            depositAmount: this.state.depositAmount,
+            fee: this.state.fee,
+            tokenAmount: this.state.tokenAmount,
+            accountName: this.props.account.get("name"),
+            accountId: this.props.account.get("id"),
+            currencyName: "RMBPAY",
+            serviceId: service.id,
+            userServiceId: this.state.userServiceId,
+            fees: fees
+        }).then((data) => {
+            this.setState({...data});
+            this._handleResponse(false);
+        }).catch((error) => {
+            this._handleResponse(true);
+        });
     }
 
     onClose() {
@@ -390,12 +316,9 @@ class DepositModalRmbpay extends React.Component {
             this.state.error ||
             this.state.depositAmountError ||
             !this.state.depositAmount;
-        const paymentService = this.state.depositData.list_service
-            && this.state.depositData.list_service[0]
-            || {};
-        const fees = this.state.depositData.fees;
+        const fees = this.state.fees;
         const minFee = fees && fees.fee_min_val_dep;
-        const captchaUrl = this.state.depositData.images_link_captcha;
+        const captchaUrl = this.state.captchaUrl;
 
         const precision = utils.get_asset_precision(this.props.asset.get("precision"));
 
@@ -451,19 +374,19 @@ class DepositModalRmbpay extends React.Component {
                             {this.state.tokenAmount} RMBPAY
                         </div>
                         <div className="text-right help-text mb_5">
-                        ≈ <EquivalentValueComponent
-                            fullPrecision={true}
-                            fromAsset="1.3.113"
-                            toAsset="1.3.861"
-                            amount={this.state.tokenAmount * precision}
-                            hide_asset={true}
-                        /> BTC
+                            ≈ <EquivalentValueComponent
+                                fullPrecision={true}
+                                fromAsset="1.3.113"
+                                toAsset="1.3.861"
+                                amount={this.state.tokenAmount * precision}
+                                hide_asset={true}
+                            /> BTC
                         </div>
                     </div>
 
 
                     {/*Payment service ID*/}
-                    <div>
+                    {this.state.paymentService && <div>
                         <label className="left-label">
                             <Translate component="span" content="gateway.pay_service_alipay" />
                         </label>
@@ -479,7 +402,7 @@ class DepositModalRmbpay extends React.Component {
                             </div>
                         </div>
                         {<Translate component="div" className={"mt_2 mb_5 color-danger fz_13 " + (!this.state.invalidAddressMessage && "hidden")} content="gateway.rmbpay.error_emty" />}
-                    </div>
+                    </div>}
 
                     {/*Captcha*/}
 
@@ -532,13 +455,11 @@ class DepositModalRmbpay extends React.Component {
 
     _renderQR() {
         const logoAliPay = '/app/assets/logoAlipay.png';
-        const service = this.state.depositData.list_service
-            && this.state.depositData.list_service[0];
         return (
             <DepositRmbpayQr
                 coinName={this.props.output_coin_name}
                 depositAmount={this.state.depositAmount}
-                qrCodeLink={service && service.link_qr_code}
+                qrCodeLink={this.state.qrUrl}
                 modal_id={this.props.modal_id}
             />
         )

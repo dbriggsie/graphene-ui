@@ -121,6 +121,9 @@ const routes = (
         <Route path="settings/:tab" getComponent={(location, cb) => {
             System.import("components/Settings/SettingsContainer").then(loadRoute(cb)).catch(errorLoading);
         }}/>
+        <Route path="settings/:tab" getComponent={(location, cb) => {
+            System.import("components/Settings/SettingsContainer").then(loadRoute(cb)).catch(errorLoading);
+        }}/>
         <Route path="block/:height" getComponent={(location, cb) => {
             System.import("components/Blockchain/BlockContainer").then(loadRoute(cb)).catch(errorLoading);
         }}/>

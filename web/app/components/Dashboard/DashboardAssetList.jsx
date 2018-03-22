@@ -351,7 +351,7 @@ class DashboardAssetList extends React.Component {
         })(assets);
 
         return (
-            <div className="blocktrades-gateway">
+            <div className="blocktrades-gateway modal-with-header">
                 <Translate content="settings.wallet" component="h3" style={{textAlign: 'center',fontSize:40, padding: '15px 0 0 0'}} />
                 <Translate content="transfer.my_balance" component="h4"  />
                 <div >

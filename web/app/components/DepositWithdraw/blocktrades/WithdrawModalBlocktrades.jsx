@@ -80,7 +80,7 @@ class WithdrawModalBlocktrades extends React.Component {
         ZfApi.subscribe(this.props.modal_id, this._modalListener.bind(this));
     }
 
-    componentWillReceiveProps(np) {        
+    componentWillReceiveProps(np) {
         if ((np.asset && np.asset.get("id")) !== (this.props.asset && this.props.asset.get("id"))) {
             this.onlyInteger = SettingsStore.intAssets.indexOf(np.asset.get("symbol")) > -1;
         }

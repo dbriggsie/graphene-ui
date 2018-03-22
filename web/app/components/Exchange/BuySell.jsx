@@ -217,7 +217,7 @@ class BuySell extends React.Component {
         let {name, prefix} = utils.replaceName(this.props[isBid ? "base" : "quote"].get("symbol"), !!this.props[isBid ? "base" : "quote"].get("bitasset"));
         let buyBorrowDepositName = (prefix ? prefix : "") + name;
         return (
-            <div className={this.props.className}>
+            <div className={this.props.className + " modal-with-header"}>
                 <div className="exchange-bordered buy-sell-container">
                     <div className={"exchange-content-header " + type}>
                         <span>{buttonText} <AssetName dataPlace="top" name={quote.get("symbol")} /></span>

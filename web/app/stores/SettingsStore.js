@@ -199,7 +199,9 @@ class SettingsStore {
                 "de",
                 "es",
                 "tr",
-                "ru"
+                "ru",
+                "jp",
+                "vn"
             ],
             apiServer: [],
             unit: [
@@ -529,6 +531,9 @@ store.marketsOpenList = marketsList.filter(e => {
 
 store.intAssets = intAssets;
 
+store.EXCEPTIONAL_NOT_OPEN_ASSETS = [
+    "CVCOIN"
+]
 store.FIAT_ASSETS = [
     "RMBPAY"
 ]

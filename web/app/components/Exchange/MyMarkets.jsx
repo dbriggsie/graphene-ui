@@ -723,7 +723,7 @@ class MyMarkets extends React.Component {
                                 style={{fontSize: "0.9rem", height: "inherit", position: "relative", top: 1, padding: 2}}
                                 className="no-margin"
                                 type="text"
-                                placeholder="Filter"
+                                placeholder= {counterpart.translate("markets.filter")}
                                 maxLength="16"
                                 value={this.state.myMarketFilter}
                                 onChange={(e) => {this.setState({myMarketFilter: e.target.value && e.target.value.toUpperCase()});}}
