@@ -1357,6 +1357,7 @@
     "withdraw": {
       "amount": "Amount to withdraw",
       "address": "Withdraw to address",
+      "cvt_address": "Withdraw to CVT address",
       "submit": "Withdraw"
     },
     "deposit": {

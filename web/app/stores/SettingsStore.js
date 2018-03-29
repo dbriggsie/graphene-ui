@@ -93,7 +93,9 @@ let marketsList = [
     "OPEN.GAS",
     "OPEN.NEO",
     "OPEN.RISE",
-    "OPEN.LIF"
+    "OPEN.LIF",
+    "OPEN.ZEC",
+    "OPEN.XEM"
 ];
 
 let topMarkets = {

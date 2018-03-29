@@ -425,6 +425,14 @@ class WithdrawModalBlocktrades extends React.Component {
         return { fee_asset_types };
     }
 
+    _getAssetLabel() {
+        //Only for CVCOIN custom name rule
+        if (this.props.output_coin_symbol  === "CVCOIN") {
+            return "CVCOIN → CVT";
+        }
+        return this.props.output_coin_symbol + (this.props.output_coin_symbol !== this.props.output_coin_name ? " (" + this.props.output_coin_name + ")" : "");
+    }
+
     render() {
         let { withdraw_address_selected, memo } = this.state;
         let { gateFee } = this.props;
@@ -433,11 +441,18 @@ class WithdrawModalBlocktrades extends React.Component {
         let storedAddress = WithdrawAddresses.get(this.props.output_wallet_type);
         let balance = null;
 
+        const isCvcoin = this.props.output_coin_type === "cvcoin";
+
         let account_balances = this.props.account.get("balances").toJS();
         let asset_types = Object.keys(account_balances);
 
         let withdrawModalId = this.getWithdrawModalId();
-        let invalid_address_message = <Translate component="div" className={"mt_2 mb_5 color-danger fz_13" + (addressValid === false ? "" : " hidden")} content="gateway.valid_address" coin_type={this.props.output_coin_type} />;
+        let invalid_address_message = <Translate 
+            component="div" 
+            className={"mt_2 mb_5 color-danger fz_13" + (addressValid === false ? "" : " hidden")} 
+            content="gateway.valid_address"
+            coin_type={isCvcoin ? "CVT" : this.props.output_coin_type}
+        />;
                 
         let options = null;
         let confirmation = null;
@@ -506,7 +521,7 @@ class WithdrawModalBlocktrades extends React.Component {
             this.state.balanceError ||
             !this.state.withdraw_amount;
 
-        const assetLabel = this.props.output_coin_symbol + (this.props.output_coin_symbol !== this.props.output_coin_name ? " (" + this.props.output_coin_name + ")" : "");
+        const assetLabel = this._getAssetLabel();
         const emptyValue = this.state.empty_withdraw_value;
 
         const errorMessage = this.state.balanceError && !emptyValue ?         
@@ -574,7 +589,7 @@ class WithdrawModalBlocktrades extends React.Component {
 
                     <div className="content-block with-error">
                         <label className="left-label">
-                            <Translate component="span" content="modal.withdraw.address" />
+                            <Translate component="span" content={isCvcoin ? "modal.withdraw.cvt_address" : "modal.withdraw.address"} />
                         </label>
                         <div className="blocktrades-select-dropdown">
                             <div className="inline-label">
