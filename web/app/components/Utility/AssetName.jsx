@@ -52,11 +52,8 @@ class AssetName extends React.Component {
             if (realPrefix) realPrefix += ".";
             let optional = "";
             try {
-                optional = realPrefix || includeBitAssetDescription ? counterpart.translate("gateway.assets." + (isBitAsset ? "open" : realPrefix.replace(".", "").toLowerCase()), {asset: name, backed: includeBitAssetDescription ? desc.main : replacedName}) : "";
+                optional = realPrefix || includeBitAssetDescription ? counterpart.translate("gateway.assets." + (isBitAsset ? "bit" : realPrefix.replace(".", "").toLowerCase()), {asset: name, backed: includeBitAssetDescription ? desc.main : replacedName}) : "";
             } catch (e){}
-            if (isBitAsset && name === "CNY") {
-                optional = optional + counterpart.translate("gateway.assets.bitcny");
-            }
             let tooltip = this.props.noTip ? null : `<div><strong>${realPrefix ? realPrefix.toUpperCase() : realPrefix || ""}${replacedName}</strong><br />${includeBitAssetDescription ? "" : "<br />" + (desc.short ? desc.short : desc.main || "")}${!isBitAsset || includeBitAssetDescription ? optional : ""}</div>`;
 
             return (

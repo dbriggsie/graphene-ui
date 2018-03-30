@@ -365,21 +365,21 @@ class AccountDepositWithdraw extends React.Component {
                          </span>
                     </td>
                     <td>
-                            <span>
-                                {isCurrentAccount ?
-                                    !canDepositWithdraw ?
-                                        <span data-tip={counterpart.translate("gateway.under_maintenance")} className="inline-block tooltip">
-                                            <Icon name="warning" />
-                                        </span> :
-                                        !canWithdraw ?
-                                            <span data-tip={counterpart.translate("gateway.not_enough_funds")} className="inline-block tooltip">
-                                            <Icon name="withdraw" className="icon-14px disabled" />
-                                        </span> :
-                                            <a onClick={symbol !== MANDATORY_CURRENCY.rmbpay ? this._showWithdrawModal.bind(this, symbol, false) : this.onWithdraw.bind(this)}>
-                                                {symbol !== MANDATORY_CURRENCY.rmbpay ? <Icon name="deposit" className="icon-14px" /> : <span data-tip={counterpart.translate("gateway.rmbpay.withdrawal_info")}><Icon name="deposit" className="icon-14px" /></span>}
-                                            </a>
-                                    : "-"}
-                            </span>
+                        <span>
+                            {isCurrentAccount ?
+                                !canDepositWithdraw ?
+                                    <span data-tip={counterpart.translate("gateway.under_maintenance")} className="inline-block tooltip">
+                                        <Icon name="warning" />
+                                    </span> :
+                                    !canWithdraw ?
+                                        <span data-tip={counterpart.translate("gateway.not_enough_funds")} className="inline-block tooltip">
+                                        <Icon name="withdraw" className="icon-14px disabled" />
+                                    </span> :
+                                        <a onClick={symbol !== MANDATORY_CURRENCY.rmbpay ? this._showWithdrawModal.bind(this, symbol, false) : this.onWithdraw.bind(this)}>
+                                            {symbol !== MANDATORY_CURRENCY.rmbpay ? <Icon name="withdraw" className="icon-14px" /> : <span data-tip={counterpart.translate("gateway.rmbpay.withdrawal_info")}><Icon name="withdraw" className="icon-14px" /></span>}
+                                        </a>
+                                : "-"}
+                        </span>
                     </td>
                 </tr>
             );
