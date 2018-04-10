@@ -1520,16 +1520,15 @@
       "ok": "ok",
       "withdraw": "出金Withdraw %(coin)s",
       "tokens_receive": "受け取るトークン",
-      "deposit_min_amount": "入金額は %(fee)s CNY以上でなければなりません",
       "btn_request_deposit": "入金を要求する",
       "error_emty": "記入必須項目",
       "captcha_label": "上記のテキスト ボックスに表示されているテキストを入力してください",
       "max_requests_error": "許可されている入金要求数を超えました。<br/>次にリクエストできるのは %(date)s UTC.",
       "wrong_captcha_error": "Captchaが間違っています。 もう一度お試しください",
-      "error_max_value": "出金額は %(val)s RMBPAY　以上または等しい金額でなければなりません",
-      "error_min_value": "出金額は %(val)s RMBPAY　以下または等しい金額でなければなりません",
-      "error_min_receive": "受取る金額は 1 CNY 以上または等しい金額でなければなりません",
-      "error_max_receive": "受取る金額は %(val)s CNY 以下または等しい金額でなければなりません ",
+      "error_max_value": "出金額は %(val)s %(assetName)s　以上または等しい金額でなければなりません",
+      "error_min_value": "出金額は %(val)s %(assetName)s　以下または等しい金額でなければなりません",
+      "error_min_receive": "受取る金額は 1 %(assetName)s 以上または等しい金額でなければなりません",
+      "error_max_receive": "受取る金額は %(val)s %(assetName)s 以下または等しい金額でなければなりません ",
       "not_enaught_balance": "操作を実行できません。<br />あなたは手数料を支払うのに十分なトークンを持っていません。",
       "scan_qr": "入金を完了するにはQRコードをスキャンし、そのアドレスに送金してください",
       "transfer_24_h": "トークンは24時間以内にアカウントに転送されます",
@@ -1541,8 +1540,8 @@
         "fee_withdraw": "出金手数料",
         "amount_receive": "受け取る金額",
         "amount_withdraw": "出金額",
-        "withdraw_amount": "RMBPAYの金額を出金したい",
-        "receive_amount": "CNYの金額を受け取りたい"
+        "withdraw_amount": "%(assetName)sの金額を出金したい",
+        "receive_amount": "%(assetName)sの金額を受け取りたい"
       }
     }
   },

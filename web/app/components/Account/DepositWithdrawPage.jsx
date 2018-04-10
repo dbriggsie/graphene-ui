@@ -5,8 +5,8 @@ import Translate from "react-translate-component";
 import BindToChainState from "../Utility/BindToChainState";
 import { blockTradesAPIs } from "api/apiConfig";
 import GatewayStore from "stores/GatewayStore";
-import DepositModalRmbpay from "../DepositWithdraw/openledger/DepositModalRmbpay";
-import WithdrawModalRmbpay from "../DepositWithdraw/openledger/WithdrawModalRmbpay";
+import DepositFiatModal from "../DepositWithdraw/openledger/DepositFiatModal";
+import WithdrawFiatModal from "../DepositWithdraw/openledger/WithdrawFiatModal";
 import Immutable from "immutable";
 import BalanceComponent from "../Utility/BalanceComponent";
 import TotalBalanceValue from "../Utility/TotalBalanceValue";
@@ -18,6 +18,7 @@ import counterpart from "counterpart";
 import Icon from "../Icon/Icon";
 import ChainTypes from "../Utility/ChainTypes";
 import LinkToAssetById from "../Utility/LinkToAssetById";
+import {Link} from "react-router/es";
 import utils from "common/utils";
 import SimpleDepositWithdraw from "../Dashboard/SimpleDepositWithdraw";
 import WithdrawModalBlocktrades from "../DepositWithdraw/blocktrades/WithdrawModalBlocktrades";
@@ -29,23 +30,24 @@ import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import SettingsStore from "stores/SettingsStore";
 import AssetImage from "../Utility/AssetImage";
 import AccountStore from "stores/AccountStore";
+import ReactTooltip from 'react-tooltip';
+
 import { Apis } from "bitsharesjs-ws";
 import GatewayActions from "actions/GatewayActions";
 
+import FiatApi from "api/FiatApi";
 
 const RMBPAY_ASSET_ID = "1.3.2562";
 
 const WITHDRAW_MODAL_ID = "dw_simple_withdraw_modal";
 const TRANSFER_MODAL_ID = "transfer_modal";
 
+const LINK_KYC = 'http://www.us.cryptonebula.co/KYC&name=';
+
 const EXCEPTIONAL_DEPOSIT_ASSETS = [
     "OPEN.USD",
     "OPEN.EUR"
 ];
-
-const MANDATORY_CURRENCY = {
-    rmbpay: "RMBPAY"
-};
 
 const FIAT_ASSETS = [
     "USD",
@@ -74,18 +76,8 @@ class AccountDepositWithdraw extends React.Component {
             sortKey: props.viewSettings.get("portfolioSort", "balanceValue"),
             sortDirection: props.viewSettings.get("portfolioSortDirection", true), // alphabetical A -> B, numbers high to low
             showRMBpay: false,
-            withdrawAsset: null,
-            depositAsset: null,
-            rmbPay: {
-                list_service: [{
-                    name: "Alipay",
-                    link_qr_code: ""
-                }],
-                fees: {
-                    fee_share_dep: 0.0,
-                    fee_min_val_dep: 0
-                }
-            },
+            activeAsset: null,
+            activeFiatAsset: SettingsStore.FIAT_ASSETS[0],
             filter: "",
             showOnlyFavorites: window.localStorage.getItem("depositWithdraw.filters.onlyFavorites") === "true",
             favorites: window.localStorage.getItem("depositWithdraw.filters.favorites")
@@ -94,7 +86,9 @@ class AccountDepositWithdraw extends React.Component {
             hideZeroBalances: window.localStorage.getItem("depositWithdraw.filters.hideZero") === "true",
             showFiat: window.localStorage.getItem("depositWithdraw.filters.showFiat") === "true",
             fiatCurrency: FIAT_ASSETS,
-            currentAsset: null
+            currentAsset: null,
+            depositUsdLink: false,
+            availableFiatServices: []
         };
 
         this._favotiteClicked = this._favotiteClicked.bind(this);
@@ -164,11 +158,21 @@ class AccountDepositWithdraw extends React.Component {
     }
 
     componentWillMount() {
+        this.initDepositUsd();
         accountUtils.getFinalFeeAsset(this.props.account, "transfer");
     }
 
     componentDidMount() {
+        this._getAvailableServices();
+    }
 
+    _getAvailableServices() {
+        FiatApi.getActive({
+            accountName: this.props.account.get("name"),
+            accountId: this.props.account.get("id")
+        }).then((data) => {
+            this.setState({ ...data });
+        });
     }
 
     componentWillReceiveProps(np) {
@@ -180,16 +184,16 @@ class AccountDepositWithdraw extends React.Component {
         };
     }
 
-
-    _getRmbpayBalance() {
-        const account = this.props.account
-        const rmbpayBalance = account && account.get("balances").toJS()[RMBPAY_ASSET_ID]
-        const balanceObject = rmbpayBalance ? ChainStore.getObject(rmbpayBalance) : 0
-        const rmbPayAsset = ChainStore.getAsset("RMBPAY")
-        const precision = rmbPayAsset ? utils.get_asset_precision(rmbPayAsset) : 1
-        return balanceObject ? balanceObject.get("balance") / precision : 0
+    initDepositUsd(){
+        FiatApi.isVerifyAccountUsd(this.props.account.get("name"), this.props.account.get("id"))
+            .then((response) => {
+                if(response.success){
+                    this.setState({
+                        depositUsdLink: true
+                    })
+                }
+            })
     }
-
 
     getWithdrawModalId() {
         return "withdraw_asset_openledger-dex_CNY";
@@ -200,12 +204,12 @@ class AccountDepositWithdraw extends React.Component {
     }
 
     onDeposit() {
-        this.depositModalRmbpay.refs.bound_component.onOpen();
+        this.depositFiatModal.refs.bound_component.onOpen();
         ZfApi.publish(this.getDepositModalId(), "open");
     }
 
     onWithdraw() {
-        this.withdrawModalRmbpay.refs.bound_component.fetchWithdrawData();
+        this.withdrawFiatModal.refs.bound_component.fetchWithdrawData();
         ZfApi.publish(this.getWithdrawModalId(), "open");
     }
 
@@ -214,18 +218,22 @@ class AccountDepositWithdraw extends React.Component {
         return favorites && favorites.indexOf(assetId) > -1;
     }
 
-    _isFiat(assetId) {
-        const fiats = this.state.fiatCurrency;
-
+    _filterFiat(assetId) {
         let assetSymbol = ChainStore.getObject(assetId);
-        if(assetSymbol){
+        if (assetSymbol) {
             assetSymbol = assetSymbol.get('symbol');
-            return fiats && fiats.indexOf(assetSymbol) > -1 || fiats.indexOf(assetSymbol.substr(5)) > -1;
+            return this._isFiat(assetSymbol);
         }
         return false;
     }
 
-    _isSearch(assetId){
+    _isFiat(assetSymbol) {
+        return SettingsStore.FIAT_ASSETS.filter((asset) => {
+            return asset.name.toLowerCase() === assetSymbol.toLowerCase();
+        }).length > 0;
+    }
+
+    _isSearch(assetId) {
         const filter = this.state.filter;
         assetId = ChainStore.getAsset(assetId).get('symbol');
         return assetId.indexOf(filter) > -1;
@@ -243,28 +251,63 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
-    _showDepositWithdraw(action, asset, fiatModal, e) {
+    _showDepositModal(assetSymbol, e) {
         e.preventDefault();
-        this.setState({
-            depositAsset : asset,
-            fiatModal: fiatModal
-        }, () => {
-            this.refs[action].show();
-        });
+        if (this._isFiat(assetSymbol)) {
+            const activeFiatAsset = SettingsStore.FIAT_ASSETS.filter((a) => {
+                return a.name === assetSymbol;
+            })[0];
+            this.setState({
+                activeFiatAsset: activeFiatAsset
+            }, () => {
+                this.depositFiatModal.refs.bound_component.onOpen();
+                ZfApi.publish(this.getDepositModalId(), "open");
+            });
+        } else {
+            this.setState({
+                activeAsset: assetSymbol
+            }, () => {
+                this.refs["deposit_modal"].show();
+            });
+        }
     }
 
-    _showWithdrawModal(asset, fiatModal, e) {
+    _showWithdrawModal(asset, e) {
         e.preventDefault();
-        this.setState({
-            withdrawAsset: asset,
-            fiatModal: fiatModal
-        }, () => {
-            ZfApi.publish(WITHDRAW_MODAL_ID, "open");
-        });
+        if (this._isFiat(asset)) {
+            const activeFiatAsset = SettingsStore.FIAT_ASSETS.filter((a) => {
+                return a.name === asset;
+            })[0];
+
+            this.setState({
+                activeFiatAsset: activeFiatAsset
+            }, () => {
+                this.withdrawFiatModal.refs.bound_component.fetchWithdrawData();
+                ZfApi.publish(this.getWithdrawModalId(), "open");
+            });
+
+        } else {
+            this.setState({
+                activeAsset: asset
+            }, () => {
+                ZfApi.publish(WITHDRAW_MODAL_ID, "open");
+            });
+        }
     }
 
     _canDeposit(name) {
         return SettingsStore.RESTRICT_DEPOSIT.indexOf(name) === -1;
+    }
+
+    _rebuildTooltip(){
+        ReactTooltip.rebuild()
+    }
+
+    _checkFiatService(name) {
+        const service = this.state.availableFiatServices.find((service) => {
+            return service.name.toLowerCase() === name.toLowerCase();
+        });
+        return service && service.is_active === "1";
     }
 
     _renderBalances(balanceList, visible) {
@@ -307,22 +350,60 @@ class AccountDepositWithdraw extends React.Component {
             const assetId = asset.get("id");
             const notCore = assetId !== "1.3.0";
 
-            let {market} = assetUtils.parseDescription(asset.getIn(["options", "description"]));
+            let { market } = assetUtils.parseDescription(asset.getIn(["options", "description"]));
 
             const hasBalance = !!balanceObject.get("balance");
             // const hasOnOrder = !!orders[asset_type];
             let canDepositWithdraw = !!this.props.backedCoins.get("OPEN", []).find(a => a.symbol === symbol);
-            if(symbol == MANDATORY_CURRENCY.rmbpay) canDepositWithdraw = true;
 
-            const canWithdraw = canDepositWithdraw && (hasBalance && balanceObject.get("balance") != 0);
+            SettingsStore.FIAT_ASSETS.forEach(e => {
+                if (e.needsVerification === symbol) {
+                    canDepositWithdraw = true; 
+                    canWithdraw = true;
+                }
+            });
+
+            if (this._isFiat(symbol)) {
+                canDepositWithdraw = this._checkFiatService(symbol);
+            }
+
+            let canWithdraw = canDepositWithdraw && (hasBalance && balanceObject.get("balance") != 0);
+
             const canBuy = !!this.props.bridgeCoins.get(symbol);
 
             const starClass = this._isFavorite(assetId) ? "gold-star" : "grey-star";
+
+            const isOpen = (symbol.toLowerCase().indexOf("open") === 0
+                || SettingsStore.EXCEPTIONAL_NOT_OPEN_ASSETS.indexOf(symbol) > -1)
+                && EXCEPTIONAL_DEPOSIT_ASSETS.indexOf(symbol) === -1 || this._isFiat(symbol);
 
             const precision = utils.get_asset_precision(asset.get("precision"));
             const balanceAmount = hasBalance && balanceObject.get("balance");
             const balancePrecised = balanceAmount / precision;
 
+            let iconModalDeposit = SettingsStore.FIAT_ASSETS.some(e => {return e.needsVerification === symbol}) ?
+                (this.state.depositUsdLink ?
+                    <a onClick={ this._showDepositModal.bind(this, symbol)}><Icon name="deposit" className="icon-14px" /></a> :
+                    <Link data-tip={counterpart.translate("gateway.usd_vesna.depositWithdrawal_info")} onMouseEnter={this._rebuildTooltip.bind(this)} target="_blank" href={`${LINK_KYC}${this.props.account.get("name")}`}><Icon name="clipboards" className="icon-14px" /></Link>)
+                :
+                (<a onClick={canDepositWithdraw ?
+                    this._showDepositModal.bind(this, symbol) :
+                    () => { }}><Icon name="deposit" className="icon-14px" /></a>);
+
+
+            let iconModalWithdraw = SettingsStore.FIAT_ASSETS.some(e => {return e.needsVerification === symbol}) ?
+                (this.state.depositUsdLink ?
+                    <a onClick={ this._showWithdrawModal.bind(this, symbol)}><Icon name="withdraw" className="icon-14px" /></a> :
+                    <Link data-tip={counterpart.translate("gateway.usd_vesna.depositWithdrawal_info")} onMouseEnter={this._rebuildTooltip.bind(this)} target="_blank" href={`${LINK_KYC}${this.props.account.get("name")}`}><Icon name="clipboards" className="icon-14px" /></Link>)
+                :
+                !canWithdraw ?
+                    <span data-tip={counterpart.translate("gateway.not_enough_funds")} className="inline-block tooltip">
+                        <Icon name="withdraw" className="icon-14px disabled" />
+                    </span>
+                    :
+                    <a onClick={this._showWithdrawModal.bind(this, symbol)}>
+                        <Icon name="withdraw" className="icon-14px" />
+                    </a>;
 
             balances.push(
                 <tr key={ind} symbol={symbol} balance={balancePrecised} style={{maxWidth: "100rem"}}>
@@ -334,9 +415,10 @@ class AccountDepositWithdraw extends React.Component {
                     }}>
                         <AssetImage style={{
                             height: "25px",
-                            width: "25px" }}
-                                    assetName={symbol}
-                                    className="asset-image"
+                            width: "25px"
+                        }}
+                            assetName={symbol}
+                            className="asset-image"
                         />
                         <LinkToAssetById asset={assetId} />
                     </td>
@@ -352,33 +434,29 @@ class AccountDepositWithdraw extends React.Component {
                         />
                     </td>
                     <td>
-                         <span>
-                                {isCurrentAccount && this._canDeposit(symbol) ?
-                                    !canDepositWithdraw ?
-                                        <span data-tip={counterpart.translate("gateway.under_maintenance")} className="inline-block tooltip">
-                                            <Icon name="warning" />
-                                        </span> :
-                                        <a onClick={canDepositWithdraw ? symbol !== MANDATORY_CURRENCY.rmbpay ? this._showDepositWithdraw.bind(this, "deposit_modal", symbol, false) : this.onDeposit.bind(this) : () => {}}>
-                                            {symbol !== MANDATORY_CURRENCY.rmbpay ? <Icon name="deposit" className="icon-14px" /> : <span data-tip={counterpart.translate("gateway.rmbpay.deposit_info")}><Icon name="deposit" className="icon-14px" /></span>}
-                                        </a>
-                                    : "-"}
-                         </span>
+                        <span>
+                            {isOpen && isCurrentAccount && this._canDeposit(symbol) ?
+                                !canDepositWithdraw ?
+                                    <span data-tip={counterpart.translate("gateway.under_maintenance")} className="inline-block tooltip">
+                                        <Icon name="warning" />
+                                    </span> :
+                                    iconModalDeposit
+                                : "-"}
+                        </span>
                     </td>
                     <td>
                         <span>
-                            {isCurrentAccount ?
+                            {isOpen && isCurrentAccount ?
                                 !canDepositWithdraw ?
                                     <span data-tip={counterpart.translate("gateway.under_maintenance")} className="inline-block tooltip">
                                         <Icon name="warning" />
                                     </span> :
                                     !canWithdraw ?
                                         <span data-tip={counterpart.translate("gateway.not_enough_funds")} className="inline-block tooltip">
-                                        <Icon name="withdraw" className="icon-14px disabled" />
-                                    </span> :
-                                        <a onClick={symbol !== MANDATORY_CURRENCY.rmbpay ? this._showWithdrawModal.bind(this, symbol, false) : this.onWithdraw.bind(this)}>
-                                            {symbol !== MANDATORY_CURRENCY.rmbpay ? <Icon name="withdraw" className="icon-14px" /> : <span data-tip={counterpart.translate("gateway.rmbpay.withdrawal_info")}><Icon name="withdraw" className="icon-14px" /></span>}
-                                        </a>
-                                : "-"}
+                                            <Icon name="withdraw" className="icon-14px disabled" />
+                                        </span> :
+                                        iconModalWithdraw
+                                    : "-"}
                         </span>
                     </td>
                 </tr>
@@ -459,7 +537,7 @@ class AccountDepositWithdraw extends React.Component {
             }
             // Show Fiat
             if (this.state.showFiat) {
-                balancesList = this._applyFilter(balancesList, this._isFiat.bind(this))
+                balancesList = this._applyFilter(balancesList, this._filterFiat.bind(this))
             }
         }
         return balancesList;
@@ -486,15 +564,15 @@ class AccountDepositWithdraw extends React.Component {
 
             let assetSymbol = chainObject.get("symbol")
 
-            if(!assetSymbol){
+            if (!assetSymbol){
                 assetSymbol = chainObject.get("asset_type");
                 let assetObj = ChainStore.getObject(assetSymbol);
                 assetSymbol = assetObj && assetObj.get("symbol");
             }
 
-            if( assetSymbol && assetSymbol.toLowerCase().indexOf("open") == 0 ||
-                assetSymbol == MANDATORY_CURRENCY.rmbpay ||
-                SettingsStore.EXCEPTIONAL_NOT_OPEN_ASSETS.indexOf(assetSymbol) > -1){
+            if (assetSymbol && assetSymbol.toLowerCase().indexOf("open") == 0 ||
+                assetSymbol == "RMBPAY" ||
+                SettingsStore.EXCEPTIONAL_NOT_OPEN_ASSETS.indexOf(assetSymbol) > -1) {
                 filterAsset.push(item)
             }
         });
@@ -526,6 +604,10 @@ class AccountDepositWithdraw extends React.Component {
 
     _setArrowClass(key) {
         return this.state.sortKey === key ? (this.state.sortDirection ? "arrow-up" : "arrow-down") : "";
+    }
+
+    getWithdrawModalId() {
+        return "withdraw_asset_openledger-dex_Usd";
     }
 
     render() {
@@ -573,22 +655,30 @@ class AccountDepositWithdraw extends React.Component {
             ]}
         />;
 
-        includedBalances.push(<tr key="portfolio" className="total-value"><td></td><td  style={{textAlign: "left", paddingLeft: 10}}>{totalValueText}</td><td></td><td className="column-hide-small" style={{textAlign: "center"}}>{portFolioValue}</td><td colSpan="6"></td></tr>);
+        includedBalances.push(<tr key="portfolio" className="total-value"><td></td><td style={{ textAlign: "left", paddingLeft: 10 }}>{totalValueText}</td><td></td><td className="column-hide-small" style={{ textAlign: "right" }}>{portFolioValue}</td><td colSpan="6"></td></tr>);
 
-        const currentDepositAsset = this.props.backedCoins.get("OPEN", []).find(c => {
-            return c.symbol === this.state.depositAsset;
+        const backedActiveAsset = this.props.backedCoins.get("OPEN", []).find(c => {
+            return c.symbol === this.state.activeAsset;
         }) || {};
 
-        const withdrawAsset = this.props.backedCoins.get("OPEN", []).find(c => {
-            return c.symbol === this.state.withdrawAsset;
-        }) || {};
+        let backedActiveWalletFiat, assetFiatId;
 
-        const assetObject = ChainStore.getAsset(withdrawAsset.symbol);
+        switch (this.state.activeFiatAsset.name) {
+            case "VESNA.USD" :
+                backedActiveWalletFiat = SettingsStore.FIAT_WALLET.VESNA.wallet;
+                assetFiatId = this.state.activeFiatAsset.asset_id;
+                break;
+            case "RMBPAY" :
+                backedActiveWalletFiat = SettingsStore.FIAT_WALLET.RMBPAY.wallet;
+                assetFiatId = this.state.activeFiatAsset.asset_id;
+                break;
+            default:
+                break
+        }
 
-        const {showOnlyFavorites, hideZeroBalances, showFiat} = this.state;
+        const assetObject = ChainStore.getAsset(backedActiveAsset.symbol);
 
-
-
+        const { showOnlyFavorites, hideZeroBalances, showFiat } = this.state;
         return (
 
             <div className="grid-content page-layout modal-with-header">
@@ -596,68 +686,68 @@ class AccountDepositWithdraw extends React.Component {
 
                     <div className="filter-account-balances" >
                         <div className="filter-search-accaunt">
-                            <input onChange={this._onSearch.bind(this)} value={this.state.filter} style={{marginBottom: 0, }} type="text" placeholder={counterpart.translate("simple_trade.find_an")} />
-                            {this.state.filter.length ? <span className="clickable" style={{position: "absolute", top: 12, right: 10, color: "black"}} onClick={() => {this.setState({filter: ""});}}>
+                            <input onChange={this._onSearch.bind(this)} value={this.state.filter} style={{ marginBottom: 0, }} type="text" placeholder={counterpart.translate("simple_trade.find_an")} />
+                            {this.state.filter.length ? <span className="clickable" style={{ position: "absolute", top: 12, right: 10, color: "black" }} onClick={() => { this.setState({ filter: "" }); }}>
 
-                                         <Icon className="icon-14px fill-red" name="lnr-cross"/>
-                                    </span> : null}
+                                <Icon className="icon-14px fill-red" name="lnr-cross" />
+                            </span> : null}
                         </div>
-                        <span className={cnames("button cursor-pointer", {"no-active": !showOnlyFavorites})} onClick={this._onShowFavoritesChange.bind(this)}>
-                               <Icon className={showOnlyFavorites ? "gold-star icon-filter-star" : "grey-star icon-filter-star"} name="fi-star"  />
-                               <label htmlFor="" style={{marginBottom: 0, cursor: 'pointer'}}><Translate content="account.filter_favorites" /></label>
+                        <span className={cnames("button cursor-pointer", { "no-active": !showOnlyFavorites })} onClick={this._onShowFavoritesChange.bind(this)}>
+                            <Icon className={showOnlyFavorites ? "gold-star icon-filter-star" : "grey-star icon-filter-star"} name="fi-star" />
+                            <label htmlFor="" style={{ marginBottom: 0, cursor: 'pointer' }}><Translate content="account.filter_favorites" /></label>
                         </span>
 
-                        <button className={cnames("filter-hidden-balance button", {"no-active": !hideZeroBalances})} onClick={this._onHideZeroChange.bind(this)} >
-                            <span className="arrow-hidden-balance"><Icon class="checkmark" name="checkmark"/></span>
-                            <Translate  content="account.filter_hedden_balance" />
+                        <button className={cnames("filter-hidden-balance button", { "no-active": !hideZeroBalances })} onClick={this._onHideZeroChange.bind(this)} >
+                            <span className="arrow-hidden-balance"><Icon class="checkmark" name="checkmark" /></span>
+                            <Translate content="account.filter_hedden_balance" />
                         </button>
 
-                        <button className={cnames("filter-hidden-balance button", {"no-active": !showFiat})} onClick={this._showFiat.bind(this)} >
-                            <span className="arrow-hidden-balance"><Icon class="checkmark" name="checkmark"/></span>
-                            <Translate  content="account.filter_show_fiat" />
+                        <button className={cnames("filter-hidden-balance button", { "no-active": !showFiat })} onClick={this._showFiat.bind(this)} >
+                            <span className="arrow-hidden-balance"><Icon class="checkmark" name="checkmark" /></span>
+                            <Translate content="account.filter_show_fiat" />
                         </button>
                     </div>
 
                     <table className="table dashboard-table">
                         <thead>
-                        <tr>
-                            <th><Icon class="gold-star" name="fi-star"/></th>
-                            <th
-                                onClick={this._toggleSortOrder.bind(this, "alphabetic")}
-                                style={{ textAlign: "left", paddingLeft: 10, width: '24%' }}
-                                className="clickable"
-                            >
-                                <Translate component="span" content="account.asset"
-                                           className={this._setArrowClass("alphabetic")}
-                                />
-                            </th>
-                            <th
-                                onClick={this._toggleSortOrder.bind(this, "balanceValue")}
-                                style={{ textAlign: "center", width: '14%' }}
-                                className="clickable"
-                            >
-                                <Translate content="account.qty"
-                                           className={this._setArrowClass("balanceValue")}
-                                />
-                            </th>
-                            <th
-                                onClick={this._toggleSortOrder.bind(this, "totalValue")}
-                                style={{ textAlign: "center", width: '26%' }}
-                                className="column-hide-small clickable"
-                            >
-                                <span className={this._setArrowClass("totalValue")}>
-                                    <Translate
-                                        content="account.eq_value_header"
-                                        asset={preferredUnit}
+                            <tr>
+                                <th><Icon class="gold-star" name="fi-star" /></th>
+                                <th
+                                    onClick={this._toggleSortOrder.bind(this, "alphabetic")}
+                                    style={{ textAlign: "left", paddingLeft: 10 }}
+                                    className="clickable"
+                                >
+                                    <Translate component="span" content="account.asset"
+                                        className={this._setArrowClass("alphabetic")}
                                     />
-                                </ span>
-                            </th>
-                            <th style={{ width: '16%' }}><Translate content="modal.deposit.submit" /></th>
-                            <th style={{ width: '16%' }}><Translate content="modal.withdraw.submit" /></th>
-                        </tr>
+                                </th>
+                                <th
+                                    onClick={this._toggleSortOrder.bind(this, "balanceValue")}
+                                    style={{ textAlign: "right" }}
+                                    className="clickable"
+                                >
+                                    <Translate content="account.qty"
+                                        className={this._setArrowClass("balanceValue")}
+                                    />
+                                </th>
+                                <th
+                                    onClick={this._toggleSortOrder.bind(this, "totalValue")}
+                                    style={{ textAlign: "right" }}
+                                    className="column-hide-small clickable"
+                                >
+                                    <span className={this._setArrowClass("totalValue")}>
+                                        <Translate
+                                            content="account.eq_value_header"
+                                            asset={preferredUnit}
+                                        />
+                                    </ span>
+                                </th>
+                                <th><Translate content="modal.deposit.submit" /></th>
+                                <th><Translate content="modal.withdraw.submit" /></th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {includedBalances}
+                            {includedBalances}
                         </tbody>
                     </table>
 
@@ -667,30 +757,29 @@ class AccountDepositWithdraw extends React.Component {
                 <SimpleDepositWithdraw
                     ref="deposit_modal"
                     action="deposit"
-                    fiatModal={this.state.fiatModal} //
                     account={this.props.account.get("name")}
                     sender={this.props.account.get("id")}
-                    asset={this.state.depositAsset}
+                    asset={this.state.activeAsset}
                     modalId="simple_deposit_modal"
-                    {...currentDepositAsset}
+                    {...backedActiveAsset}
                     isDown={this.props.gatewayDown.get("OPEN")} //
                 />
 
                 <BaseModal id={WITHDRAW_MODAL_ID} overlay={true} className="withdraw_modal">
                     <div className="grid-block vertical">
-                        {withdrawAsset.name && <WithdrawModalBlocktrades
+                        {backedActiveAsset.name && <WithdrawModalBlocktrades
                             ref="withdraw_modal"
                             account={this.props.account.get("name")}
                             sender={this.props.account.get("id")}
-                            issuer={withdrawAsset.intermediateAccount}
-                            asset={withdrawAsset.symbol}
+                            issuer={backedActiveAsset.intermediateAccount}
+                            asset={backedActiveAsset.symbol}
                             url={blockTradesAPIs.BASE_OL}
-                            output_coin_name={withdrawAsset.name}
-                            gateFee={withdrawAsset.gateFee}
-                            output_coin_symbol={withdrawAsset.backingCoinType.toUpperCase()}
-                            output_coin_type={withdrawAsset.backingCoinType.toLowerCase()}
-                            output_wallet_type={withdrawAsset.walletType}
-                            output_supports_memos={withdrawAsset.supportsMemos}
+                            output_coin_name={backedActiveAsset.name}
+                            gateFee={backedActiveAsset.gateFee}
+                            output_coin_symbol={backedActiveAsset.backingCoinType.toUpperCase()}
+                            output_coin_type={backedActiveAsset.backingCoinType.toLowerCase()}
+                            output_wallet_type={backedActiveAsset.walletType}
+                            output_supports_memos={backedActiveAsset.supportsMemos}
                             modal_id={WITHDRAW_MODAL_ID}
                             balance={this.props.account.get("balances").toJS()[assetObject.get("id")]}
                         />}
@@ -699,35 +788,31 @@ class AccountDepositWithdraw extends React.Component {
 
                 <BaseModal id={deposit_modal_id} overlay={true} maxWidth="500px">
                     <div className="grid-block vertical">
-                    
-                        <DepositModalRmbpay
+                        <DepositFiatModal
                             account={this.props.account}
-                            asset="CNY"
-                            output_coin_name="CNY"
-                            output_coin_symbol="CNY"
-                            output_coin_type="cny"
+                            asset={this.state.activeFiatAsset.targetAsset}
+                            outputCoinName={this.state.activeFiatAsset.targetAsset}
+                            outputCoinSymbol={this.state.activeFiatAsset.targetAsset}
+                            inputCoin={this.state.activeFiatAsset.name}
                             modal_id={deposit_modal_id}
-                            ref={modal => { this.depositModalRmbpay = modal; }}
+                            ref={modal => { this.depositFiatModal = modal; }}
                         />
                     </div>
                 </BaseModal>
 
                 <BaseModal id={withdraw_modal_id} overlay={true} maxWidth="500px">
                     <div className="grid-block vertical">
-                        <WithdrawModalRmbpay
+                        <WithdrawFiatModal
                             account={this.props.account}
-                            issuer_account="rmbpay-wallet"
-                            asset="RMBPAY"
-                            output_coin_name="RMBPAY"
-                            output_coin_symbol="RMBPAY"
-                            output_coin_type="RMBPAY"
-                            modal_id={withdraw_modal_id}
-                            balance={this.props.account.get("balances").toJS()[RMBPAY_ASSET_ID]}
-                            ref={modal => { this.withdrawModalRmbpay = modal; }}
+                            issuer_account={backedActiveWalletFiat}
+                            asset={this.state.activeFiatAsset.name}
+                            outputCoin={this.state.activeFiatAsset.targetAsset}
+                            modalId={withdraw_modal_id}
+                            balance={this.props.account.get("balances").toJS()[assetFiatId]}
+                            ref={modal => { this.withdrawFiatModal = modal; }}
                         />
                     </div>
                 </BaseModal>
-
             </div>
 
         );
@@ -746,7 +831,7 @@ class DepositStoreWrapper extends React.Component {
     }
 
     render() {
-        return <AccountDepositWithdraw {...this.props}/>;
+        return <AccountDepositWithdraw {...this.props} />;
     }
 }
 

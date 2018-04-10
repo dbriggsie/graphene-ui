@@ -11,12 +11,6 @@ class DepositRmbpayQr extends Component {
         super(props);
     }
 
-    componentWillReceiveProps(np) {
-        this.setState({
-            withdraw_amount: np.withdraw_amount
-        });
-    }
-
     render() {
         const { coinName, depositAmount, qrCodeLink } = this.props;
         return (
@@ -28,7 +22,7 @@ class DepositRmbpayQr extends Component {
                             src={logoAliPay}
                             alt="Alipay" />
                     </div>
-                    <Translate className="font-secondary" component="p" content="gateway.rmbpay.scan_qr" />
+                    <Translate className="font-secondary" component="p" content="gateway.rmbpay.complete_deposit" />
                     <div>
                         <img style={{ maxWidth: '150px' }}
                             src={qrCodeLink}
@@ -36,10 +30,11 @@ class DepositRmbpayQr extends Component {
                         />
                     </div>
                 </div>}
+                <Translate className="font-secondary" component="p" content="gateway.rmbpay.alipay_account" />
                 <div className="content-block fz_22">
                     <Translate content="gateway.rmbpay.amount_to_transfer" /> {depositAmount} {coinName}
                 </div>
-                <Trigger close={this.props.modal_id} >
+                <Trigger close={this.props.modalId} >
                     <div style={{ minWidth: '100px' }} className="button mt_6 content-block"><Translate content="gateway.rmbpay.ok" /></div>
                 </Trigger>
             </div>)

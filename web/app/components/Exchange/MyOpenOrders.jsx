@@ -40,7 +40,7 @@ class TableHeader extends React.Component {
                 <th><Translate content="exchange.order_value" /> (<AssetName name={preferredUnit} />)</th>
                 <th><Translate content="account.trade" /></th>
                 {/* <th><Translate content="transaction.expiration" /></th> */}
-                {isMyAccount ? <th><Translate content="wallet.cancel" /></th> : null}
+                <th><Translate content="wallet.cancel" /></th>
             </tr>
             </thead>
         );
@@ -122,11 +122,11 @@ class OrderRow extends React.Component {
                     />}
                 </td> */}
                 <td><Link to={`/market/${quote.get("symbol")}_${base.get("symbol")}`}><Icon name="trade" className="icon-14px" /></Link></td>
-                {isMyAccount ? <td className="text-center" style={{ padding: "2px 5px"}}>
+                <td className="text-center" style={{ padding: "2px 5px"}}>
                     {isCall ? null : <a style={{marginRight: 0}} className="order-cancel" onClick={this.props.onCancel}>
                         <Icon name="cross-circle" className="icon-14px" />
                     </a>}
-                </td> : null}
+                </td>
             </tr>
         );
         // }

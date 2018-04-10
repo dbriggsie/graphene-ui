@@ -381,6 +381,12 @@ select.bts-select {
     }
 }
 
+@media screen and (max-width: 700px) {
+    .column-hide-extra-small {
+        display: none !important;
+    }
+}
+
 @media screen and (max-width: 900px) {
     .column-hide-small {
         display: none !important;
@@ -389,6 +395,12 @@ select.bts-select {
 
 @media screen and (max-width: 1100px) {
     .column-hide-medium {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 1250px) {
+    .column-hide-large {
         display: none !important;
     }
 }

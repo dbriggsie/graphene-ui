@@ -37,6 +37,18 @@
   $icon-svg
 ) {
 
+  .block-inline{
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-left: -5px;
+      margin-right: -5px;
+    >div{
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  }
+
   .page-dep-with{
     max-width: 55rem;
   }
@@ -426,6 +438,9 @@
     margin-bottom: .8rem;
   }
 
+  .mb-1-5 {
+    margin-bottom: 1.5rem;
+  }
 
 
   .icon-filter-star{
@@ -461,6 +476,7 @@
     width: 50% !important;
     display: inline-block;
     vertical-align: top;
+    padding-right: 5px;
     .amount-selector:first-child {
       padding-right: 10px;
     }
@@ -469,6 +485,8 @@
       display: inline-block;
     }
     .right-selector {
+      padding-left: 5px;
+      padding-right: 0;
       text-align: right;
       width: 26%;
       display: inline-block;
@@ -636,6 +654,12 @@
       }
       &.has-error > h6 {
         color: $error-text-color
+      }
+    }
+    .fiat-final {
+      h1, h2, h3, h4 {
+        font-family: 'Montserrat-Regular', arial, sans-serif;
+        font-weight: bold;
       }
     }
     .modal-filled-header {
@@ -2199,6 +2223,9 @@
     opacity: 1;
     -webkit-transform: scale(1);
     transform: scale(1);
+  }
+  .rounded {
+    border-radius: 5px;
   }
 }
 

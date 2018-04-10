@@ -1,13 +1,48 @@
-import alt from "alt-instance";
-
+const GET_DEPOSIT_VERIFY_URL = `${SERVER_ADMIN_URL}/api/v1/user/verify`;
 const GET_DEPOSIT_URL = `${SERVER_ADMIN_URL}/api/v1/deposit/get_data`;
 const ADD_DEPOSIT_URL = `${SERVER_ADMIN_URL}/api/v1/deposit/add`;
+const ACTIVE_FIATS_URL = `${SERVER_ADMIN_URL}/api/v1/token/active`;
 const HEADERS = {
     Accept: "application/json",
     "Content-Type": "application/json",
 };
 
 class FiatApi {
+
+    static isVerifyAccountUsd(accountName, accountId){
+        return new Promise((resolve, reject) => {
+            fetch(GET_DEPOSIT_VERIFY_URL, {
+                method: "POST",
+                headers: HEADERS,
+                body: JSON.stringify({
+                    account_ol: accountName,
+                    account_id: accountId
+                })
+            }).then(
+                response => {
+                    if (response.status !== 200) {
+                        reject("Request failed");
+                    }
+                    response.json().then((data) => {
+                       if (data.success !== "true") {
+                            if (data.error == 607) {
+                                resolve({
+                                    verified: data.success
+                                });
+                            } else {
+                                reject("Request failed");
+                            }
+                        }
+                        resolve({
+                            success: data.success
+                        })
+                    });
+                }).catch((error) => {
+                reject(error);
+            });
+        });
+    };
+
     static getDepositData({ currencyName, accountName, accountId }, onError) {
         return new Promise((resolve, reject) => {
             fetch(GET_DEPOSIT_URL, {
@@ -33,13 +68,13 @@ class FiatApi {
                                 reject("Request failed");
                             }
                         }
-                        const service = data.list_service[0];
+                        const service = data.list_service && data.list_service[0];
                         resolve({
                             fees: data.fees,
                             token: data.token,
                             paymentService: service,
                             unlockTime: data.unlock_time,
-                            qrUrl: service.link_qr_code,
+                            qrUrl: service && service.link_qr_code,
                             captchaUrl: data.images_link_captcha
                         })
                     });
@@ -90,7 +125,7 @@ class FiatApi {
                                 reject(data.error);
                             }
                         } else {
-                            resolve({ showQr: true });
+                            resolve({ depositDone: true, ...data });
                         }
                     });
                 } else {
@@ -99,6 +134,32 @@ class FiatApi {
             }).catch((error) => {
                 reject(error);
             })
+        });
+    }
+
+    static getActive({ accountName, accountId }) {
+        return new Promise((resolve, reject) => {
+            fetch(ACTIVE_FIATS_URL, {
+                method: "POST",
+                headers: HEADERS,
+                body: JSON.stringify({
+                    account_ol: accountName,
+                    account_id: accountId
+                })
+            }).then(
+                response => {
+                    if (response.status !== 200) {
+                        reject("Request failed");
+                    }
+                    response.json().then((data) => {
+                        if (data.success !== "true") {
+                            reject("Request failed");
+                        }
+                        resolve({availableFiatServices: data.list_transfer_service});
+                    });
+                }).catch(() => {
+                    reject("Request failed")
+                });
         });
     }
 }

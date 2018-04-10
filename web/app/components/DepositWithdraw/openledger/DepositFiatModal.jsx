@@ -16,19 +16,13 @@ import { Asset } from "common/MarketClasses";
 import { debounce } from "lodash";
 import SettingsActions from "actions/SettingsActions";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
-import DepositRmbpayQr from "./DepositRmbpayQr";
+import DepositFiatDone from "./DepositFiatDone";
 import LoadingIndicator from "components/LoadingIndicator";
 import moment from "moment";
 import { EquivalentValueComponent } from "components/Utility/EquivalentValueComponent";
-import FiatApi from "api/FiatApi"
+import FiatApi from "api/FiatApi";
+import AssetImage from "components/Utility/AssetImage";
 
-const GET_DEPOSIT_URL = `${SERVER_ADMIN_URL}/api/v1/deposit/get_data`;
-const ADD_DEPOSIT_URL = `${SERVER_ADMIN_URL}/api/v1/deposit/add`;
-const ATTEMPTS_BEFORE_CAPTCHA = 1;
-const ATTEMPTS_AFTER_CAPTCHA = 1;
-const LOCK_TIMER_MINUTES = 1;
-const COUNTER_KEY = "requestsCounter";
-const REQUEST_TIME_KEY = "lastRequestTime";
 const DEFAULT_DEP_DATA = {
     fees: {
         fee_share_dep: 0.0,
@@ -36,18 +30,19 @@ const DEFAULT_DEP_DATA = {
     }
 };
 
-class DepositModalRmbpay extends React.Component {
+class DepositFiatModal extends React.Component {
 
     static propTypes = {
         account: ChainTypes.ChainAccount.isRequired,
         asset: ChainTypes.ChainAsset.isRequired,
-        output_coin_name: React.PropTypes.string.isRequired,
-        output_coin_symbol: React.PropTypes.string.isRequired,
-        output_coin_type: React.PropTypes.string.isRequired,
-        url: React.PropTypes.string,
-        output_wallet_type: React.PropTypes.string,
-        amount_to_withdraw: React.PropTypes.string,
+        inputCoin: React.PropTypes.string.isRequired,
+        outputCoinName: React.PropTypes.string.isRequired,
         balance: ChainTypes.ChainObject
+    };
+
+    static defaultProps = {
+        outputCoinName: "CNY",
+        inputCoin: "RMBPAY"
     };
 
     constructor(props) {
@@ -158,7 +153,7 @@ class DepositModalRmbpay extends React.Component {
         const depositAmount = this.refs.amountDeposit.props.amount;
         const { fee } = this.state;
 
-        const depositValid = !depositAmount || parseFloat(depositAmount) > parseFloat(fee);
+        const depositValid = !depositAmount || parseFloat(depositAmount) >= parseFloat(+fee + 1);
         this.setState({
             depositAmountError: !depositValid
         });
@@ -193,25 +188,7 @@ class DepositModalRmbpay extends React.Component {
     _checkInputEmpty() {
         this._validateDepositEmpty();
         this.state.paymentService && this._validateServiceEmpty();
-        this.state.shouldShowCaptcha && this._validateCaptchaEmpty();
-    }
-
-    _checkRequestsNumber() {
-        let requestsCounter = window.localStorage.getItem(COUNTER_KEY);
-        const lastRequestDate = window.localStorage.getItem(REQUEST_TIME_KEY);
-
-        const nowDate = moment();
-
-        const range = nowDate.diff(lastRequestDate, "minutes");
-
-        if (range >= LOCK_TIMER_MINUTES) {
-            requestsCounter = window.localStorage.setItem(COUNTER_KEY, 0);
-        }
-
-        this.setState({
-            maxRequestsError: requestsCounter > ATTEMPTS_BEFORE_CAPTCHA + ATTEMPTS_AFTER_CAPTCHA,
-            shouldShowCaptcha: requestsCounter > ATTEMPTS_BEFORE_CAPTCHA
-        });
+        this.state.captchaUrl && this._validateCaptchaEmpty();
     }
 
     onOpen() {
@@ -235,11 +212,12 @@ class DepositModalRmbpay extends React.Component {
 
     _fetchDepositData() {
         FiatApi.getDepositData({
-            currencyName: "RMBPAY",
+            //temporary for testing
+            currencyName: this._getCurrencyName(this.props.inputCoin),
             accountName: this.props.account.get("name"),
             accountId: this.props.account.get("id")
         }).then((data) => {
-            this.setState({...data});
+            this.setState({ ...data });
             this._handleResponse(false);
         }).catch((error) => {
             this._handleResponse(true);
@@ -251,6 +229,10 @@ class DepositModalRmbpay extends React.Component {
             serverError: isError,
             loading: false
         });
+    }
+
+    _getCurrencyName(name) {
+        return name.indexOf("OPEN") > -1 ? name.substring(5, name.length) : name;
     }
 
     _sendDeposit() {
@@ -268,12 +250,12 @@ class DepositModalRmbpay extends React.Component {
             tokenAmount: this.state.tokenAmount,
             accountName: this.props.account.get("name"),
             accountId: this.props.account.get("id"),
-            currencyName: "RMBPAY",
-            serviceId: service.id,
-            userServiceId: this.state.userServiceId,
-            fees: fees
+            currencyName: this._getCurrencyName(this.props.inputCoin),
+            serviceId: service && service.id,
+            fees: fees,
+            userServiceId: this.state.userServiceId
         }).then((data) => {
-            this.setState({...data});
+            this.setState({ ...data });
             this._handleResponse(false);
         }).catch((error) => {
             this._handleResponse(true);
@@ -296,14 +278,18 @@ class DepositModalRmbpay extends React.Component {
             depositEmpty: false,
             depositAmountError: false,
             tokenAmount: 0,
-            showQr: false,
+            depositDone: false,
             qrLoaded: false,
             serverError: false,
             maxRequestsError: false,
             wrongCaptchaError: false,
             loading: true,
-            fee: 0.00
+            fee: 0.00,
+            paymentService: null
         });
+        if (this.refs.captchaInput) {
+            this.refs.captchaInput.value = "";
+        }
     }
 
     _renderDepositeForm() {
@@ -317,13 +303,17 @@ class DepositModalRmbpay extends React.Component {
             this.state.depositAmountError ||
             !this.state.depositAmount;
         const fees = this.state.fees;
-        const minFee = fees && fees.fee_min_val_dep;
+        const minAmount = fees && +fees.fee_min_val_dep + 1;
         const captchaUrl = this.state.captchaUrl;
 
         const precision = utils.get_asset_precision(this.props.asset.get("precision"));
 
+        const isRmbpay = this.props.inputCoin === "RMBPAY";
         return (
             <div>
+                <div className="text-center asset-header">
+                    <h4><AssetImage assetName={this.props.inputCoin} style={{ width: "28px" }} /> {this.props.inputCoin}</h4>
+                </div>
                 <div className={this._isDisabled() ? "disabled-form" : ""}>
 
                     {this.state.loading && <LoadingIndicator />}
@@ -345,7 +335,8 @@ class DepositModalRmbpay extends React.Component {
                         {!this.state.depositEmpty ? <Translate component="div"
                             className={!this.state.depositAmountError ? "mt_2 mb_5 help-text fz_13" : "mt_2 mb_5 color-danger fz_13"}
                             content="gateway.rmbpay.deposit_min_amount"
-                            fee={+minFee}
+                            fee={minAmount}
+                            assetName={this.props.outputCoinName}
                         /> : null}
                         {this.state.depositEmpty && <Translate component="div" className="mt_2 mb_5 color-danger fz_13" content="gateway.rmbpay.error_emty" />}
                     </div>
@@ -353,35 +344,32 @@ class DepositModalRmbpay extends React.Component {
                     {/* Fee selection */}
 
                     <div className="content-block ">
-                        <label className="left-label">
+                        <div className="gate_fee left-label">
                             <Translate component="span" content="gateway.transwiser.fee_deposit" />
-                        </label>
-                        <div className="content-block input-wrapper">
-                            <input type="text" disabled value={this.state.fee} />
-                            <div className="form-label select floating-dropdown light-text">
-                                <div className="dropdown-wrapper inactive">
-                                    <div>CNY</div>
-                                </div>
-                            </div>
+                        </div>
+                        <div className="gate_fee text-right">
+                            {this.state.fee} {this.props.outputCoinName}
                         </div>
                     </div>
 
                     <div>
-                        <div className="content-block gate_fee left-label">
+                        <div className="gate_fee left-label">
                             <Translate component="span" content="gateway.rmbpay.tokens_receive" />
                         </div>
                         <div className="gate_fee text-right light-text">
-                            {this.state.tokenAmount} RMBPAY
+                            {this.state.tokenAmount} {this.props.inputCoin}
                         </div>
-                        <div className="text-right help-text mb_5">
-                            ≈ <EquivalentValueComponent
-                                fullPrecision={true}
-                                fromAsset="1.3.113"
-                                toAsset="1.3.861"
-                                amount={this.state.tokenAmount * precision}
-                                hide_asset={true}
-                            /> BTC
-                        </div>
+                        {
+                            <div className={"text-right help-text mb_6" + (isRmbpay ? "" : " hidden")}>
+                                ≈ <EquivalentValueComponent
+                                    fullPrecision={true}
+                                    fromAsset="1.3.113"
+                                    toAsset="1.3.861"
+                                    amount={this.state.tokenAmount * precision}
+                                    hide_asset={true}
+                                /> BTC
+                            </div>
+                        }
                     </div>
 
 
@@ -408,8 +396,8 @@ class DepositModalRmbpay extends React.Component {
 
                     {captchaUrl &&
                         <div>
-                            <div className="mb_5">
-                                <img src={captchaUrl} alt="OL" />
+                            <div className="mb_6">
+                                <img className="rounded" src={captchaUrl} alt="OL" />
                             </div>
                             <div className="blocktrades-select-dropdown">
                                 <div className="inline-label">
@@ -440,7 +428,7 @@ class DepositModalRmbpay extends React.Component {
                 {/* Request Deposit/Cancel buttons */}
 
                 <div className="mt_6 help-text content-block">
-                    {`${moment().utc().add(8, "h").format("YYYY-MM-DD HH-mm")} (UTC+8)`}
+                    {isRmbpay && `${moment().utc().add(8, "h").format("YYYY-MM-DD HH-mm")} (UTC+8)`}
                 </div>
                 <div className="buttons-block-center">
                     <div onClick={this.onSubmit.bind(this)} className={"button " + (this._isDisabled() ? "disabled" : "")} >
@@ -453,14 +441,15 @@ class DepositModalRmbpay extends React.Component {
             </div>);
     }
 
-    _renderQR() {
-        const logoAliPay = '/app/assets/logoAlipay.png';
+    _renderDepositDone() {
         return (
-            <DepositRmbpayQr
-                coinName={this.props.output_coin_name}
+            <DepositFiatDone
+                coinName={this.props.outputCoinName}
                 depositAmount={this.state.depositAmount}
                 qrCodeLink={this.state.qrUrl}
-                modal_id={this.props.modal_id}
+                modalId={this.props.modal_id}
+                linkInvoice={this.state.link_invoice}
+                email={this.state.email}
             />
         )
     }
@@ -476,20 +465,17 @@ class DepositModalRmbpay extends React.Component {
                 <form className="grid-block vertical full-width-content form-deposit-withdraw-rmbpay" >
                     <div className="grid-container">
                         <div className="modal-filled-header">
-                            <h3>
-                                <Translate content="gateway.deposit_coin" coin={this.props.output_coin_name} symbol={this.props.output_coin_symbol} />
-                            </h3>
+                            <h3><Translate content="gateway.deposit" /></h3>
                         </div>
                         <div className="modal-body">
-                            {this._isDisabled() && <div className="center-content content-block">
-                                {this.state.serverError ? <Translate className="has-error" content="gateway.service_unavailable" /> :
-                                    (this.state.unlockTime && <Translate className="has-error" unsafe content="gateway.rmbpay.max_requests_error"
-                                        date={unlockTime}
-                                    />)
-                                }
-                            </div>}
+                            {this._isDisabled() &&
+                                this.state.serverError ? <div className="center-content content-block"> <Translate className="has-error" content="gateway.service_unavailable" /></div> :
+                                (this.state.unlockTime && <div className="center-content content-block"><Translate className="has-error" unsafe content="gateway.rmbpay.max_requests_error"
+                                    date={unlockTime}
+                                /></div>)
+                            }
                             <div>
-                                {this.state.showQr ? this._renderQR() : this._renderDepositeForm()}
+                                {this.state.depositDone ? this._renderDepositDone() : this._renderDepositeForm()}
                             </div>
                         </div>
                     </div>
@@ -499,4 +485,4 @@ class DepositModalRmbpay extends React.Component {
     }
 };
 
-export default BindToChainState(DepositModalRmbpay, { keep_updating: true });
+export default BindToChainState(DepositFiatModal, { keep_updating: true });

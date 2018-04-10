@@ -23,7 +23,8 @@ import GatewayActions from "actions/GatewayActions";
 import AccountImage from "../Account/AccountImage";
 import BaseModal from "../Modal/BaseModal";
 import DepositModalRmbpay from "../DepositWithdraw/openledger/DepositModalRmbpay";
-import WithdrawModalRmbpay from "../DepositWithdraw/openledger/WithdrawModalRmbpay";
+import WithdrawFiatModal from "../DepositWithdraw/openledger/WithdrawFiatModal";
+
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 
 const RMBPAY_ASSET_ID = "1.3.2562";
@@ -363,7 +364,7 @@ class AccountDepositWithdraw extends React.Component {
     }
 
     onWithdraw() {
-        this.withdrawModalRmbpay.refs.bound_component.fetchWithdrawData();
+        this.withdrawFiatModal.refs.bound_component.fetchWithdrawData();
         ZfApi.publish(this.getWithdrawModalId(), "open");
     }
 
@@ -476,7 +477,7 @@ class AccountDepositWithdraw extends React.Component {
 
                 <BaseModal id={withdraw_modal_id} overlay={true} maxWidth="500px">
                     <div className="grid-block vertical">
-                        <WithdrawModalRmbpay
+                        <WithdrawFiatModal
                             account={this.props.account.get("name")}
                             issuer_account="rmbpay-wallet"
                             asset="RMBPAY"
@@ -485,7 +486,7 @@ class AccountDepositWithdraw extends React.Component {
                             output_coin_type="RMBPAY"
                             modal_id={withdraw_modal_id}
                             balance={this.props.account.get("balances").toJS()[RMBPAY_ASSET_ID]}
-                            ref={modal => { this.withdrawModalRmbpay = modal; }}
+                            ref={modal => { this.withdrawFiatModal = modal; }}
                         />
                     </div>
                 </BaseModal>

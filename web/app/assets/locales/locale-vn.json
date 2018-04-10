@@ -1520,16 +1520,15 @@
       "ok": "ok",
       "withdraw": "Rút %(coin)s",
       "tokens_receive":"Tokens để nhận",
-      "deposit_min_amount": "Số lượng gửi phải lớn hơn %(fee)s CNY",
       "btn_request_deposit": "Yêu cầu gửi",
       "error_emty": "Thông tin bắt buộc",
       "captcha_label": "Hãy nhập văn bản bạn thấy ở trên",
       "max_requests_error": "Bạn đã vượt qua số yêu cầu gửi cho phép.<br/>Yêu cầu kế tiếp sẽ có hiệu lực lúc %(date)s UTC.",
       "wrong_captcha_error": "Giá trị Captcha không đúng. Hãy thử lại.",
-      "error_max_value":"Số lượng rút phải lớn hơn hoặc bằng %(val)s RMBPAY",
-      "error_min_value":"Số lượng rút phải nhỏ hơn hoặc bằng %(val)s RMBPAY",
-      "error_min_receive": "Số lượng nhận phải nhỏ hơn hoặc bằng 1 CNY",
-      "error_max_receive": "Số lượng nhận phải nhỏ hơn hoặc bằng %(val)s CNY",
+      "error_max_value":"Số lượng rút phải lớn hơn hoặc bằng %(val)s %(assetName)s",
+      "error_min_value":"Số lượng rút phải nhỏ hơn hoặc bằng %(val)s %(assetName)s",
+      "error_min_receive": "Số lượng nhận phải nhỏ hơn hoặc bằng 1 %(assetName)s",
+      "error_max_receive": "Số lượng nhận phải nhỏ hơn hoặc bằng %(val)s %(assetName)s",
       "not_enaught_balance": "Hành động này không thể thực hiện được.<br />Bạn không có đủ Token để trả phí.",
       "scan_qr": "Để hoàn tất việc gửi hãy quét QR-code và gửi tiền đến địa chỉ đó",
       "transfer_24_h": "Tokens sẽ được chuyển tới tài khoản của bạn trong 24 giờ",
@@ -1541,8 +1540,8 @@
         "fee_withdraw": "Phí rút",
         "amount_receive": "Nhận với số lượng",
         "amount_withdraw": "Rút với số lượng",
-        "withdraw_amount": "Tôi muốn rut số lượng RMBPAY",
-        "receive_amount": "Tôi muốn nhân số lượngCNY"
+        "withdraw_amount": "Tôi muốn rut số lượng %(assetName)s",
+        "receive_amount": "Tôi muốn nhân số lượng %(assetName)s"
       }
     }
   },

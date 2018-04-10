@@ -1260,6 +1260,20 @@
     "fee_paying_account":"Аккаунт, платящий комиссию"
   },
   "gateway":{
+    "usd_vesna": {
+      "depositWithdrawal_info" : "Токены VESNA.USD могут быть депонированы или выведены с биржи только верифицированными пользователями. Для совершения операций с токенами пройдите верификацию.",
+      "bankName" : "Название банка",
+      "bankCode" : "SWIFT/BIC Код",
+      "transitNumber" : "Routing Transit Number",
+      "bankAddress" : "Адрес Банка, Город, Штат, Индекс",
+      "beneficiaryAccount" : "Номер Счёта Получателя",
+      "beneficiaryName" : "Имя Получателя",
+      "created": "Ваш запрос был создан.",
+      "deposit_amount_text": "Вам необходимо перевести <strong>%(amount)s USD</strong> на банковский счёт, реквизиты которого указаны в инвойсе (копия отправлена Вам на почту %(email)s)",
+      "thanks": "Request was created",
+      "open_invoice": "Открыть Инвойс",
+      "email": "В ожидании перевода средств"
+    },
     "please_generate_address": "Пожалуйста, сгенерируйте новый адрес",
     "service_unavailable": "Сервис временно недоступен. Повторите запрос позже, пожалуйста.",
     "fiat_text": "Фиатные шлюзы закрыты. Извиняемся за неудобства! Следите за нашими обновлениями в новостном  <a target='_blank' href='https://blog.openledger.info/'>портале</a>.",
@@ -1375,18 +1389,19 @@
       "ok": "Ok",
       "withdraw": "Вывод %(coin)s",
       "tokens_receive":"Токенов для получения",
-      "deposit_min_amount": "Значение должно быть больше %(fee)s CNY",
+      "deposit_min_amount": "Значение должно быть больше или равно %(fee)s %(assetName)s",
       "btn_request_deposit": "Запросить депозит",
       "error_emty": "Пожалуйста, заполните поле",
       "captcha_label": "Пожалуйста, введите текст, изображённый на картинке",
       "max_requests_error": "Вы превысили допустимое количество запросов.<br/>Следующий запрос будет доступен %(date)s UTC.",
       "wrong_captcha_error": "Вы ввели неправильный текст. Попробуйте ещё раз",
-      "error_max_value": "Значение должно быть больше или равно %(val)s RMBPAY",
-      "error_min_value": "Значение должно быть меньше или равно %(val)s RMBPAY",
-      "error_min_receive": "Значение должно быть больше или равно 1 CNY",
-      "error_max_receive": "Значение должно быть меньше или равно %(val)s CNY",
+      "error_max_value": "Значение должно быть больше или равно %(val)s  %(assetName)s",
+      "error_min_value": "Значение должно быть меньше или равно %(val)s  %(assetName)s",
+      "error_min_receive": "Значение должно быть больше или равно 1 %(assetName)s",
+      "error_max_receive": "Значение должно быть меньше или равно %(val)s %(assetName)s",
       "not_enaught_balance": "Операция не может быть выполнена.<br />У Вас недостаточно средств для оплаты комиссии.",
-      "scan_qr": "Для взноса средств сканируйте QR-код и отправьте требуемую сумму на данный адрес",
+      "complete_deposit": "Для осуществления депозита переведите требуемую сумму на адрес ниже",
+      "alipay_account": "ID в системе Alipay 13631625052 получатель POTCHANINE ARTEM",
       "transfer_24_h": "Токены будут перечислены на Ваш аккаунт в течение 24 часов",
       "amount_to_transfer": "Сумма взноса:",
       "balance": "Остаток на балансе:",
@@ -1396,8 +1411,8 @@
         "fee_withdraw": "Комиссия за вывод средств",
         "amount_receive": "Сумма для получения",
         "amount_withdraw": "Сумма для вывода",
-        "withdraw_amount": "Вывести сумму RMBPAY",
-        "receive_amount": "Получить сумму CNY"
+        "withdraw_amount": "Вывести сумму %(assetName)s",
+        "receive_amount": "Получить сумму %(assetName)s"
       }
     }
   },

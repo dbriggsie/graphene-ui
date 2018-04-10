@@ -7,6 +7,8 @@ import ls from "common/localStorage";
 import { Apis } from "bitsharesjs-ws";
 import { settingsAPIs } from "api/apiConfig";
 
+let SET = 'EU1';
+
 const CORE_ASSET = "BTS"; // Setting this to BTS to prevent loading issues when used with BTS chain which is the most usual case currently
 
 const STORAGE_KEY = "__graphene__";
@@ -96,7 +98,9 @@ let marketsList = [
     "OPEN.LIF",
     "OPEN.ZEC",
     "OPEN.XEM",
-    "OPEN.ONZ"
+    "VESNA.USD",
+    "OPEN.ONZ",
+    "OPEN.LIVE"
 ];
 
 let topMarkets = {
@@ -535,12 +539,37 @@ store.marketsOpenList = marketsList.filter(e => {
 store.intAssets = intAssets;
 
 store.EXCEPTIONAL_NOT_OPEN_ASSETS = [
-    "CVCOIN"
-]
+    "CVCOIN",
+    "USD",
+    "VESNA.USD"
+];
+
 store.FIAT_ASSETS = [
-    "RMBPAY"
-]
+    {
+        name: "RMBPAY",
+        targetAsset: "CNY",
+        asset_id: "1.3.2562"
+    },
+    {
+        needsVerification: "VESNA.USD",
+        name: "VESNA.USD",
+        targetAsset: "USD",
+        asset_id: "1.3.3557"
+    }
+];
 store.RESTRICT_DEPOSIT = [
     "CVCOIN"
-]
+];
+
+store.FIAT_WALLET = {
+    "VESNA": {
+        name: "VESNA.USD",
+        wallet: "vesna-wallet"
+    },
+    "RMBPAY": {
+        name: "RMBPAY",
+        wallet: "rmbpay-wallet"
+    }
+}
+
 export default store;

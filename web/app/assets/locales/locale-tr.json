@@ -1514,16 +1514,15 @@
 			"ok": "ok",
 			"withdraw": "Çek %(coin)s",
 			"tokens_receive": "Alınacak Belgeler",
-			"deposit_min_amount": "Para yatırma tutarı %(fee)s CNY'den fazla",
 			"btn_request_deposit": "Para yatırma talebi",
 			"error_emty": "Gerekli alan",
 			"captcha_label": "Lütfen gördüğünüz metni yukarıdaki kutuya giriniz",
 			"max_requests_error": "İzin verilen ödeme taleplerinin sayısını aştınız..<br/>Sanraki istek tarihinde %(date)s UTC.",
 			"wrong_captcha_error": "Captcha değeri yanlış. Lütfen tekrar deneyiniz",
-			"error_max_value": "Çekilecek miktar RMBPAY %(val)s daha fazla veya eşit olmalıdır.",
-			"error_min_value": "Çekilecek miktar RMBPAY %(val)s az veya eşit olmalıdır.",
-			"error_min_receive": "Alınacak tutar, 1 CNY'den fazla veya eşit olmalıdır",
-			"error_max_receive": "Alınacak tutar, CNY'den %(val)s fazla veya eşit olmalıdır",
+			"error_max_value": "Çekilecek miktar %(assetName)s %(val)s daha fazla veya eşit olmalıdır.",
+			"error_min_value": "Çekilecek miktar %(assetName)s %(val)s az veya eşit olmalıdır.",
+			"error_min_receive": "Alınacak tutar, 1 %(assetName)s'den fazla veya eşit olmalıdır",
+			"error_max_receive": "Alınacak tutar, %(assetName)s'den %(val)s fazla veya eşit olmalıdır",
 			"not_enaught_balance": "İşlem gerçekleştirilemiyor.<br />Ücreti ödemek için yeterli imgeniz yok.",
 			"scan_qr": "Ödemeyi tamamlamak için QR kodunu tara ve bu adrese para gönder",
 			"transfer_24_h": "İngeler 24 saat içinde hesabınıza transfer edilecek",
@@ -1535,8 +1534,8 @@
 				"fee_withdraw": "Çekme ücreti",
 				"amount_receive": "Alınacak Tutar",
 				"amount_withdraw": "Çekilecek Tutar",
-				"withdraw_amount": "RMBPAY tutarını geri çekmek istiyorum",
-				"receive_amount": "CNY tutarını geri çekmek istiyorum"
+				"withdraw_amount": "%(assetName)s tutarını geri çekmek istiyorum",
+				"receive_amount": "%(assetName)s tutarını geri çekmek istiyorum"
 			}
 		}
 	},

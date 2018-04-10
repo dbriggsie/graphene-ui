@@ -1514,16 +1514,15 @@
       "ok": "ok",
       "withdraw": "Abheben %(coin)s",
       "tokens_receive":"Token zum Empfangen",
-      "deposit_min_amount": "Zu hinterlegender Betrag muss mehr als %(fee)s CNY sein",
       "btn_request_deposit": "Kaution anfordern",
       "error_emty": "Feld ist erforderlich",
       "captcha_label": "Bitte geben Sie den Text ein, den Sie im obigen Feld sehen",
       "max_requests_error": "Sie haben die zulässige Anzahl von Einzahlungsaufträgen überschritten.<br/>Die nächste Anfrage wird am verfügbar %(date)s UTC. sein",
       "wrong_captcha_error": "Captcha-Wert ist falsch. Bitte versuche es erneu",
-      "error_max_value":"Auszahlungsbetrag muss größer oder gleich %(val)s RMBPAY sein",
-      "error_min_value":"Auszahlungsbetrag muss kleiner oder gleich %(val)s RMBPAY sein",
-      "error_min_receive": "Der zu erhaltende Betrag muss größer oder gleich 1 CNY sein",
-      "error_max_receive": "Der zu erhaltende Betrag muss kleiner oder gleich %(val)s CNY sein",
+      "error_max_value":"Auszahlungsbetrag muss größer oder gleich %(val)s %(assetName)s sein",
+      "error_min_value":"Auszahlungsbetrag muss kleiner oder gleich %(val)s %(assetName)s sein",
+      "error_min_receive": "Der zu erhaltende Betrag muss größer oder gleich 1 %(assetName)s sein",
+      "error_max_receive": "Der zu erhaltende Betrag muss kleiner oder gleich %(val)s %(assetName)s sein",
       "not_enaught_balance": "Die Operation kann nicht ausgeführt werden.<br />Sie haben nicht genug Token, um die Gebühr zu bezahlen.",
       "scan_qr": "Um die Einzahlung abzuschließen, scannen Sie den QR-Code und senden Sie Geld an diese Adresse",
       "transfer_24_h": "Tokens werden innerhalb von 24 Stunden auf Ihr Konto übertragen",
@@ -1535,8 +1534,8 @@
         "fee_withdraw": "Abhebegebühr",
         "amount_receive": "Betrag zu erhalten",
         "amount_withdraw": "Betrag zum Zurückziehen",
-        "withdraw_amount": "Ich möchte den Betrag von RMBPAY abheben",
-        "receive_amount": "Ich möchte den Betrag von CNY erhalten"
+        "withdraw_amount": "Ich möchte den Betrag von %(assetName)s abheben",
+        "receive_amount": "Ich möchte den Betrag von %(assetName)s erhalten"
       }
     }
   },

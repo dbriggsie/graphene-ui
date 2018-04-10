@@ -30,15 +30,17 @@ class AssetName extends React.Component {
     }
 
     _isFiat(name) {
-        return SettingsStore.FIAT_ASSETS.indexOf(name) > -1;
+        return SettingsStore.FIAT_ASSETS.filter((asset) => {
+            return asset.name.toLowerCase() === name.toLowerCase();
+        }).length > 0;
     }
 
     render() {
-        let {name, replace, asset, noPrefix} = this.props;
+        let { name, replace, asset, noPrefix } = this.props;
         let isBitAsset = asset.has("bitasset");
         let isPredMarket = isBitAsset && asset.getIn(["bitasset", "is_prediction_market"]);
 
-        let {name: replacedName, prefix} = utils.replaceName(name, isBitAsset && !isPredMarket && asset.get("issuer") === "1.2.0");
+        let { name: replacedName, prefix } = utils.replaceName(name, isBitAsset && !isPredMarket && asset.get("issuer") === "1.2.0");
         // let prefix = isBitAsset && !isPredMarket ? <span>bit</span> :
         // 			 replacedName !== this.props.name ? <span>{replacedPrefix}</span> : null;
 
@@ -48,13 +50,20 @@ class AssetName extends React.Component {
         if (replace && replacedName !== this.props.name || isBitAsset || this._isFiat(name)) {
             let desc = asset_utils.parseDescription(asset.getIn(["options", "description"]));
             let realPrefix = name.split(".");
-            realPrefix = realPrefix.length > 1 ? realPrefix[0] : null;
-            if (realPrefix) realPrefix += ".";
+            realPrefix = realPrefix.length > 1 && realPrefix[0].toLowerCase() === "open" ? realPrefix[0] : null;
             let optional = "";
             try {
-                optional = realPrefix || includeBitAssetDescription ? counterpart.translate("gateway.assets." + (isBitAsset ? "bit" : realPrefix.replace(".", "").toLowerCase()), {asset: name, backed: includeBitAssetDescription ? desc.main : replacedName}) : "";
-            } catch (e){}
-            let tooltip = this.props.noTip ? null : `<div><strong>${realPrefix ? realPrefix.toUpperCase() : realPrefix || ""}${replacedName}</strong><br />${includeBitAssetDescription ? "" : "<br />" + (desc.short ? desc.short : desc.main || "")}${!isBitAsset || includeBitAssetDescription ? optional : ""}</div>`;
+                optional = realPrefix || includeBitAssetDescription ?
+                    counterpart.translate("gateway.assets." + (isBitAsset ? "bit" : "open"), { asset: name, backed: includeBitAssetDescription ? desc.main : replacedName }) : "";
+            } catch (e) { }
+            if (realPrefix) {
+                realPrefix += ".";
+            }
+            let tooltip = this.props.noTip ?
+                null :
+                `<div><strong>${realPrefix ? realPrefix.toUpperCase() : realPrefix || ""}${replacedName}</strong><br />${includeBitAssetDescription ?
+                    "" :
+                    "<br />" + (desc.short ? desc.short : desc.main || "")}${!isBitAsset || includeBitAssetDescription ? optional : ""}</div>`;
 
             return (
                 <div

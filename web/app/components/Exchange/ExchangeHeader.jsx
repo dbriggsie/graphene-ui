@@ -46,7 +46,7 @@ export default class ExchangeHeader extends React.Component {
         return (
             <div className="grid-block shrink no-padding overflow-visible top-bar">
                 <div className="grid-block overflow-visible">
-                    <div className="grid-block shrink show-for-large" style={{borderRight: "1px solid grey"}}>
+                    <div className="grid-block shrink" style={{borderRight: "1px solid grey"}}>
                         <div className="v-align">
                             <span style={{paddingRight: 0}} onClick={this._addMarket.bind(this, quoteSymbol, baseSymbol)} className="market-symbol">
                                 <Icon className={starClass} name="fi-star"/>
@@ -74,7 +74,7 @@ export default class ExchangeHeader extends React.Component {
                                 {latestPrice ?
                                     <PriceStat ready={marketReady} price={latestPrice.full} quote={quoteAsset} base={baseAsset} content="exchange.latest"/> : null}
 
-                                <li className="stat">
+                                <li className="stat column-hide-extra-small">
                                     <span>
                                     <Translate component="span" content="account.hour_24" />
                                     <br />
@@ -86,13 +86,13 @@ export default class ExchangeHeader extends React.Component {
                                 {(volumeBase >= 0) ? <PriceStat ready={marketReady} decimals={0} volume={true} price={volumeBase} className="column-hide-small" volume2={volumeQuote} base={baseAsset} quote={quoteAsset} content="exchange.volume_24"/> : null}
 
                                 {!hasPrediction && feedPrice ?
-                                    <PriceStat toolTip={counterpart.translate("tooltip.settle_price")} ready={marketReady} className="column-hide-small" price={feedPrice.toReal()} quote={quoteAsset} base={baseAsset} content="exchange.settle"/> : null}
+                                    <PriceStat toolTip={counterpart.translate("tooltip.settle_price")} ready={marketReady} className="column-hide-medium" price={feedPrice.toReal()} quote={quoteAsset} base={baseAsset} content="exchange.settle"/> : null}
 
                                 {lowestCallPrice && showCallLimit ?
                                     <PriceStat toolTip={counterpart.translate("tooltip.call_limit")} ready={marketReady} className="column-hide-medium is-call" price={lowestCallPrice} quote={quoteAsset} base={baseAsset} content="explorer.block.call_limit"/> : null}
 
                                 {feedPrice && showCallLimit ?
-                                    <PriceStat toolTip={counterpart.translate("tooltip.margin_price")} ready={marketReady} className="column-hide-medium is-call" price={feedPrice.getSqueezePrice({real: true})} quote={quoteAsset} base={baseAsset} content="exchange.squeeze"/> : null}
+                                    <PriceStat toolTip={counterpart.translate("tooltip.margin_price")} ready={marketReady} className="column-hide-large is-call" price={feedPrice.getSqueezePrice({real: true})} quote={quoteAsset} base={baseAsset} content="exchange.squeeze"/> : null}
                             </ul>
                             <ul className="market-stats stats top-stats">
                                 <li className="stat input clickable v-align" style={{borderLeft: "1px solid grey", borderRight: "none", padding: "3px 15px 0 15px"}} onClick={this.props.onToggleCharts}>

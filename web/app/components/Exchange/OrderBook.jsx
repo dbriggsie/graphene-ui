@@ -394,7 +394,7 @@ class OrderBook extends React.Component {
                             <div className="exchange-bordered">
                                 <div className="exchange-content-header ask">
                                     <Translate content="exchange.asks" />
-                                    {this.state.flip ? (
+                                    {this.state.flip && this.props.simpleTrade ? (
                                     <span>
                                         <span onClick={this._flipBuySell.bind(this)} style={{cursor: "pointer", fontSize: "1rem"}}>  &#8646;</span>
                                         {!this.props.smallScreen ? <span onClick={this.props.moveOrderBook} style={{cursor: "pointer", fontSize: "1rem"}}> &#8645;</span> : null}
@@ -431,11 +431,11 @@ class OrderBook extends React.Component {
                             </div>
                         </div>
 
-                        <div className={classnames("small-12 medium-6 middle-content", this.state.flip ? "order-2" : "order-1")}>
+                        <div className={classnames("small-12 medium-6 middle-content", !this.state.flip ? "order-2" : "order-1")}>
                             <div className="exchange-bordered">
                                 <div className="exchange-content-header bid">
                                     <Translate content="exchange.bids" />
-                                    {!this.state.flip && !this.props.simpleTrade ? (
+                                    {!this.props.simpleTrade ? (
                                     <span>
                                         <span onClick={this._flipBuySell.bind(this)} style={{cursor: "pointer", fontSize: "1rem"}}>  &#8646;</span>
                                         <span onClick={this.props.moveOrderBook} style={{cursor: "pointer", fontSize: "1rem"}}> &#8645;</span>
